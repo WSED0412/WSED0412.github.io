@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>符文戰場 — 賽事導向</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --warning-bg: #451a03;
+      --warning-border: #b45309;
+      --warning-text: #fde68a;
+      --danger-bg: #450a0a;
+      --danger-border: #dc2626;
+      --danger-text: #fecaca;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 16px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .page-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .event-name {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      min-height: 1.4em;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 24px 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      text-align: center;
+      width: 100%;
+    }
+
+    .status-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      margin-bottom: 16px;
+      font-size: 1.8rem;
+    }
+
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border: 4px solid var(--card-border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .status-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .status-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 20px;
+      word-break: break-word;
+    }
+
+    .alert-box {
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      text-align: left;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      word-break: break-word;
+    }
+
+    .alert-warning {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 50px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.2s, opacity 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+    }
+
+    .btn-primary:hover, .btn-primary:active {
+      background: var(--accent-hover);
+    }
+
+    .hint-text {
+      margin-top: 16px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1 class="page-title">符文戰場賽事系統</h1>
+      <div id="eventName" class="event-name"></div>
+    </header>
+
+    <main class="card" id="mainCard">
+      <div id="loadingState">
+        <div class="spinner"></div>
+        <div class="status-title">正在導向賽事主機...</div>
+        <div class="status-desc">請稍候，系統正在為您連線至今日賽事系統。</div>
+        <a id="manualLink" href="#" class="btn btn-primary" style="display: none;">如果沒有自動跳轉，請點這裡</a>
+      </div>
+
+      <div id="errorState" style="display: none;">
+        <div class="status-icon" id="errorIcon">⚠️</div>
+        <div class="status-title" id="errorTitle">尚未連線</div>
+        <div class="alert-box alert-warning" id="errorMsg">
+          今天的網址還沒設定，請到報到桌詢問
+        </div>
+        <div class="hint-text" id="retryHint">系統將自動重新嘗試連線...</div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const ALLOWED_HOSTS = ['.trycloudflare.com'];
+
+    const PATH_MAP = {
+      find: '/web/find-table.html',
+      checkin: '/web/checkin.html',
+      standings: '/web/standings.html',
+      bracket: '/web/bracket.html',
+      spectator: '/web/spectator.html'
+    };
+
+    function getTargetPath() {
+      const params = new URLSearchParams(window.location.search);
+      const to = (params.get('to') || '').trim();
+      return Object.prototype.hasOwnProperty.call(PATH_MAP, to)
+        ? PATH_MAP[to]
+        : PATH_MAP.find;
+    }
+
+    function validateUrl(rawUrl) {
+      if (!rawUrl || typeof rawUrl !== 'string') {
+        return { ok: false, reason: 'empty' };
+      }
+      const trimmed = rawUrl.trim();
+      if (!trimmed) {
+        return { ok: false, reason: 'empty' };
+      }
+      if (!trimmed.startsWith('https://')) {
+        return { ok: false, reason: 'not_https' };
+      }
+      let parsed;
+      try {
+        parsed = new URL(trimmed);
+      } catch (e) {
+        return { ok: false, reason: 'invalid_url' };
+      }
+      if (parsed.protocol !== 'https:') {
+        return { ok: false, reason: 'not_https' };
+      }
+      const host = parsed.hostname.toLowerCase();
+      const isAllowed = ALLOWED_HOSTS.some(allowed => {
+        const pattern = allowed.toLowerCase().trim();
+        if (pattern.startsWith('.')) {
+          return host.endsWith(pattern);
+        }
+        return host === pattern || host.endsWith('.' + pattern);
+      });
+      if (!isAllowed) {
+        return { ok: false, reason: 'host_not_allowed' };
+      }
+      return { ok: true, parsed };
+    }
+
+    let retryTimer = null;
+
+    function showError(message, canRetry) {
+      document.getElementById('loadingState').style.display = 'none';
+      const errorState = document.getElementById('errorState');
+      errorState.style.display = 'block';
+      document.getElementById('errorMsg').textContent = message;
+      const retryHint = document.getElementById('retryHint');
+      if (canRetry) {
+        retryHint.textContent = '系統將自動重新嘗試連線...';
+        retryHint.style.display = 'block';
+        if (retryTimer) clearTimeout(retryTimer);
+        retryTimer = setTimeout(loadCurrent, 10000);
+      } else {
+        retryHint.style.display = 'none';
+      }
+    }
+
+    async function loadCurrent() {
+      try {
+        const res = await fetch('current.json?t=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) {
+          showError('今天的網址還沒設定，請到報到桌詢問', true);
+          return;
+        }
+        let data;
+        try {
+          data = await res.json();
+        } catch (e) {
+          showError('今天的網址設定有誤，請到報到桌詢問', true);
+          return;
+        }
+
+        if (data && data.event) {
+          document.getElementById('eventName').textContent = data.event;
+        }
+
+        const checkResult = validateUrl(data ? data.url : null);
+        if (!checkResult.ok) {
+          if (checkResult.reason === 'empty') {
+            showError('今天的網址還沒設定，請到報到桌詢問', true);
+          } else {
+            showError('今天的網址設定有誤，請到報到桌詢問', false);
+          }
+          return;
+        }
+
+        const parsed = checkResult.parsed;
+        const originBase = parsed.origin + (parsed.pathname === '/' ? '' : parsed.pathname.replace(/\/+$/, ''));
+        const targetUrl = originBase + getTargetPath();
+
+        const manualLink = document.getElementById('manualLink');
+        manualLink.href = targetUrl;
+        manualLink.style.display = 'inline-flex';
+
+        window.location.replace(targetUrl);
+      } catch (err) {
+        showError('今天的網址還沒設定，請到報到桌詢問', true);
+      }
+    }
+
+    loadCurrent();
+  </script>
+</body>
+</html>
