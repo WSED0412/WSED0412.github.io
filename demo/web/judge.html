@@ -1,0 +1,2251 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>符文戰場 — 裁判手機頁</title>
+  <style>
+    :root {
+      --bg: #01222F;
+      --card-bg: #013951;
+      --card-border: #0A5570;
+      --text-primary: #F9F9F9;
+      --text-secondary: #9FB8C4;
+      --accent: #EF7D00;
+      --accent-hover: #C86800;
+      --accent-text: #FF941E;
+      --warning-bg: #3E3312;
+      --warning-border: #8A6D1F;
+      --warning-text: #F2C94C;
+      --danger-bg: #4A1F1C;
+      --danger-border: #A8443C;
+      --danger-text: #ED807A;
+      --success-bg: #0A3F33;
+      --success-border: #1F7A55;
+      --success-text: #2FB574;
+      --chip-bg: #0A4A63;
+      --input-bg: #011A24;
+      --info-bg: #1B2F4A;
+      --info-border: #2F5A80;
+      --info-text: #4FA8D8;
+      --judge-bg: #2E2140;
+      --judge-border: #553C77;
+      --judge-text: #B38FE0;
+
+      /* Aliases */
+      --panel-bg: var(--card-bg);
+      --panel-border: var(--card-border);
+      --text-main: var(--text-primary);
+      --text-sub: var(--text-secondary);
+      --warning: var(--warning-text);
+      --danger: var(--danger-text);
+      --success: var(--success-text);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      min-height: 100svh;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    input, select, textarea {
+      font-size: 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 12px 14px 60px;
+    }
+
+    /* 頂部導覽列 */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--panel-border);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .page-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .judge-badge {
+      font-size: 0.72rem;
+      background: var(--judge-bg);
+      color: var(--judge-text);
+      border: 1px solid var(--judge-border);
+      padding: 2px 7px;
+      border-radius: 9999px;
+      font-weight: 700;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .judge-user-info {
+      font-size: 0.82rem;
+      color: var(--text-sub);
+    }
+
+    .judge-user-name {
+      color: var(--accent-text);
+      font-weight: 700;
+    }
+
+    /* 提示橫幅 */
+    .banner {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .contract-warning {
+      background: var(--warning-bg);
+      color: var(--warning-text);
+      border: 1px solid var(--warning-border);
+    }
+    .stale-warning {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      border: 1px solid var(--danger-border);
+    }
+
+    /* 區塊卡片 */
+    .judge-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-subtitle {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+    }
+
+    /* 表單元件 */
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-sub);
+      margin-bottom: 4px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .input-text, .input-number {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 1rem;
+      outline: none;
+      min-height: 40px;
+      flex: 1;
+      min-width: 120px;
+      max-width: 100%;
+    }
+
+    .input-text:focus, .input-number:focus, .select-input:focus {
+      border-color: var(--accent);
+    }
+
+    .input-sm {
+      min-width: 70px;
+      width: 90px;
+      flex: none;
+    }
+
+    /* 按鈕樣式 */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+      min-height: 44px;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    #judgeLogin,
+    #judgeLogout,
+    #callRefresh,
+    #conflictRefresh {
+      min-height: 44px;
+    }
+
+    .call-take, .call-done {
+      min-height: 44px;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #141212;
+      border-color: var(--accent);
+    }
+    .btn-primary:hover, .btn-primary:active {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--chip-bg);
+      color: var(--text-primary);
+      border-color: var(--card-border);
+    }
+    .btn-secondary:hover {
+      background: var(--card-border);
+    }
+
+    .btn-warning {
+      background: var(--warning-border);
+      color: #141212;
+      border-color: var(--warning-border);
+    }
+    .btn-warning:hover {
+      background: #705515;
+    }
+
+    .btn-success {
+      background: var(--success-border);
+      color: #141212;
+      border-color: var(--success-border);
+    }
+    .btn-success:hover {
+      background: #175d41;
+    }
+
+    .btn-danger {
+      background: var(--danger-border);
+      color: #141212;
+      border-color: var(--danger-border);
+    }
+    .btn-danger:hover {
+      background: #7f322b;
+    }
+
+    .btn-logout {
+      background: transparent;
+      color: var(--text-sub);
+      border: 1px solid var(--panel-border);
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      border-radius: 6px;
+      min-height: 44px;
+    }
+    .btn-logout:hover {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      border-color: var(--danger-border);
+    }
+
+    .btn-quick {
+      background: var(--chip-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-primary);
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: 4px;
+      min-height: 44px;
+      cursor: pointer;
+    }
+    .btn-quick:hover {
+      background: var(--card-border);
+      color: var(--text-primary);
+    }
+
+    /* 快捷原因區 */
+    .quick-reason-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .quick-reason-label {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+    }
+
+    /* 訊息顯示框 */
+    .msg-box {
+      margin-top: 10px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      line-height: 1.4;
+      word-break: break-all;
+    }
+    .msg-box.error {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+    .msg-box.success {
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: var(--success-text);
+    }
+
+    .btn-sm {
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      min-height: 44px;
+    }
+
+    .call-take, .call-done {
+      min-height: 44px;
+    }
+
+    /* 裁判呼叫佇列 */
+    .call-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .call-item {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+
+    .call-item.call-item-waiting {
+      border-left: 4px solid var(--judge-border);
+      background: var(--judge-bg);
+    }
+
+    .call-item.call-item-taken {
+      border-left: 4px solid var(--info-border);
+      background: var(--info-bg);
+    }
+
+    /* 45 秒新案件醒目效果 (PROJECT.md) */
+    .call-item.call-item-new {
+      box-shadow: 0 0 10px rgba(179, 143, 224, 0.4);
+      border-color: var(--judge-text);
+    }
+
+    .call-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .call-table-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--accent-text);
+      cursor: pointer;
+    }
+
+    .call-item-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .call-state-badge {
+      font-size: 0.72rem;
+      padding: 2px 7px;
+      border-radius: 9999px;
+      font-weight: 700;
+    }
+
+    .call-state-badge.waiting {
+      background: var(--judge-bg);
+      border: 1px solid var(--judge-border);
+      color: var(--judge-text);
+    }
+
+    .call-state-badge.taken {
+      background: var(--info-bg);
+      border: 1px solid var(--info-border);
+      color: var(--info-text);
+    }
+
+    .call-item-time {
+      font-size: 0.78rem;
+      color: var(--warning-text);
+      font-weight: 600;
+    }
+
+    .call-item-body {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.86rem;
+    }
+
+    .call-reason-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-primary);
+    }
+
+    .call-reason-label {
+      font-weight: 700;
+      color: var(--warning-text);
+    }
+
+    .call-note-text {
+      color: var(--text-primary);
+      background: var(--card-bg);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      word-break: break-all;
+    }
+
+    .call-item-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      margin-top: 2px;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .call-item-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 4px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    /* 爭議清單 */
+    .conflict-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .conflict-open {
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+      font-size: 0.9rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 44px;
+    }
+    .conflict-open:hover {
+      background: rgba(62, 51, 18, 0.4);
+    }
+
+    /* 桌況詳情卡片 */
+    .table-detail-container {
+      margin-top: 10px;
+    }
+
+    .table-detail-card {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+
+    .stale-table-banner {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .table-detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .table-detail-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--accent-text);
+    }
+
+    .table-badge {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-weight: 700;
+    }
+    .table-badge.state-conflict {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+    .table-badge.state-confirmed {
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: var(--success-text);
+    }
+    .table-badge.state-pending {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+    }
+    .table-badge.state-none {
+      background: var(--chip-bg);
+      color: var(--text-secondary);
+    }
+
+    .table-players {
+      font-size: 1.02rem;
+      color: var(--text-main);
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--card-border);
+      word-break: break-all;
+    }
+
+    .vs-text {
+      color: var(--accent-text);
+      font-weight: 700;
+      margin: 0 4px;
+    }
+
+    .table-reports-box {
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      background: rgba(1, 26, 36, 0.6);
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+    }
+
+    .report-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .final-result {
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .final-result.success {
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: var(--success-text);
+    }
+    .final-result.danger {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+      font-weight: 700;
+    }
+    .final-result.pending {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-secondary);
+    }
+
+    .table-ext-box {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      padding-top: 6px;
+      border-top: 1px dashed var(--card-border);
+    }
+
+    /* 判定選單三欄網格 */
+    .judge-scores-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .score-field {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .select-input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 700;
+      min-height: 40px;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    /* 雙方判負核取方塊 */
+    .checkbox-row {
+      margin-bottom: 12px;
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--danger-text);
+      cursor: pointer;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+      font-size: 1rem;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* 新 PIN 顯示大字區塊 */
+    .new-pin-display {
+      background: var(--success-bg);
+      border: 2px solid var(--success-border);
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--success-text);
+      letter-spacing: 2px;
+      margin-top: 10px;
+      word-break: break-all;
+    }
+
+    /* 空狀態提示 */
+    .empty-state-sm {
+      color: var(--text-sub);
+      font-size: 0.85rem;
+      padding: 8px 0;
+      text-align: center;
+    }
+
+    /* 確認彈窗 (Modal) */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100svh;
+      background: rgba(0, 0, 0, 0.75);
+      -webkit-backdrop-filter: blur(2px);
+      backdrop-filter: blur(2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      z-index: 9999;
+    }
+
+    .modal-box {
+      background: var(--card-bg);
+      border: 2px solid var(--danger-border);
+      border-radius: 12px;
+      max-width: 320px;
+      width: 100%;
+      padding: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--danger-text);
+      margin-bottom: 8px;
+    }
+
+    .modal-msg {
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+      line-height: 1.4;
+      word-break: break-all;
+    }
+
+    .modal-btns {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    /* 尚未連上賽務系統覆蓋層 */
+    .disconnected-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #01222F;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      z-index: 2000;
+    }
+    .disconnected-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+    .disconnected-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--danger-text);
+      margin-bottom: 8px;
+    }
+    .disconnected-desc {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      max-width: 320px;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-left">
+        <h1 class="page-title">符文戰場 — 裁判工作台</h1>
+        <span class="judge-badge">裁判端</span>
+      </div>
+      <div class="header-right">
+        <span id="judgeUserBar" class="judge-user-info" style="display: none;">
+          裁判：<span id="judgeNameDisplay" class="judge-user-name"></span>
+        </span>
+        <button type="button" id="judgeLogout" class="btn btn-logout" style="display: none;">登出</button>
+      </div>
+    </header>
+
+    <!-- 版本警告 -->
+    <div id="contractWarn" class="banner contract-warning" style="display: none;">
+      資料格式已更新，請重新整理頁面
+    </div>
+
+    <!-- 資料新鮮度警告 -->
+    <div id="staleBanner" class="banner stale-warning" style="display: none;"></div>
+
+    <!-- 登入區塊（未登入時顯示） -->
+    <section id="loginSection" class="judge-card">
+      <h2 class="card-title">工作人員登入</h2>
+      <p style="font-size: 0.88rem; color: var(--text-sub); margin-bottom: 12px;">
+        請輸入裁判或主辦 PIN 碼以開始現場裁判作業。
+      </p>
+      <div class="form-group">
+        <label for="judgePin" class="form-label">工作人員 PIN 碼</label>
+        <div class="form-row">
+          <input type="password" id="judgePin" class="input-text" autocomplete="off" placeholder="例如 judge-demo">
+          <button type="button" id="judgeLogin" class="btn btn-primary">登入</button>
+        </div>
+      </div>
+      <div id="loginError" class="msg-box error" style="display: none;"></div>
+    </section>
+
+    <!-- 裁判作業面板（登入後顯示） -->
+    <main id="judgeSection" style="display: none;">
+
+      <!-- 區塊 0: 裁判呼叫佇列 (DATA-CONTRACT 3.5, PROJECT.md 第 10 節) -->
+      <section class="judge-card" id="judgeCallsSection">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <h2 class="card-title" style="margin-bottom: 0;">🙋 裁判呼叫佇列</h2>
+          <button type="button" id="callRefresh" class="btn btn-secondary" style="min-height: 44px; padding: 4px 10px; font-size: 0.8rem;">
+            重新整理
+          </button>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 8px;">
+          選手在牌桌發出的裁判呼叫，每 20 秒自動更新。
+        </p>
+
+        <!-- 結案補時輸入 (PROJECT.md: callExtMinutes 0～30) -->
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px; background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--panel-border); flex-wrap: wrap;">
+          <label for="callExtMinutes" style="font-size: 0.85rem; color: var(--text-main); white-space: nowrap;">結案補時（分鐘）：</label>
+          <input type="number" id="callExtMinutes" class="input-number" min="0" max="30" value="0" inputmode="numeric" style="max-width: 90px; padding: 4px 8px; font-size: 1rem;" placeholder="0-30">
+          <span style="font-size: 0.78rem; color: var(--text-sub);">結案時自動補時給該桌（理由：裁判呼叫）</span>
+        </div>
+
+        <div id="callList" class="call-list">
+          <div class="empty-state-sm">載入呼叫佇列中...</div>
+        </div>
+        <div id="callMsg" class="msg-box" style="display: none;"></div>
+      </section>
+
+      <!-- 區塊 1: 爭議桌清單 -->
+      <section class="judge-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <h2 class="card-title" style="margin-bottom: 0;">⚡ 爭議桌處理</h2>
+          <button type="button" id="conflictRefresh" class="btn btn-secondary" style="min-height: 44px; padding: 4px 10px; font-size: 0.8rem;">
+            重新整理
+          </button>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 8px;">
+          雙方回報不一致的桌次，每 20 秒自動更新。點擊直接打開該桌詳情。
+        </p>
+        <div id="conflictList" class="conflict-list">
+          <div class="empty-state-sm">載入爭議桌中...</div>
+        </div>
+        <div id="conflictMsg" class="msg-box" style="display: none;"></div>
+      </section>
+
+      <!-- 區塊 2: 查桌與桌況詳情 -->
+      <section class="judge-card">
+        <h2 class="card-title">🔍 查桌與桌況詳情</h2>
+        <div class="form-group">
+          <label for="lookupTable" class="form-label">請輸入桌號查詢</label>
+          <div class="form-row">
+            <input type="number" id="lookupTable" class="input-number" min="1" inputmode="numeric" placeholder="桌號 (數字)">
+            <button type="button" id="lookupBtn" class="btn btn-primary">查詢此桌</button>
+          </div>
+        </div>
+        <div id="lookupMsg" class="msg-box" style="display: none;"></div>
+
+        <!-- 桌子詳情容器 -->
+        <div id="tableDetail" class="table-detail-container">
+          <div class="empty-state-sm">請點選上方爭議桌或輸入桌號查桌</div>
+        </div>
+      </section>
+
+      <!-- 區塊 3: 裁判判定與撤銷 -->
+      <section class="judge-card">
+        <h2 class="card-title">⚖️ 裁判判定與撤銷</h2>
+        <p style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 10px;">
+          針對目前查詢的桌次判定比分或撤銷成績。
+        </p>
+
+        <!-- 局數比分選擇 -->
+        <div class="judge-scores-grid">
+          <div class="score-field">
+            <label for="resP1" id="resP1Label" class="form-label">選手 1 勝局</label>
+            <select id="resP1" class="select-input">
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+            </select>
+          </div>
+          <div class="score-field">
+            <label for="resP2" id="resP2Label" class="form-label">選手 2 勝局</label>
+            <select id="resP2" class="select-input">
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+            </select>
+          </div>
+          <div class="score-field">
+            <label for="resDraws" id="resDrawsLabel" class="form-label">平手局數</label>
+            <select id="resDraws" class="select-input">
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 雙方判負選項 -->
+        <div class="checkbox-row">
+          <label class="checkbox-label" for="resDoubleLoss">
+            <input type="checkbox" id="resDoubleLoss">
+            <span>雙方判負（局數自動送 0-0-0）</span>
+          </label>
+        </div>
+
+        <!-- 判罰說明或條號 -->
+        <div class="form-group">
+          <label for="resRule" class="form-label">規則條號或說明（最多 20 字，可空白）</label>
+          <input type="text" id="resRule" maxlength="20" class="input-text" placeholder="例如：703.8.d 或 雙方遲到">
+        </div>
+
+        <!-- 判定按鈕 -->
+        <button type="button" id="resSubmit" class="btn btn-warning btn-block" style="margin-bottom: 12px;">
+          送出判定結果（需確認）
+        </button>
+
+        <!-- 撤銷按鈕 -->
+        <div style="padding-top: 10px; border-top: 1px dashed var(--panel-border);">
+          <button type="button" id="voidBtn" class="btn btn-danger btn-block">
+            撤銷此桌成績（需確認）
+          </button>
+        </div>
+        <div id="judgeActionMsg" class="msg-box" style="display: none;"></div>
+      </section>
+
+      <!-- 區塊 4: 逐桌補時管理 -->
+      <section class="judge-card">
+        <h2 class="card-title">⏱️ 逐桌補時管理</h2>
+        
+        <div class="form-group">
+          <label for="extMinutes" class="form-label">補時時間（分鐘，1～30）</label>
+          <input type="number" id="extMinutes" min="1" max="30" value="5" inputmode="numeric" class="input-number">
+        </div>
+
+        <!-- 快捷原因按鈕 -->
+        <div class="quick-reason-row">
+          <span class="quick-reason-label">快捷原因：</span>
+          <button type="button" class="btn-quick" data-reason="驗牌">驗牌</button>
+          <button type="button" class="btn-quick" data-reason="裁判呼叫">裁判呼叫</button>
+          <button type="button" class="btn-quick" data-reason="遲到">遲到</button>
+        </div>
+
+        <div class="form-group">
+          <label for="extReason" class="form-label">補時原因（1～10 字）</label>
+          <input type="text" id="extReason" maxlength="10" class="input-text" placeholder="例如：驗牌">
+        </div>
+
+        <div class="form-row">
+          <button type="button" id="extSubmit" class="btn btn-primary" style="flex: 1;">送出補時</button>
+          <button type="button" id="extCancel" class="btn btn-secondary" style="flex: 1;">取消最後一筆補時</button>
+        </div>
+        <div id="extMsg" class="msg-box" style="display: none;"></div>
+      </section>
+
+      <!-- 區塊 5: 選手協助 (PIN 重設與解鎖) -->
+      <section class="judge-card">
+        <h2 class="card-title">👤 選手協助（PIN 與解鎖）</h2>
+        <p style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 10px;">
+          協助遺失 PIN 碼或遭鎖定的選手。新 PIN 碼口述給選手抄下後點擊「已抄下」，不在任何地方保存。
+        </p>
+
+        <div class="form-group">
+          <label for="playerId" class="form-label">選手編號</label>
+          <input type="text" id="playerId" class="input-text" placeholder="例如 R0001">
+        </div>
+
+        <div class="form-row" style="margin-bottom: 10px;">
+          <button type="button" id="pinResetBtn" class="btn btn-warning" style="flex: 1;">重設 PIN 碼（需確認）</button>
+          <button type="button" id="unlockBtn" class="btn btn-secondary" style="flex: 1;">解鎖選手</button>
+        </div>
+
+        <!-- 新 PIN 顯示區塊 -->
+        <div id="newPinDisplay" class="new-pin-display" style="display: none;"></div>
+        <div style="margin-top: 8px;">
+          <button type="button" id="newPinDone" class="btn btn-success btn-block" style="display: none;">已抄下</button>
+        </div>
+        <div id="assistMsg" class="msg-box" style="display: none;"></div>
+      </section>
+
+      <!-- 區塊 6: 驗牌區 (純文字牌表) -->
+      <section class="judge-card">
+        <h2 class="card-title">🃏 驗牌區（純文字牌表）</h2>
+        <p style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 10px;">
+          輸入選手編號載入排版好的牌表。可直接核對卡名與張數、記錄驗牌結果或解鎖牌表。
+        </p>
+
+        <div class="form-group">
+          <label for="deckPlayerId" class="form-label">選手編號</label>
+          <div class="form-row">
+            <input type="text" id="deckPlayerId" class="input-text" placeholder="例如 R0001">
+            <button type="button" id="deckLoadBtn" class="btn btn-primary">載入牌表</button>
+          </div>
+        </div>
+
+        <div id="deckInfoBox" style="margin-bottom: 10px;">
+          <div style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 6px;" id="deckPlayerMeta"></div>
+          <pre id="deckView" style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; font-size: 0.85rem; line-height: 1.4; color: #f8fafc; white-space: pre-wrap; word-break: break-word; min-height: 48px; max-height: 360px; overflow-y: auto;"></pre>
+        </div>
+
+        <div class="form-group" style="margin-top: 10px;">
+          <label for="deckCheckNote" class="form-label">備註說明（選填，最多 40 字）</label>
+          <input type="text" id="deckCheckNote" maxlength="40" class="input-text" placeholder="例如：主牌組少 1 張、記警告">
+        </div>
+
+        <div class="form-row" style="margin-bottom: 10px;">
+          <button type="button" id="deckCheckOk" class="btn btn-success" style="flex: 1;">驗牌通過</button>
+          <button type="button" id="deckCheckFail" class="btn btn-danger" style="flex: 1;">驗牌不通過</button>
+        </div>
+
+        <div style="padding-top: 10px; border-top: 1px dashed var(--panel-border);">
+          <button type="button" id="deckUnlockBtn" class="btn btn-warning btn-block">
+            解鎖牌表（需確認）
+          </button>
+        </div>
+
+        <div id="deckCheckMsg" class="msg-box" style="display: none;"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- 危險動作確認彈窗 (PROJECT.md 10 硬性規定第 4 條) -->
+  <div id="confirmModal" class="modal-overlay" style="display: none;">
+    <div class="modal-box">
+      <div id="confirmTitle" class="modal-title">操作確認</div>
+      <div id="confirmMessage" class="modal-msg">確定要執行此操作嗎？</div>
+      <div class="modal-btns">
+        <button type="button" id="confirmYes" class="btn btn-danger">確認執行</button>
+        <button type="button" id="confirmNo" class="btn btn-secondary">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 尚未連上賽務系統覆蓋層 (硬性規定 1) -->
+  <div class="disconnected-overlay" id="disconnectedScreen">
+    <div class="disconnected-icon">⚠️</div>
+    <div class="disconnected-title">尚未連上賽務系統</div>
+    <div class="disconnected-desc">
+      目前無法讀取賽事即時資料。<br>請確認賽事主機是否已啟動，或網路連線是否正常。
+    </div>
+    <button type="button" class="btn btn-primary" id="retryBtn">重新連線</button>
+  </div>
+
+  <script>
+    const CURRENT_CONTRACT_VERSION = 10;
+    const SESSION_STORAGE_KEY_STAFF_PIN = 'riftbound_judge_staff_pin';
+
+    let snapshotData = null;
+    let rawJsonText = '';
+    let pollTimer = null;
+    let conflictTimer = null;
+    let callTimer = null;
+    let callTimeTickTimer = null;
+    let serverOffsetMs = 0;
+    let demoOffsetCalculated = false;
+    let lastContentChangeTime = Date.now();
+
+    // 裁判工作人員狀態
+    let staffPin = null;
+    let judgeName = '';
+    let currentTable = null;
+    let pendingConfirmAction = null;
+
+    // 裁判呼叫佇列狀態 (DATA-CONTRACT 3.5, PROJECT.md 第 10 節)
+    let lastCallFingerprint = '';
+    let firstSeenCallTimes = new Map();
+    let currentCalls = [];
+    let hasInitializedCalls = false;
+
+    // 取得資料來源 URL (DATA-CONTRACT 1.10)
+    function getDataSourceUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const demo = params.get('demo');
+      if (demo === '1') {
+        return '../sample/snapshot.sample.json';
+      } else if (demo === 'break') {
+        return '../sample/snapshot.break.sample.json';
+      } else if (demo === 'topcut') {
+        return '../sample/snapshot.topcut.sample.json';
+      }
+      return '../snapshot.json';
+    }
+
+    // 取得 API 完整路徑 (DATA-CONTRACT 3.1)
+    function getApiUrl(endpoint) {
+      const base = (snapshotData && snapshotData.event && typeof snapshotData.event.api_base === 'string')
+        ? snapshotData.event.api_base
+        : '';
+      return base + endpoint;
+    }
+
+    // 通用呼叫 API
+    async function callApi(endpoint, body = {}) {
+      const url = getApiUrl(endpoint);
+      const payload = Object.assign({}, body);
+      if (staffPin) {
+        payload.staff_pin = staffPin;
+      }
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok || !data || !data.ok) {
+        const errorMsg = (data && data.message) ? data.message : `操作失敗 (HTTP ${res.status})`;
+        const err = new Error(errorMsg);
+        err.status = res.status;
+        err.code = data ? data.error : null;
+        err.data = data;
+        throw err;
+      }
+
+      return data;
+    }
+
+    // 讀取 snapshot 資料 (DATA-CONTRACT 1.10)
+    async function fetchData() {
+      const primaryUrl = getDataSourceUrl();
+      try {
+        const responseTime = Date.now();
+        let res = await fetch(primaryUrl, { cache: 'no-store' });
+        if (!res.ok && primaryUrl.startsWith('../')) {
+          const fallbackUrl = primaryUrl.replace(/^\.\.\//, '/');
+          res = await fetch(fallbackUrl, { cache: 'no-store' });
+        }
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const text = await res.text();
+        const data = JSON.parse(text);
+
+        // DATA-CONTRACT 1.10 時間換算
+        const isDemo = !!new URLSearchParams(window.location.search).get('demo');
+        if (isDemo) {
+          if (!demoOffsetCalculated && data.server_now) {
+            serverOffsetMs = data.server_now - responseTime;
+            demoOffsetCalculated = true;
+          }
+        } else {
+          let dateHeaderMs = null;
+          try {
+            const dateHeader = res.headers.get('Date');
+            if (dateHeader) {
+              const t = new Date(dateHeader).getTime();
+              if (!isNaN(t)) dateHeaderMs = t;
+            }
+          } catch (e) {}
+
+          if (dateHeaderMs !== null) {
+            serverOffsetMs = dateHeaderMs - responseTime;
+          } else if (data.server_now) {
+            serverOffsetMs = data.server_now - responseTime;
+          }
+        }
+
+        document.getElementById('disconnectedScreen').style.display = 'none';
+
+        if (text === rawJsonText) {
+          return;
+        }
+
+        lastContentChangeTime = Date.now();
+        rawJsonText = text;
+        snapshotData = data;
+        window.snapshotData = data;
+
+        renderVersionWarning();
+        if (currentTable) {
+          renderTableDetail(currentTable);
+        }
+      } catch (err) {
+        if (!snapshotData) {
+          document.getElementById('disconnectedScreen').style.display = 'flex';
+        }
+      }
+    }
+
+    // 格式版本提示
+    function renderVersionWarning() {
+      const warnEl = document.getElementById('contractWarn');
+      if (snapshotData && snapshotData.contract_version && snapshotData.contract_version > CURRENT_CONTRACT_VERSION) {
+        warnEl.style.display = 'block';
+      } else {
+        warnEl.style.display = 'none';
+      }
+    }
+
+    // 檢查新鮮度
+    function checkFreshness() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('demo')) return;
+      const staleEl = document.getElementById('staleBanner');
+      if (!staleEl) return;
+      const diffMs = Date.now() - lastContentChangeTime;
+      if (diffMs > 90000) {
+        const mins = Math.max(1, Math.floor(diffMs / 60000));
+        staleEl.textContent = `資料已 ${mins} 分鐘沒更新，請留意現場廣播`;
+        staleEl.style.display = 'block';
+      } else {
+        staleEl.style.display = 'none';
+      }
+    }
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // 訊息顯示 helper (使用 textContent 避免 XSS)
+    function showMsg(elId, msg, isError = true) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      el.textContent = msg;
+      el.className = `msg-box ${isError ? 'error' : 'success'}`;
+      el.style.display = 'block';
+    }
+
+    function hideMsg(elId) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      el.style.display = 'none';
+      el.textContent = '';
+    }
+
+    // 彈窗確認處理
+    function showConfirm(title, message, action) {
+      document.getElementById('confirmTitle').textContent = title;
+      document.getElementById('confirmMessage').textContent = message;
+      pendingConfirmAction = action;
+      document.getElementById('confirmModal').style.display = 'flex';
+    }
+
+    function hideConfirm() {
+      document.getElementById('confirmModal').style.display = 'none';
+      pendingConfirmAction = null;
+    }
+
+    // 取得當前輪次
+    function getEffectiveRound() {
+      if (snapshotData && snapshotData.round && typeof snapshotData.round.number === 'number') {
+        return snapshotData.round.number;
+      }
+      return 1;
+    }
+
+    // 登入狀態與 UI 切換
+    function renderAuthUI() {
+      const loginSection = document.getElementById('loginSection');
+      const judgeSection = document.getElementById('judgeSection');
+      const judgeUserBar = document.getElementById('judgeUserBar');
+      const judgeNameDisplay = document.getElementById('judgeNameDisplay');
+      const judgeLogoutBtn = document.getElementById('judgeLogout');
+
+      if (staffPin) {
+        loginSection.style.display = 'none';
+        judgeSection.style.display = 'block';
+        judgeUserBar.style.display = 'inline-block';
+        judgeLogoutBtn.style.display = 'inline-flex';
+        judgeNameDisplay.textContent = judgeName || '裁判';
+      } else {
+        loginSection.style.display = 'block';
+        judgeSection.style.display = 'none';
+        judgeUserBar.style.display = 'none';
+        judgeLogoutBtn.style.display = 'none';
+        judgeNameDisplay.textContent = '';
+      }
+    }
+
+    // 登入處理
+    async function handleLogin() {
+      hideMsg('loginError');
+      const pinInput = document.getElementById('judgePin');
+      const pinVal = (pinInput ? pinInput.value : '').trim();
+
+      if (!pinVal) {
+        showMsg('loginError', '請輸入工作人員 PIN 碼');
+        return;
+      }
+
+      try {
+        const res = await callApi('/api/staff/whoami', { staff_pin: pinVal });
+        // judge 或 admin 都可以使用裁判頁
+        if (res.role !== 'judge' && res.role !== 'admin') {
+          staffPin = null;
+          try { sessionStorage.removeItem(SESSION_STORAGE_KEY_STAFF_PIN); } catch (e) {}
+          showMsg('loginError', '權限不足：僅裁判與主辦可使用');
+          renderAuthUI();
+          return;
+        }
+
+        // 登入成功：只存記憶體與 sessionStorage，禁止放 localStorage
+        staffPin = pinVal;
+        judgeName = res.name || '示範裁判';
+        try {
+          sessionStorage.setItem(SESSION_STORAGE_KEY_STAFF_PIN, pinVal);
+        } catch (e) {}
+
+        if (pinInput) pinInput.value = '';
+        renderAuthUI();
+        await fetchCalls();
+        await fetchConflicts();
+        startCallTimer();
+        startConflictTimer();
+      } catch (err) {
+        staffPin = null;
+        try { sessionStorage.removeItem(SESSION_STORAGE_KEY_STAFF_PIN); } catch (e) {}
+        showMsg('loginError', err.message);
+        renderAuthUI();
+      }
+    }
+
+    // 登出處理
+    function handleLogout() {
+      stopCallTimer();
+      stopConflictTimer();
+      staffPin = null;
+      judgeName = '';
+      currentTable = null;
+      renderTableDetail(null);
+      renderConflictList([]);
+      renderCallList([]);
+      try {
+        sessionStorage.removeItem(SESSION_STORAGE_KEY_STAFF_PIN);
+      } catch (e) {}
+      renderAuthUI();
+    }
+
+    // 嘗試從 sessionStorage 自動驗證登入
+    async function checkAutoLogin() {
+      let savedPin = null;
+      try {
+        savedPin = sessionStorage.getItem(SESSION_STORAGE_KEY_STAFF_PIN);
+      } catch (e) {}
+
+      if (!savedPin) return;
+
+      try {
+        const res = await callApi('/api/staff/whoami', { staff_pin: savedPin });
+        if (res.role === 'judge' || res.role === 'admin') {
+          staffPin = savedPin;
+          judgeName = res.name || '示範裁判';
+          renderAuthUI();
+          await fetchCalls();
+          await fetchConflicts();
+          startCallTimer();
+          startConflictTimer();
+          return;
+        }
+      } catch (e) {}
+
+      try { sessionStorage.removeItem(SESSION_STORAGE_KEY_STAFF_PIN); } catch (e) {}
+      staffPin = null;
+      renderAuthUI();
+    }
+
+    // 呼叫佇列定時器 (每 20 秒自動更新)
+    function startCallTimer() {
+      stopCallTimer();
+      callTimer = setInterval(fetchCalls, 20000);
+      callTimeTickTimer = setInterval(updateCallTimes, 1000);
+    }
+
+    function stopCallTimer() {
+      if (callTimer) {
+        clearInterval(callTimer);
+        callTimer = null;
+      }
+      if (callTimeTickTimer) {
+        clearInterval(callTimeTickTimer);
+        callTimeTickTimer = null;
+      }
+    }
+
+    // 計算並格式化等待時間（含「分」或「秒」）
+    function formatWaitTime(calledAt) {
+      const now = Date.now() + serverOffsetMs;
+      const sec = Math.max(0, Math.floor((now - calledAt) / 1000));
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      if (m > 0) {
+        return `${m} 分 ${s} 秒`;
+      }
+      return `${s} 秒`;
+    }
+
+    // 動態更新佇列中現有項目的等待秒數與 45 秒醒目效果
+    function updateCallTimes() {
+      const listEl = document.getElementById('callList');
+      if (!listEl) return;
+      const now = Date.now();
+      listEl.querySelectorAll('.call-item-time').forEach(el => {
+        const calledAt = parseInt(el.getAttribute('data-called-at'), 10);
+        if (calledAt) {
+          el.textContent = `已等 ${formatWaitTime(calledAt)}`;
+        }
+      });
+
+      // 45 秒新案件醒目效果自動移除 (PROJECT.md 第 10 節)
+      listEl.querySelectorAll('.call-item.call-item-new').forEach(itemEl => {
+        const key = `${itemEl.getAttribute('data-round')}-${itemEl.getAttribute('data-table')}`;
+        const firstSeen = firstSeenCallTimes.get(key);
+        if (firstSeen && (now - firstSeen >= 45000)) {
+          itemEl.classList.remove('call-item-new');
+        }
+      });
+    }
+
+    // 呼叫佇列內容指紋比對
+    function getCallFingerprint(calls) {
+      return calls.map(c => `${c.round}-${c.table}-${c.state}-${c.reason}-${c.reason_label || ''}-${c.note || ''}-${c.taken_by || ''}-${c.called_at || 0}`).join('|');
+    }
+
+    // 播放新案件提示音（僅第一次出現時響）
+    function playCallSound() {
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+        const ctx = new AudioContextClass();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.25);
+      } catch (e) {}
+    }
+
+    // 取得呼叫佇列 (/api/staff/calls)
+    async function fetchCalls() {
+      if (!staffPin) return;
+      hideMsg('callMsg');
+      try {
+        const res = await callApi('/api/staff/calls', {});
+        renderCallList(res.calls || []);
+      } catch (err) {
+        if (err.status === 401) {
+          handleLogout();
+        } else {
+          showMsg('callMsg', err.message);
+        }
+      }
+    }
+
+    // 渲染呼叫佇列
+    function renderCallList(calls) {
+      const listEl = document.getElementById('callList');
+      if (!listEl) return;
+
+      // 依時間排序：等最久的排最前面（waiting 在 taken 前，且 called_at 越小越前）
+      const sortedCalls = calls.slice().sort((a, b) => {
+        if (a.state === 'waiting' && b.state !== 'waiting') return -1;
+        if (a.state !== 'waiting' && b.state === 'waiting') return 1;
+        return (a.called_at || 0) - (b.called_at || 0);
+      });
+      currentCalls = sortedCalls;
+
+      if (!sortedCalls.length) {
+        lastCallFingerprint = '';
+        listEl.innerHTML = '<div class="empty-state-sm">目前沒有等待處理的呼叫</div>';
+        return;
+      }
+
+      // 指紋比對：若內容沒變則不重繪 DOM，保留焦點與捲動位置，僅更新時間
+      const newFingerprint = getCallFingerprint(sortedCalls);
+      if (newFingerprint === lastCallFingerprint && listEl.children.length > 0 && !listEl.querySelector('.empty-state-sm')) {
+        updateCallTimes();
+        return;
+      }
+
+      // 檢查新案件並設定 45 秒醒目時間 (PROJECT.md 第 10 節)
+      const now = Date.now();
+      let hasBrandNew = false;
+      sortedCalls.forEach(c => {
+        const key = `${c.round}-${c.table}`;
+        if (!firstSeenCallTimes.has(key)) {
+          firstSeenCallTimes.set(key, now);
+          if (hasInitializedCalls) {
+            hasBrandNew = true;
+          }
+        }
+      });
+      hasInitializedCalls = true;
+
+      if (hasBrandNew) {
+        playCallSound();
+      }
+
+      // 還原捲動位置 (PROJECT.md 第 10 節)
+      const savedScroll = listEl.scrollTop;
+
+      listEl.innerHTML = sortedCalls.map(c => {
+        const key = `${c.round}-${c.table}`;
+        const firstSeen = firstSeenCallTimes.get(key) || now;
+        const isNew = (now - firstSeen < 45000);
+        const reasonText = c.reason_label || c.reason || '規則問題';
+        const waitText = formatWaitTime(c.called_at || now);
+        const isTaken = (c.state === 'taken');
+
+        let stateBadgeHtml = '';
+        if (isTaken) {
+          stateBadgeHtml = `<span class="call-state-badge taken">${c.taken_by ? `${escapeHtml(c.taken_by)} 處理中` : '裁判處理中'}</span>`;
+        } else {
+          stateBadgeHtml = `<span class="call-state-badge waiting">等候中</span>`;
+        }
+
+        const noteHtml = c.note ? `<div class="call-note-text">備註：${escapeHtml(c.note)}</div>` : '';
+        const p1Name = c.p1 ? escapeHtml(c.p1.name || c.p1.id) : '選手 1';
+        const p2Name = c.p2 ? escapeHtml(c.p2.name || c.p2.id) : '選手 2';
+
+        let callerText = '—';
+        if (c.caller) {
+          if (typeof c.caller === 'object') {
+            const cName = c.caller.name || '';
+            const cId = c.caller.id || '';
+            if (cName && cId) {
+              callerText = `${cName}（${cId}）`;
+            } else {
+              callerText = cName || cId || '—';
+            }
+          } else {
+            callerText = String(c.caller);
+          }
+        }
+
+        return `
+          <div class="call-item ${isTaken ? 'call-item-taken' : 'call-item-waiting'} ${isNew ? 'call-item-new' : ''}" data-table="${c.table}" data-round="${c.round}">
+            <div class="call-item-header">
+              <span class="call-table-title" data-table="${c.table}">第 ${c.table} 桌</span>
+              <div class="call-item-badges">
+                ${stateBadgeHtml}
+                <span class="call-item-time" data-called-at="${c.called_at || 0}">已等 ${waitText}</span>
+              </div>
+            </div>
+            <div class="call-item-body">
+              <div class="call-reason-row">
+                <span>原因：</span>
+                <span class="call-reason-label">${escapeHtml(reasonText)}</span>
+              </div>
+              ${noteHtml}
+              <div class="call-item-meta">
+                <span>對戰：${p1Name} vs ${p2Name}</span>
+                <span>呼叫者：${escapeHtml(callerText)}</span>
+              </div>
+            </div>
+            <div class="call-item-actions">
+              <button type="button" class="btn btn-primary btn-sm call-take" data-table="${c.table}" data-round="${c.round}" ${isTaken ? 'disabled' : ''}>
+                ${isTaken ? '已接手' : '我去處理'}
+              </button>
+              <button type="button" class="btn btn-success btn-sm call-done" data-table="${c.table}" data-round="${c.round}">
+                處理完了
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      listEl.scrollTop = savedScroll;
+      lastCallFingerprint = newFingerprint;
+    }
+
+    // 爭議清單定時器
+    function startConflictTimer() {
+      stopConflictTimer();
+      conflictTimer = setInterval(fetchConflicts, 20000);
+    }
+
+    function stopConflictTimer() {
+      if (conflictTimer) {
+        clearInterval(conflictTimer);
+        conflictTimer = null;
+      }
+    }
+
+    // 取得爭議桌清單 (/api/staff/conflicts)
+    async function fetchConflicts() {
+      if (!staffPin) return;
+      hideMsg('conflictMsg');
+      try {
+        const res = await callApi('/api/staff/conflicts', {});
+        renderConflictList(res.tables || []);
+      } catch (err) {
+        if (err.status === 401) {
+          handleLogout();
+        } else {
+          showMsg('conflictMsg', err.message);
+        }
+      }
+    }
+
+    // 渲染爭議清單
+    function renderConflictList(tables) {
+      const container = document.getElementById('conflictList');
+      if (!tables || tables.length === 0) {
+        container.innerHTML = '<div class="empty-state-sm">目前沒有爭議桌</div>';
+        return;
+      }
+
+      container.innerHTML = tables.map(tb => {
+        const p1 = tb.p1 ? escapeHtml(tb.p1.name) : '—';
+        const p2 = tb.p2 ? escapeHtml(tb.p2.name) : '—';
+        return `
+          <button type="button" class="conflict-open" data-table="${tb.table}">
+            <span>第 ${tb.table} 桌 · ${p1} vs ${p2}</span>
+            <span style="font-size: 0.8rem; background: #dc2626; color: #fff; padding: 2px 6px; border-radius: 4px;">不一致</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    // 查桌處理
+    async function handleLookup() {
+      hideMsg('lookupMsg');
+      const tableVal = (document.getElementById('lookupTable').value || '').trim();
+      const tableNum = parseInt(tableVal, 10);
+      if (isNaN(tableNum) || tableNum < 1) {
+        showMsg('lookupMsg', '請輸入正確的桌號數字');
+        return;
+      }
+      await openTableDetail(tableNum);
+    }
+
+    // 打開並載入特定桌次詳情
+    async function openTableDetail(tableNum) {
+      hideMsg('lookupMsg');
+      document.getElementById('lookupTable').value = tableNum;
+      const roundNum = getEffectiveRound();
+      try {
+        const res = await callApi('/api/staff/table', { round: roundNum, table: tableNum });
+        currentTable = res.table;
+        renderTableDetail(currentTable);
+      } catch (err) {
+        showMsg('lookupMsg', err.message);
+      }
+    }
+
+    // 渲染桌子詳情 (PROJECT.md 硬性規定 5)
+    function renderTableDetail(tb) {
+      const container = document.getElementById('tableDetail');
+      if (!tb) {
+        container.innerHTML = '<div class="empty-state-sm">請點選上方爭議桌或輸入桌號查桌</div>';
+        return;
+      }
+
+      const p1Name = tb.p1 ? escapeHtml(tb.p1.name) : '無選手';
+      const p1Id = tb.p1 ? escapeHtml(tb.p1.id) : '';
+      const p2Name = tb.p2 ? escapeHtml(tb.p2.name) : (tb.table === null ? '本輪輪空' : '無選手');
+      const p2Id = tb.p2 ? escapeHtml(tb.p2.id) : '';
+
+      let stateText = '未回報';
+      let stateClass = 'state-none';
+      if (tb.state === 'conflict') {
+        stateText = '不一致';
+        stateClass = 'state-conflict';
+      } else if (tb.state === 'confirmed') {
+        stateText = '已生效';
+        stateClass = 'state-confirmed';
+      } else if (tb.state === 'pending') {
+        stateText = '回報中';
+        stateClass = 'state-pending';
+      }
+
+      // 雙方各自回報（用名字寫，不出現 p1、p2）
+      let p1ReportHtml = '';
+      if (tb.p1) {
+        if (tb.p1_report) {
+          p1ReportHtml = `<div><strong>${p1Name}</strong> 回報：${p1Name} ${tb.p1_report.p1_games} 勝、${p2Name} ${tb.p1_report.p2_games} 勝（平手 ${tb.p1_report.draws} 局）</div>`;
+        } else {
+          p1ReportHtml = `<div><strong>${p1Name}</strong>：尚未回報</div>`;
+        }
+      }
+
+      let p2ReportHtml = '';
+      if (tb.p2) {
+        if (tb.p2_report) {
+          p2ReportHtml = `<div><strong>${p2Name}</strong> 回報：${p1Name} ${tb.p2_report.p1_games} 勝、${p2Name} ${tb.p2_report.p2_games} 勝（平手 ${tb.p2_report.draws} 局）</div>`;
+        } else {
+          p2ReportHtml = `<div><strong>${p2Name}</strong>：尚未回報</div>`;
+        }
+      }
+
+      // 已生效結果
+      let finalHtml = '';
+      if (tb.final) {
+        if (tb.final.double_loss) {
+          finalHtml = `<div class="final-result danger">已生效結果：<strong>雙方判負</strong></div>`;
+        } else {
+          const srcText = tb.final.source === 'judge'
+            ? `（裁判 ${escapeHtml(tb.final.by || '')} 判定${tb.final.rule ? ' · ' + escapeHtml(tb.final.rule) : ''}）`
+            : '（雙方回報一致生效）';
+          finalHtml = `<div class="final-result success">已生效結果：<strong>${p1Name} ${tb.final.p1_games} 勝、${p2Name} ${tb.final.p2_games} 勝（平手 ${tb.final.draws} 局）</strong> ${srcText}</div>`;
+        }
+      } else {
+        finalHtml = `<div class="final-result pending">結果尚未生效</div>`;
+      }
+
+      // 補時紀錄
+      let extHtml = '';
+      if (tb.extensions && tb.extensions.length > 0) {
+        const extList = tb.extensions.map(e => `${escapeHtml(e.reason)} +${e.minutes} 分鐘`).join('、');
+        extHtml = `<div>補時紀錄：${extList}</div>`;
+      } else {
+        extHtml = `<div>補時紀錄：無補時</div>`;
+      }
+
+      const roundNum = (typeof tb.round === 'number') ? tb.round : getEffectiveRound();
+      const currentRound = (snapshotData && snapshotData.round && typeof snapshotData.round.number === 'number')
+        ? snapshotData.round.number
+        : null;
+      const isStaleRound = (currentRound !== null && typeof tb.round === 'number' && tb.round !== currentRound);
+
+      container.innerHTML = `
+        <div class="table-detail-card">
+          ${isStaleRound ? `<div class="stale-table-banner">這是第 ${tb.round} 輪（上一輪）的桌子</div>` : ''}
+          <div class="table-detail-header">
+            <div class="table-detail-title">第 ${roundNum} 輪 第 ${tb.table} 桌</div>
+            <span class="table-badge ${stateClass}">狀態：${stateText}</span>
+          </div>
+          <div class="table-players">
+            <strong>${p1Name}</strong> (${p1Id}) <span class="vs-text">vs</span> <strong>${p2Name}</strong> (${p2Id})
+          </div>
+          <div class="table-reports-box">
+            <div class="report-subtitle">雙方各自回報紀錄：</div>
+            ${p1ReportHtml}
+            ${p2ReportHtml}
+          </div>
+          ${finalHtml}
+          <div class="table-ext-box">
+            ${extHtml}
+          </div>
+        </div>
+      `;
+
+      // 同步更新判定選單標籤與初值
+      if (tb.p1) {
+        document.getElementById('resP1Label').textContent = `${tb.p1.name} 勝局`;
+      } else {
+        document.getElementById('resP1Label').textContent = '選手 1 勝局';
+      }
+
+      if (tb.p2) {
+        document.getElementById('resP2Label').textContent = `${tb.p2.name} 勝局`;
+      } else {
+        document.getElementById('resP2Label').textContent = '選手 2 勝局';
+      }
+
+      // 若該桌已是雙方判負，勾選核取方塊
+      document.getElementById('resDoubleLoss').checked = !!(tb.final && tb.final.double_loss);
+      document.getElementById('resRule').value = (tb.final && tb.final.rule) ? tb.final.rule : '';
+    }
+
+    // 取得當前有效的桌號
+    function getActiveTableNumber() {
+      if (currentTable && typeof currentTable.table === 'number') {
+        return currentTable.table;
+      }
+      const val = parseInt(document.getElementById('lookupTable').value, 10);
+      return isNaN(val) ? null : val;
+    }
+
+    // 送出裁判判定 (PROJECT.md 硬性規定 4)
+    function handleResultSubmit() {
+      hideMsg('judgeActionMsg');
+      const tableNum = getActiveTableNumber();
+      if (!tableNum || !currentTable) {
+        showMsg('judgeActionMsg', '請先選擇或查詢欲判定的桌次');
+        return;
+      }
+
+      const isDoubleLoss = document.getElementById('resDoubleLoss').checked;
+      const p1Games = isDoubleLoss ? 0 : parseInt(document.getElementById('resP1').value, 10);
+      const p2Games = isDoubleLoss ? 0 : parseInt(document.getElementById('resP2').value, 10);
+      const draws = isDoubleLoss ? 0 : parseInt(document.getElementById('resDraws').value, 10);
+      const rule = (document.getElementById('resRule').value || '').trim();
+
+      const p1Name = currentTable.p1 ? currentTable.p1.name : '選手 1';
+      const p2Name = currentTable.p2 ? currentTable.p2.name : '選手 2';
+      const roundNum = (typeof currentTable.round === 'number') ? currentTable.round : getEffectiveRound();
+
+      const title = isDoubleLoss ? '雙方判負確認' : '裁判判定確認';
+      const msg = isDoubleLoss
+        ? `確定要判定 第 ${roundNum} 輪 第 ${tableNum} 桌（${p1Name} vs ${p2Name}）為「雙方判負」嗎？`
+        : `確定要判定 第 ${roundNum} 輪 第 ${tableNum} 桌（${p1Name} vs ${p2Name}）為 ${p1Name} ${p1Games} 勝、${p2Name} ${p2Games} 勝（平手 ${draws} 局）嗎？`;
+
+      showConfirm(title, msg, async () => {
+        try {
+          const payload = {
+            round: currentTable.round,
+            table: tableNum,
+            p1_games: p1Games,
+            p2_games: p2Games,
+            draws: draws,
+            double_loss: isDoubleLoss
+          };
+          if (rule) payload.rule = rule;
+
+          const res = await callApi('/api/staff/result', payload);
+          currentTable = res.table;
+          renderTableDetail(currentTable);
+          showMsg('judgeActionMsg', '判定結果已送出並生效', false);
+          fetchConflicts();
+        } catch (err) {
+          showMsg('judgeActionMsg', err.message);
+        }
+      });
+    }
+
+    // 撤銷此桌成績 (PROJECT.md 硬性規定 4)
+    function handleVoidSubmit() {
+      hideMsg('judgeActionMsg');
+      const tableNum = getActiveTableNumber();
+      if (!tableNum || !currentTable) {
+        showMsg('judgeActionMsg', '請先選擇或查詢欲撤銷的桌次');
+        return;
+      }
+
+      const p1Name = currentTable.p1 ? currentTable.p1.name : '選手 1';
+      const p2Name = currentTable.p2 ? currentTable.p2.name : '選手 2';
+      const roundNum = (typeof currentTable.round === 'number') ? currentTable.round : getEffectiveRound();
+
+      showConfirm(
+        '撤銷成績確認',
+        `確定要撤銷 第 ${roundNum} 輪 第 ${tableNum} 桌（${p1Name} vs ${p2Name}）的成績嗎？撤銷後雙方選手的回報將一併清除，需要重新回報。`,
+        async () => {
+          try {
+            const res = await callApi('/api/staff/void', {
+              round: currentTable.round,
+              table: tableNum
+            });
+            currentTable = res.table;
+            renderTableDetail(currentTable);
+            showMsg('judgeActionMsg', `第 ${tableNum} 桌成績已撤銷`, false);
+            fetchConflicts();
+          } catch (err) {
+            showMsg('judgeActionMsg', err.message);
+          }
+        }
+      );
+    }
+
+    // 送出補時
+    async function handleExtendSubmit() {
+      hideMsg('extMsg');
+      const tableNum = getActiveTableNumber();
+      if (!tableNum || !currentTable) {
+        showMsg('extMsg', '請先選擇或查詢欲補時的桌次');
+        return;
+      }
+
+      const minutes = parseInt(document.getElementById('extMinutes').value, 10);
+      const reason = (document.getElementById('extReason').value || '').trim();
+
+      if (isNaN(minutes) || minutes < 1 || minutes > 30) {
+        showMsg('extMsg', '補時時間必須在 1 到 30 分鐘之間');
+        return;
+      }
+      if (!reason) {
+        showMsg('extMsg', '請輸入補時原因（1～10 字）');
+        return;
+      }
+
+      try {
+        const res = await callApi('/api/staff/extend', {
+          round: currentTable.round,
+          table: tableNum,
+          minutes: minutes,
+          reason: reason
+        });
+        currentTable = res.table;
+        renderTableDetail(currentTable);
+        showMsg('extMsg', `第 ${tableNum} 桌已成功補時 ${minutes} 分鐘`, false);
+      } catch (err) {
+        showMsg('extMsg', err.message);
+      }
+    }
+
+    // 取消最後一筆補時
+    async function handleExtendCancel() {
+      hideMsg('extMsg');
+      const tableNum = getActiveTableNumber();
+      if (!tableNum || !currentTable) {
+        showMsg('extMsg', '請先選擇或查詢桌次');
+        return;
+      }
+
+      try {
+        const res = await callApi('/api/staff/extend_cancel', {
+          round: currentTable.round,
+          table: tableNum
+        });
+        currentTable = res.table;
+        renderTableDetail(currentTable);
+        showMsg('extMsg', `已取消第 ${tableNum} 桌最後一筆補時`, false);
+      } catch (err) {
+        showMsg('extMsg', err.message);
+      }
+    }
+
+    // 重設選手 PIN (PROJECT.md 硬性規定 4, 6)
+    function handlePinResetClick() {
+      hideMsg('assistMsg');
+      const pid = (document.getElementById('playerId').value || '').trim().toUpperCase();
+      if (!pid) {
+        showMsg('assistMsg', '請輸入選手編號');
+        return;
+      }
+
+      showConfirm(
+        '重設選手 PIN 確認',
+        `確定要重設選手 ${pid} 的 PIN 碼嗎？舊 PIN 將立即失效。`,
+        async () => {
+          try {
+            const res = await callApi('/api/staff/player_pin_reset', { player_id: pid });
+            const displayEl = document.getElementById('newPinDisplay');
+            const doneBtn = document.getElementById('newPinDone');
+            displayEl.textContent = `新 PIN：${res.pin}`;
+            displayEl.style.display = 'block';
+            doneBtn.style.display = 'inline-flex';
+            showMsg('assistMsg', `選手 ${pid} PIN 已重設，請口述給選手抄寫`, false);
+          } catch (err) {
+            showMsg('assistMsg', err.message);
+          }
+        }
+      );
+    }
+
+    // 已抄下按鈕：從畫面清空並消失，任何地方都不存 (硬性規定 6)
+    function handleNewPinDoneClick() {
+      const displayEl = document.getElementById('newPinDisplay');
+      const doneBtn = document.getElementById('newPinDone');
+      displayEl.textContent = '';
+      displayEl.style.display = 'none';
+      doneBtn.style.display = 'none';
+    }
+
+    // 解鎖選手
+    async function handleUnlockPlayerClick() {
+      hideMsg('assistMsg');
+      const pid = (document.getElementById('playerId').value || '').trim().toUpperCase();
+      if (!pid) {
+        showMsg('assistMsg', '請輸入選手編號');
+        return;
+      }
+
+      try {
+        await callApi('/api/staff/player_unlock', { player_id: pid });
+        showMsg('assistMsg', `選手 ${pid} 已解除鎖定`, false);
+      } catch (err) {
+        showMsg('assistMsg', err.message);
+      }
+    }
+
+    // 載入選手牌表 (DATA-CONTRACT 6.2)
+    async function handleDeckLoad() {
+      hideMsg('deckCheckMsg');
+      const pidInput = document.getElementById('deckPlayerId');
+      const pid = (pidInput ? pidInput.value : '').trim().toUpperCase();
+      if (!pid) {
+        showMsg('deckCheckMsg', '請輸入選手編號');
+        return;
+      }
+      try {
+        const res = await callApi('/api/staff/decklist', { player_id: pid });
+        const viewEl = document.getElementById('deckView');
+        const metaEl = document.getElementById('deckPlayerMeta');
+        if (viewEl) {
+          viewEl.textContent = res.text || '';
+        }
+        if (metaEl) {
+          const playerName = (res.player && res.player.name) ? res.player.name : '';
+          const lockStatus = res.locked ? '🔒 已鎖定' : '🔓 未鎖定';
+          metaEl.textContent = `選手：${pid} ${playerName} · ${lockStatus}`;
+        }
+        showMsg('deckCheckMsg', `選手 ${pid} 牌表載入成功`, false);
+      } catch (err) {
+        showMsg('deckCheckMsg', err.message);
+      }
+    }
+
+    // 記錄驗牌結果
+    async function handleDeckCheck(ok) {
+      hideMsg('deckCheckMsg');
+      const pidInput = document.getElementById('deckPlayerId');
+      const pid = (pidInput ? pidInput.value : '').trim().toUpperCase();
+      if (!pid) {
+        showMsg('deckCheckMsg', '請輸入選手編號');
+        return;
+      }
+      const noteInput = document.getElementById('deckCheckNote');
+      const note = (noteInput ? noteInput.value : '').trim();
+      try {
+        await callApi('/api/staff/deck_check', {
+          player_id: pid,
+          ok: ok,
+          note: note
+        });
+        showMsg('deckCheckMsg', `選手 ${pid} 驗牌紀錄已送出（${ok ? '通過' : '不通過'}）`, false);
+      } catch (err) {
+        showMsg('deckCheckMsg', err.message);
+      }
+    }
+
+    // 解鎖牌表（需確認）
+    function handleDeckUnlockClick() {
+      hideMsg('deckCheckMsg');
+      const pidInput = document.getElementById('deckPlayerId');
+      const pid = (pidInput ? pidInput.value : '').trim().toUpperCase();
+      if (!pid) {
+        showMsg('deckCheckMsg', '請輸入選手編號');
+        return;
+      }
+      showConfirm(
+        '解鎖牌表確認',
+        `確定要解鎖選手 ${pid} 的牌表嗎？解鎖後選手可重新登錄牌表。`,
+        async () => {
+          try {
+            await callApi('/api/staff/decklist_unlock', { player_id: pid });
+            showMsg('deckCheckMsg', `選手 ${pid} 牌表已成功解鎖，選手可重新登錄`, false);
+            // 重新載入牌表更新鎖定狀態
+            handleDeckLoad();
+          } catch (err) {
+            showMsg('deckCheckMsg', err.message);
+          }
+        }
+      );
+    }
+
+    // 綁定事件
+    window.addEventListener('DOMContentLoaded', () => {
+      // 登入與登出
+      document.getElementById('judgeLogin').addEventListener('click', handleLogin);
+      document.getElementById('judgeLogout').addEventListener('click', handleLogout);
+      document.getElementById('judgePin').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') handleLogin();
+      });
+
+      // 呼叫佇列
+      const callRefreshBtn = document.getElementById('callRefresh');
+      if (callRefreshBtn) {
+        callRefreshBtn.addEventListener('click', fetchCalls);
+      }
+
+      const callListEl = document.getElementById('callList');
+      if (callListEl) {
+        callListEl.addEventListener('click', async (e) => {
+          const takeBtn = e.target.closest('.call-take');
+          if (takeBtn) {
+            const tbl = parseInt(takeBtn.getAttribute('data-table'), 10);
+            const rnd = parseInt(takeBtn.getAttribute('data-round'), 10) || getEffectiveRound();
+            if (isNaN(tbl)) return;
+            try {
+              takeBtn.disabled = true;
+              await callApi('/api/staff/call_take', { round: rnd, table: tbl });
+              showMsg('callMsg', `已接手第 ${tbl} 桌呼叫`, false);
+              await fetchCalls();
+            } catch (err) {
+              takeBtn.disabled = false;
+              showMsg('callMsg', err.message);
+            }
+            return;
+          }
+
+          const doneBtn = e.target.closest('.call-done');
+          if (doneBtn) {
+            const tbl = parseInt(doneBtn.getAttribute('data-table'), 10);
+            const rnd = parseInt(doneBtn.getAttribute('data-round'), 10) || getEffectiveRound();
+            if (isNaN(tbl)) return;
+
+            const extInput = document.getElementById('callExtMinutes');
+            let extM = extInput ? parseInt(extInput.value, 10) : 0;
+            if (isNaN(extM) || extM < 0) extM = 0;
+            if (extM > 30) extM = 30;
+
+            const confirmMsg = extM > 0
+              ? `確定將第 ${tbl} 桌結案嗎？本次結案補時 ${extM} 分鐘。`
+              : `確定將第 ${tbl} 桌結案嗎？本次結案補時 0 分鐘。`;
+
+            showConfirm('結案確認', confirmMsg, async () => {
+              try {
+                const payload = { round: rnd, table: tbl };
+                if (extM > 0) {
+                  payload.extend_minutes = extM;
+                }
+                await callApi('/api/staff/call_done', payload);
+                showMsg('callMsg', `第 ${tbl} 桌呼叫已結案${extM > 0 ? `（補時 ${extM} 分鐘）` : ''}`, false);
+                if (extInput) extInput.value = '0';
+                await fetchCalls();
+              } catch (err) {
+                showMsg('callMsg', err.message);
+              }
+            });
+            return;
+          }
+
+          const titleBtn = e.target.closest('.call-table-title');
+          if (titleBtn) {
+            const tbl = parseInt(titleBtn.getAttribute('data-table'), 10);
+            if (!isNaN(tbl)) {
+              openTableDetail(tbl);
+            }
+          }
+        });
+      }
+
+      // 爭議清單
+      document.getElementById('conflictRefresh').addEventListener('click', fetchConflicts);
+      document.getElementById('conflictList').addEventListener('click', (e) => {
+        const btn = e.target.closest('.conflict-open');
+        if (btn) {
+          const tbl = parseInt(btn.getAttribute('data-table'), 10);
+          if (!isNaN(tbl)) {
+            openTableDetail(tbl);
+          }
+        }
+      });
+
+      // 查桌
+      document.getElementById('lookupBtn').addEventListener('click', handleLookup);
+      document.getElementById('lookupTable').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') handleLookup();
+      });
+
+      // 判定與撤銷
+      document.getElementById('resSubmit').addEventListener('click', handleResultSubmit);
+      document.getElementById('voidBtn').addEventListener('click', handleVoidSubmit);
+
+      // 補時
+      document.getElementById('extSubmit').addEventListener('click', handleExtendSubmit);
+      document.getElementById('extCancel').addEventListener('click', handleExtendCancel);
+      document.querySelectorAll('.btn-quick').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById('extReason').value = btn.getAttribute('data-reason');
+        });
+      });
+
+      // 選手協助
+      document.getElementById('pinResetBtn').addEventListener('click', handlePinResetClick);
+      document.getElementById('newPinDone').addEventListener('click', handleNewPinDoneClick);
+      document.getElementById('unlockBtn').addEventListener('click', handleUnlockPlayerClick);
+
+      // 驗牌作業 (PROJECT.md 第十一輪任務)
+      document.getElementById('deckLoadBtn').addEventListener('click', handleDeckLoad);
+      document.getElementById('deckPlayerId').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') handleDeckLoad();
+      });
+      document.getElementById('deckCheckOk').addEventListener('click', () => handleDeckCheck(true));
+      document.getElementById('deckCheckFail').addEventListener('click', () => handleDeckCheck(false));
+      document.getElementById('deckUnlockBtn').addEventListener('click', handleDeckUnlockClick);
+
+      // 確認彈窗按鈕
+      document.getElementById('confirmYes').addEventListener('click', async () => {
+        const action = pendingConfirmAction;
+        hideConfirm();
+        if (action) {
+          await action();
+        }
+      });
+      document.getElementById('confirmNo').addEventListener('click', hideConfirm);
+
+      // 重新連線
+      document.getElementById('retryBtn').addEventListener('click', fetchData);
+
+      // 初始化
+      checkAutoLogin();
+      fetchData();
+      pollTimer = setInterval(fetchData, 5000);
+      setInterval(checkFreshness, 1000);
+    });
+  </script>
+</body>
+</html>

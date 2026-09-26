@@ -1,0 +1,272 @@
+{
+  "contract_version": 10,
+  "server_now": 1790397300000,
+  "event": {
+    "name": "示範賽事（假資料）",
+    "mode": "B",
+    "status": "live",
+    "note": "午休時間請把個人物品帶走，13:30 準時開始第 2 輪。",
+    "api_base": null,
+    "checkin": null,
+    "viewers": 42
+  },
+  "round": {
+    "number": 1,
+    "total_swiss_rounds": 5,
+    "stage": "swiss",
+    "label": "第 1 輪",
+    "published": true,
+    "phase": "finished",
+    "progress": {
+      "tables_total": 8,
+      "tables_done": 8,
+      "latest_end_at": null,
+      "judge_calls_waiting": 0
+    }
+  },
+  "clock": {
+    "state": "not_started",
+    "duration_sec": 3600,
+    "ends_at": null,
+    "remaining_sec": null,
+    "extra_turns": 3
+  },
+  "pairings": [
+    {
+      "table": 1,
+      "feature": true,
+      "p1": {
+        "id": "R0002",
+        "name": "小楓",
+        "points": 0,
+        "record": "0-0-0"
+      },
+      "p2": {
+        "id": "R0016",
+        "name": "無名氏",
+        "points": 0,
+        "record": "0-0-0"
+      },
+      "result": {
+        "p1_games": 2,
+        "p2_games": 0,
+        "draws": 0,
+        "status": "confirmed",
+        "double_loss": false
+      },
+      "extensions": [],
+      "ends_at": null,
+      "judge_call": null
+    },
+    {
+      "table": 2,
+      "feature": false,
+      "p1": {
+        "id": "R0011",
+        "name": "鐵牛",
+        "points": 0,
+        "record": "0-0-0"
+      },
+      "p2": {
+        "id": "R0010",
+        "name": "小雨",
+        "points": 0,
+        "record": "0-0-0"
+      },
+      "result": {
+        "p1_games": 0,
+        "p2_games": 2,
+        "draws": 0,
+        "status": "confirmed",
+        "double_loss": false
+      },
+      "extensions": [],
+      "ends_at": null,
+      "judge_call": null
+    },
+    {
+      "table": 3,
+      "feature": false,
+      "p1": {
+        "id": "R0003",
+        "name": "Kuro",
+        "points": 0,
+        "record": "0-0-0"
+      },
+      "p2": {
+        "id": "R0015",
+        "name": "Nana",
+        "points": 0,
+        "record": "0-0-0"
+      },
+      "result": {
+        "p1_games": 1,
+        "p2_games": 1,
+        "draws": 0,
+        "status": "confirmed",
+        "double_loss": false
+      },
+      "extensions": [],
+      "ends_at": null,
+      "judge_call": null
+    },
+    {
+      "table": 4,
+      "feature": false,
+      "p1": {
+        "id": "R0005",
+        "name": "老王",
+        "points": 0,
+        "record": "0-0-0"
+      },
+      "p2": {
+        "id": "R0004",
+        "name": "符文少女",
+        "points": 0,
+        "record": "0-0-0"
+      },
+      "result": {
+        "p1_games": 1,
+        "p2_games": 1,
+        "draws": 0,
+        "status": "confirmed",
+        "double_loss": false
+      },
+      "extensions": [],
+      "ends_at": null,
+      "judge_call": null
+    },
+    {
+      "table": 5,
+      "feature": false,
+      "p1": {
+        "id": "R0007",
+        "name": "夜貓",
+        "points": 0,
+        "record": "0-0-0"
+      },
+      "p2": {
+        "id": "R0008",
+        "name": "阿哲",
+        "points": 0,
+        "record": "0-0-0"
+      },
+      "result": {
+        "p1_games": 2,
+        "p2_games": 0,
+        "draws": 0,
+        "status": "confirmed",
+        "double_loss": false
+      },
+      "extensions": [],
+      "ends_at": null,
+      "judge_call": null
+    },
+    {
+      "table": 6,
+      "feature": false,
+      "p1": {
+        "id": "R0001",
+        "name": "阿翔",
+        "points": 0,
+        "record": "0-0-0"
+      },
+      "p2": {
+        "id": "R0014",
+        "name": "阿凱",
+        "points": 0,
+        "record": "0-0-0"
+      },
+      "result": {
+        "p1_games": 2,
+        "p2_games": 1,
+        "draws": 0,
+        "status": "confirmed",
+        "double_loss": false
+      },
+      "extensions": [],
+      "ends_at": null,
+      "judge_call": null
+    },
+    {
+      "table": 7,
+      "feature": false,
+      "p1": {
+        "id": "R0009",
+        "name": "Leo",
+        "points": 0,
+        "record": "0-0-0"
+      },
+      "p2": {
+        "id": "R0017",
+        "name": "可樂",
+        "points": 0,
+        "record": "0-0-0"
+      },
+      "result": {
+        "p1_games": 1,
+        "p2_games": 1,
+        "draws": 0,
+        "status": "confirmed",
+        "double_loss": false
+      },
+      "extensions": [],
+      "ends_at": null,
+      "judge_call": null
+    },
+    {
+      "table": 8,
+      "feature": false,
+      "p1": {
+        "id": "R0006",
+        "name": "Miya",
+        "points": 0,
+        "record": "0-0-0"
+      },
+      "p2": {
+        "id": "R0012",
+        "name": "Yuki",
+        "points": 0,
+        "record": "0-0-0"
+      },
+      "result": {
+        "p1_games": 1,
+        "p2_games": 1,
+        "draws": 0,
+        "status": "confirmed",
+        "double_loss": false
+      },
+      "extensions": [],
+      "ends_at": null,
+      "judge_call": null
+    },
+    {
+      "table": null,
+      "feature": false,
+      "p1": {
+        "id": "R0013",
+        "name": "白熊",
+        "points": 0,
+        "record": "0-0-0"
+      },
+      "p2": null,
+      "result": null,
+      "extensions": [],
+      "ends_at": null,
+      "judge_call": null
+    }
+  ],
+  "schedule": {
+    "next_round_at": 1790400600000,
+    "break": {
+      "label": "午休",
+      "until": 1790400600000
+    },
+    "updated_at": 1790397060000
+  },
+  "standings": {
+    "version": "869f168e5337",
+    "label": "第 1 輪結束後"
+  },
+  "bracket": null
+}

@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>符文戰場 — 賽事排名</title>
+  <style>
+    :root {
+      --bg: #01222F;
+      --card-bg: #013951;
+      --card-bg-alt: #012b3c;
+      --card-border: #0A5570;
+      --text-primary: #F9F9F9;
+      --text-secondary: #9FB8C4;
+      --accent: #EF7D00;
+      --accent-hover: #C86800;
+      --accent-text: #FF941E;
+      --highlight-bg: #1E3043;
+      --warning-bg: #3E3312;
+      --warning-border: #8A6D1F;
+      --warning-text: #F2C94C;
+      --danger-bg: #4A1F1C;
+      --danger-border: #A8443C;
+      --danger-text: #ED807A;
+      --chip-bg: #0A4A63;
+      --input-bg: #011A24;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      -webkit-text-size-adjust: 100%;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      min-height: 100svh;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    input, select, textarea {
+      font-size: 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 12px 14px 40px;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+
+    /* 頂部橫幅通知 */
+    .banner {
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+      text-align: center;
+      font-weight: 600;
+    }
+    .contract-warning {
+      background: var(--warning-bg);
+      color: var(--warning-text);
+      border: 1px solid var(--warning-border);
+    }
+    .stale-warning {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      border: 1px solid var(--danger-border);
+    }
+
+    /* 頁頭 */
+    header {
+      margin-bottom: 12px;
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .header-title-group {
+      flex: 1;
+      min-width: 0;
+    }
+    .page-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .event-name {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--accent-text);
+      text-decoration: none;
+      font-size: 0.825rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 6px;
+      background: rgba(239, 125, 0, 0.1);
+      border: 1px solid rgba(239, 125, 0, 0.25);
+      white-space: nowrap;
+      min-height: 36px;
+    }
+    .nav-link:active {
+      background: rgba(239, 125, 0, 0.2);
+    }
+
+    /* 排名標題與狀態卡片 */
+    .standings-header-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+    .standings-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .standings-label-badge {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--accent-text);
+    }
+    .standings-meta {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .standings-note-box {
+      margin-top: 8px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+      font-size: 0.8rem;
+      line-height: 1.4;
+    }
+
+    /* 搜尋區塊 */
+    .search-section {
+      margin-bottom: 12px;
+    }
+    .search-box {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .search-input {
+      flex: 1;
+      height: 44px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      padding: 0 12px;
+      font-size: 1rem;
+      outline: none;
+      min-width: 0;
+    }
+    .search-input:focus {
+      border-color: var(--accent);
+    }
+    .btn-search {
+      height: 44px;
+      padding: 0 16px;
+      background: var(--accent);
+      color: #141212;
+      font-weight: 700;
+      font-size: 0.9rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-search:active {
+      background: var(--accent-hover);
+    }
+    .search-hint {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* 還沒有排名提示 (DATA-CONTRACT 1.11: snapshot.standings 為 null) */
+    .no-standings-card {
+      background: var(--card-bg);
+      border: 1px dashed var(--card-border);
+      border-radius: 12px;
+      padding: 36px 16px;
+      text-align: center;
+      margin: 16px 0;
+    }
+    .no-standings-icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    .no-standings-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .no-standings-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      max-width: 360px;
+      margin: 0 auto 16px;
+      line-height: 1.5;
+    }
+
+    /* 表格容器與左右捲動 (DATA-CONTRACT 第 4 節 畫面規定 5) */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background: var(--card-bg);
+      margin-bottom: 16px;
+    }
+
+    #standingsTable {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.875rem;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    #standingsTable th {
+      background: var(--card-bg-alt);
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 10px 12px;
+      border-bottom: 2px solid var(--card-border);
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .th-sub {
+      display: block;
+      font-size: 0.65rem;
+      font-weight: normal;
+      color: var(--text-secondary);
+      margin-top: 1px;
+    }
+
+    #standingsTable td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--card-border);
+      color: var(--text-primary);
+      background: var(--card-bg);
+      vertical-align: middle;
+    }
+
+    #standingsTable tbody tr:nth-child(even) td {
+      background: var(--card-bg-alt);
+    }
+
+    /* 前兩欄固定 (名次與選手) */
+    .col-rank {
+      width: 60px;
+      min-width: 60px;
+      max-width: 60px;
+      text-align: center;
+    }
+    #standingsTable th.col-rank,
+    #standingsTable td.cell-rank {
+      position: -webkit-sticky;
+      position: sticky;
+      left: 0;
+      z-index: 5;
+      text-align: center;
+    }
+    #standingsTable th.col-rank {
+      z-index: 15;
+    }
+
+    .col-player {
+      min-width: 140px;
+    }
+    #standingsTable th.col-player,
+    #standingsTable td.cell-player {
+      position: -webkit-sticky;
+      position: sticky;
+      left: 60px;
+      z-index: 5;
+      box-shadow: 3px 0 6px rgba(0, 0, 0, 0.25);
+    }
+    #standingsTable th.col-player {
+      z-index: 15;
+    }
+
+    /* 搜尋標亮樣式 (review.py 要求 data-highlight="true") */
+    #standingsTable tr[data-highlight="true"] td {
+      background: var(--highlight-bg) !important;
+    }
+    #standingsTable tr[data-highlight="true"] {
+      outline: 2px solid var(--accent);
+    }
+
+    .rank-num {
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+    }
+    .rank-top1 { color: var(--warning-text); }
+    .rank-top8 { color: var(--accent-text); }
+
+    .player-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      max-width: 180px;
+    }
+    .player-name {
+      font-weight: 700;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .player-id {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-family: monospace;
+    }
+
+    /* 標籤：退賽與抽籤 */
+    .badge-lot {
+      display: inline-block;
+      font-size: 0.65rem;
+      padding: 1px 4px;
+      border-radius: 4px;
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+      margin-left: 4px;
+      vertical-align: middle;
+      font-weight: normal;
+    }
+    .badge-dropped {
+      display: inline-block;
+      font-size: 0.65rem;
+      padding: 1px 4px;
+      border-radius: 4px;
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+      margin-left: 4px;
+      vertical-align: middle;
+      font-weight: normal;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 20px;
+    }
+
+    /* 尚未連上賽務系統覆蓋層 (硬性規定 1) */
+    .disconnected-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #01222F;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      z-index: 1000;
+    }
+    .disconnected-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+    .disconnected-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--danger-text);
+      margin-bottom: 8px;
+    }
+    .disconnected-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      max-width: 360px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .btn-retry {
+      background: var(--accent);
+      color: #141212;
+      font-weight: 800;
+      padding: 10px 24px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      min-height: 44px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 版本升級提示 -->
+    <div id="contractWarn" class="banner contract-warning" style="display: none;">
+      資料格式已更新，請重新整理頁面
+    </div>
+
+    <!-- 資料過期提示 (DATA-CONTRACT 1.10) -->
+    <div id="staleBanner" class="banner stale-warning" style="display: none;"></div>
+
+    <!-- 頁頭 -->
+    <header>
+      <div class="header-top">
+        <div class="header-title-group">
+          <div class="page-title">符文戰場 — 賽事排名</div>
+          <div class="event-name" id="eventName">載入中...</div>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <a id="findTableLink" href="find-table.html" class="nav-link">🔍 查詢桌次</a>
+          <a id="bracketLink" href="bracket.html" class="nav-link">🏆 淘汰賽</a>
+          <a id="spectatorLink" href="spectator.html" class="nav-link">📺 觀眾端</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- 排名標題與狀態資訊卡片 -->
+    <section class="standings-header-card">
+      <div class="standings-title-row">
+        <div class="standings-label-badge" id="standingsLabel">--</div>
+        <div class="standings-meta" id="standingsMeta">--</div>
+      </div>
+      <div id="standingsNote" class="standings-note-box" style="display: none;"></div>
+    </section>
+
+    <!-- 搜尋找自己 -->
+    <section class="search-section" id="searchSection" style="display: none;">
+      <div class="search-box">
+        <input
+          type="text"
+          id="standingsSearch"
+          class="search-input"
+          placeholder="輸入編號（如 R0010）或姓名搜尋"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+        />
+        <button type="button" id="standingsSearchBtn" class="btn-search">查詢</button>
+      </div>
+      <div id="searchHint" class="search-hint" style="display: none;"></div>
+    </section>
+
+    <!-- 還沒有排名時的提示 (DATA-CONTRACT 1.11, review.py) -->
+    <div id="noStandingsMsg" class="no-standings-card" style="display: none;">
+      <div class="no-standings-icon">⏳</div>
+      <div class="no-standings-title">第 1 輪結束後才會有排名</div>
+      <div class="no-standings-desc">目前第 1 輪尚未結束，請先查看目前桌次與對手。</div>
+      <a id="noStandingsFindTableLink" href="find-table.html" class="nav-link" style="display: inline-flex;">🔍 查看我的桌次</a>
+    </div>
+
+    <!-- 排名表格容器 -->
+    <div class="table-wrap" id="tableWrap" style="display: none;">
+      <table id="standingsTable">
+        <thead>
+          <tr>
+            <th class="col-rank">名次</th>
+            <th class="col-player">選手（編號）</th>
+            <th>積分<span class="th-sub">場積分</span></th>
+            <th>戰績<span class="th-sub">勝-敗-和</span></th>
+            <th>OMW%<span class="th-sub">對手勝率</span></th>
+            <th>GW%<span class="th-sub">局勝率</span></th>
+            <th>OGW%<span class="th-sub">對手局勝率</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 動態插入列 -->
+        </tbody>
+      </table>
+    </div>
+
+    <footer>
+      符文戰場賽事系統 · 排名依官方瑞士輪同分規則計算
+    </footer>
+  </div>
+
+  <!-- 尚未連上賽務系統畫面 -->
+  <div class="disconnected-overlay" id="disconnectedScreen">
+    <div class="disconnected-icon">⚠️</div>
+    <div class="disconnected-title">尚未連上賽務系統</div>
+    <div class="disconnected-desc">
+      目前無法讀取賽事即時資料。<br>請確認網路連線是否正常。
+    </div>
+    <button type="button" class="btn-retry" id="retryBtn">重新連線</button>
+  </div>
+
+  <script>
+    const CURRENT_CONTRACT_VERSION = 10;
+
+    let snapshotData = null;
+    let cachedStandingsData = null;
+    let currentStandingsVersion = null;
+    let rawJsonText = '';
+    let pollTimer = null;
+    let freshnessTimer = null;
+    let serverOffsetMs = 0;
+    let demoOffsetCalculated = false;
+    let lastContentChangeTime = Date.now();
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function getDataSourceUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const demo = params.get('demo');
+      if (demo === '1') {
+        return '../sample/snapshot.sample.json';
+      } else if (demo === 'break') {
+        return '../sample/snapshot.break.sample.json';
+      } else if (demo === 'topcut') {
+        return '../sample/snapshot.topcut.sample.json';
+      }
+      return '../snapshot.json';
+    }
+
+    function getStandingsSourceUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const demo = params.get('demo');
+      if (demo === '1') {
+        return '../sample/standings.sample.json';
+      } else if (demo === 'break') {
+        return '../sample/standings.break.sample.json';
+      } else if (demo === 'topcut') {
+        return '../sample/standings.topcut.sample.json';
+      }
+      return '../standings.json';
+    }
+
+    function updateNavLinks() {
+      const params = new URLSearchParams(window.location.search);
+      const demo = params.get('demo');
+      const href = demo ? `find-table.html?demo=${encodeURIComponent(demo)}` : 'find-table.html';
+      const fLink = document.getElementById('findTableLink');
+      if (fLink) fLink.href = href;
+      const noStLink = document.getElementById('noStandingsFindTableLink');
+      if (noStLink) noStLink.href = href;
+      const bLink = document.getElementById('bracketLink');
+      if (bLink) {
+        bLink.href = demo ? `bracket.html?demo=${encodeURIComponent(demo)}` : 'bracket.html';
+      }
+      const spLink = document.getElementById('spectatorLink');
+      if (spLink) {
+        spLink.href = demo ? `spectator.html?demo=${encodeURIComponent(demo)}` : 'spectator.html';
+      }
+    }
+
+    function checkFreshness() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('demo')) return;
+      const staleEl = document.getElementById('staleBanner');
+      if (!staleEl) return;
+      const diffMs = Date.now() - lastContentChangeTime;
+      if (diffMs > 90000) {
+        const mins = Math.max(1, Math.floor(diffMs / 60000));
+        staleEl.textContent = `資料已 ${mins} 分鐘沒更新，請留意現場廣播`;
+        staleEl.style.display = 'block';
+      } else {
+        staleEl.style.display = 'none';
+      }
+    }
+
+    function renderVersionWarning() {
+      const warnEl = document.getElementById('contractWarn');
+      if (!warnEl || !snapshotData) return;
+      if (snapshotData.contract_version && snapshotData.contract_version > CURRENT_CONTRACT_VERSION) {
+        warnEl.style.display = 'block';
+      } else {
+        warnEl.style.display = 'none';
+      }
+    }
+
+    function renderSnapshotHeader() {
+      if (!snapshotData) return;
+      renderVersionWarning();
+
+      const nameEl = document.getElementById('eventName');
+      if (nameEl && snapshotData.event) {
+        nameEl.textContent = snapshotData.event.name || '符文戰場賽事';
+      }
+
+      const labelEl = document.getElementById('standingsLabel');
+      if (labelEl && snapshotData.standings && snapshotData.standings.label) {
+        labelEl.textContent = snapshotData.standings.label;
+      }
+    }
+
+    function showNoStandings() {
+      const noMsg = document.getElementById('noStandingsMsg');
+      if (noMsg) noMsg.style.display = 'block';
+
+      const searchSec = document.getElementById('searchSection');
+      if (searchSec) searchSec.style.display = 'none';
+
+      const tableWrap = document.getElementById('tableWrap');
+      if (tableWrap) tableWrap.style.display = 'none';
+
+      const labelEl = document.getElementById('standingsLabel');
+      if (labelEl) labelEl.textContent = '尚未產生排名';
+
+      const noteEl = document.getElementById('standingsNote');
+      if (noteEl) noteEl.style.display = 'none';
+
+      const metaEl = document.getElementById('standingsMeta');
+      if (metaEl) metaEl.textContent = '第 1 輪結束後才會公布';
+    }
+
+    function renderStandings(data) {
+      if (!data) return;
+
+      const noMsg = document.getElementById('noStandingsMsg');
+      if (noMsg) noMsg.style.display = 'none';
+
+      const searchSec = document.getElementById('searchSection');
+      if (searchSec) searchSec.style.display = 'block';
+
+      const tableWrap = document.getElementById('tableWrap');
+      if (tableWrap) tableWrap.style.display = 'block';
+
+      const labelEl = document.getElementById('standingsLabel');
+      if (labelEl) {
+        labelEl.textContent = data.label || '賽事排名';
+      }
+
+      const metaEl = document.getElementById('standingsMeta');
+      if (metaEl) {
+        const rowsCount = Array.isArray(data.rows) ? data.rows.length : 0;
+        let metaText = `共 ${rowsCount} 位選手`;
+        if (data.total_swiss_rounds) {
+          metaText += ` · 瑞士輪共 ${data.total_swiss_rounds} 輪`;
+        }
+        metaEl.textContent = metaText;
+      }
+
+      const noteEl = document.getElementById('standingsNote');
+      if (noteEl) {
+        if (data.provisional && data.provisional_note) {
+          noteEl.textContent = data.provisional_note;
+          noteEl.style.display = 'block';
+        } else {
+          noteEl.textContent = '';
+          noteEl.style.display = 'none';
+        }
+      }
+
+      const tbody = document.querySelector('#standingsTable tbody');
+      if (!tbody) return;
+
+      const rows = Array.isArray(data.rows) ? data.rows : [];
+      let html = '';
+
+      rows.forEach(r => {
+        let rankClass = '';
+        if (r.rank === 1) rankClass = 'rank-top1';
+        else if (r.rank <= 8) rankClass = 'rank-top8';
+
+        const lotBadge = r.tied_by_lot ? '<span class="badge-lot">抽籤</span>' : '';
+        const droppedBadge = r.dropped ? '<span class="badge-dropped">已退賽</span>' : '';
+
+        const omwText = (typeof r.omw === 'number') ? `${r.omw.toFixed(2)}%` : escapeHtml(r.omw || '--');
+        const gwText = (typeof r.gw === 'number') ? `${r.gw.toFixed(2)}%` : escapeHtml(r.gw || '--');
+        const ogwText = (typeof r.ogw === 'number') ? `${r.ogw.toFixed(2)}%` : escapeHtml(r.ogw || '--');
+
+        html += `<tr data-id="${escapeHtml(r.id)}" data-name="${escapeHtml(r.name)}">`
+          + `<td class="cell-rank"><span class="rank-num ${rankClass}">${r.rank}</span>${lotBadge}</td>`
+          + `<td class="cell-player">`
+          + `<div class="player-wrap">`
+          + `<span class="player-name">${escapeHtml(r.name)}</span>`
+          + `<span class="player-id">(${escapeHtml(r.id)})</span>`
+          + `${droppedBadge}`
+          + `</div>`
+          + `</td>`
+          + `<td><strong>${r.points}</strong></td>`
+          + `<td>${escapeHtml(r.record)}</td>`
+          + `<td>${omwText}</td>`
+          + `<td>${gwText}</td>`
+          + `<td>${ogwText}</td>`
+          + `</tr>`;
+      });
+
+      tbody.innerHTML = html;
+
+      // 如果先前有搜尋字串，重新套用標亮
+      const searchInput = document.getElementById('standingsSearch');
+      if (searchInput && searchInput.value.trim()) {
+        handleSearch();
+      }
+    }
+
+    async function fetchStandings(targetVer) {
+      const primaryUrl = getStandingsSourceUrl();
+      try {
+        let res = await fetch(primaryUrl, { cache: 'no-store' });
+        if (!res.ok && primaryUrl.startsWith('../')) {
+          const fallbackUrl = primaryUrl.replace(/^\.\.\//, '/');
+          res = await fetch(fallbackUrl, { cache: 'no-store' });
+        }
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+        // 讀到的 version 和 snapshot 的不同時（CDN 還沒更新），保留舊的排名，下次再試
+        if (data && data.version === targetVer) {
+          currentStandingsVersion = data.version;
+          cachedStandingsData = data;
+          renderStandings(data);
+        } else {
+          console.warn('Standings version mismatch with snapshot, will retry on next poll');
+        }
+      } catch (err) {
+        console.warn('排名資料讀取失敗:', err);
+      }
+    }
+
+    async function fetchData() {
+      const primaryUrl = getDataSourceUrl();
+      try {
+        const responseTime = Date.now();
+        let res = await fetch(primaryUrl, { cache: 'no-store' });
+        if (!res.ok && primaryUrl.startsWith('../')) {
+          const fallbackUrl = primaryUrl.replace(/^\.\.\//, '/');
+          res = await fetch(fallbackUrl, { cache: 'no-store' });
+        }
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const text = await res.text();
+        const data = JSON.parse(text);
+
+        const isDemo = !!new URLSearchParams(window.location.search).get('demo');
+        if (isDemo) {
+          if (!demoOffsetCalculated && data.server_now) {
+            serverOffsetMs = data.server_now - responseTime;
+            demoOffsetCalculated = true;
+          }
+        } else {
+          let dateHeaderMs = null;
+          try {
+            const dateHeader = res.headers.get('Date');
+            if (dateHeader) {
+              const t = new Date(dateHeader).getTime();
+              if (!isNaN(t)) dateHeaderMs = t;
+            }
+          } catch (e) {}
+
+          if (dateHeaderMs !== null) {
+            serverOffsetMs = dateHeaderMs - responseTime;
+          } else if (data.server_now) {
+            serverOffsetMs = data.server_now - responseTime;
+          }
+        }
+
+        document.getElementById('disconnectedScreen').style.display = 'none';
+
+        if (text !== rawJsonText) {
+          lastContentChangeTime = Date.now();
+          rawJsonText = text;
+        }
+
+        snapshotData = data;
+        renderSnapshotHeader();
+
+        // 檢查排名資料 (DATA-CONTRACT 1.11, 第 4 節)
+        if (!snapshotData.standings || !snapshotData.standings.version) {
+          // 第 1 輪結束後才會有排名，不要去讀 standings.json
+          showNoStandings();
+        } else {
+          const targetVer = snapshotData.standings.version;
+          // 只有 snapshot.standings.version 變了（或第一次）才讀 standings.json
+          if (targetVer !== currentStandingsVersion) {
+            await fetchStandings(targetVer);
+          }
+        }
+      } catch (err) {
+        console.warn('賽務快照讀取失敗:', err);
+        if (!snapshotData) {
+          document.getElementById('disconnectedScreen').style.display = 'flex';
+        }
+      }
+    }
+
+    function handleSearch() {
+      const input = document.getElementById('standingsSearch');
+      if (!input) return;
+      const q = input.value.trim();
+      const hint = document.getElementById('searchHint');
+      const rows = document.querySelectorAll('#standingsTable tbody tr');
+
+      if (!q) {
+        rows.forEach(tr => tr.removeAttribute('data-highlight'));
+        if (hint) hint.style.display = 'none';
+        return;
+      }
+
+      const qLower = q.toLowerCase();
+      let matchedRows = [];
+
+      // 第一階段：完全比對選手編號或姓名
+      rows.forEach(tr => {
+        const id = (tr.dataset.id || '').toLowerCase();
+        const name = (tr.dataset.name || '').toLowerCase();
+        if (id === qLower || name === qLower) {
+          matchedRows.push(tr);
+        }
+      });
+
+      // 第二階段：若無完全符合，進行包含比對
+      if (matchedRows.length === 0) {
+        rows.forEach(tr => {
+          const id = (tr.dataset.id || '').toLowerCase();
+          const name = (tr.dataset.name || '').toLowerCase();
+          if (id.includes(qLower) || name.includes(qLower)) {
+            matchedRows.push(tr);
+          }
+        });
+      }
+
+      rows.forEach(tr => {
+        if (matchedRows.includes(tr)) {
+          tr.setAttribute('data-highlight', 'true');
+        } else {
+          tr.removeAttribute('data-highlight');
+        }
+      });
+
+      if (matchedRows.length > 0) {
+        matchedRows[0].scrollIntoView({ behavior: 'auto', block: 'center', inline: 'nearest' });
+        if (hint) {
+          hint.textContent = `找到 ${matchedRows.length} 位選手（已標亮）`;
+          hint.style.display = 'block';
+        }
+      } else {
+        if (hint) {
+          hint.textContent = '查無符合的選手編號或姓名';
+          hint.style.display = 'block';
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateNavLinks();
+
+      const searchInput = document.getElementById('standingsSearch');
+      const searchBtn = document.getElementById('standingsSearchBtn');
+      if (searchBtn) {
+        searchBtn.addEventListener('click', handleSearch);
+      }
+      if (searchInput) {
+        searchInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            handleSearch();
+          }
+        });
+        searchInput.addEventListener('input', (e) => {
+          if (!e.target.value.trim()) {
+            document.querySelectorAll('#standingsTable tbody tr').forEach(tr => tr.removeAttribute('data-highlight'));
+            const hint = document.getElementById('searchHint');
+            if (hint) hint.style.display = 'none';
+          }
+        });
+      }
+
+      const retryBtn = document.getElementById('retryBtn');
+      if (retryBtn) {
+        retryBtn.addEventListener('click', fetchData);
+      }
+
+      fetchData();
+      pollTimer = setInterval(fetchData, 4000);
+      freshnessTimer = setInterval(checkFreshness, 5000);
+    });
+  </script>
+</body>
+</html>

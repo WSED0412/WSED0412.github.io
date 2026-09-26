@@ -1,0 +1,245 @@
+{
+  "contract_version": 10,
+  "server_now": 1790408400000,
+  "event": {
+    "name": "示範賽事（假資料）",
+    "mode": "B",
+    "status": "live",
+    "note": "四強進行中，決賽預計 16:30 開始。",
+    "api_base": null,
+    "checkin": null,
+    "viewers": 318
+  },
+  "round": {
+    "number": 7,
+    "total_swiss_rounds": 5,
+    "stage": "top_cut",
+    "label": "四強",
+    "published": true,
+    "phase": "playing",
+    "progress": {
+      "tables_total": 2,
+      "tables_done": 1,
+      "latest_end_at": 1790410200000,
+      "judge_calls_waiting": 0
+    }
+  },
+  "clock": {
+    "state": "running",
+    "duration_sec": 3600,
+    "ends_at": 1790410200000,
+    "remaining_sec": null,
+    "extra_turns": 3
+  },
+  "pairings": [
+    {
+      "table": 1,
+      "feature": true,
+      "p1": {
+        "id": "R0003",
+        "name": "Kuro",
+        "points": 12,
+        "record": "4-1-0"
+      },
+      "p2": {
+        "id": "R0004",
+        "name": "符文少女",
+        "points": 10,
+        "record": "3-1-1"
+      },
+      "result": {
+        "p1_games": 2,
+        "p2_games": 0,
+        "draws": 0,
+        "status": "confirmed",
+        "double_loss": false
+      },
+      "extensions": [],
+      "ends_at": null,
+      "judge_call": null
+    },
+    {
+      "table": 2,
+      "feature": false,
+      "p1": {
+        "id": "R0009",
+        "name": "Leo",
+        "points": 12,
+        "record": "4-1-0"
+      },
+      "p2": {
+        "id": "R0015",
+        "name": "Nana",
+        "points": 10,
+        "record": "3-1-1"
+      },
+      "result": null,
+      "extensions": [],
+      "ends_at": 1790410200000,
+      "judge_call": null
+    }
+  ],
+  "schedule": {
+    "next_round_at": 1790411400000,
+    "break": null,
+    "updated_at": 1790408100000
+  },
+  "standings": {
+    "version": "cc6cbc68762d",
+    "label": "瑞士輪最終排名"
+  },
+  "bracket": {
+    "size": 8,
+    "rounds": [
+      {
+        "label": "八強",
+        "number": 6,
+        "published": true,
+        "matches": [
+          {
+            "table": 1,
+            "p1": {
+              "id": "R0003",
+              "name": "Kuro",
+              "seed": 1
+            },
+            "p2": {
+              "id": "R0006",
+              "name": "Miya",
+              "seed": 8
+            },
+            "result": {
+              "p1_games": 2,
+              "p2_games": 0,
+              "draws": 0,
+              "status": "confirmed",
+              "double_loss": false
+            },
+            "winner": "R0003"
+          },
+          {
+            "table": 2,
+            "p1": {
+              "id": "R0004",
+              "name": "符文少女",
+              "seed": 4
+            },
+            "p2": {
+              "id": "R0008",
+              "name": "阿哲",
+              "seed": 5
+            },
+            "result": {
+              "p1_games": 2,
+              "p2_games": 1,
+              "draws": 0,
+              "status": "confirmed",
+              "double_loss": false
+            },
+            "winner": "R0004"
+          },
+          {
+            "table": 3,
+            "p1": {
+              "id": "R0009",
+              "name": "Leo",
+              "seed": 2
+            },
+            "p2": {
+              "id": "R0001",
+              "name": "阿翔",
+              "seed": 7
+            },
+            "result": {
+              "p1_games": 2,
+              "p2_games": 0,
+              "draws": 0,
+              "status": "confirmed",
+              "double_loss": false
+            },
+            "winner": "R0009"
+          },
+          {
+            "table": 4,
+            "p1": {
+              "id": "R0015",
+              "name": "Nana",
+              "seed": 3
+            },
+            "p2": {
+              "id": "R0007",
+              "name": "夜貓",
+              "seed": 6
+            },
+            "result": {
+              "p1_games": 2,
+              "p2_games": 1,
+              "draws": 0,
+              "status": "confirmed",
+              "double_loss": false
+            },
+            "winner": "R0015"
+          }
+        ]
+      },
+      {
+        "label": "四強",
+        "number": 7,
+        "published": true,
+        "matches": [
+          {
+            "table": 1,
+            "p1": {
+              "id": "R0003",
+              "name": "Kuro",
+              "seed": 1
+            },
+            "p2": {
+              "id": "R0004",
+              "name": "符文少女",
+              "seed": 4
+            },
+            "result": {
+              "p1_games": 2,
+              "p2_games": 0,
+              "draws": 0,
+              "status": "confirmed",
+              "double_loss": false
+            },
+            "winner": "R0003"
+          },
+          {
+            "table": 2,
+            "p1": {
+              "id": "R0009",
+              "name": "Leo",
+              "seed": 2
+            },
+            "p2": {
+              "id": "R0015",
+              "name": "Nana",
+              "seed": 3
+            },
+            "result": null,
+            "winner": null
+          }
+        ]
+      },
+      {
+        "label": "決賽",
+        "number": null,
+        "published": false,
+        "matches": [
+          {
+            "table": null,
+            "p1": null,
+            "p2": null,
+            "result": null,
+            "winner": null
+          }
+        ]
+      }
+    ],
+    "champion": null
+  }
+}

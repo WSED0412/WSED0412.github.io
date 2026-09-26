@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>符文戰場 — 現場報到</title>
+  <style>
+    :root {
+      --bg: #01222F;
+      --card-bg: #013951;
+      --card-border: #0A5570;
+      --text-primary: #F9F9F9;
+      --text-secondary: #9FB8C4;
+      --accent: #EF7D00;
+      --accent-hover: #C86800;
+      --accent-text: #FF941E;
+      --success-bg: #0A3F33;
+      --success-border: #1F7A55;
+      --success-text: #2FB574;
+      --danger-bg: #4A1F1C;
+      --danger-border: #A8443C;
+      --danger-text: #ED807A;
+      --warning-bg: #3E3312;
+      --warning-border: #8A6D1F;
+      --warning-text: #F2C94C;
+      --chip-bg: #0A4A63;
+      --input-bg: #011A24;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    input, select, textarea {
+      font-size: 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px 14px 40px;
+      flex: 1;
+    }
+
+    header {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .page-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .event-name {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .form-hint {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .input-text {
+      width: 100%;
+      height: 48px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0 14px;
+      color: var(--text-primary);
+      font-size: 1.05rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-text:focus {
+      border-color: var(--accent);
+    }
+
+    .btn {
+      width: 100%;
+      height: 48px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s;
+      min-height: 48px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #141212;
+    }
+
+    .btn-primary:active {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--chip-bg);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:active {
+      background: var(--card-border);
+    }
+
+    .btn-retry {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: #141212;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 24px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 12px;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+
+    .btn-retry:active {
+      background: var(--accent-hover);
+    }
+
+    .msg-box {
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      line-height: 1.4;
+      word-break: break-all;
+    }
+
+    .msg-box.error {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+
+    .msg-box.success {
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: var(--success-text);
+    }
+
+    /* 報到完成畫面 */
+    .done-container {
+      text-align: center;
+      padding: 24px 16px;
+    }
+
+    .done-icon {
+      font-size: 3.5rem;
+      margin-bottom: 12px;
+      line-height: 1;
+    }
+
+    .done-headline {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--success-text);
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .done-info-card {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .done-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+
+    .done-info-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .done-info-label {
+      color: var(--text-secondary);
+    }
+
+    .done-info-val {
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .done-info-val.highlight {
+      color: var(--accent-text);
+      font-size: 1.1rem;
+    }
+
+    .nav-links {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.85rem;
+    }
+
+    .nav-link {
+      color: var(--accent-text);
+      text-decoration: none;
+    }
+
+    .nav-link:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 24px;
+    }
+
+    /* 尚未連上賽務系統畫面 */
+    .disconnected-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #01222F;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      z-index: 1000;
+    }
+    .disconnected-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+    .disconnected-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--danger-text);
+      margin-bottom: 8px;
+    }
+    .disconnected-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      max-width: 360px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1 class="page-title">符文戰場 — 現場報到</h1>
+      <div class="event-name" id="eventName">載入中...</div>
+    </header>
+
+    <div id="checkinMsg" class="msg-box error" style="display: none;"></div>
+
+    <!-- 報到輸入表單 -->
+    <section class="card" id="checkinForm">
+      <div class="card-title">選手自助報到</div>
+      <div class="card-desc">請依照現場報到單上的編號與個人 PIN 碼完成報到。</div>
+
+      <div class="form-group">
+        <label for="checkinId" class="form-label">選手編號</label>
+        <input
+          type="text"
+          id="checkinId"
+          class="input-text"
+          autocomplete="off"
+          placeholder="例如 R0001"
+          spellcheck="false"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="checkinPin" class="form-label">個人 PIN 碼</label>
+        <input
+          type="password"
+          id="checkinPin"
+          class="input-text"
+          inputmode="numeric"
+          autocomplete="off"
+          placeholder="報到單上的 6 位數字"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="checkinName" class="form-label">顯示名稱（選填）</label>
+        <input
+          type="text"
+          id="checkinName"
+          class="input-text"
+          maxlength="20"
+          placeholder="留空則沿用名單名稱"
+        >
+        <div class="form-hint">這個名字會出現在大螢幕和對手的手機上</div>
+      </div>
+
+      <button type="button" id="checkinSubmit" class="btn btn-primary">確認報到</button>
+    </section>
+
+    <!-- 報到完成畫面 (DATA-CONTRACT 3.2 畫面規定第 2、4 條) -->
+    <section class="card done-container" id="checkinDone" style="display: none;">
+      <div class="done-icon">✅</div>
+      <div class="done-headline">報到完成</div>
+      
+      <div class="done-info-card">
+        <div class="done-info-row">
+          <span class="done-info-label">選手編號</span>
+          <span class="done-info-val highlight" id="donePlayerId">--</span>
+        </div>
+        <div class="done-info-row">
+          <span class="done-info-label">顯示名稱</span>
+          <span class="done-info-val" id="donePlayerName">--</span>
+        </div>
+        <div class="done-info-row">
+          <span class="done-info-label">報到狀態</span>
+          <span class="done-info-val" style="color: var(--success-text);">已完成到場報到</span>
+        </div>
+      </div>
+
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">
+        第 1 輪配對公布前，您隨時可以點擊下方按鈕修改顯示名稱。
+      </p>
+
+      <button type="button" id="checkinRename" class="btn btn-secondary">修改名稱</button>
+
+      <div id="decklistPrompt" style="display: none; margin-top: 18px; padding: 14px; background: rgba(239, 125, 0, 0.1); border: 1px solid rgba(239, 125, 0, 0.3); border-radius: 8px;">
+        <div style="font-weight: 700; color: var(--accent-text); margin-bottom: 6px;">📋 本場賽事需登錄純文字牌表</div>
+        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">依賽程規定，請於第 1 輪開賽前完成牌表登錄。</div>
+        <a id="decklistLink" href="decklist.html" class="btn btn-primary" style="display: inline-flex; text-decoration: none;">前往登錄牌表 ➜</a>
+      </div>
+    </section>
+
+    <div class="nav-links">
+      <a href="find-table.html" class="nav-link" id="findTableLink">前往查詢桌次 ➜</a>
+    </div>
+
+    <footer>
+      符文戰場賽事系統 · 現場報到
+    </footer>
+  </div>
+
+  <!-- 尚未連上賽務系統畫面 -->
+  <div class="disconnected-overlay" id="disconnectedScreen">
+    <div class="disconnected-icon">⚠️</div>
+    <div class="disconnected-title">尚未連上賽務系統</div>
+    <div class="disconnected-desc">
+      目前無法讀取賽事即時資料。<br>請確認網路連線是否正常。
+    </div>
+    <button type="button" class="btn-retry" id="retryBtn" style="max-width: 200px;">重新連線</button>
+  </div>
+
+  <script>
+    const CURRENT_CONTRACT_VERSION = 10;
+    let snapshotData = null;
+
+    function getDataSourceUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const demo = params.get('demo');
+      if (demo === '1') {
+        return '../sample/snapshot.sample.json';
+      } else if (demo === 'break') {
+        return '../sample/snapshot.break.sample.json';
+      } else if (demo === 'topcut') {
+        return '../sample/snapshot.topcut.sample.json';
+      }
+      return '../snapshot.json';
+    }
+
+    function getApiUrl(endpoint) {
+      const base = (snapshotData && snapshotData.event && typeof snapshotData.event.api_base === 'string')
+        ? snapshotData.event.api_base
+        : '';
+      return base + endpoint;
+    }
+
+    async function fetchData() {
+      const primaryUrl = getDataSourceUrl();
+      try {
+        let res = await fetch(primaryUrl, { cache: 'no-store' });
+        if (!res.ok && primaryUrl.startsWith('../')) {
+          res = await fetch(primaryUrl.replace(/^\.\.\//, '/'), { cache: 'no-store' });
+        }
+        if (res.ok) {
+          snapshotData = await res.json();
+          if (snapshotData && snapshotData.event && snapshotData.event.name) {
+            document.getElementById('eventName').textContent = snapshotData.event.name;
+          }
+        }
+        document.getElementById('disconnectedScreen').style.display = 'none';
+      } catch (e) {
+        // snapshot 讀取失敗時若從未成功，可顯示提示，但不要阻礙送出表單
+      }
+    }
+
+    function showMsg(msg) {
+      const el = document.getElementById('checkinMsg');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    function hideMsg() {
+      const el = document.getElementById('checkinMsg');
+      el.style.display = 'none';
+      el.textContent = '';
+    }
+
+    async function handleCheckinSubmit() {
+      hideMsg();
+      const idInput = document.getElementById('checkinId');
+      const pinInput = document.getElementById('checkinPin');
+      const nameInput = document.getElementById('checkinName');
+
+      const playerId = (idInput ? idInput.value : '').trim().toUpperCase();
+      const pin = (pinInput ? pinInput.value : '').trim();
+      const rawName = (nameInput ? nameInput.value : '');
+
+      if (!playerId || !pin) {
+        showMsg('請輸入選手編號與 PIN 碼');
+        return;
+      }
+
+      const payload = {
+        player_id: playerId,
+        pin: pin
+      };
+
+      if (rawName.trim().length > 0) {
+        payload.display_name = rawName.trim();
+      }
+
+      try {
+        const url = getApiUrl('/api/player/checkin');
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json().catch(() => null);
+
+        if (!res.ok || !data || !data.ok) {
+          const errorMsg = (data && data.message) ? data.message : `報到失敗 (HTTP ${res.status})`;
+          throw new Error(errorMsg);
+        }
+
+        // 報到成功，顯示完成畫面
+        const formEl = document.getElementById('checkinForm');
+        const doneEl = document.getElementById('checkinDone');
+        const donePlayerId = document.getElementById('donePlayerId');
+        const donePlayerName = document.getElementById('donePlayerName');
+
+        const resolvedName = (data.checkin && data.checkin.display_name)
+          || (data.player && data.player.name)
+          || payload.display_name
+          || playerId;
+
+        donePlayerId.textContent = playerId;
+        donePlayerName.textContent = resolvedName;
+
+        if (nameInput) {
+          nameInput.value = resolvedName;
+        }
+
+        // 檢查是否需要登錄牌表 (PROJECT.md 第十一輪任務, DATA-CONTRACT 1.12, 6)
+        const isDecklistRequired = !!(
+          (snapshotData && snapshotData.event && snapshotData.event.checkin && snapshotData.event.checkin.decklist_required) ||
+          (data && data.decklist && data.decklist.required)
+        );
+        const decklistPromptEl = document.getElementById('decklistPrompt');
+        const decklistLinkEl = document.getElementById('decklistLink');
+        const demoParam = new URLSearchParams(window.location.search).get('demo');
+        const decklistUrl = 'decklist.html' + (demoParam ? `?demo=${encodeURIComponent(demoParam)}` : '');
+        if (decklistLinkEl) {
+          decklistLinkEl.href = decklistUrl;
+        }
+        if (decklistPromptEl) {
+          decklistPromptEl.style.display = isDecklistRequired ? 'block' : 'none';
+        }
+
+        formEl.style.display = 'none';
+        doneEl.style.display = 'block';
+      } catch (err) {
+        showMsg(err.message);
+      }
+    }
+
+    function updateNavLinks() {
+      const params = new URLSearchParams(window.location.search);
+      const demo = params.get('demo');
+      const fLink = document.getElementById('findTableLink');
+      if (fLink) {
+        fLink.href = demo ? `find-table.html?demo=${encodeURIComponent(demo)}` : 'find-table.html';
+      }
+      const dLink = document.getElementById('decklistLink');
+      if (dLink) {
+        dLink.href = demo ? `decklist.html?demo=${encodeURIComponent(demo)}` : 'decklist.html';
+      }
+    }
+
+    function handleCheckinRename() {
+      hideMsg();
+      const formEl = document.getElementById('checkinForm');
+      const doneEl = document.getElementById('checkinDone');
+      doneEl.style.display = 'none';
+      formEl.style.display = 'block';
+      const nameInput = document.getElementById('checkinName');
+      if (nameInput) {
+        nameInput.focus();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('checkinSubmit').addEventListener('click', handleCheckinSubmit);
+      document.getElementById('checkinRename').addEventListener('click', handleCheckinRename);
+      document.getElementById('retryBtn').addEventListener('click', fetchData);
+
+      const enterHandler = (e) => {
+        if (e.key === 'Enter') handleCheckinSubmit();
+      };
+      document.getElementById('checkinId').addEventListener('keydown', enterHandler);
+      document.getElementById('checkinPin').addEventListener('keydown', enterHandler);
+      document.getElementById('checkinName').addEventListener('keydown', enterHandler);
+
+      updateNavLinks();
+      fetchData();
+    });
+  </script>
+</body>
+</html>

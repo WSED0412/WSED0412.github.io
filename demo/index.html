@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>符文戰場賽事系統 — 線上示範</title>
+<meta name="description" content="Riftbound 實體賽事賽務系統的線上示範。全部是假資料。">
+<style>
+  :root {
+    --bg: #01222F; --card: #013951; --line: #0A5570;
+    --fg: #F9F9F9; --dim: #9FB8C4; --accent: #EF7D00; --accent-text: #FF941E;
+    --green: #2FB574; --amber: #F2C94C;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    -webkit-text-size-adjust: 100%;
+    margin: 0; background: var(--bg); color: var(--fg);
+    font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    font-size: 17px; line-height: 1.65;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 32px 16px 72px; }
+  header { margin-bottom: 8px; }
+  .kicker { color: var(--accent-text); font-weight: 700; font-size: 0.85rem;
+            letter-spacing: .12em; margin: 0 0 6px; }
+  h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 10px; }
+  .lede { color: var(--dim); margin: 0 0 22px; }
+  .banner {
+    background: #3E3312; border: 1px solid #8A6D1F; color: var(--amber);
+    border-radius: 12px; padding: 14px 16px; font-weight: 700; margin-bottom: 28px;
+  }
+  .banner span { display: block; color: #E7D9A8; font-weight: 400;
+                 font-size: 0.95rem; margin-top: 4px; }
+  h2 { font-size: 1.2rem; margin: 34px 0 6px; }
+  .hint { color: var(--dim); font-size: 0.95rem; margin: 0 0 16px; }
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 18px; display: flex; flex-direction: column; gap: 8px;
+  }
+  .card h3 { margin: 0; font-size: 1.05rem; }
+  .card p { margin: 0; color: var(--dim); font-size: 0.95rem; }
+  .who { color: var(--accent-text); font-size: 0.8rem; font-weight: 700;
+         letter-spacing: .06em; }
+  .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+  .links a {
+    display: inline-block; min-height: 44px; line-height: 1.2;
+    padding: 12px 14px; border-radius: 10px; text-decoration: none;
+    background: var(--accent); color: #141212; font-weight: 700; font-size: 0.95rem;
+  }
+  .links a.alt { background: #0A4A63; color: var(--fg); }
+  .locked { opacity: .75; }
+  .locked .card-note { color: var(--amber); font-size: 0.9rem; }
+  ul.plain { margin: 8px 0 0; padding-left: 1.2em; color: var(--dim); font-size: 0.95rem; }
+  footer { margin-top: 44px; border-top: 1px solid var(--line); padding-top: 18px;
+           color: var(--dim); font-size: 0.9rem; }
+  footer a { color: var(--accent-text); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="kicker">RIFTBOUND · 賽務系統</p>
+    <h1>符文戰場賽事系統 — 線上示範</h1>
+    <p class="lede">實體賽事的現場賽務系統：報到、牌表、瑞士輪配對、成績回報、裁判呼叫、排名、觀眾端與轉播疊圖。
+      下面是可以直接點開看的畫面。</p>
+  </header>
+
+  <div class="banner">
+    這裡全部是假資料，不是真的比賽
+    <span>選手名字、桌次、成績都是示範用的。時間顯示固定在示範檔的那一天，所以倒數不會是現在的時間。</span>
+  </div>
+
+  <h2>選手會看到的</h2>
+  <p class="hint">手機打開最接近真實情況。</p>
+  <div class="grid">
+    <div class="card">
+      <p class="who">選手手機</p>
+      <h3>找我這輪坐哪桌</h3>
+      <p>輸入選手編號或名字，看桌號、對手、本輪倒數、全場還剩幾桌。試試 <b>R0001</b> 或 <b>阿翔</b>。</p>
+      <div class="links">
+        <a href="web/find-table.html?demo=1">比賽進行中</a>
+        <a class="alt" href="web/find-table.html?demo=break">午休中</a>
+      </div>
+    </div>
+    <div class="card">
+      <p class="who">大家都能看</p>
+      <h3>即時排名</h3>
+      <p>依官方規則 409.2 的同分順序：對手勝率 → 自己局勝率 → 對手局勝率。可以搜尋自己。</p>
+      <div class="links"><a href="web/standings.html?demo=1">查看排名</a></div>
+    </div>
+    <div class="card">
+      <p class="who">大家都能看</p>
+      <h3>淘汰賽賽程樹</h3>
+      <p>一開始就畫出整棵樹，贏了下一場對誰看得到。示範是八強打完、四強進行中。</p>
+      <div class="links"><a href="web/bracket.html?demo=topcut">查看賽程樹</a></div>
+    </div>
+    <div class="card">
+      <p class="who">觀眾</p>
+      <h3>觀眾端</h3>
+      <p>現正開打、查選手、賽程三個分頁。還沒生效的成績只寫「回報中」，不會提前公布比分。</p>
+      <div class="links"><a href="web/spectator.html?demo=1">打開觀眾端</a></div>
+    </div>
+  </div>
+
+  <h2>現場會投影的</h2>
+  <p class="hint">用電腦全螢幕看比較準。</p>
+  <div class="grid">
+    <div class="card">
+      <p class="who">大螢幕</p>
+      <h3>全場計時與公告</h3>
+      <p>輪次倒數、全場還剩幾桌、下一輪預計幾點、午休到幾點、幾桌在等裁判。</p>
+      <div class="links">
+        <a href="web/clock.html?demo=1">比賽進行中</a>
+        <a class="alt" href="web/clock.html?demo=break">午休中</a>
+      </div>
+    </div>
+    <div class="card">
+      <p class="who">主辦</p>
+      <h3>桌況板</h3>
+      <p>哪幾桌還在打、補了幾分鐘與原因、表定最晚結束、哪桌在等裁判。用來提早發現這一輪會超時。</p>
+      <div class="links"><a href="web/tables-board.html?demo=1">打開桌況板</a></div>
+    </div>
+    <div class="card">
+      <p class="who">轉播</p>
+      <h3>OBS 疊圖</h3>
+      <p>給 OBS 當「瀏覽器來源」，背景透明。這裡墊了一層深色底模擬疊在畫面上的樣子。</p>
+      <div class="links"><a href="overlay-preview.html">看疊圖</a></div>
+    </div>
+  </div>
+
+  <h2>需要主機才能操作的</h2>
+  <p class="hint">這幾頁會寫入資料，所以要有跑起來的主機。這個示範站是純靜態的，所以只能看不能登入。</p>
+  <div class="grid locked">
+    <div class="card">
+      <p class="who">選手手機</p>
+      <h3>報到 · 牌表登錄 · 回報成績 · 呼叫裁判</h3>
+      <p>報到時發編號與 PIN，選手用手機報到、貼上牌表、回報成績（雙方一致才生效）、選原因叫裁判。</p>
+      <p class="card-note">要實際操作請找 Ed 開示範主機</p>
+    </div>
+    <div class="card">
+      <p class="who">裁判與主辦</p>
+      <h3>裁判手機 · 主辦控制台</h3>
+      <p>裁判：呼叫佇列、爭議判定、補時、驗牌、重設選手 PIN。主辦：報到清單、現場報名、計時、公告、換輪、退賽。</p>
+      <p class="card-note">要實際操作請找 Ed 開示範主機</p>
+    </div>
+  </div>
+
+  <h2>這套系統在解決什麼</h2>
+  <ul class="plain">
+    <li><b>找不到桌</b>：選手自己用手機查，大螢幕同時輪播當備援</li>
+    <li><b>換輪慢</b>：512 人第 9 輪的配對產生加公布實測 0.03 秒，瓶頸在人不在系統</li>
+    <li><b>每輪超時</b>：桌況板即時顯示哪幾桌在拖、補了幾分鐘，主辦可以提早處理</li>
+    <li><b>臨時延遲沒人通知</b>：主辦改一次時間，所有手機和大螢幕幾秒內同步</li>
+    <li><b>成績收得慢</b>：選手雙方自己回報，一致就生效，不一致才進裁判佇列</li>
+  </ul>
+
+  <footer>
+    <p>整套系統跑在一台筆電上，只用 Python 標準函式庫，對外一條加密通道，不需要架伺服器。
+       這個示範站是靜態的，資料來自系統自己產生的示範檔。</p>
+    <p>想看實際操作、或談合作：<a href="../">回到首頁</a></p>
+  </footer>
+</div>
+</body>
+</html>

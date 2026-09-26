@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>符文戰場 — 牌表登錄</title>
+  <style>
+    :root {
+      --bg: #01222F;
+      --card-bg: #013951;
+      --card-border: #0A5570;
+      --text-primary: #F9F9F9;
+      --text-secondary: #9FB8C4;
+      --accent: #EF7D00;
+      --accent-hover: #C86800;
+      --accent-text: #FF941E;
+      --success-bg: #0A3F33;
+      --success-border: #1F7A55;
+      --success-text: #2FB574;
+      --danger-bg: #4A1F1C;
+      --danger-border: #A8443C;
+      --danger-text: #ED807A;
+      --warning-bg: #3E3312;
+      --warning-border: #8A6D1F;
+      --warning-text: #F2C94C;
+      --chip-bg: #0A4A63;
+      --input-bg: #011A24;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    input, select, textarea {
+      font-size: 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 16px 14px 40px;
+      flex: 1;
+    }
+
+    header {
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .page-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .event-name {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .banner {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .contract-warning {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 18px 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    /* 格式範例區塊 */
+    .example-box {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 16px;
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .example-title {
+      font-weight: 700;
+      color: var(--accent-text);
+      margin-bottom: 6px;
+    }
+
+    .example-code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: rgba(1, 26, 36, 0.8);
+      padding: 8px 10px;
+      border-radius: 6px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      font-size: 0.82rem;
+      white-space: pre-wrap;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .form-hint {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .input-text {
+      width: 100%;
+      height: 46px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0 14px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-text:focus {
+      border-color: var(--accent);
+    }
+
+    .textarea-deck {
+      width: 100%;
+      min-height: 220px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px;
+      color: var(--text-primary);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 1rem;
+      line-height: 1.5;
+      outline: none;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+
+    .textarea-deck:focus {
+      border-color: var(--accent);
+    }
+
+    .count-indicator {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--warning-text);
+    }
+
+    .btn {
+      width: 100%;
+      height: 48px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s;
+      min-height: 48px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #141212;
+    }
+
+    .btn-primary:active {
+      background: var(--accent-hover);
+    }
+
+    .msg-box {
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      line-height: 1.5;
+      word-break: break-all;
+    }
+
+    .msg-box.error {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+
+    .msg-box.success {
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: var(--success-text);
+    }
+
+    /* 登錄成功鎖定卡片 */
+    .done-card {
+      background: var(--success-bg);
+      border: 1.5px solid var(--success-border);
+      border-radius: 12px;
+      padding: 18px 16px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .nav-links {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.85rem;
+    }
+
+    .nav-link {
+      color: var(--accent-text);
+      text-decoration: none;
+      margin: 0 6px;
+    }
+
+    .nav-link:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 24px;
+    }
+
+    /* 尚未連上賽務系統覆蓋層 */
+    .disconnected-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #01222F;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      z-index: 1000;
+    }
+    .disconnected-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+    .disconnected-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--danger-text);
+      margin-bottom: 8px;
+    }
+    .disconnected-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      max-width: 360px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1 class="page-title">符文戰場 — 選手牌表登錄</h1>
+      <div class="event-name" id="eventName">載入中...</div>
+    </header>
+
+    <!-- 版本更新警示 -->
+    <div id="contractWarn" class="banner contract-warning" style="display: none;">
+      資料格式已更新，請重新整理頁面
+    </div>
+
+    <!-- 牌表問題逐項清單 (自動測試檢查 id="decklistProblems") -->
+    <div id="decklistProblems" class="msg-box error" style="display: none;"></div>
+
+    <!-- 登錄成功與鎖定畫面 (自動測試檢查 id="decklistDone") -->
+    <section id="decklistDone" class="done-card" style="display: none;"></section>
+
+    <!-- 登錄輸入區塊 -->
+    <section class="card" id="decklistForm">
+      <div class="card-title">純文字牌表登錄</div>
+      <div class="card-desc">依賽事規則，構築賽必須在第一輪開始前登錄牌表。送出後將立即鎖定。</div>
+
+      <!-- 格式範例說明 -->
+      <div class="example-box">
+        <div class="example-title">📋 牌表填寫格式範例</div>
+        <div>
+          一行一張（<code>張數 卡名</code>），<code>---</code> 之後是備牌，<code>//</code> 開頭為註解：
+        </div>
+        <div class="example-code">// 主牌組（至少 40 張）
+3 某張主力卡
+3x 另一張卡
+---
+// 備牌（最多 10 張）
+2 某張備牌</div>
+      </div>
+
+      <div class="form-group">
+        <label for="decklistId" class="form-label">選手編號</label>
+        <input
+          type="text"
+          id="decklistId"
+          class="input-text"
+          autocomplete="off"
+          placeholder="例如 R0001"
+          spellcheck="false"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="decklistPin" class="form-label">個人 PIN 碼</label>
+        <input
+          type="password"
+          id="decklistPin"
+          class="input-text"
+          inputmode="numeric"
+          autocomplete="off"
+          placeholder="報到單上的 6 位數字"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="decklistText" class="form-label">牌表內容</label>
+        <textarea
+          id="decklistText"
+          class="textarea-deck"
+          placeholder="請在此貼上完整純文字牌表，一行一張卡名..."
+          spellcheck="false"
+        ></textarea>
+        <!-- 即時張數統計 -->
+        <div class="count-indicator">
+          <span id="deckCountDisplay">主牌組：0 張（至少 40 張） · 備牌：0 張（最多 10 張）</span>
+        </div>
+      </div>
+
+      <button type="button" id="decklistSubmit" class="btn btn-primary">送出牌表（送出即鎖定）</button>
+    </section>
+
+    <div class="nav-links">
+      <a href="checkin.html" class="nav-link" id="checkinLink">前往現場報到 ➜</a>
+      <a href="find-table.html" class="nav-link" id="findTableLink">前往查詢桌次 ➜</a>
+    </div>
+
+    <footer>
+      符文戰場賽事系統 · 純文字牌表登錄
+    </footer>
+  </div>
+
+  <!-- 尚未連上賽務系統畫面 -->
+  <div class="disconnected-overlay" id="disconnectedScreen">
+    <div class="disconnected-icon">⚠️</div>
+    <div class="disconnected-title">尚未連上賽務系統</div>
+    <div class="disconnected-desc">
+      目前無法讀取賽事即時資料。<br>請確認網路連線是否正常。
+    </div>
+    <button type="button" class="btn btn-primary" id="retryBtn" style="max-width: 200px;">重新連線</button>
+  </div>
+
+  <script>
+    const CURRENT_CONTRACT_VERSION = 10;
+    let snapshotData = null;
+
+    function getDataSourceUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const demo = params.get('demo');
+      if (demo === '1') {
+        return '../sample/snapshot.sample.json';
+      } else if (demo === 'break') {
+        return '../sample/snapshot.break.sample.json';
+      } else if (demo === 'topcut') {
+        return '../sample/snapshot.topcut.sample.json';
+      }
+      return '../snapshot.json';
+    }
+
+    function getApiUrl(endpoint) {
+      const base = (snapshotData && snapshotData.event && typeof snapshotData.event.api_base === 'string')
+        ? snapshotData.event.api_base
+        : '';
+      return base + endpoint;
+    }
+
+    function updateNavLinks() {
+      const demoParam = new URLSearchParams(window.location.search).get('demo');
+      const suffix = demoParam ? `?demo=${encodeURIComponent(demoParam)}` : '';
+      const cLink = document.getElementById('checkinLink');
+      const fLink = document.getElementById('findTableLink');
+      if (cLink) cLink.href = 'checkin.html' + suffix;
+      if (fLink) fLink.href = 'find-table.html' + suffix;
+    }
+
+    async function fetchData() {
+      const primaryUrl = getDataSourceUrl();
+      try {
+        let res = await fetch(primaryUrl, { cache: 'no-store' });
+        if (!res.ok && primaryUrl.startsWith('../')) {
+          res = await fetch(primaryUrl.replace(/^\.\.\//, '/'), { cache: 'no-store' });
+        }
+        if (res.ok) {
+          snapshotData = await res.json();
+          window.snapshotData = snapshotData;
+          if (snapshotData && snapshotData.event && snapshotData.event.name) {
+            document.getElementById('eventName').textContent = snapshotData.event.name;
+          }
+          renderVersionWarning();
+        }
+        document.getElementById('disconnectedScreen').style.display = 'none';
+      } catch (e) {
+        // snapshot 失敗不阻擋使用者提交表單
+      }
+    }
+
+    function renderVersionWarning() {
+      const warnEl = document.getElementById('contractWarn');
+      if (!warnEl || !snapshotData) return;
+      if (snapshotData.contract_version && snapshotData.contract_version > CURRENT_CONTRACT_VERSION) {
+        warnEl.style.display = 'block';
+      } else {
+        warnEl.style.display = 'none';
+      }
+    }
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // 前端即時張數解析計算
+    function calculateDeckCounts(text) {
+      if (!text) return { main: 0, side: 0 };
+      const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+      let isSide = false;
+      let main = 0;
+      let side = 0;
+      const sideMark = /^\s*(?:-{3,}|sideboard|備牌|配牌|側板)\s*[:：]?\s*$/i;
+      const commentMark = /^\s*(?:\/\/|#)/;
+      const lineRe = /^\s*(?:(\d{1,2})\s*[xX*]?\s+)?(.+?)\s*$/;
+
+      for (const raw of lines) {
+        const trimmed = raw.trim();
+        if (!trimmed || commentMark.test(trimmed)) continue;
+        if (sideMark.test(trimmed)) {
+          isSide = true;
+          continue;
+        }
+        const m = lineRe.exec(raw);
+        if (m && m[2]) {
+          const count = m[1] ? parseInt(m[1], 10) : 1;
+          if (isSide) side += count;
+          else main += count;
+        }
+      }
+      return { main, side };
+    }
+
+    function updateLiveCount() {
+      const text = document.getElementById('decklistText').value;
+      const counts = calculateDeckCounts(text);
+      const countEl = document.getElementById('deckCountDisplay');
+      if (countEl) {
+        countEl.textContent = `主牌組：${counts.main} 張（至少 40 張） · 備牌：${counts.side} 張（最多 10 張）`;
+        if (counts.main >= 40 && counts.side <= 10) {
+          countEl.style.color = 'var(--success-text)';
+        } else {
+          countEl.style.color = 'var(--warning-text)';
+        }
+      }
+    }
+
+    // 牌表送出處理
+    async function handleDecklistSubmit() {
+      const problemsEl = document.getElementById('decklistProblems');
+      problemsEl.style.display = 'none';
+      problemsEl.innerHTML = '';
+
+      const idInput = document.getElementById('decklistId');
+      const pinInput = document.getElementById('decklistPin');
+      const textInput = document.getElementById('decklistText');
+
+      const playerId = (idInput ? idInput.value : '').trim().toUpperCase();
+      const pin = (pinInput ? pinInput.value : '').trim();
+      const text = (textInput ? textInput.value : '').trim();
+
+      if (!playerId || !pin) {
+        problemsEl.textContent = '請輸入選手編號與個人 PIN 碼';
+        problemsEl.style.display = 'block';
+        return;
+      }
+
+      if (!text) {
+        problemsEl.textContent = '請貼上牌表內容';
+        problemsEl.style.display = 'block';
+        return;
+      }
+
+      try {
+        const url = getApiUrl('/api/player/decklist');
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            player_id: playerId,
+            pin: pin,
+            text: text
+          })
+        });
+
+        const data = await res.json().catch(() => null);
+
+        if (!res.ok || !data || !data.ok) {
+          // 逐項列出 problems
+          if (data && data.problems && Array.isArray(data.problems) && data.problems.length > 0) {
+            problemsEl.innerHTML = '<ul style="margin: 0; padding-left: 20px;">' +
+              data.problems.map(p => `<li>${escapeHtml(p)}</li>`).join('') +
+              '</ul>';
+          } else {
+            const errorMsg = (data && data.message) ? data.message : `牌表送出失敗 (HTTP ${res.status})`;
+            problemsEl.textContent = errorMsg;
+          }
+          problemsEl.style.display = 'block';
+          return;
+        }
+
+        // 送出成功
+        const doneEl = document.getElementById('decklistDone');
+        const summary = (data.decklist && data.decklist.summary) || {};
+        const parsed = calculateDeckCounts(text);
+        const mainCount = typeof summary.main_count === 'number' ? summary.main_count : parsed.main;
+        const sideCount = typeof summary.sideboard_count === 'number' ? summary.sideboard_count : parsed.side;
+        const distinct = summary.distinct ? `（${summary.distinct} 種卡片）` : '';
+
+        doneEl.innerHTML = `
+          <div style="font-size: 1.3rem; font-weight: 800; color: var(--success-text); margin-bottom: 6px;">✅ 牌表登錄完成</div>
+          <div style="font-size: 1rem; font-weight: 700; color: var(--danger-text); margin-bottom: 12px;">🔒 已鎖定，要更正請找裁判</div>
+          <div style="background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 10px; text-align: left; font-size: 0.9rem;">
+            <div><strong>選手編號：</strong>${escapeHtml(playerId)}</div>
+            <div style="margin-top: 4px;"><strong>張數統計：</strong>主牌組 ${mainCount} 張、備牌 ${sideCount} 張 ${distinct}</div>
+            <div style="margin-top: 4px; font-size: 0.8rem; color: var(--text-secondary);">依賽事規則 401.3，牌表送出後不可更改。若需更正請至裁判桌由裁判解鎖。</div>
+          </div>
+        `;
+        doneEl.style.display = 'block';
+
+      } catch (err) {
+        problemsEl.textContent = err.message || '網路連線異常，請稍後再試';
+        problemsEl.style.display = 'block';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateNavLinks();
+      document.getElementById('decklistSubmit').addEventListener('click', handleDecklistSubmit);
+      document.getElementById('decklistText').addEventListener('input', updateLiveCount);
+      document.getElementById('retryBtn').addEventListener('click', fetchData);
+
+      fetchData();
+    });
+  </script>
+</body>
+</html>

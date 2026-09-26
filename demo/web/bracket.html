@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>符文戰場 — 淘汰賽賽程</title>
+  <style>
+    :root {
+      --bg: #01222F;
+      --card-bg: #013951;
+      --card-bg-alt: #012b3c;
+      --card-border: #0A5570;
+      --text-primary: #F9F9F9;
+      --text-secondary: #9FB8C4;
+      --accent: #EF7D00;
+      --accent-hover: #C86800;
+      --accent-text: #FF941E;
+      --warning-bg: #3E3312;
+      --warning-border: #8A6D1F;
+      --warning-text: #F2C94C;
+      --danger-bg: #4A1F1C;
+      --danger-border: #A8443C;
+      --danger-text: #ED807A;
+      --success-bg: #0A3F33;
+      --success-border: #1F7A55;
+      --success-text: #2FB574;
+      --winner-bg: rgba(47, 181, 116, 0.15);
+      --winner-border: #1F7A55;
+      --winner-text: #2FB574;
+      --chip-bg: #0A4A63;
+      --input-bg: #011A24;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      -webkit-text-size-adjust: 100%;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      min-height: 100svh;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    input, select, textarea {
+      font-size: 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 12px 14px 40px;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+
+    /* 頂部橫幅通知 */
+    .banner {
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+      text-align: center;
+      font-weight: 600;
+    }
+    .contract-warning {
+      background: var(--warning-bg);
+      color: var(--warning-text);
+      border: 1px solid var(--warning-border);
+    }
+    .stale-warning {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      border: 1px solid var(--danger-border);
+    }
+
+    /* 頁頭 */
+    header {
+      margin-bottom: 14px;
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .header-title-group {
+      flex: 1;
+      min-width: 180px;
+    }
+    .page-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .event-name {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .header-nav {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--accent-text);
+      text-decoration: none;
+      font-size: 0.825rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 6px;
+      background: rgba(239, 125, 0, 0.1);
+      border: 1px solid rgba(239, 125, 0, 0.25);
+      white-space: nowrap;
+      min-height: 36px;
+    }
+    .nav-link:active {
+      background: rgba(239, 125, 0, 0.2);
+    }
+
+    /* 冠軍橫幅 (DATA-CONTRACT 5 畫面規定第 4 條) */
+    .champion-banner {
+      background: linear-gradient(135deg, rgba(239, 125, 0, 0.25), rgba(242, 201, 76, 0.15));
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 4px 16px rgba(239, 125, 0, 0.2);
+    }
+    .champion-trophy {
+      font-size: 2.2rem;
+      line-height: 1;
+    }
+    .champion-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .champion-badge {
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: var(--warning-text);
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .champion-name {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .champion-sub {
+      font-size: 0.8rem;
+      color: var(--warning-text);
+    }
+
+    /* 尚未進入淘汰賽提示卡片 */
+    .no-bracket-card {
+      background: var(--card-bg);
+      border: 1px dashed var(--card-border);
+      border-radius: 12px;
+      padding: 36px 20px;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .no-bracket-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+    .no-bracket-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .no-bracket-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      max-width: 440px;
+      margin: 0 auto 20px;
+      line-height: 1.6;
+    }
+    .no-bracket-links {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* 淘汰賽樹狀容器 */
+    #bracketTree {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    @media (min-width: 860px) {
+      #bracketTree {
+        flex-direction: row;
+        align-items: stretch;
+        gap: 16px;
+      }
+      .bracket-round {
+        flex: 1;
+        min-width: 0;
+      }
+    }
+
+    /* 每一輪欄位 (.bracket-round) */
+    .bracket-round {
+      background: var(--card-bg-alt);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      min-width: 0;
+    }
+
+    .round-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .round-label {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--accent-text);
+    }
+    .round-tag {
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-secondary);
+    }
+
+    .matches-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+      justify-content: space-around;
+    }
+
+    /* 比賽卡片 */
+    .match-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    .match-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      background: rgba(1, 26, 36, 0.6);
+      border-bottom: 1px solid var(--card-border);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+    .match-table {
+      font-weight: 700;
+      color: var(--accent-text);
+    }
+    .match-status-badge {
+      font-weight: 600;
+    }
+    .match-status-badge.live {
+      color: var(--accent-text);
+    }
+    .match-status-badge.done {
+      color: var(--success-text);
+    }
+    .match-status-badge.bye {
+      color: var(--warning-text);
+    }
+
+    /* 選手列 */
+    .player-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--card-border);
+      font-size: 0.875rem;
+      transition: background 0.15s ease;
+      min-height: 38px;
+    }
+    .player-row:last-child {
+      border-bottom: none;
+    }
+    .player-row.is-winner {
+      background: var(--winner-bg);
+      border-left: 3px solid var(--winner-border);
+    }
+    .player-info {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .seed-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: var(--input-bg);
+      color: var(--text-secondary);
+      border: 1px solid var(--card-border);
+      flex-shrink: 0;
+    }
+    .player-row.is-winner .seed-tag {
+      border-color: var(--winner-border);
+      color: var(--winner-text);
+    }
+    .player-name-text {
+      font-weight: 600;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+    }
+    .player-row.is-winner .player-name-text {
+      color: var(--winner-text);
+      font-weight: 800;
+    }
+    .player-empty-text {
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+    .player-score {
+      font-weight: 800;
+      font-size: 0.95rem;
+      padding-left: 8px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+    .player-row.is-winner .player-score {
+      color: var(--winner-text);
+      font-size: 1.05rem;
+    }
+
+    .walkover-note {
+      padding: 6px 10px;
+      background: var(--warning-bg);
+      border-top: 1px solid var(--warning-border);
+      font-size: 0.75rem;
+      color: var(--warning-text);
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* 尚未連上賽務系統覆蓋層 (硬性規定 1) */
+    .disconnected-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #01222F;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      z-index: 1000;
+    }
+    .disconnected-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+    .disconnected-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--danger-text);
+      margin-bottom: 8px;
+    }
+    .disconnected-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      max-width: 360px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .btn-retry {
+      background: var(--accent);
+      color: #141212;
+      font-weight: 800;
+      padding: 10px 24px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      min-height: 44px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 版本升級提示 -->
+    <div id="contractWarn" class="banner contract-warning" style="display: none;">
+      資料格式已更新，請重新整理頁面
+    </div>
+
+    <!-- 資料過期提示 (DATA-CONTRACT 1.10) -->
+    <div id="staleBanner" class="banner stale-warning" style="display: none;"></div>
+
+    <!-- 頁頭 -->
+    <header>
+      <div class="header-top">
+        <div class="header-title-group">
+          <div class="page-title">符文戰場 — 淘汰賽賽程</div>
+          <div class="event-name" id="eventName">載入中...</div>
+        </div>
+        <div class="header-nav">
+          <a id="findTableLink" href="find-table.html" class="nav-link">🔍 查詢桌次</a>
+          <a id="standingsLink" href="standings.html" class="nav-link">📊 查看排名</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- 冠軍橫幅 (有 champion 時顯示) -->
+    <section id="championSection" class="champion-banner" style="display: none;">
+      <div class="champion-trophy">🏆</div>
+      <div class="champion-info">
+        <div class="champion-badge">冠軍選手</div>
+        <div class="champion-name" id="championName">--</div>
+        <div class="champion-sub" id="championSub"></div>
+      </div>
+    </section>
+
+    <!-- 還沒有淘汰賽時的說明 (DATA-CONTRACT 5) -->
+    <div id="noBracketMsg" class="no-bracket-card" style="display: none;">
+      <div class="no-bracket-icon">⏳</div>
+      <div class="no-bracket-title">瑞士輪結束後才會有淘汰賽</div>
+      <div class="no-bracket-desc">目前賽事仍在瑞士輪階段，淘汰賽（8 強）賽程將於瑞士輪結束後公布。</div>
+      <div class="no-bracket-links">
+        <a id="noBracketFindTableLink" href="find-table.html" class="nav-link">🔍 查看桌次</a>
+        <a id="noBracketStandingsLink" href="standings.html" class="nav-link">📊 查看排名</a>
+      </div>
+    </div>
+
+    <!-- 淘汰賽樹狀圖容器 (自動測試檢查 id="bracketTree") -->
+    <section id="bracketTree"></section>
+
+    <footer>
+      符文戰場賽事系統 · 淘汰賽樹狀圖
+    </footer>
+  </div>
+
+  <!-- 尚未連上賽務系統畫面 (硬性規定 1) -->
+  <div class="disconnected-overlay" id="disconnectedScreen">
+    <div class="disconnected-icon">⚠️</div>
+    <div class="disconnected-title">尚未連上賽務系統</div>
+    <div class="disconnected-desc">
+      目前無法讀取賽事即時資料。<br>請確認網路連線是否正常。
+    </div>
+    <button type="button" class="btn-retry" id="retryBtn">重新連線</button>
+  </div>
+
+  <script>
+    const CURRENT_CONTRACT_VERSION = 10;
+
+    let snapshotData = null;
+    let rawJsonText = '';
+    let pollTimer = null;
+    let freshnessTimer = null;
+    let serverOffsetMs = 0;
+    let demoOffsetCalculated = false;
+    let lastContentChangeTime = Date.now();
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function getDataSourceUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const demo = params.get('demo');
+      if (demo === '1') {
+        return '../sample/snapshot.sample.json';
+      } else if (demo === 'break') {
+        return '../sample/snapshot.break.sample.json';
+      } else if (demo === 'topcut') {
+        return '../sample/snapshot.topcut.sample.json';
+      }
+      return '../snapshot.json';
+    }
+
+    function updateNavLinks() {
+      const params = new URLSearchParams(window.location.search);
+      const demo = params.get('demo');
+      const findHref = demo ? `find-table.html?demo=${encodeURIComponent(demo)}` : 'find-table.html';
+      const standHref = demo ? `standings.html?demo=${encodeURIComponent(demo)}` : 'standings.html';
+
+      const fLink = document.getElementById('findTableLink');
+      if (fLink) fLink.href = findHref;
+      const noFLink = document.getElementById('noBracketFindTableLink');
+      if (noFLink) noFLink.href = findHref;
+
+      const sLink = document.getElementById('standingsLink');
+      if (sLink) sLink.href = standHref;
+      const noSLink = document.getElementById('noBracketStandingsLink');
+      if (noSLink) noSLink.href = standHref;
+    }
+
+    function renderVersionWarning() {
+      const warnEl = document.getElementById('contractWarn');
+      if (!warnEl) return;
+      if (snapshotData && snapshotData.contract_version && snapshotData.contract_version > CURRENT_CONTRACT_VERSION) {
+        warnEl.style.display = 'block';
+      } else {
+        warnEl.style.display = 'none';
+      }
+    }
+
+    function checkFreshness() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('demo')) return;
+      const staleEl = document.getElementById('staleBanner');
+      if (!staleEl) return;
+      const diffMs = Date.now() - lastContentChangeTime;
+      if (diffMs > 90000) {
+        const mins = Math.max(1, Math.floor(diffMs / 60000));
+        staleEl.textContent = `資料已 ${mins} 分鐘沒更新，請留意現場廣播`;
+        staleEl.style.display = 'block';
+      } else {
+        staleEl.style.display = 'none';
+      }
+    }
+
+    function renderMatchCard(m, rnd, mIdx) {
+      const p1 = m.p1;
+      const p2 = m.p2;
+      const winnerId = m.winner;
+      const result = m.result;
+
+      // 對手退賽直接晉級判斷 (DATA-CONTRACT 5.2, PROJECT.md 第 10 節)
+      // p2 為 null 且 winner 有值時寫「對手退賽，直接晉級」
+      const isWalkover = (!p2 && winnerId);
+
+      // 桌號標籤
+      let tableLabel = '';
+      if (m.table) {
+        tableLabel = `第 ${m.table} 桌`;
+      } else if (isWalkover) {
+        tableLabel = '直接晉級';
+      } else if (!p1 && !p2) {
+        tableLabel = '待定';
+      } else {
+        tableLabel = '桌次待定';
+      }
+
+      // 狀態標籤
+      let statusBadge = '';
+      if (result && result.status === 'confirmed') {
+        statusBadge = '<span class="match-status-badge done">已完賽</span>';
+      } else if (isWalkover) {
+        statusBadge = '<span class="match-status-badge bye">直接晉級</span>';
+      } else if (!p1 && !p2) {
+        statusBadge = '<span class="match-status-badge">待定</span>';
+      } else if (result && (result.status === 'pending' || result.status === 'conflict')) {
+        statusBadge = `<span class="match-status-badge live">${result.status === 'pending' ? '回報中' : '裁判處理中'}</span>`;
+      } else {
+        statusBadge = '<span class="match-status-badge live">進行中</span>';
+      }
+
+      // 選手 1 列
+      let p1Row = '';
+      if (p1) {
+        const isP1Winner = Boolean(winnerId && winnerId === p1.id);
+        const seedHtml = p1.seed ? `<span class="seed-tag">#${escapeHtml(p1.seed)}</span>` : '<span class="seed-tag">-</span>';
+        let scoreHtml = '';
+        if (result && result.status === 'confirmed' && !result.double_loss && result.p1_games !== null && result.p1_games !== undefined) {
+          scoreHtml = `<span class="player-score">${result.p1_games}</span>`;
+        }
+        p1Row = `
+          <div class="player-row ${isP1Winner ? 'is-winner' : ''}">
+            <div class="player-info">
+              ${seedHtml}
+              <span class="player-name-text">${escapeHtml(p1.name)}</span>
+            </div>
+            ${scoreHtml}
+          </div>
+        `;
+      } else {
+        p1Row = `
+          <div class="player-row">
+            <div class="player-info">
+              <span class="seed-tag">-</span>
+              <span class="player-name-text player-empty-text">待定</span>
+            </div>
+          </div>
+        `;
+      }
+
+      // 選手 2 列
+      let p2Row = '';
+      if (p2) {
+        const isP2Winner = Boolean(winnerId && winnerId === p2.id);
+        const seedHtml = p2.seed ? `<span class="seed-tag">#${escapeHtml(p2.seed)}</span>` : '<span class="seed-tag">-</span>';
+        let scoreHtml = '';
+        if (result && result.status === 'confirmed' && !result.double_loss && result.p2_games !== null && result.p2_games !== undefined) {
+          scoreHtml = `<span class="player-score">${result.p2_games}</span>`;
+        }
+        p2Row = `
+          <div class="player-row ${isP2Winner ? 'is-winner' : ''}">
+            <div class="player-info">
+              ${seedHtml}
+              <span class="player-name-text">${escapeHtml(p2.name)}</span>
+            </div>
+            ${scoreHtml}
+          </div>
+        `;
+      } else if (isWalkover) {
+        p2Row = `
+          <div class="player-row">
+            <div class="player-info">
+              <span class="seed-tag">-</span>
+              <span class="player-name-text player-empty-text">對手退賽</span>
+            </div>
+          </div>
+        `;
+      } else {
+        p2Row = `
+          <div class="player-row">
+            <div class="player-info">
+              <span class="seed-tag">-</span>
+              <span class="player-name-text player-empty-text">待定</span>
+            </div>
+          </div>
+        `;
+      }
+
+      let noteHtml = '';
+      if (isWalkover) {
+        noteHtml = '<div class="walkover-note">對手退賽，直接晉級</div>';
+      } else if (result && result.double_loss) {
+        noteHtml = '<div class="walkover-note" style="color: var(--danger-text);">雙方判負</div>';
+      }
+
+      return `
+        <div class="match-card">
+          <div class="match-header">
+            <span class="match-table">${tableLabel}</span>
+            ${statusBadge}
+          </div>
+          ${p1Row}
+          ${p2Row}
+          ${noteHtml}
+        </div>
+      `;
+    }
+
+    function renderBracket() {
+      const bracket = snapshotData ? snapshotData.bracket : null;
+      const treeContainer = document.getElementById('bracketTree');
+      const noBracketMsg = document.getElementById('noBracketMsg');
+      const championSection = document.getElementById('championSection');
+
+      if (!bracket || !bracket.rounds || bracket.rounds.length === 0) {
+        if (treeContainer) treeContainer.style.display = 'none';
+        if (championSection) championSection.style.display = 'none';
+        if (noBracketMsg) noBracketMsg.style.display = 'block';
+        return;
+      }
+
+      if (noBracketMsg) noBracketMsg.style.display = 'none';
+      if (treeContainer) treeContainer.style.display = '';
+
+      // 1. 冠軍資訊
+      if (bracket.champion && bracket.champion.name) {
+        if (championSection) {
+          championSection.style.display = 'flex';
+          const cNameEl = document.getElementById('championName');
+          const cSubEl = document.getElementById('championSub');
+          if (cNameEl) {
+            const seedText = bracket.champion.seed ? `[#${escapeHtml(bracket.champion.seed)}] ` : '';
+            cNameEl.innerHTML = `${seedText}${escapeHtml(bracket.champion.name)}`;
+          }
+          if (cSubEl) {
+            cSubEl.textContent = bracket.champion.id ? `選手編號：${bracket.champion.id}` : '';
+          }
+        }
+      } else {
+        if (championSection) championSection.style.display = 'none';
+      }
+
+      // 2. 渲染每一輪 (八強、四強、決賽)
+      // 自動測試檢查：cols = await pg.locator("#bracketTree .bracket-round").count() == 3
+      // 每一輪必須有 class="bracket-round"
+      treeContainer.innerHTML = bracket.rounds.map((rnd, rIdx) => {
+        const roundLabel = escapeHtml(rnd.label || `第 ${rIdx + 1} 輪`);
+        const isPublished = rnd.published !== false;
+        const matchesHtml = (rnd.matches || []).map((m, mIdx) => renderMatchCard(m, rnd, mIdx)).join('');
+
+        return `
+          <div class="bracket-round">
+            <div class="round-header">
+              <div class="round-label">${roundLabel}</div>
+              <span class="round-tag">${isPublished ? '已公布' : '待定'}</span>
+            </div>
+            <div class="matches-list">
+              ${matchesHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function fetchData() {
+      const primaryUrl = getDataSourceUrl();
+      try {
+        const responseTime = Date.now();
+        let res = await fetch(primaryUrl, { cache: 'no-store' });
+        if (!res.ok && primaryUrl.startsWith('../')) {
+          const fallbackUrl = primaryUrl.replace(/^\.\.\//, '/');
+          res = await fetch(fallbackUrl, { cache: 'no-store' });
+        }
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const text = await res.text();
+        const data = JSON.parse(text);
+
+        const isDemo = Boolean(new URLSearchParams(window.location.search).get('demo'));
+        if (isDemo) {
+          if (!demoOffsetCalculated && data.server_now) {
+            serverOffsetMs = data.server_now - responseTime;
+            demoOffsetCalculated = true;
+          }
+        } else {
+          let dateHeaderMs = null;
+          try {
+            const dateHeader = res.headers.get('Date');
+            if (dateHeader) {
+              const t = new Date(dateHeader).getTime();
+              if (!isNaN(t)) dateHeaderMs = t;
+            }
+          } catch (e) {}
+
+          if (dateHeaderMs !== null) {
+            serverOffsetMs = dateHeaderMs - responseTime;
+          } else if (data.server_now) {
+            serverOffsetMs = data.server_now - responseTime;
+          }
+        }
+
+        document.getElementById('disconnectedScreen').style.display = 'none';
+
+        if (text === rawJsonText) {
+          return;
+        }
+
+        lastContentChangeTime = Date.now();
+        rawJsonText = text;
+        snapshotData = data;
+        window.snapshotData = data;
+
+        if (data.event && data.event.name) {
+          document.getElementById('eventName').textContent = data.event.name;
+        }
+
+        renderBracket();
+        renderVersionWarning();
+      } catch (err) {
+        if (!snapshotData) {
+          document.getElementById('disconnectedScreen').style.display = 'flex';
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateNavLinks();
+      fetchData();
+      pollTimer = setInterval(fetchData, 5000);
+      freshnessTimer = setInterval(checkFreshness, 5000);
+
+      const retryBtn = document.getElementById('retryBtn');
+      if (retryBtn) {
+        retryBtn.addEventListener('click', fetchData);
+      }
+    });
+  </script>
+</body>
+</html>

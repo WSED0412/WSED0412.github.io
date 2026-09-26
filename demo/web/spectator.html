@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>符文戰場 — 觀眾端</title>
+  <style>
+    :root {
+      --bg: #01222F;
+      --card-bg: #013951;
+      --card-border: #0A5570;
+      --text-primary: #F9F9F9;
+      --text-secondary: #9FB8C4;
+      --accent: #EF7D00;
+      --accent-hover: #C86800;
+      --accent-text: #FF941E;
+      --warning-bg: #3E3312;
+      --warning-border: #8A6D1F;
+      --warning-text: #F2C94C;
+      --danger-bg: #4A1F1C;
+      --danger-border: #A8443C;
+      --danger-text: #ED807A;
+      --success-bg: #0A3F33;
+      --success-border: #1F7A55;
+      --success-text: #2FB574;
+      --chip-bg: #0A4A63;
+      --input-bg: #011A24;
+      --info-bg: #1B2F4A;
+      --info-border: #2F5A80;
+      --info-text: #4FA8D8;
+      --judge-bg: #2E2140;
+      --judge-border: #553C77;
+      --judge-text: #B38FE0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    input, select, textarea {
+      font-size: 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 12px 14px 40px;
+      flex: 1;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+
+    /* 頂部賽事資訊與導航 */
+    header {
+      margin-bottom: 12px;
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .event-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .header-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .status-badge {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-weight: 600;
+      white-space: nowrap;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-secondary);
+    }
+    .status-badge.live {
+      background: var(--success-bg);
+      border-color: var(--success-border);
+      color: var(--success-text);
+    }
+    .status-badge.paused {
+      background: var(--warning-bg);
+      border-color: var(--warning-border);
+      color: var(--warning-text);
+    }
+    .viewer-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-weight: 600;
+      background: rgba(239, 125, 0, 0.12);
+      border: 1px solid rgba(239, 125, 0, 0.3);
+      color: var(--accent-text);
+      white-space: nowrap;
+    }
+
+    .header-nav {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--accent-text);
+      text-decoration: none;
+      font-size: 0.825rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(239, 125, 0, 0.1);
+      border: 1px solid rgba(239, 125, 0, 0.25);
+      white-space: nowrap;
+      min-height: 32px;
+    }
+    .nav-link:active {
+      background: rgba(239, 125, 0, 0.2);
+    }
+
+    /* 警示橫幅 */
+    .banner {
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+      text-align: center;
+      font-weight: 600;
+    }
+    .contract-warning {
+      background: var(--warning-bg);
+      color: var(--warning-text);
+      border: 1px solid var(--warning-border);
+    }
+    .stale-warning {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      border: 1px solid var(--danger-border);
+    }
+
+    /* 休息橫幅 */
+    .break-banner {
+      background: linear-gradient(135deg, #3E3312, #554415);
+      border: 1px solid #8A6D1F;
+      color: #F9F9F9;
+      padding: 12px 14px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+    .break-banner-main {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .break-banner-sub {
+      font-size: 0.85rem;
+      color: #F2C94C;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    /* 分頁切換列 */
+    .tab-bar {
+      display: flex;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 14px;
+      gap: 4px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px 4px;
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tab-btn.active {
+      background: var(--card-bg);
+      color: var(--accent-text);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(239, 125, 0, 0.3);
+    }
+
+    /* 面板容器 */
+    .tab-panel {
+      width: 100%;
+    }
+
+    /* 現正開打面板 */
+    .live-list-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .live-table {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      transition: border-color 0.2s;
+    }
+    .live-table.is-feature {
+      border: 1.5px solid var(--info-border);
+      background: linear-gradient(180deg, rgba(27, 47, 74, 0.5), var(--card-bg));
+    }
+    .live-table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .live-table-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .table-num {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--accent-text);
+    }
+    .tag-feature {
+      background: var(--info-bg);
+      color: var(--info-text);
+      border: 1px solid var(--info-border);
+      font-size: 0.7rem;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .live-status-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      white-space: nowrap;
+    }
+    .status-ongoing {
+      background: rgba(239, 125, 0, 0.1);
+      border: 1px solid rgba(239, 125, 0, 0.3);
+      color: var(--accent-text);
+    }
+    .status-pending {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+    }
+    .status-conflict {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+    .status-confirmed {
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: var(--success-text);
+    }
+    .status-double-loss {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+
+    .live-players-grid {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .player-col {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .player-col.right {
+      text-align: right;
+    }
+    .player-name-text {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .player-sub-text {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    .score-center-box {
+      padding: 0 10px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .score-text {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: var(--success-text);
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+    .vs-text {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    /* 查選手面板 */
+    .search-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .search-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+    }
+    .search-box-row {
+      display: flex;
+      gap: 8px;
+    }
+    .search-input-field {
+      flex: 1;
+      height: 46px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0 12px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input-field:focus {
+      border-color: var(--accent);
+    }
+    .btn-action-search {
+      height: 46px;
+      padding: 0 20px;
+      background: var(--accent);
+      color: #141212;
+      font-size: 0.95rem;
+      font-weight: 800;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-action-search:active {
+      background: var(--accent-hover);
+    }
+    .viewer-result-box {
+      margin-top: 14px;
+    }
+    .search-match-card {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 8px;
+    }
+    .search-match-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--accent-text);
+      margin-bottom: 6px;
+    }
+    .search-match-detail {
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+    .not-found-card {
+      background: var(--input-bg);
+      border: 1px dashed var(--card-border);
+      border-radius: 8px;
+      padding: 18px 14px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* 賽程面板 */
+    .schedule-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .schedule-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+    }
+    .schedule-info-row:last-child {
+      margin-bottom: 0;
+    }
+    .schedule-label {
+      color: var(--text-secondary);
+    }
+    .schedule-val {
+      font-weight: 700;
+      color: var(--text-primary);
+      text-align: right;
+    }
+    .schedule-val.highlight {
+      color: var(--accent-text);
+      font-size: 1.15rem;
+    }
+    .schedule-note-box {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: rgba(1, 26, 36, 0.7);
+      border: 1px dashed var(--card-border);
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 24px;
+    }
+
+    /* 斷線覆蓋層 */
+    .disconnected-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #01222F;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      z-index: 9999;
+    }
+    .disconnected-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+    .disconnected-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--danger-text);
+      margin-bottom: 8px;
+    }
+    .disconnected-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      max-width: 360px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .btn-retry {
+      background: var(--accent);
+      color: #141212;
+      font-weight: 800;
+      padding: 10px 24px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      min-height: 44px;
+    }
+    .btn-retry:active {
+      background: var(--accent-hover);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 版本升級提示 -->
+    <div id="contractWarn" class="banner contract-warning" style="display: none;">
+      資料格式已更新，請重新整理頁面
+    </div>
+
+    <!-- 資料過期提示 (DATA-CONTRACT 1.10) -->
+    <div id="staleBanner" class="banner stale-warning" style="display: none;"></div>
+
+    <!-- 頁頭賽事名稱與在線人數 -->
+    <header>
+      <div class="header-top">
+        <div class="event-title" id="eventName">載入中...</div>
+        <div class="header-badges">
+          <div class="status-badge" id="eventStatus">賽事狀態</div>
+          <div class="viewer-badge" id="viewerBadge">
+            <span>👥</span>
+            <span id="viewerCount">—</span>
+            <span>人在線</span>
+          </div>
+        </div>
+      </div>
+      <div class="header-nav">
+        <a id="standingsLink" href="standings.html" class="nav-link">📊 查看排名</a>
+        <a id="bracketLink" href="bracket.html" class="nav-link">🏆 淘汰賽</a>
+      </div>
+    </header>
+
+    <!-- 休息大字橫幅 -->
+    <div id="breakBanner" class="break-banner" style="display: none;">
+      <div class="break-banner-main" id="breakTitle">午休中</div>
+      <div class="break-banner-sub">
+        <span id="breakDesc">--</span>
+        <span id="breakUpdated">--</span>
+      </div>
+    </div>
+
+    <!-- 分頁按鈕列 (三個分頁：現正開打／查選手／賽程) -->
+    <nav class="tab-bar">
+      <button type="button" id="tabLive" class="tab-btn active">現正開打</button>
+      <button type="button" id="tabSearch" class="tab-btn">查選手</button>
+      <button type="button" id="tabSchedule" class="tab-btn">賽程資訊</button>
+    </nav>
+
+    <!-- 分頁 1: 現正開打 -->
+    <main id="panelLive" class="tab-panel">
+      <div class="live-list-wrap" id="liveList">
+        <!-- 動態渲染各桌 -->
+      </div>
+    </main>
+
+    <!-- 分頁 2: 查選手 (唯讀頁面，不可有 PIN) -->
+    <section id="panelSearch" class="tab-panel" style="display: none;">
+      <div class="search-card">
+        <div class="search-title">查詢選手桌次與對手</div>
+        <div class="search-box-row">
+          <input
+            type="text"
+            id="viewerSearch"
+            class="search-input-field"
+            placeholder="請輸入選手編號或姓名..."
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button type="button" id="viewerSearchBtn" class="btn-action-search">查詢</button>
+        </div>
+      </div>
+      <div id="viewerResult" class="viewer-result-box">
+        <div class="not-found-card">請在上方輸入選手編號（例如 R0010）或姓名查詢</div>
+      </div>
+    </section>
+
+    <!-- 分頁 3: 賽程 -->
+    <section id="panelSchedule" class="tab-panel" style="display: none;">
+      <div class="schedule-card">
+        <div class="schedule-info-row">
+          <span class="schedule-label">目前輪次</span>
+          <span class="schedule-val" id="schedRoundLabel">--</span>
+        </div>
+        <div class="schedule-info-row">
+          <span class="schedule-label">本輪計時</span>
+          <span class="schedule-val highlight" id="schedClock">--:--</span>
+        </div>
+        <div class="schedule-info-row" id="schedProgressRow" style="display: none;">
+          <span class="schedule-label">全場桌數進度</span>
+          <span class="schedule-val" id="schedProgress">--</span>
+        </div>
+        <div class="schedule-info-row" id="schedLatestEndRow" style="display: none;">
+          <span class="schedule-label">本輪預估結束</span>
+          <span class="schedule-val" id="schedLatestEnd" style="font-size: 0.85rem; color: #cbd5e1;">--</span>
+        </div>
+        <div class="schedule-info-row" id="schedNextRoundRow" style="display: none;">
+          <span class="schedule-label">下一輪預計時間</span>
+          <span class="schedule-val" id="schedNextRound">待定</span>
+        </div>
+        <div class="schedule-note-box" id="schedNoteRow" style="display: none;">
+          <span style="color: var(--accent-text); font-weight: 700;">賽事公告：</span>
+          <span id="schedNoteText"></span>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      符文戰場賽事系統 · 觀眾端公開即時賽況
+    </footer>
+  </div>
+
+  <!-- 尚未連上賽務系統畫面 -->
+  <div class="disconnected-overlay" id="disconnectedScreen">
+    <div class="disconnected-icon">⚠️</div>
+    <div class="disconnected-title">尚未連上賽務系統</div>
+    <div class="disconnected-desc">
+      目前無法讀取賽事即時資料。<br>請確認網路連線是否正常，連線恢復後將自動重新載入。
+    </div>
+    <button type="button" class="btn-retry" id="retryBtn">重新連線</button>
+  </div>
+
+  <script>
+    const CURRENT_CONTRACT_VERSION = 10;
+    const STORAGE_KEY_TOKEN = 'riftbound_viewer_device_token';
+
+    let snapshotData = null;
+    let rawJsonText = '';
+    let pollTimer = null;
+    let clockTimer = null;
+    let viewerPingTimer = null;
+    let serverOffsetMs = 0;
+    let demoOffsetCalculated = false;
+    let lastContentChangeTime = Date.now();
+    let currentTab = 'panelLive';
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function getDataSourceUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const demo = params.get('demo');
+      if (demo === '1') {
+        return '../sample/snapshot.sample.json';
+      } else if (demo === 'break') {
+        return '../sample/snapshot.break.sample.json';
+      } else if (demo === 'topcut') {
+        return '../sample/snapshot.topcut.sample.json';
+      }
+      return '../snapshot.json';
+    }
+
+    function updateNavLinks() {
+      const params = new URLSearchParams(window.location.search);
+      const demo = params.get('demo');
+      const suffix = demo ? `?demo=${encodeURIComponent(demo)}` : '';
+      const sLink = document.getElementById('standingsLink');
+      const bLink = document.getElementById('bracketLink');
+      if (sLink) sLink.href = 'standings.html' + suffix;
+      if (bLink) bLink.href = 'bracket.html' + suffix;
+    }
+
+    function formatTimeHHMM(ms) {
+      if (!ms) return '待定';
+      try {
+        return new Intl.DateTimeFormat('zh-TW', {
+          timeZone: 'Asia/Taipei',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        }).format(new Date(ms));
+      } catch (e) {
+        const d = new Date(ms);
+        const hours = d.getHours().toString().padStart(2, '0');
+        const minutes = d.getMinutes().toString().padStart(2, '0');
+        return `${hours}:${minutes}`;
+      }
+    }
+
+    function formatRelativeMinutes(updatedMs, nowMs) {
+      if (!updatedMs) return '';
+      const diffSec = Math.max(0, Math.floor((nowMs - updatedMs) / 1000));
+      const mins = Math.floor(diffSec / 60);
+      if (mins <= 0) return '剛剛更新';
+      return `${mins} 分鐘前更新`;
+    }
+
+    // 取得或產生隨機裝置代碼 (DATA-CONTRACT 3.4: 8~64 字元字串)
+    function getOrCreateDeviceToken() {
+      let token = null;
+      try {
+        token = localStorage.getItem(STORAGE_KEY_TOKEN);
+      } catch (e) {}
+
+      if (!token || typeof token !== 'string' || token.length < 8 || token.length > 64) {
+        if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+          token = crypto.randomUUID();
+        } else {
+          token = 'v-' + Math.random().toString(36).substring(2, 15) + '-' + Date.now().toString(36);
+        }
+        try {
+          localStorage.setItem(STORAGE_KEY_TOKEN, token);
+        } catch (e) {}
+      }
+      return token;
+    }
+
+    // 每 30 秒回報在線人數 (DATA-CONTRACT 3.4)
+    async function sendViewerPing() {
+      if (!snapshotData || !snapshotData.event || typeof snapshotData.event.api_base !== 'string') {
+        return;
+      }
+      const token = getOrCreateDeviceToken();
+      const base = snapshotData.event.api_base;
+      const pingUrl = base + '/api/viewer/ping';
+
+      try {
+        await fetch(pingUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: token })
+        });
+      } catch (e) {
+        // 失敗安靜跳過，不拋出錯誤
+      }
+    }
+
+    // 檢查資料新鮮度 (DATA-CONTRACT 1.10)
+    function checkFreshness() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('demo')) return;
+      const staleEl = document.getElementById('staleBanner');
+      if (!staleEl) return;
+      const diffMs = Date.now() - lastContentChangeTime;
+      if (diffMs > 90000) {
+        const mins = Math.max(1, Math.floor(diffMs / 60000));
+        staleEl.textContent = `資料已 ${mins} 分鐘沒更新，請留意現場廣播`;
+        staleEl.style.display = 'block';
+      } else {
+        staleEl.style.display = 'none';
+      }
+    }
+
+    async function fetchData() {
+      const primaryUrl = getDataSourceUrl();
+      try {
+        const responseTime = Date.now();
+        let res = await fetch(primaryUrl, { cache: 'no-store' });
+        if (!res.ok && primaryUrl.startsWith('../')) {
+          res = await fetch(primaryUrl.replace(/^\.\.\//, '/'), { cache: 'no-store' });
+        }
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const text = await res.text();
+        const data = JSON.parse(text);
+
+        const isDemo = !!new URLSearchParams(window.location.search).get('demo');
+        if (isDemo) {
+          if (!demoOffsetCalculated && data.server_now) {
+            serverOffsetMs = data.server_now - responseTime;
+            demoOffsetCalculated = true;
+          }
+        } else {
+          let dateHeaderMs = null;
+          try {
+            const dateHeader = res.headers.get('Date');
+            if (dateHeader) {
+              const t = new Date(dateHeader).getTime();
+              if (!isNaN(t)) dateHeaderMs = t;
+            }
+          } catch (e) {}
+
+          if (dateHeaderMs !== null) {
+            serverOffsetMs = dateHeaderMs - responseTime;
+          } else if (data.server_now) {
+            serverOffsetMs = data.server_now - responseTime;
+          }
+        }
+
+        document.getElementById('disconnectedScreen').style.display = 'none';
+
+        if (text === rawJsonText) {
+          renderViewerCountOnly();
+          return;
+        }
+
+        lastContentChangeTime = Date.now();
+        rawJsonText = text;
+        snapshotData = data;
+        renderAll();
+      } catch (err) {
+        if (!snapshotData) {
+          document.getElementById('disconnectedScreen').style.display = 'flex';
+        }
+      }
+    }
+
+    function renderViewerCountOnly() {
+      const vCountEl = document.getElementById('viewerCount');
+      const hasApiBase = !!(snapshotData && snapshotData.event && typeof snapshotData.event.api_base === 'string');
+
+      if (hasApiBase) {
+        if (!viewerPingTimer) {
+          sendViewerPing();
+          viewerPingTimer = setInterval(sendViewerPing, 30000);
+        }
+      } else {
+        if (viewerPingTimer) {
+          clearInterval(viewerPingTimer);
+          viewerPingTimer = null;
+        }
+      }
+
+      if (!vCountEl) return;
+      const viewers = (snapshotData && snapshotData.event) ? snapshotData.event.viewers : null;
+      if (viewers !== null && viewers !== undefined) {
+        vCountEl.textContent = String(viewers);
+      } else {
+        vCountEl.textContent = '—';
+      }
+    }
+
+    function renderAll() {
+      if (!snapshotData) return;
+
+      renderVersionWarning();
+      renderEventInfo();
+      renderBreakBanner();
+      renderLiveTab();
+      renderScheduleTab();
+      updateClockDisplay();
+    }
+
+    function renderVersionWarning() {
+      const warnEl = document.getElementById('contractWarn');
+      if (!warnEl) return;
+      if (snapshotData.contract_version && snapshotData.contract_version > CURRENT_CONTRACT_VERSION) {
+        warnEl.style.display = 'block';
+      } else {
+        warnEl.style.display = 'none';
+      }
+    }
+
+    function renderEventInfo() {
+      const event = snapshotData.event || {};
+      document.getElementById('eventName').textContent = event.name || '符文戰場賽事';
+
+      const statusEl = document.getElementById('eventStatus');
+      const st = event.status || 'live';
+      statusEl.className = 'status-badge';
+      if (st === 'live') {
+        statusEl.classList.add('live');
+        statusEl.textContent = '進行中';
+      } else if (st === 'paused') {
+        statusEl.classList.add('paused');
+        statusEl.textContent = '暫停中';
+      } else if (st === 'done') {
+        statusEl.textContent = '已結束';
+      } else {
+        statusEl.textContent = '未開始';
+      }
+
+      renderViewerCountOnly();
+    }
+
+    function renderBreakBanner() {
+      const banner = document.getElementById('breakBanner');
+      const titleEl = document.getElementById('breakTitle');
+      const descEl = document.getElementById('breakDesc');
+      const updatedEl = document.getElementById('breakUpdated');
+      if (!banner) return;
+
+      const schedule = snapshotData.schedule || {};
+      const breakInfo = schedule.break;
+
+      if (!breakInfo) {
+        banner.style.display = 'none';
+        return;
+      }
+
+      banner.style.display = 'block';
+      titleEl.textContent = breakInfo.label || '休息中';
+
+      const nowMs = Date.now() + serverOffsetMs;
+      const startTimeMs = schedule.next_round_at || breakInfo.until;
+
+      if (startTimeMs) {
+        if (startTimeMs <= nowMs) {
+          descEl.textContent = '預計時間已過，請留意現場廣播';
+        } else {
+          const timeStr = formatTimeHHMM(startTimeMs);
+          const roundNum = snapshotData.round ? (snapshotData.round.number + 1) : 1;
+          descEl.textContent = `${timeStr} 開始第 ${roundNum} 輪`;
+        }
+      } else {
+        descEl.textContent = '下一輪開始時間待定';
+      }
+
+      if (schedule.updated_at) {
+        updatedEl.textContent = formatRelativeMinutes(schedule.updated_at, nowMs);
+      } else {
+        updatedEl.textContent = '';
+      }
+    }
+
+    // 渲染現正開打 (只放有桌號的桌，feature 為 true 的排最前面)
+    function renderLiveTab() {
+      const container = document.getElementById('liveList');
+      if (!container) return;
+
+      const round = snapshotData.round;
+      if (!round || !round.published) {
+        container.innerHTML = `
+          <div class="not-found-card">
+            <div style="font-size: 1.1rem; font-weight: 800; color: #e0e7ff; margin-bottom: 6px;">配對產生中</div>
+            <div>裁判正在計算本輪配對，請稍候片刻...</div>
+          </div>
+        `;
+        return;
+      }
+
+      const pairings = snapshotData.pairings || [];
+      const tablesOnly = pairings.filter(p => p.table !== null && p.table !== undefined);
+
+      if (tablesOnly.length === 0) {
+        container.innerHTML = '<div class="not-found-card">目前沒有對戰桌次</div>';
+        return;
+      }
+
+      // feature: true 的直播桌排在最前面，其餘依桌號排序
+      const sorted = [...tablesOnly].sort((a, b) => {
+        const fa = a.feature ? 1 : 0;
+        const fb = b.feature ? 1 : 0;
+        if (fa !== fb) return fb - fa;
+        return (a.table || 0) - (b.table || 0);
+      });
+
+      let html = '';
+      for (const t of sorted) {
+        const isFeature = !!t.feature;
+        const p1 = t.p1 || { id: '', name: '未指派', points: 0, record: '' };
+        const p2 = t.p2 || { id: '', name: '未指派', points: 0, record: '' };
+        const res = t.result;
+
+        let statusClass = 'status-ongoing';
+        let statusText = '對戰中';
+        let scoreHtml = '<span class="vs-text">VS</span>';
+
+        if (res) {
+          if (res.status === 'pending') {
+            statusClass = 'status-pending';
+            statusText = '回報中';
+            scoreHtml = '<span class="vs-text">VS</span>';
+          } else if (res.status === 'conflict') {
+            statusClass = 'status-conflict';
+            statusText = '裁判處理中';
+            scoreHtml = '<span class="vs-text">VS</span>';
+          } else if (res.status === 'confirmed') {
+            if (res.double_loss) {
+              statusClass = 'status-double-loss';
+              statusText = '雙方判負';
+              scoreHtml = '<span class="vs-text">VS</span>';
+            } else {
+              statusClass = 'status-confirmed';
+              statusText = '已生效';
+              const p1g = res.p1_games !== null ? res.p1_games : 0;
+              const p2g = res.p2_games !== null ? res.p2_games : 0;
+              scoreHtml = `<span class="score-text">${p1g} - ${p2g}</span>`;
+            }
+          }
+        }
+
+        html += `
+          <div class="live-table ${isFeature ? 'is-feature' : ''}">
+            <div class="live-table-header">
+              <div class="live-table-title">
+                <span class="table-num">第 ${t.table} 桌</span>
+                ${isFeature ? '<span class="tag-feature">直播桌</span>' : ''}
+              </div>
+              <span class="live-status-badge ${statusClass}">${statusText}</span>
+            </div>
+            <div class="live-players-grid">
+              <div class="player-col">
+                <div class="player-name-text">${escapeHtml(p1.name)}</div>
+                <div class="player-sub-text">${escapeHtml(p1.id)} · ${p1.points || 0}分</div>
+              </div>
+              <div class="score-center-box">
+                ${scoreHtml}
+              </div>
+              <div class="player-col right">
+                <div class="player-name-text">${escapeHtml(p2.name)}</div>
+                <div class="player-sub-text">${escapeHtml(p2.id)} · ${p2.points || 0}分</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+    }
+
+    // 渲染賽程面板
+    function renderScheduleTab() {
+      const round = snapshotData.round || {};
+      const schedule = snapshotData.schedule || {};
+      const clock = snapshotData.clock || {};
+      const event = snapshotData.event || {};
+      const progress = round.progress || {};
+
+      document.getElementById('schedRoundLabel').textContent = round.label || '尚未開賽';
+
+      // 進度桌數
+      const progressRow = document.getElementById('schedProgressRow');
+      if (progress && progress.tables_total !== undefined) {
+        progressRow.style.display = 'flex';
+        const left = Math.max(0, progress.tables_total - (progress.tables_done || 0));
+        document.getElementById('schedProgress').textContent = `全場還剩 ${left} 桌 (已完成 ${progress.tables_done || 0} / 共 ${progress.tables_total} 桌)`;
+      } else {
+        progressRow.style.display = 'none';
+      }
+
+      // 本輪表定最晚結束
+      const latestEndRow = document.getElementById('schedLatestEndRow');
+      if (progress && progress.latest_end_at && clock.state === 'running') {
+        latestEndRow.style.display = 'flex';
+        const tStr = formatTimeHHMM(progress.latest_end_at);
+        document.getElementById('schedLatestEnd').textContent = `表定最晚 ${tStr} 結束（時間到後還有延長回合）`;
+      } else {
+        latestEndRow.style.display = 'none';
+      }
+
+      // 下一輪預計時間
+      const nextRow = document.getElementById('schedNextRoundRow');
+      const nextVal = document.getElementById('schedNextRound');
+      if (schedule && schedule.next_round_at) {
+        nextRow.style.display = 'flex';
+        const nowMs = Date.now() + serverOffsetMs;
+        if (schedule.next_round_at <= nowMs) {
+          nextVal.textContent = '預計時間已過，請留意現場廣播';
+        } else {
+          nextVal.textContent = formatTimeHHMM(schedule.next_round_at);
+        }
+      } else if (schedule && schedule.next_round_at === null) {
+        nextRow.style.display = 'flex';
+        nextVal.textContent = '待定';
+      } else {
+        nextRow.style.display = 'none';
+      }
+
+      // 公告
+      const noteRow = document.getElementById('schedNoteRow');
+      const noteText = document.getElementById('schedNoteText');
+      if (event.note && event.note.trim()) {
+        noteRow.style.display = 'block';
+        noteText.textContent = event.note;
+      } else {
+        noteRow.style.display = 'none';
+      }
+    }
+
+    // 更新計時文字 (每秒執行)
+    function updateClockDisplay() {
+      if (!snapshotData) return;
+      const clock = snapshotData.clock || {};
+      const round = snapshotData.round || {};
+      const schedClock = document.getElementById('schedClock');
+
+      if (!schedClock) return;
+
+      if (round.phase === 'finished') {
+        schedClock.textContent = `${round.label || ''} 已結束`;
+        return;
+      }
+
+      if (clock.state === 'not_started') {
+        schedClock.textContent = '未開始';
+      } else if (clock.state === 'paused') {
+        const sec = clock.remaining_sec !== null && clock.remaining_sec !== undefined ? clock.remaining_sec : 0;
+        const mm = Math.floor(sec / 60).toString().padStart(2, '0');
+        const ss = (sec % 60).toString().padStart(2, '0');
+        schedClock.textContent = `暫停中 (${mm}:${ss})`;
+      } else if (clock.state === 'time_up') {
+        schedClock.textContent = '時間到 (延長 3 回合)';
+      } else if (clock.state === 'running' && clock.ends_at) {
+        const nowMs = Date.now() + serverOffsetMs;
+        const diffSec = Math.floor((clock.ends_at - nowMs) / 1000);
+        if (diffSec <= 0) {
+          schedClock.textContent = '00:00 (時間到)';
+        } else {
+          const mm = Math.floor(diffSec / 60).toString().padStart(2, '0');
+          const ss = (diffSec % 60).toString().padStart(2, '0');
+          schedClock.textContent = `${mm}:${ss}`;
+        }
+      } else {
+        schedClock.textContent = '--:--';
+      }
+    }
+
+    // 查選手 (唯讀)
+    function handleViewerSearch() {
+      const input = document.getElementById('viewerSearch');
+      const resultBox = document.getElementById('viewerResult');
+      if (!input || !resultBox) return;
+
+      const q = input.value.trim();
+      if (!q) {
+        resultBox.innerHTML = '<div class="not-found-card">請輸入選手編號或姓名查詢</div>';
+        return;
+      }
+
+      if (!snapshotData || !snapshotData.round || !snapshotData.round.published) {
+        resultBox.innerHTML = '<div class="not-found-card">目前配對尚未公布或未開賽，找不到符合的選手</div>';
+        return;
+      }
+
+      const pairings = snapshotData.pairings || [];
+      const qUpper = q.toUpperCase();
+      const qLower = q.toLowerCase();
+
+      // 比對 ID 或 Name（同名或完全匹配）
+      const matches = [];
+
+      for (const p of pairings) {
+        const roundNum = snapshotData.round.number;
+        const roundLabel = snapshotData.round.label || `第 ${roundNum} 輪`;
+
+        // 檢查 p1
+        if (p.p1) {
+          const idMatch = p.p1.id && p.p1.id.toUpperCase() === qUpper;
+          const nameMatch = p.p1.name && p.p1.name.toLowerCase().includes(qLower);
+          if (idMatch || nameMatch) {
+            matches.push({
+              self: p.p1,
+              table: p.table,
+              opponent: p.p2,
+              isBye: !p.p2 || p.table === null,
+              roundLabel: roundLabel
+            });
+          }
+        }
+
+        // 檢查 p2
+        if (p.p2) {
+          const idMatch = p.p2.id && p.p2.id.toUpperCase() === qUpper;
+          const nameMatch = p.p2.name && p.p2.name.toLowerCase().includes(qLower);
+          if (idMatch || nameMatch) {
+            matches.push({
+              self: p.p2,
+              table: p.table,
+              opponent: p.p1,
+              isBye: false,
+              roundLabel: roundLabel
+            });
+          }
+        }
+      }
+
+      if (matches.length === 0) {
+        resultBox.innerHTML = `
+          <div class="not-found-card">
+            找不到「${escapeHtml(q)}」相關選手，請確認輸入是否正確。
+          </div>
+        `;
+        return;
+      }
+
+      let resHtml = '';
+      for (const m of matches) {
+        if (m.isBye) {
+          resHtml += `
+            <div class="search-match-card">
+              <div class="search-match-title">${escapeHtml(m.self.name)} (${escapeHtml(m.self.id)})</div>
+              <div class="search-match-detail">
+                ${escapeHtml(m.roundLabel)} · 本輪輪空
+              </div>
+            </div>
+          `;
+        } else {
+          const oppName = m.opponent ? m.opponent.name : '待定';
+          const oppId = m.opponent ? m.opponent.id : '';
+          resHtml += `
+            <div class="search-match-card">
+              <div class="search-match-title">${escapeHtml(m.self.name)} (${escapeHtml(m.self.id)})</div>
+              <div class="search-match-detail">
+                ${escapeHtml(m.roundLabel)} · 第 ${m.table} 桌 · 對手 ${escapeHtml(oppName)} (${escapeHtml(oppId)})
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      resultBox.innerHTML = resHtml;
+    }
+
+    // 分頁切換
+    function setupTabs() {
+      const tabs = [
+        { btn: 'tabLive', panel: 'panelLive' },
+        { btn: 'tabSearch', panel: 'panelSearch' },
+        { btn: 'tabSchedule', panel: 'panelSchedule' }
+      ];
+
+      tabs.forEach(t => {
+        const btnEl = document.getElementById(t.btn);
+        if (!btnEl) return;
+        btnEl.addEventListener('click', () => {
+          tabs.forEach(other => {
+            const b = document.getElementById(other.btn);
+            const p = document.getElementById(other.panel);
+            if (other.btn === t.btn) {
+              if (b) b.classList.add('active');
+              if (p) p.style.display = 'block';
+            } else {
+              if (b) b.classList.remove('active');
+              if (p) p.style.display = 'none';
+            }
+          });
+          currentTab = t.panel;
+        });
+      });
+    }
+
+    function init() {
+      updateNavLinks();
+      setupTabs();
+
+      const searchBtn = document.getElementById('viewerSearchBtn');
+      const searchInput = document.getElementById('viewerSearch');
+      if (searchBtn) searchBtn.addEventListener('click', handleViewerSearch);
+      if (searchInput) {
+        searchInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') handleViewerSearch();
+        });
+      }
+
+      const retryBtn = document.getElementById('retryBtn');
+      if (retryBtn) retryBtn.addEventListener('click', fetchData);
+
+      // 初始讀取與輪詢
+      fetchData();
+      pollTimer = setInterval(fetchData, 5000);
+      clockTimer = setInterval(() => {
+        updateClockDisplay();
+        checkFreshness();
+        renderBreakBanner();
+      }, 1000);
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

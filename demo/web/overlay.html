@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, height=1080, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>符文戰場 — OBS 疊圖</title>
+  <style>
+    :root {
+      --bg: #01222F;
+      --card-bg: #013951;
+      --card-border: #0A5570;
+      --text-primary: #F9F9F9;
+      --text-secondary: #9FB8C4;
+      --accent: #EF7D00;
+      --accent-hover: #C86800;
+      --accent-text: #FF941E;
+      --warning-bg: #3E3312;
+      --warning-border: #8A6D1F;
+      --warning-text: #F2C94C;
+      --danger-bg: #4A1F1C;
+      --danger-border: #A8443C;
+      --danger-text: #ED807A;
+      --success-bg: #0A3F33;
+      --success-border: #1F7A55;
+      --success-text: #2FB574;
+      --chip-bg: #0A4A63;
+      --input-bg: #011A24;
+      --info-bg: #1B2F4A;
+      --info-border: #2F5A80;
+      --info-text: #4FA8D8;
+      --judge-bg: #2E2140;
+      --judge-border: #553C77;
+      --judge-text: #B38FE0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      -webkit-text-size-adjust: 100%;
+      width: 1920px;
+      height: 1080px;
+      background: transparent !important;
+      background-color: transparent !important;
+      overflow: hidden;
+      font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      color: var(--text-primary);
+      user-select: none;
+    }
+
+    input, select, textarea {
+      font-size: 1rem;
+    }
+
+    /* 疊圖主容器 */
+    .overlay-container {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    /* 頂部賽況整合條 */
+    .top-bar {
+      position: absolute;
+      top: 24px;
+      left: 40px;
+      right: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .info-cluster {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* 輪次卡片 */
+    .round-card {
+      background: rgba(1, 57, 81, 0.82);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      padding: 10px 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+    }
+    #overlayRound {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--accent-text);
+      letter-spacing: 1px;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+      white-space: nowrap;
+    }
+
+    /* 計時鐘卡片 */
+    .clock-card {
+      background: rgba(1, 57, 81, 0.82);
+      border: 2px solid var(--card-border);
+      border-radius: 12px;
+      padding: 10px 28px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+    }
+    #overlayClock {
+      font-size: 30px;
+      font-weight: 900;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+      white-space: nowrap;
+    }
+
+    /* 直播桌卡片 */
+    .feature-card {
+      background: rgba(1, 57, 81, 0.82);
+      border: 2px solid var(--accent);
+      border-radius: 14px;
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.8);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      min-width: 680px;
+      overflow: hidden;
+    }
+    .feature-header {
+      background: linear-gradient(90deg, #C86800, #EF7D00);
+      padding: 4px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .feature-badge-title {
+      font-size: 15px;
+      font-weight: 900;
+      color: #141212;
+      letter-spacing: 1px;
+    }
+    .feature-table-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #141212;
+    }
+
+    #overlayFeature {
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .player-box {
+      flex: 1;
+      min-width: 0;
+    }
+    .player-box.right {
+      text-align: right;
+    }
+    .player-name-val {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+    }
+    .player-meta-val {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    .center-score-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      flex-shrink: 0;
+    }
+    .score-digits {
+      font-size: 34px;
+      font-weight: 900;
+      color: var(--success-text);
+      letter-spacing: 2px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+    }
+    .score-vs {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--text-secondary);
+      letter-spacing: 1px;
+    }
+    .score-sub-tag {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--warning-text);
+      margin-top: 2px;
+    }
+
+    /* 底部賽事公告 */
+    .note-wrap {
+      position: absolute;
+      bottom: 28px;
+      left: 60px;
+      right: 60px;
+      display: flex;
+      justify-content: center;
+    }
+    #overlayNote {
+      background: rgba(1, 57, 81, 0.82);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      padding: 12px 32px;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-primary);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+      max-width: 1400px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+    }
+    .note-lead {
+      color: var(--accent-text);
+      margin-right: 10px;
+    }
+
+    /* 斷線警示 */
+    #overlayDisconnected {
+      position: absolute;
+      top: 24px;
+      left: 40px;
+      background: rgba(74, 31, 28, 0.95);
+      border: 2px solid var(--danger-border);
+      border-radius: 12px;
+      padding: 12px 28px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8);
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--danger-text);
+      display: none;
+      align-items: center;
+      gap: 10px;
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+    }
+
+    /* 資料過期提示（角落小字提示） */
+    #overlayStale {
+      position: absolute;
+      bottom: 12px;
+      right: 20px;
+      background: rgba(74, 31, 28, 0.9);
+      border: 1px solid var(--danger-border);
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--danger-text);
+      display: none;
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+      z-index: 999;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay-container">
+    <!-- 斷線警示 (讀不到資料時顯示，內含「尚未連上」) -->
+    <div id="overlayDisconnected">⚠️ 尚未連上賽務系統</div>
+
+    <!-- 資料過期提示 (角落小字提示，內含「沒更新」) -->
+    <div id="overlayStale"></div>
+
+    <!-- 頂部資訊條 -->
+    <div class="top-bar" id="overlayTopBar">
+      <div class="info-cluster">
+        <!-- 輪次 -->
+        <div class="round-card">
+          <div id="overlayRound"></div>
+        </div>
+        <!-- 計時器 -->
+        <div class="clock-card">
+          <div id="overlayClock"></div>
+        </div>
+      </div>
+
+      <!-- 直播桌對戰資訊 -->
+      <div class="feature-card">
+        <div class="feature-header">
+          <span class="feature-badge-title">★ 直播桌 FEATURE MATCH</span>
+          <span class="feature-table-title" id="featureTableNum">--</span>
+        </div>
+        <div id="overlayFeature">
+          <!-- 雙方選手名稱與戰績比分 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部公告 (event.note 為空時整塊隱藏) -->
+    <div class="note-wrap">
+      <div id="overlayNote" style="display: none;"></div>
+    </div>
+  </div>
+
+  <script>
+    const CURRENT_CONTRACT_VERSION = 10;
+
+    let snapshotData = null;
+    let rawJsonText = '';
+    let pollTimer = null;
+    let clockTimer = null;
+    let serverOffsetMs = 0;
+    let demoOffsetCalculated = false;
+    let lastContentChangeTime = Date.now();
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function getDataSourceUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const demo = params.get('demo');
+      if (demo === '1') {
+        return '../sample/snapshot.sample.json';
+      } else if (demo === 'break') {
+        return '../sample/snapshot.break.sample.json';
+      } else if (demo === 'topcut') {
+        return '../sample/snapshot.topcut.sample.json';
+      }
+      return '../snapshot.json';
+    }
+
+    async function fetchData() {
+      const primaryUrl = getDataSourceUrl();
+      try {
+        const responseTime = Date.now();
+        let res = await fetch(primaryUrl, { cache: 'no-store' });
+        if (!res.ok && primaryUrl.startsWith('../')) {
+          res = await fetch(primaryUrl.replace(/^\.\.\//, '/'), { cache: 'no-store' });
+        }
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const text = await res.text();
+        const data = JSON.parse(text);
+
+        const isDemo = !!new URLSearchParams(window.location.search).get('demo');
+        if (isDemo) {
+          if (!demoOffsetCalculated && data.server_now) {
+            serverOffsetMs = data.server_now - responseTime;
+            demoOffsetCalculated = true;
+          }
+        } else {
+          let dateHeaderMs = null;
+          try {
+            const dateHeader = res.headers.get('Date');
+            if (dateHeader) {
+              const t = new Date(dateHeader).getTime();
+              if (!isNaN(t)) dateHeaderMs = t;
+            }
+          } catch (e) {}
+
+          if (dateHeaderMs !== null) {
+            serverOffsetMs = dateHeaderMs - responseTime;
+          } else if (data.server_now) {
+            serverOffsetMs = data.server_now - responseTime;
+          }
+        }
+
+        document.getElementById('overlayDisconnected').style.display = 'none';
+
+        if (text === rawJsonText) {
+          return;
+        }
+
+        lastContentChangeTime = Date.now();
+        rawJsonText = text;
+        snapshotData = data;
+        renderAll();
+        checkFreshness();
+      } catch (err) {
+        if (!snapshotData) {
+          document.getElementById('overlayDisconnected').style.display = 'flex';
+          document.getElementById('overlayRound').textContent = '';
+          document.getElementById('overlayClock').textContent = '';
+          document.getElementById('overlayFeature').textContent = '';
+          document.getElementById('overlayNote').style.display = 'none';
+          const tableNumEl = document.getElementById('featureTableNum');
+          if (tableNumEl) tableNumEl.textContent = '--';
+          const staleEl = document.getElementById('overlayStale');
+          if (staleEl) staleEl.style.display = 'none';
+        }
+      }
+    }
+
+    function renderAll() {
+      if (!snapshotData) return;
+      renderRound();
+      renderFeatureTable();
+      renderNote();
+      updateClockDisplay();
+    }
+
+    function renderRound() {
+      const roundEl = document.getElementById('overlayRound');
+      if (!roundEl) return;
+      const round = snapshotData.round;
+      if (!round) {
+        roundEl.textContent = '尚未開賽';
+      } else if (round.published === false) {
+        roundEl.textContent = `${round.label || '本輪'} · 配對產生中`;
+      } else if (round.label) {
+        roundEl.textContent = round.label;
+      } else {
+        roundEl.textContent = `第 ${round.number} 輪`;
+      }
+    }
+
+    function renderFeatureTable() {
+      const featEl = document.getElementById('overlayFeature');
+      const tableNumEl = document.getElementById('featureTableNum');
+      if (!featEl) return;
+
+      const round = snapshotData.round;
+      if (round && round.published === false) {
+        featEl.innerHTML = '<div style="color: var(--text-secondary); font-size: 20px;">配對產生中</div>';
+        if (tableNumEl) tableNumEl.textContent = '--';
+        return;
+      }
+
+      const pairings = snapshotData.pairings || [];
+      const featurePairing = pairings.find(p => p.feature && p.table !== null)
+        || pairings.find(p => p.table !== null);
+
+      if (!featurePairing) {
+        featEl.innerHTML = '<div style="color: var(--text-secondary); font-size: 20px;">目前尚無對戰桌次</div>';
+        if (tableNumEl) tableNumEl.textContent = '--';
+        return;
+      }
+
+      if (tableNumEl) {
+        tableNumEl.textContent = `第 ${featurePairing.table} 桌`;
+      }
+
+      const p1 = featurePairing.p1 || { id: '', name: '未指定', points: 0, record: '' };
+      const p2 = featurePairing.p2 || { id: '', name: '未指定', points: 0, record: '' };
+      const res = featurePairing.result;
+
+      let scoreContent = '<span class="score-vs">VS</span>';
+      let statusTag = '';
+
+      if (res) {
+        if (res.status === 'confirmed') {
+          if (res.double_loss) {
+            scoreContent = '<span class="score-vs">VS</span>';
+            statusTag = '<span class="score-sub-tag">雙方判負</span>';
+          } else {
+            const p1g = res.p1_games !== null ? res.p1_games : 0;
+            const p2g = res.p2_games !== null ? res.p2_games : 0;
+            scoreContent = `<span class="score-digits">${p1g} - ${p2g}</span>`;
+            statusTag = '<span class="score-sub-tag" style="color: var(--success-text);">已生效</span>';
+          }
+        } else if (res.status === 'pending') {
+          scoreContent = '<span class="score-vs">VS</span>';
+          statusTag = '<span class="score-sub-tag">回報中</span>';
+        } else if (res.status === 'conflict') {
+          scoreContent = '<span class="score-vs">VS</span>';
+          statusTag = '<span class="score-sub-tag" style="color: var(--danger-text);">裁判處理中</span>';
+        }
+      }
+
+      featEl.innerHTML = `
+        <div class="player-box">
+          <div class="player-name-val">${escapeHtml(p1.name)}</div>
+          <div class="player-meta-val">${escapeHtml(p1.id)} · ${p1.points || 0}分</div>
+        </div>
+        <div class="center-score-box">
+          ${scoreContent}
+          ${statusTag}
+        </div>
+        <div class="player-box right">
+          <div class="player-name-val">${escapeHtml(p2.name)}</div>
+          <div class="player-meta-val">${escapeHtml(p2.id)} · ${p2.points || 0}分</div>
+        </div>
+      `;
+    }
+
+    function renderNote() {
+      const noteEl = document.getElementById('overlayNote');
+      if (!noteEl) return;
+      const event = snapshotData.event || {};
+      const note = event.note ? event.note.trim() : '';
+
+      if (!note) {
+        noteEl.style.display = 'none';
+        noteEl.innerHTML = '';
+      } else {
+        noteEl.style.display = 'block';
+        noteEl.innerHTML = `<span class="note-lead">📢 賽事公告：</span><span>${escapeHtml(note)}</span>`;
+      }
+    }
+
+    function updateClockDisplay() {
+      if (!snapshotData) return;
+      const clockEl = document.getElementById('overlayClock');
+      if (!clockEl) return;
+
+      const clock = snapshotData.clock || {};
+      const round = snapshotData.round || {};
+
+      if (round.phase === 'finished') {
+        clockEl.textContent = '本輪已結束';
+        return;
+      }
+
+      if (clock.state === 'not_started') {
+        clockEl.textContent = '未開始';
+      } else if (clock.state === 'paused') {
+        const sec = clock.remaining_sec !== null && clock.remaining_sec !== undefined ? clock.remaining_sec : 0;
+        const mm = Math.floor(sec / 60).toString().padStart(2, '0');
+        const ss = (sec % 60).toString().padStart(2, '0');
+        clockEl.textContent = `暫停中 (${mm}:${ss})`;
+      } else if (clock.state === 'time_up') {
+        clockEl.textContent = '時間到';
+      } else if (clock.state === 'running' && clock.ends_at) {
+        const nowMs = Date.now() + serverOffsetMs;
+        const diffSec = Math.floor((clock.ends_at - nowMs) / 1000);
+        if (diffSec <= 0) {
+          clockEl.textContent = '時間到';
+        } else {
+          const mm = Math.floor(diffSec / 60).toString().padStart(2, '0');
+          const ss = (diffSec % 60).toString().padStart(2, '0');
+          clockEl.textContent = `${mm}:${ss}`;
+        }
+      } else {
+        clockEl.textContent = '--:--';
+      }
+    }
+
+    // 檢查資料新鮮度 (DATA-CONTRACT 1.10: 超過90秒沒收到新內容顯示警告，示範模式不檢查)
+    function checkFreshness() {
+      const staleEl = document.getElementById('overlayStale');
+      if (!staleEl) return;
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('demo')) {
+        staleEl.style.display = 'none';
+        return;
+      }
+      if (!snapshotData) {
+        staleEl.style.display = 'none';
+        return;
+      }
+      const diffMs = Date.now() - lastContentChangeTime;
+      if (diffMs > 90000) {
+        const mins = Math.max(1, Math.floor(diffMs / 60000));
+        staleEl.textContent = `⚠ 資料 ${mins} 分鐘沒更新`;
+        staleEl.style.display = 'block';
+      } else {
+        staleEl.style.display = 'none';
+      }
+    }
+
+    function init() {
+      fetchData();
+      pollTimer = setInterval(fetchData, 5000);
+      clockTimer = setInterval(() => {
+        updateClockDisplay();
+        checkFreshness();
+      }, 1000);
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

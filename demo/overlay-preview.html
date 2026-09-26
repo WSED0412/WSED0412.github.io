@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>OBS 疊圖預覽 — 符文戰場賽事系統</title>
+<style>
+  :root { --fg: #F9F9F9; --dim: #9FB8C4; --accent-text: #FF941E; }
+  * { box-sizing: border-box; }
+  html, body {
+    -webkit-text-size-adjust: 100%;
+    margin: 0; background: #01222F; color: var(--fg);
+    font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 24px 16px 56px; }
+  a.back { color: var(--accent-text); text-decoration: none; font-weight: 700; }
+  h1 { font-size: 1.4rem; margin: 14px 0 6px; }
+  p { color: var(--dim); margin: 0 0 18px; font-size: 0.97rem; }
+  /* 疊圖是 1920×1080 的固定設計，等比例縮到容器寬度 */
+  .stage {
+    position: relative; width: 100%; aspect-ratio: 16 / 9;
+    border-radius: 14px; overflow: hidden; border: 1px solid #0A5570;
+    /* 墊一層模擬實況畫面的底色，真實使用時這裡是攝影機的畫面 */
+    background: linear-gradient(160deg, #24352b 0%, #1b2a33 55%, #2a2320 100%);
+  }
+  .stage iframe {
+    position: absolute; top: 0; left: 0;
+    width: 1920px; height: 1080px; border: 0;
+    transform-origin: top left;
+  }
+  .note { margin-top: 18px; font-size: 0.93rem; color: var(--dim); }
+  .note b { color: var(--fg); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← 回示範首頁</a>
+  <h1>OBS 疊圖</h1>
+  <p>給 OBS 當「瀏覽器來源」用，<b>背景是完全透明的</b>。下面墊了一層深色底，模擬疊在實況畫面上的樣子。</p>
+
+  <div class="stage" id="stage">
+    <iframe id="frame" src="web/overlay.html?demo=1" title="OBS 疊圖示範" scrolling="no"></iframe>
+  </div>
+
+  <p class="note">
+    畫面上有：輪次與倒數（左上）、直播桌雙方與比分（右上）、賽事公告（下方）。
+    <b>還沒生效的成績只會寫「回報中」</b>，不會把未確認的比分播出去；主機斷線超過 100 秒，
+    角落會出現小字提醒，不會讓倒數停住卻看起來一切正常。
+  </p>
+</div>
+
+<script>
+  // 把 1920×1080 的疊圖等比例縮進容器裡
+  function fit() {
+    var stage = document.getElementById('stage');
+    var frame = document.getElementById('frame');
+    if (!stage || !frame) return;
+    frame.style.transform = 'scale(' + (stage.clientWidth / 1920) + ')';
+  }
+  fit();
+  window.addEventListener('resize', fit);
+  window.addEventListener('orientationchange', function () { setTimeout(fit, 300); });
+</script>
+</body>
+</html>
