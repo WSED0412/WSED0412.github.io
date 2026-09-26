@@ -260,7 +260,7 @@
       color: var(--text-secondary);
       font-size: 0.75rem;
       font-weight: 700;
-      padding: 10px 12px;
+      padding: 8px 6px;
       border-bottom: 2px solid var(--card-border);
       position: -webkit-sticky;
       position: sticky;
@@ -277,7 +277,7 @@
     }
 
     #standingsTable td {
-      padding: 10px 12px;
+      padding: 8px 6px;
       border-bottom: 1px solid var(--card-border);
       color: var(--text-primary);
       background: var(--card-bg);
@@ -288,11 +288,11 @@
       background: var(--card-bg-alt);
     }
 
-    /* 前兩欄固定 (名次與選手) */
+    /* 前兩欄固定 (名次與選手) — 手機優先（320px/390px 不超過 45%） */
     .col-rank {
-      width: 60px;
-      min-width: 60px;
-      max-width: 60px;
+      width: 40px;
+      min-width: 40px;
+      max-width: 40px;
       text-align: center;
     }
     #standingsTable th.col-rank,
@@ -302,20 +302,32 @@
       left: 0;
       z-index: 5;
       text-align: center;
+      width: 40px;
+      min-width: 40px;
+      max-width: 40px;
+      padding: 8px 2px;
+      box-sizing: border-box;
     }
     #standingsTable th.col-rank {
       z-index: 15;
     }
 
     .col-player {
-      min-width: 140px;
+      width: 80px;
+      min-width: 80px;
+      max-width: 80px;
     }
     #standingsTable th.col-player,
     #standingsTable td.cell-player {
       position: -webkit-sticky;
       position: sticky;
-      left: 60px;
+      left: 40px;
       z-index: 5;
+      width: 80px;
+      min-width: 80px;
+      max-width: 80px;
+      padding: 8px 4px;
+      box-sizing: border-box;
       box-shadow: 3px 0 6px rgba(0, 0, 0, 0.25);
     }
     #standingsTable th.col-player {
@@ -332,17 +344,20 @@
 
     .rank-num {
       font-weight: 800;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: var(--text-primary);
+      line-height: 1.2;
     }
     .rank-top1 { color: var(--warning-text); }
     .rank-top8 { color: var(--accent-text); }
 
     .player-wrap {
       display: flex;
-      align-items: center;
-      gap: 6px;
-      max-width: 180px;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+      max-width: 100%;
+      overflow: hidden;
     }
     .player-name {
       font-weight: 700;
@@ -350,37 +365,80 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      display: block;
+      min-width: 0;
+      max-width: 100%;
+      font-size: 0.825rem;
+      line-height: 1.25;
+    }
+    .player-sub {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      flex-wrap: wrap;
+      min-width: 0;
+      max-width: 100%;
+      margin-top: 1px;
     }
     .player-id {
       font-size: 0.75rem;
       color: var(--text-secondary);
-      font-family: monospace;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.2;
     }
 
-    /* 標籤：退賽與抽籤 */
+    /* 標籤：退賽與抽籤（換行或第二行顯示，不撐寬欄位） */
     .badge-lot {
-      display: inline-block;
-      font-size: 0.65rem;
-      padding: 1px 4px;
-      border-radius: 4px;
+      display: block;
+      font-size: 0.6rem;
+      padding: 0 2px;
+      line-height: 1.2;
+      border-radius: 3px;
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
-      margin-left: 4px;
-      vertical-align: middle;
-      font-weight: normal;
+      margin: 2px auto 0;
+      white-space: nowrap;
+      text-align: center;
+      width: fit-content;
+      max-width: 100%;
     }
     .badge-dropped {
       display: inline-block;
-      font-size: 0.65rem;
-      padding: 1px 4px;
-      border-radius: 4px;
+      font-size: 0.6rem;
+      padding: 0 3px;
+      line-height: 1.2;
+      border-radius: 3px;
       background: var(--danger-bg);
       border: 1px solid var(--danger-border);
       color: var(--danger-text);
-      margin-left: 4px;
-      vertical-align: middle;
+      white-space: nowrap;
       font-weight: normal;
+    }
+
+    /* 平板與桌機寬度 */
+    @media (min-width: 601px) {
+      .col-rank,
+      #standingsTable th.col-rank,
+      #standingsTable td.cell-rank {
+        width: 50px;
+        min-width: 50px;
+        max-width: 50px;
+        padding: 10px 4px;
+      }
+      .col-player,
+      #standingsTable th.col-player,
+      #standingsTable td.cell-player {
+        left: 50px;
+        width: 140px;
+        min-width: 140px;
+        max-width: 180px;
+        padding: 10px 10px;
+      }
+      #standingsTable th,
+      #standingsTable td {
+        padding: 10px 10px;
+      }
     }
 
     footer {
@@ -501,7 +559,7 @@
         <thead>
           <tr>
             <th class="col-rank">名次</th>
-            <th class="col-player">選手（編號）</th>
+            <th class="col-player">選手<span class="th-sub">編號</span></th>
             <th>積分<span class="th-sub">場積分</span></th>
             <th>戰績<span class="th-sub">勝-敗-和</span></th>
             <th>OMW%<span class="th-sub">對手勝率</span></th>
@@ -718,8 +776,10 @@
           + `<td class="cell-player">`
           + `<div class="player-wrap">`
           + `<span class="player-name">${escapeHtml(r.name)}</span>`
-          + `<span class="player-id">(${escapeHtml(r.id)})</span>`
+          + `<div class="player-sub">`
+          + `<span class="player-id">${escapeHtml(r.id)}</span>`
           + `${droppedBadge}`
+          + `</div>`
           + `</div>`
           + `</td>`
           + `<td><strong>${r.points}</strong></td>`
