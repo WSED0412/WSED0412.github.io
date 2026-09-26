@@ -212,25 +212,150 @@
       flex-wrap: wrap;
     }
 
-    /* 淘汰賽樹狀容器 */
-    #bracketTree {
+    /* 檢視切換工具列 (PROJECT.md 第 10 節) */
+    .view-controls {
       display: flex;
-      flex-direction: column;
-      gap: 20px;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .view-switch-group {
+      display: inline-flex;
+      background: var(--card-bg-alt);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 4px;
+    }
+    .btn-view {
+      min-width: 88px;
+      min-height: 44px;
+      padding: 8px 16px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+    }
+    .btn-view[aria-pressed="true"] {
+      background: var(--accent);
+      color: #141212;
+      font-weight: 800;
+      border-color: var(--accent);
+      box-shadow: 0 2px 6px rgba(239, 125, 0, 0.3);
+    }
+    .btn-view[aria-pressed="false"]:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+    }
+
+    @media (max-width: 480px) {
+      .view-controls {
+        justify-content: center;
+      }
+      .view-switch-group {
+        width: 100%;
+      }
+      .btn-view {
+        flex: 1;
+      }
+    }
+
+    /* 賽程樹橫向捲動框 (DATA-CONTRACT 5 畫面規定 6) */
+    .bracket-scroll-wrap {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 12px;
+      box-sizing: border-box;
+    }
+    .bracket-scroll-wrap::-webkit-scrollbar {
+      height: 8px;
+    }
+    .bracket-scroll-wrap::-webkit-scrollbar-track {
+      background: var(--input-bg);
+      border-radius: 4px;
+    }
+    .bracket-scroll-wrap::-webkit-scrollbar-thumb {
+      background: var(--card-border);
+      border-radius: 4px;
+    }
+    .bracket-scroll-wrap::-webkit-scrollbar-thumb:hover {
+      background: var(--accent);
+    }
+
+    /* 淘汰賽容器 (#bracketTree) */
+    #bracketTree {
       width: 100%;
       box-sizing: border-box;
     }
 
-    @media (min-width: 860px) {
-      #bracketTree {
-        flex-direction: row;
-        align-items: stretch;
-        gap: 16px;
+    /* 清單檢視 (一輪一段往下排) */
+    #bracketTree[data-view="list"] {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      min-width: 0;
+    }
+    #bracketTree[data-view="list"] .bracket-round {
+      width: 100%;
+      min-width: 0;
+    }
+    #bracketTree[data-view="list"] .matches-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    #bracketTree[data-view="list"] .bracket-connector,
+    #bracketTree[data-view="list"] .bracket-champion {
+      display: none !important;
+    }
+
+    /* 賽程樹檢視 (真正的樹狀圖：三輪左右並排，垂直置中在來源之間) */
+    #bracketTree[data-view="tree"] {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      gap: 36px;
+      min-width: max-content;
+      width: 100%;
+      min-height: 560px;
+      padding: 10px 4px 16px;
+    }
+    #bracketTree[data-view="tree"] .bracket-round {
+      flex: 0 0 240px;
+      width: 240px;
+      min-width: 240px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    @media (min-width: 1200px) {
+      #bracketTree[data-view="tree"] {
+        min-width: 100%;
       }
-      .bracket-round {
-        flex: 1;
-        min-width: 0;
+      #bracketTree[data-view="tree"] .bracket-round {
+        flex: 1 1 240px;
+        max-width: 280px;
       }
+    }
+    #bracketTree[data-view="tree"] .matches-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+      justify-content: space-around;
+      position: relative;
     }
 
     /* 每一輪欄位 (.bracket-round) */
@@ -252,6 +377,8 @@
       padding-bottom: 10px;
       margin-bottom: 12px;
       border-bottom: 1px solid var(--card-border);
+      min-height: 42px;
+      box-sizing: border-box;
     }
     .round-label {
       font-size: 1.05rem;
@@ -267,12 +394,10 @@
       color: var(--text-secondary);
     }
 
-    .matches-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      flex: 1;
-      justify-content: space-around;
+    /* 比賽項目容器 (包含卡片與連線) */
+    .match-item {
+      position: relative;
+      width: 100%;
     }
 
     /* 比賽卡片 */
@@ -282,6 +407,151 @@
       border-radius: 8px;
       overflow: hidden;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      position: relative;
+      width: 100%;
+    }
+
+    /* 連線 (.bracket-connector) - 樹狀圖專用 */
+    .bracket-connector {
+      display: none;
+    }
+    #bracketTree[data-view="tree"] .bracket-connector {
+      display: block;
+      position: absolute;
+      pointer-events: none;
+      box-sizing: border-box;
+      z-index: 2;
+    }
+
+    /* 上方場次連線：向右後向下 */
+    #bracketTree[data-view="tree"] .bracket-connector.connector-top {
+      top: 50%;
+      right: -24px;
+      width: 24px;
+      height: calc(50% + 22px);
+      border-top: 2px solid var(--card-border);
+      border-right: 2px solid var(--card-border);
+      border-top-right-radius: 6px;
+    }
+
+    /* 下方場次連線：向右後向上 */
+    #bracketTree[data-view="tree"] .bracket-connector.connector-bottom {
+      bottom: 50%;
+      right: -24px;
+      width: 24px;
+      height: calc(50% + 22px);
+      border-bottom: 2px solid var(--card-border);
+      border-right: 2px solid var(--card-border);
+      border-bottom-right-radius: 6px;
+    }
+
+    /* 四強輪次場次距離較遠，加長高度 */
+    #bracketTree[data-view="tree"] .bracket-round[data-round-idx="1"] .bracket-connector.connector-top {
+      height: calc(50% + 80px);
+    }
+    #bracketTree[data-view="tree"] .bracket-round[data-round-idx="1"] .bracket-connector.connector-bottom {
+      height: calc(50% + 80px);
+    }
+
+    /* 伸進下一輪的連線 (.connector-stem) - 一路接到下一輪 .match-card，斷開 0px */
+    #bracketTree[data-view="tree"] .bracket-connector.connector-stem {
+      top: calc(100% + 21px);
+      right: -62px;
+      width: 38px;
+      height: 2px;
+      background: var(--card-border);
+    }
+    #bracketTree[data-view="tree"] .bracket-round[data-round-idx="1"] .bracket-connector.connector-stem {
+      top: calc(100% + 79px);
+    }
+
+    /* 決賽到冠軍位置的水平連線 */
+    #bracketTree[data-view="tree"] .bracket-connector.connector-final {
+      top: 50%;
+      right: -62px;
+      width: 62px;
+      height: 2px;
+      background: var(--card-border);
+    }
+
+    /* 勝者晉級路徑高亮 (官方橘 --accent) */
+    #bracketTree[data-view="tree"] .bracket-connector.is-winner {
+      border-color: var(--accent);
+      z-index: 3;
+    }
+    #bracketTree[data-view="tree"] .bracket-connector.connector-stem.is-winner,
+    #bracketTree[data-view="tree"] .bracket-connector.connector-final.is-winner {
+      background: var(--accent);
+      box-shadow: 0 0 6px rgba(239, 125, 0, 0.4);
+    }
+
+    /* 冠軍位置 (.bracket-champion) - 賽程樹最右側 */
+    .bracket-champion {
+      background: var(--card-bg-alt);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      min-width: 0;
+      flex: 0 0 200px;
+      width: 200px;
+      position: relative;
+    }
+    #bracketTree[data-view="tree"] .bracket-champion .matches-list {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      flex: 1;
+    }
+    .champion-box {
+      background: var(--card-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 8px;
+      padding: 18px 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    .bracket-champion.has-champion .champion-box {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(239, 125, 0, 0.18), rgba(242, 201, 76, 0.12));
+      box-shadow: 0 4px 16px rgba(239, 125, 0, 0.25);
+    }
+
+    .champion-trophy-icon {
+      font-size: 2.2rem;
+      line-height: 1;
+    }
+    .champion-slot-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--warning-text);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .champion-slot-name {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 100%;
+    }
+    .bracket-champion.has-champion .champion-slot-name {
+      color: var(--accent-text);
+    }
+    .champion-slot-id {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-weight: 600;
     }
     .match-header {
       display: flex;
@@ -465,6 +735,14 @@
       </div>
     </header>
 
+    <!-- 檢視切換工具列 (PROJECT.md 第 10 節) -->
+    <div class="view-controls" id="viewControls">
+      <div class="view-switch-group" role="group" aria-label="淘汰賽檢視模式">
+        <button type="button" id="viewList" class="btn-view" aria-pressed="false">📋 清單</button>
+        <button type="button" id="viewTree" class="btn-view" aria-pressed="false">🌲 賽程樹</button>
+      </div>
+    </div>
+
     <!-- 冠軍橫幅 (有 champion 時顯示) -->
     <section id="championSection" class="champion-banner" style="display: none;">
       <div class="champion-trophy">🏆</div>
@@ -487,7 +765,9 @@
     </div>
 
     <!-- 淘汰賽樹狀圖容器 (自動測試檢查 id="bracketTree") -->
-    <section id="bracketTree"></section>
+    <div class="bracket-scroll-wrap" id="bracketScrollWrap">
+      <section id="bracketTree" data-view="tree"></section>
+    </div>
 
     <footer>
       符文戰場賽事系統 · 淘汰賽樹狀圖
@@ -506,6 +786,42 @@
 
   <script>
     const CURRENT_CONTRACT_VERSION = 10;
+    const VIEW_STORAGE_KEY = 'rift_bracket_view';
+
+    function getInitialView() {
+      try {
+        const saved = localStorage.getItem(VIEW_STORAGE_KEY);
+        if (saved === 'list' || saved === 'tree') {
+          return saved;
+        }
+      } catch (e) {}
+      return window.innerWidth < 600 ? 'list' : 'tree';
+    }
+
+    let currentView = getInitialView();
+
+    function applyView(view, save = true) {
+      currentView = (view === 'list' || view === 'tree') ? view : 'tree';
+      if (save) {
+        try {
+          localStorage.setItem(VIEW_STORAGE_KEY, currentView);
+        } catch (e) {}
+      }
+
+      const treeEl = document.getElementById('bracketTree');
+      if (treeEl) {
+        treeEl.dataset.view = currentView;
+      }
+
+      const btnList = document.getElementById('viewList');
+      const btnTree = document.getElementById('viewTree');
+      if (btnList) {
+        btnList.setAttribute('aria-pressed', currentView === 'list' ? 'true' : 'false');
+      }
+      if (btnTree) {
+        btnTree.setAttribute('aria-pressed', currentView === 'tree' ? 'true' : 'false');
+      }
+    }
 
     let snapshotData = null;
     let rawJsonText = '';
@@ -580,7 +896,7 @@
       }
     }
 
-    function renderMatchCard(m, rnd, mIdx) {
+    function renderMatchCard(m, rnd, mIdx, rIdx, totalRounds) {
       const p1 = m.p1;
       const p2 = m.p2;
       const winnerId = m.winner;
@@ -690,15 +1006,37 @@
         noteHtml = '<div class="walkover-note" style="color: var(--danger-text);">雙方判負</div>';
       }
 
+      // 連線元素 (.bracket-connector) - 樹狀圖專用
+      let connectorHtml = '';
+      if (rIdx < totalRounds - 1) {
+        const isTop = (mIdx % 2 === 0);
+        const connClass = isTop ? 'connector-top' : 'connector-bottom';
+        const isWinConn = Boolean(winnerId);
+        let stemHtml = '';
+        if (isTop) {
+          const partner = (rnd && rnd.matches && rnd.matches[mIdx + 1]) ? rnd.matches[mIdx + 1] : null;
+          const isStemWinner = Boolean(winnerId || (partner && partner.winner));
+          stemHtml = `<div class="bracket-connector connector-stem ${isStemWinner ? 'is-winner' : ''}"></div>`;
+        }
+        connectorHtml = `<div class="bracket-connector ${connClass} ${isWinConn ? 'is-winner' : ''}"></div>${stemHtml}`;
+      } else if (rIdx === totalRounds - 1) {
+        // 決賽連接到最右側冠軍位置
+        const isWinConn = Boolean(winnerId);
+        connectorHtml = `<div class="bracket-connector connector-final ${isWinConn ? 'is-winner' : ''}"></div>`;
+      }
+
       return `
-        <div class="match-card">
-          <div class="match-header">
-            <span class="match-table">${tableLabel}</span>
-            ${statusBadge}
+        <div class="match-item">
+          <div class="match-card">
+            <div class="match-header">
+              <span class="match-table">${tableLabel}</span>
+              ${statusBadge}
+            </div>
+            ${p1Row}
+            ${p2Row}
+            ${noteHtml}
           </div>
-          ${p1Row}
-          ${p2Row}
-          ${noteHtml}
+          ${connectorHtml}
         </div>
       `;
     }
@@ -708,16 +1046,22 @@
       const treeContainer = document.getElementById('bracketTree');
       const noBracketMsg = document.getElementById('noBracketMsg');
       const championSection = document.getElementById('championSection');
+      const viewControls = document.getElementById('viewControls');
 
       if (!bracket || !bracket.rounds || bracket.rounds.length === 0) {
         if (treeContainer) treeContainer.style.display = 'none';
         if (championSection) championSection.style.display = 'none';
+        if (viewControls) viewControls.style.display = 'none';
         if (noBracketMsg) noBracketMsg.style.display = 'block';
         return;
       }
 
       if (noBracketMsg) noBracketMsg.style.display = 'none';
-      if (treeContainer) treeContainer.style.display = '';
+      if (viewControls) viewControls.style.display = 'flex';
+      if (treeContainer) {
+        treeContainer.style.display = '';
+        treeContainer.dataset.view = currentView;
+      }
 
       // 1. 冠軍資訊
       if (bracket.champion && bracket.champion.name) {
@@ -740,13 +1084,14 @@
       // 2. 渲染每一輪 (八強、四強、決賽)
       // 自動測試檢查：cols = await pg.locator("#bracketTree .bracket-round").count() == 3
       // 每一輪必須有 class="bracket-round"
-      treeContainer.innerHTML = bracket.rounds.map((rnd, rIdx) => {
+      const totalRounds = bracket.rounds.length;
+      const roundsHtml = bracket.rounds.map((rnd, rIdx) => {
         const roundLabel = escapeHtml(rnd.label || `第 ${rIdx + 1} 輪`);
         const isPublished = rnd.published !== false;
-        const matchesHtml = (rnd.matches || []).map((m, mIdx) => renderMatchCard(m, rnd, mIdx)).join('');
+        const matchesHtml = (rnd.matches || []).map((m, mIdx) => renderMatchCard(m, rnd, mIdx, rIdx, totalRounds)).join('');
 
         return `
-          <div class="bracket-round">
+          <div class="bracket-round" data-round-idx="${rIdx}">
             <div class="round-header">
               <div class="round-label">${roundLabel}</div>
               <span class="round-tag">${isPublished ? '已公布' : '待定'}</span>
@@ -757,6 +1102,32 @@
           </div>
         `;
       }).join('');
+
+      // 3. 最右邊冠軍位置 (.bracket-champion) - 賽程樹專用 (PROJECT.md 第 10 節)
+      const hasChamp = Boolean(bracket.champion && bracket.champion.name);
+      const champName = hasChamp ? escapeHtml(bracket.champion.name) : '待定';
+      const champSeed = (hasChamp && bracket.champion.seed) ? `<span class="seed-tag">#${escapeHtml(bracket.champion.seed)}</span> ` : '';
+      const champId = (hasChamp && bracket.champion.id) ? `<div class="champion-slot-id">選手編號：${escapeHtml(bracket.champion.id)}</div>` : '';
+
+      const championColHtml = `
+        <div class="bracket-champion ${hasChamp ? 'has-champion' : ''}">
+          <div class="round-header">
+            <div class="round-label">🏆 冠軍</div>
+            <span class="round-tag">${hasChamp ? '已決出' : '待定'}</span>
+          </div>
+          <div class="matches-list">
+            <div class="champion-box">
+              <div class="champion-trophy-icon">🏆</div>
+              <div class="champion-slot-title">冠軍選手</div>
+              <div class="champion-slot-name">${champSeed}${champName}</div>
+              ${champId}
+            </div>
+          </div>
+        </div>
+      `;
+
+      treeContainer.innerHTML = roundsHtml + championColHtml;
+      applyView(currentView, false);
     }
 
     async function fetchData() {
@@ -823,6 +1194,25 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      applyView(currentView, false);
+
+      const btnList = document.getElementById('viewList');
+      const btnTree = document.getElementById('viewTree');
+      if (btnList) {
+        btnList.addEventListener('click', () => applyView('list', true));
+      }
+      if (btnTree) {
+        btnTree.addEventListener('click', () => applyView('tree', true));
+      }
+
+      window.addEventListener('resize', () => {
+        try {
+          if (!localStorage.getItem(VIEW_STORAGE_KEY)) {
+            applyView(window.innerWidth < 600 ? 'list' : 'tree', false);
+          }
+        } catch (e) {}
+      });
+
       updateNavLinks();
       fetchData();
       pollTimer = setInterval(fetchData, 5000);
