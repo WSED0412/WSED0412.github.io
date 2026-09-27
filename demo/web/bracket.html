@@ -785,7 +785,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 11;
+    const CURRENT_CONTRACT_VERSION = 12;
     const VIEW_STORAGE_KEY = 'rift_bracket_view';
 
     function getInitialView() {
@@ -886,6 +886,10 @@
       if (params.get('demo')) return;
       const staleEl = document.getElementById('staleBanner');
       if (!staleEl) return;
+      if (document.visibilityState === 'hidden') {
+        staleEl.style.display = 'none';
+        return;
+      }
       const diffMs = Date.now() - lastContentChangeTime;
       if (diffMs > 90000) {
         const mins = Math.max(1, Math.floor(diffMs / 60000));
@@ -1131,6 +1135,7 @@
     }
 
     async function fetchData() {
+      if (document.visibilityState === 'hidden') return;
       const primaryUrl = getDataSourceUrl();
       try {
         const responseTime = Date.now();
@@ -1186,7 +1191,9 @@
 
         renderBracket();
         renderVersionWarning();
+        checkFreshness();
       } catch (err) {
+        checkFreshness();
         if (!snapshotData) {
           document.getElementById('disconnectedScreen').style.display = 'flex';
         }
@@ -1214,6 +1221,22 @@
       });
 
       updateNavLinks();
+
+      function handleVisibilityChange() {
+        if (document.visibilityState === 'hidden') {
+          if (pollTimer) {
+            clearInterval(pollTimer);
+            pollTimer = null;
+          }
+        } else {
+          fetchData();
+          if (!pollTimer) {
+            pollTimer = setInterval(fetchData, 5000);
+          }
+        }
+      }
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+
       fetchData();
       pollTimer = setInterval(fetchData, 5000);
       freshnessTimer = setInterval(checkFreshness, 5000);

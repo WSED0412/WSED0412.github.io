@@ -428,7 +428,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 11;
+    const CURRENT_CONTRACT_VERSION = 12;
     let snapshotData = null;
 
     function getDataSourceUrl() {
@@ -544,7 +544,11 @@
     }
 
     // 牌表送出處理
+    let isSubmittingDecklist = false;
     async function handleDecklistSubmit() {
+      const btn = document.getElementById('decklistSubmit');
+      if (isSubmittingDecklist || (btn && btn.disabled)) return;
+
       const problemsEl = document.getElementById('decklistProblems');
       problemsEl.style.display = 'none';
       problemsEl.innerHTML = '';
@@ -567,6 +571,13 @@
         problemsEl.textContent = '請貼上牌表內容';
         problemsEl.style.display = 'block';
         return;
+      }
+
+      isSubmittingDecklist = true;
+      const origText = btn ? btn.textContent : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '登錄中…';
       }
 
       try {
@@ -619,6 +630,12 @@
       } catch (err) {
         problemsEl.textContent = err.message || '網路連線異常，請稍後再試';
         problemsEl.style.display = 'block';
+      } finally {
+        isSubmittingDecklist = false;
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = origText;
+        }
       }
     }
 

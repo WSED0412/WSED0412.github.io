@@ -745,8 +745,49 @@
         <div id="scheduleMsg" class="msg-box" style="display: none;"></div>
       </section>
 
-      <!-- 區塊 3: 換輪與配對管理 -->
-      <section class="admin-card">
+      <!-- 區塊 3 (模式 A): 官方配對表匯入 -->
+      <section class="admin-card" id="modeAImportSection" style="display: none;">
+        <h2 class="card-title">📥 官方配對表匯入（模式 A）</h2>
+        <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px;">
+          模式 A 的配對來自官方平台（PlayRiftbound.com）。請將官方配對表整塊複製貼上至下方。<br>
+          支援 Tab 分隔（從 Excel / Google 試算表直接複製）或逗號分隔。
+        </p>
+
+        <div style="background: var(--input-bg); border: 1px solid var(--panel-border); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5;">
+          <strong style="color: var(--text-primary);">格式說明：</strong><br>
+          • <strong>3 欄：</strong><code>桌號, 選手A名字, 選手B名字</code><br>
+          • <strong>5 欄：</strong><code>桌號, A編號, A名字, B編號, B名字</code>（推薦，同名也分得開）<br>
+          • <strong>輪空：</strong>第一欄寫<code>輪空</code>（或留空），後面只有一位選手<br>
+          • 標題列（如「桌號 選手A 選手B」）與 <code>#</code>、<code>//</code> 開頭的註解行會自動略過。
+        </div>
+
+        <div class="form-group">
+          <label for="importText" class="form-label">配對表文字內容（可直接貼上，上限 64 KB）：</label>
+          <textarea id="importText" class="input-text" rows="8" style="width: 100%; font-family: monospace; font-size: 1rem; line-height: 1.4; resize: vertical;" placeholder="桌號&#9;選手A&#9;選手B&#10;1&#9;阿翔&#9;小楓&#10;2&#9;Kuro&#9;Nana&#10;輪空&#9;可樂"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="importLabel" class="form-label">輪次名稱（可選，留空為「第 N 輪」）：</label>
+          <div class="form-row">
+            <input type="text" id="importLabel" class="input-text input-sm" maxlength="10" placeholder="例如：第 1 輪">
+            <button type="button" id="importPreviewBtn" class="btn btn-primary">預覽配對表</button>
+            <button type="button" id="importConfirmBtn" class="btn btn-success" style="color: #ffffff;" disabled>確認匯入新的一輪（需確認）</button>
+          </div>
+        </div>
+
+        <div id="importMsg" class="msg-box" style="display: none;"></div>
+
+        <!-- 錯誤問題清單 (DATA-CONTRACT 3.7: 每個問題一個 <li>) -->
+        <ul id="importProblems" class="sec-list" style="display: none; border: 1px solid var(--danger-border); background: var(--danger-bg); color: var(--danger-text); padding: 10px 14px 10px 28px; list-style: disc; margin-top: 10px; border-radius: 6px;">
+        </ul>
+
+        <!-- 預覽結果容器 -->
+        <div id="importPreview" class="table-wrap" style="display: none; margin-top: 12px;">
+        </div>
+      </section>
+
+      <!-- 區塊 3 (模式 B): 換輪與配對管理 -->
+      <section class="admin-card" id="modeBPairingSection">
         <h2 class="card-title">🔄 換輪與配對管理</h2>
         <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px;">
           本輪所有桌次完賽後，點擊「產生下一輪配對提案」預覽。確認或微調後點擊「公布下一輪配對」。
@@ -880,7 +921,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 11;
+    const CURRENT_CONTRACT_VERSION = 12;
     const SESSION_STORAGE_KEY_STAFF_PIN = 'riftbound_staff_pin';
 
     let snapshotData = null;
@@ -890,6 +931,10 @@
     let serverOffsetMs = 0;
     let demoOffsetCalculated = false;
     let lastContentChangeTime = Date.now();
+
+    // 模式 A 匯入配對表狀態 (DATA-CONTRACT 3.7)
+    let lastPreviewedImportText = null;
+    let lastPreviewedImportLabel = null;
 
     // 主辦身分狀態
     let staffPin = null;
@@ -1011,6 +1056,7 @@
 
     // 讀取賽務資料
     async function fetchData() {
+      if (document.visibilityState === 'hidden') return;
       const primaryUrl = getDataSourceUrl();
       try {
         const responseTime = Date.now();
@@ -1065,7 +1111,9 @@
         renderSummary();
         renderVersionWarning();
         checkProposalStale();
+        checkFreshness();
       } catch (err) {
+        checkFreshness();
         if (!snapshotData) {
           document.getElementById('disconnectedScreen').style.display = 'flex';
         }
@@ -1088,6 +1136,10 @@
       if (params.get('demo')) return;
       const staleEl = document.getElementById('staleBanner');
       if (!staleEl) return;
+      if (document.visibilityState === 'hidden') {
+        staleEl.style.display = 'none';
+        return;
+      }
       const diffMs = Date.now() - lastContentChangeTime;
       if (diffMs > 90000) {
         const mins = Math.max(1, Math.floor(diffMs / 60000));
@@ -1177,6 +1229,27 @@
         noteText.textContent = event.note;
       } else {
         noteRow.style.display = 'none';
+      }
+
+      // 模式 A 匯入區 vs 模式 B 配對區 (PROJECT.md 第 10 節, DATA-CONTRACT 3.7)
+      const isModeA = event.mode === 'A';
+      const modeASection = document.getElementById('modeAImportSection');
+      if (modeASection) {
+        modeASection.style.display = isModeA ? 'block' : 'none';
+      }
+      const modeBSection = document.getElementById('modeBPairingSection');
+      if (modeBSection) {
+        modeBSection.style.display = isModeA ? 'none' : 'block';
+      }
+      const proposeBtn = document.getElementById('proposeBtn');
+      if (proposeBtn) {
+        if (isModeA) {
+          proposeBtn.style.display = 'none';
+          proposeBtn.disabled = true;
+        } else {
+          proposeBtn.style.display = '';
+          proposeBtn.disabled = false;
+        }
       }
 
       updateClockDisplay();
@@ -1336,7 +1409,10 @@
     }
 
     // 登入事件處理
+    let isLoggingIn = false;
     async function handleLogin() {
+      const loginBtn = document.getElementById('staffLogin');
+      if (isLoggingIn || (loginBtn && loginBtn.disabled)) return;
       hideMsg('loginError');
       const pinInput = document.getElementById('staffPin');
       const pinVal = (pinInput ? pinInput.value : '').trim();
@@ -1344,6 +1420,13 @@
       if (!pinVal) {
         showMsg('loginError', '請輸入工作人員 PIN 碼');
         return;
+      }
+
+      isLoggingIn = true;
+      const origText = loginBtn ? loginBtn.textContent : '';
+      if (loginBtn) {
+        loginBtn.disabled = true;
+        loginBtn.textContent = '登入中…';
       }
 
       try {
@@ -1376,6 +1459,12 @@
         try { sessionStorage.removeItem(SESSION_STORAGE_KEY_STAFF_PIN); } catch (e) {}
         showMsg('loginError', err.message);
         renderAuthUI();
+      } finally {
+        isLoggingIn = false;
+        if (loginBtn) {
+          loginBtn.disabled = false;
+          loginBtn.textContent = origText;
+        }
       }
     }
 
@@ -1394,6 +1483,15 @@
       hideMsg('checkinMsg');
       const noShowEl = document.getElementById('noShowNotice');
       if (noShowEl) noShowEl.style.display = 'none';
+      lastPreviewedImportText = null;
+      lastPreviewedImportLabel = null;
+      const importConf = document.getElementById('importConfirmBtn');
+      if (importConf) importConf.disabled = true;
+      const previewEl = document.getElementById('importPreview');
+      if (previewEl) { previewEl.innerHTML = ''; previewEl.style.display = 'none'; }
+      const problemsEl = document.getElementById('importProblems');
+      if (problemsEl) { problemsEl.innerHTML = ''; problemsEl.style.display = 'none'; }
+      hideMsg('importMsg');
       try {
         sessionStorage.removeItem(SESSION_STORAGE_KEY_STAFF_PIN);
       } catch (e) {}
@@ -1616,10 +1714,21 @@
     }
 
     // 產生下一輪提案
+    let isProposing = false;
     async function handlePropose() {
+      const btn = document.getElementById('proposeBtn');
+      if (isProposing || (btn && btn.disabled)) return;
       hideMsg('proposeMsg');
       const noShowEl = document.getElementById('noShowNotice');
       if (noShowEl) noShowEl.style.display = 'none';
+
+      isProposing = true;
+      const origText = btn ? btn.textContent : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '產生中…';
+      }
+
       try {
         const res = await callApi('/api/admin/propose', {});
         currentProposal = res.proposal;
@@ -1635,6 +1744,12 @@
         await fetchCheckinList();
       } catch (err) {
         showMsg('proposeMsg', err.message);
+      } finally {
+        isProposing = false;
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = origText;
+        }
       }
     }
 
@@ -1675,7 +1790,10 @@
     }
 
     // 手動交換配對
+    let isSwapping = false;
     async function handleSwap() {
+      const btn = document.getElementById('swapBtn');
+      if (isSwapping || (btn && btn.disabled)) return;
       hideMsg('proposeMsg');
       const a = (document.getElementById('swapA').value || '').trim().toUpperCase();
       const b = (document.getElementById('swapB').value || '').trim().toUpperCase();
@@ -1685,6 +1803,13 @@
         return;
       }
 
+      isSwapping = true;
+      const origText = btn ? btn.textContent : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '交換中…';
+      }
+
       try {
         const res = await callApi('/api/admin/swap', { a, b });
         currentProposal = res.proposal;
@@ -1692,7 +1817,217 @@
         showMsg('proposeMsg', `選手 ${a} 與 ${b} 已交換配對`, false);
       } catch (err) {
         showMsg('proposeMsg', err.message);
+      } finally {
+        isSwapping = false;
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = origText;
+        }
       }
+    }
+
+    // ------------------------------------------------ 模式 A 官方配對表匯入 (PROJECT.md 第 10 節, DATA-CONTRACT 3.7)
+    let isImportPreviewing = false;
+    let isImportConfirming = false;
+
+    function checkImportStale() {
+      const text = (document.getElementById('importText').value || '');
+      const label = (document.getElementById('importLabel').value || '').trim();
+      const confirmBtn = document.getElementById('importConfirmBtn');
+      if (!confirmBtn) return;
+      if (lastPreviewedImportText === null || text !== lastPreviewedImportText || label !== lastPreviewedImportLabel) {
+        confirmBtn.disabled = true;
+      }
+    }
+
+    async function handleImportPreview() {
+      const btn = document.getElementById('importPreviewBtn');
+      const confirmBtn = document.getElementById('importConfirmBtn');
+      const problemsEl = document.getElementById('importProblems');
+      const previewEl = document.getElementById('importPreview');
+      if (isImportPreviewing || (btn && btn.disabled)) return;
+
+      hideMsg('importMsg');
+      if (problemsEl) {
+        problemsEl.innerHTML = '';
+        problemsEl.style.display = 'none';
+      }
+      if (previewEl) {
+        previewEl.innerHTML = '';
+        previewEl.style.display = 'none';
+      }
+      if (confirmBtn) confirmBtn.disabled = true;
+      lastPreviewedImportText = null;
+      lastPreviewedImportLabel = null;
+
+      const text = (document.getElementById('importText').value || '');
+      const label = (document.getElementById('importLabel').value || '').trim();
+
+      if (!text.trim()) {
+        if (problemsEl) {
+          problemsEl.innerHTML = '<li>請先貼上配對表文字內容</li>';
+          problemsEl.style.display = 'block';
+        }
+        return;
+      }
+
+      isImportPreviewing = true;
+      const origText = btn ? btn.textContent : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '預覽中…';
+      }
+
+      try {
+        const payload = {
+          text: text,
+          dry_run: true
+        };
+        if (label) payload.label = label;
+        const res = await callApi('/api/admin/import_round', payload);
+        if (res && res.preview) {
+          lastPreviewedImportText = text;
+          lastPreviewedImportLabel = label;
+          renderImportPreview(res.preview);
+          if (confirmBtn) confirmBtn.disabled = false;
+        }
+      } catch (err) {
+        const problems = (err.data && Array.isArray(err.data.problems)) ? err.data.problems : [err.message || '匯入檢查失敗'];
+        if (problemsEl) {
+          problemsEl.innerHTML = problems.map(p => `<li>${escapeHtml(p)}</li>`).join('');
+          problemsEl.style.display = 'block';
+        }
+        if (confirmBtn) confirmBtn.disabled = true;
+      } finally {
+        isImportPreviewing = false;
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = origText;
+        }
+      }
+    }
+
+    function renderImportPreview(preview) {
+      const previewEl = document.getElementById('importPreview');
+      if (!previewEl || !preview) return;
+
+      const tables = preview.tables || [];
+      const newPlayers = preview.new_players || [];
+      const labelStr = preview.label || ('第 ' + (preview.round || 1) + ' 輪');
+
+      let html = `
+        <div style="margin-bottom: 8px; font-size: 0.9rem; color: var(--text-primary); line-height: 1.5;">
+          預覽結果：<strong>${escapeHtml(labelStr)}</strong>（共 ${tables.length} 筆，包含 <strong>${newPlayers.length}</strong> 位新加入選手）
+        </div>
+      `;
+
+      if (newPlayers.length > 0) {
+        html += `
+          <div style="margin-bottom: 10px; font-size: 0.8rem; color: #38bdf8;">
+            新加入選手名單：${newPlayers.map(p => `${escapeHtml(p.name)} (${escapeHtml(p.id)})`).join('、')}
+          </div>
+        `;
+      }
+
+      html += `
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th style="width: 15%;">桌號</th>
+              <th style="width: 42%;">選手 1</th>
+              <th style="width: 43%;">選手 2</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      tables.forEach(tb => {
+        const tblStr = tb.table !== null ? `第 ${tb.table} 桌` : '輪空';
+        const p1Str = tb.p1 ? `${escapeHtml(tb.p1.name)} (${escapeHtml(tb.p1.id)})` : '—';
+        let p2Str = '—';
+        if (tb.p2) {
+          p2Str = `${escapeHtml(tb.p2.name)} (${escapeHtml(tb.p2.id)})`;
+        } else if (tb.table === null) {
+          p2Str = '（輪空）';
+        }
+        html += `
+          <tr>
+            <td><strong>${tblStr}</strong></td>
+            <td>${p1Str}</td>
+            <td>${p2Str}</td>
+          </tr>
+        `;
+      });
+
+      html += `
+          </tbody>
+        </table>
+      `;
+
+      previewEl.innerHTML = html;
+      previewEl.style.display = 'block';
+    }
+
+    function handleImportConfirm() {
+      const confirmBtn = document.getElementById('importConfirmBtn');
+      if (confirmBtn && confirmBtn.disabled) return;
+      const text = (document.getElementById('importText').value || '');
+      const label = (document.getElementById('importLabel').value || '').trim();
+
+      if (lastPreviewedImportText === null || text !== lastPreviewedImportText || label !== lastPreviewedImportLabel) {
+        showMsg('importMsg', '配對表內容已修改，請重新預覽後再確認匯入');
+        if (confirmBtn) confirmBtn.disabled = true;
+        return;
+      }
+
+      const targetLabel = label || '新的一輪';
+      showConfirm(
+        '匯入新輪次確認',
+        `確定要將此配對表正式匯入為「${targetLabel}」嗎？匯入後將重設計時器並公布給選手。`,
+        async () => {
+          if (isImportConfirming) return;
+          isImportConfirming = true;
+          hideMsg('importMsg');
+          const origText = confirmBtn ? confirmBtn.textContent : '';
+          if (confirmBtn) {
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = '匯入中…';
+          }
+          try {
+            const payload = {
+              text: text,
+              dry_run: false
+            };
+            if (label) payload.label = label;
+            const res = await callApi('/api/admin/import_round', payload);
+            showMsg('importMsg', `已成功匯入「${res.preview ? res.preview.label : ('第 ' + res.round + ' 輪')}」！`, false);
+            document.getElementById('importText').value = '';
+            document.getElementById('importLabel').value = '';
+            lastPreviewedImportText = null;
+            lastPreviewedImportLabel = null;
+            const previewEl = document.getElementById('importPreview');
+            if (previewEl) {
+              previewEl.innerHTML = '';
+              previewEl.style.display = 'none';
+            }
+            const problemsEl = document.getElementById('importProblems');
+            if (problemsEl) {
+              problemsEl.innerHTML = '';
+              problemsEl.style.display = 'none';
+            }
+            await fetchData();
+            await fetchCheckinList();
+          } catch (err) {
+            showMsg('importMsg', err.message);
+          } finally {
+            isImportConfirming = false;
+            if (confirmBtn) {
+              confirmBtn.disabled = true;
+              confirmBtn.textContent = origText;
+            }
+          }
+        }
+      );
     }
 
     // 公布配對（危險操作）
@@ -1938,6 +2273,24 @@
       document.getElementById('breakSave').addEventListener('click', handleSaveBreak);
       document.getElementById('breakClear').addEventListener('click', handleClearBreak);
 
+      // 模式 A 官方配對表匯入 (PROJECT.md 第 10 節, DATA-CONTRACT 3.7)
+      const importTextEl = document.getElementById('importText');
+      if (importTextEl) {
+        importTextEl.addEventListener('input', checkImportStale);
+      }
+      const importLabelEl = document.getElementById('importLabel');
+      if (importLabelEl) {
+        importLabelEl.addEventListener('input', checkImportStale);
+      }
+      const importPreviewBtn = document.getElementById('importPreviewBtn');
+      if (importPreviewBtn) {
+        importPreviewBtn.addEventListener('click', handleImportPreview);
+      }
+      const importConfirmBtn = document.getElementById('importConfirmBtn');
+      if (importConfirmBtn) {
+        importConfirmBtn.addEventListener('click', handleImportConfirm);
+      }
+
       // 換輪提案、交換與公布
       document.getElementById('proposeBtn').addEventListener('click', handlePropose);
       document.getElementById('swapBtn').addEventListener('click', handleSwap);
@@ -1969,6 +2322,26 @@
 
       // 重新連線
       document.getElementById('retryBtn').addEventListener('click', fetchData);
+
+      function handleVisibilityChange() {
+        if (document.visibilityState === 'hidden') {
+          if (pollTimer) {
+            clearInterval(pollTimer);
+            pollTimer = null;
+          }
+          stopCheckinAutoRefresh();
+        } else {
+          fetchData();
+          if (staffPin) {
+            startCheckinAutoRefresh();
+            fetchCheckinList();
+          }
+          if (!pollTimer) {
+            pollTimer = setInterval(fetchData, 5000);
+          }
+        }
+      }
+      document.addEventListener('visibilitychange', handleVisibilityChange);
 
       // 初始化
       updatePrintLinks();

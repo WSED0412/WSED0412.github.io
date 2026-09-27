@@ -1127,7 +1127,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 11;
+    const CURRENT_CONTRACT_VERSION = 12;
     const SESSION_STORAGE_KEY_STAFF_PIN = 'riftbound_judge_staff_pin';
 
     let snapshotData = null;
@@ -1204,6 +1204,7 @@
 
     // 讀取 snapshot 資料 (DATA-CONTRACT 1.10)
     async function fetchData() {
+      if (document.visibilityState === 'hidden') return;
       const primaryUrl = getDataSourceUrl();
       try {
         const responseTime = Date.now();
@@ -1259,7 +1260,9 @@
           renderTableDetail(currentTable);
         }
         renderLateList();
+        checkFreshness();
       } catch (err) {
+        checkFreshness();
         if (!snapshotData) {
           document.getElementById('disconnectedScreen').style.display = 'flex';
         }
@@ -1282,6 +1285,10 @@
       if (params.get('demo')) return;
       const staleEl = document.getElementById('staleBanner');
       if (!staleEl) return;
+      if (document.visibilityState === 'hidden') {
+        staleEl.style.display = 'none';
+        return;
+      }
       const diffMs = Date.now() - lastContentChangeTime;
       if (diffMs > 90000) {
         const mins = Math.max(1, Math.floor(diffMs / 60000));
@@ -1364,7 +1371,10 @@
     }
 
     // 登入處理
+    let isLoggingIn = false;
     async function handleLogin() {
+      const loginBtn = document.getElementById('judgeLogin');
+      if (isLoggingIn || (loginBtn && loginBtn.disabled)) return;
       hideMsg('loginError');
       const pinInput = document.getElementById('judgePin');
       const pinVal = (pinInput ? pinInput.value : '').trim();
@@ -1372,6 +1382,13 @@
       if (!pinVal) {
         showMsg('loginError', '請輸入工作人員 PIN 碼');
         return;
+      }
+
+      isLoggingIn = true;
+      const origText = loginBtn ? loginBtn.textContent : '';
+      if (loginBtn) {
+        loginBtn.disabled = true;
+        loginBtn.textContent = '登入中…';
       }
 
       try {
@@ -1403,6 +1420,12 @@
         try { sessionStorage.removeItem(SESSION_STORAGE_KEY_STAFF_PIN); } catch (e) {}
         showMsg('loginError', err.message);
         renderAuthUI();
+      } finally {
+        isLoggingIn = false;
+        if (loginBtn) {
+          loginBtn.disabled = false;
+          loginBtn.textContent = origText;
+        }
       }
     }
 
@@ -2282,7 +2305,10 @@
     }
 
     // 送出補時
+    let isExtending = false;
     async function handleExtendSubmit() {
+      const btn = document.getElementById('extSubmit');
+      if (isExtending || (btn && btn.disabled)) return;
       hideMsg('extMsg');
       const tableNum = getActiveTableNumber();
       if (!tableNum || !currentTable) {
@@ -2302,6 +2328,13 @@
         return;
       }
 
+      isExtending = true;
+      const origText = btn ? btn.textContent : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '送出中…';
+      }
+
       try {
         const res = await callApi('/api/staff/extend', {
           round: currentTable.round,
@@ -2314,16 +2347,32 @@
         showMsg('extMsg', `第 ${tableNum} 桌已成功補時 ${minutes} 分鐘`, false);
       } catch (err) {
         showMsg('extMsg', err.message);
+      } finally {
+        isExtending = false;
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = origText;
+        }
       }
     }
 
     // 取消最後一筆補時
+    let isCancelingExt = false;
     async function handleExtendCancel() {
+      const btn = document.getElementById('extCancel');
+      if (isCancelingExt || (btn && btn.disabled)) return;
       hideMsg('extMsg');
       const tableNum = getActiveTableNumber();
       if (!tableNum || !currentTable) {
         showMsg('extMsg', '請先選擇或查詢桌次');
         return;
+      }
+
+      isCancelingExt = true;
+      const origText = btn ? btn.textContent : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '取消中…';
       }
 
       try {
@@ -2336,6 +2385,12 @@
         showMsg('extMsg', `已取消第 ${tableNum} 桌最後一筆補時`, false);
       } catch (err) {
         showMsg('extMsg', err.message);
+      } finally {
+        isCancelingExt = false;
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = origText;
+        }
       }
     }
 
@@ -2641,6 +2696,29 @@
           }
         });
       }
+
+      function handleVisibilityChange() {
+        if (document.visibilityState === 'hidden') {
+          if (pollTimer) {
+            clearInterval(pollTimer);
+            pollTimer = null;
+          }
+          stopCallTimer();
+          stopConflictTimer();
+        } else {
+          fetchData();
+          if (staffPin) {
+            fetchCalls();
+            fetchConflicts();
+            startCallTimer();
+            startConflictTimer();
+          }
+          if (!pollTimer) {
+            pollTimer = setInterval(fetchData, 5000);
+          }
+        }
+      }
+      document.addEventListener('visibilitychange', handleVisibilityChange);
 
       // 初始化
       checkAutoLogin();

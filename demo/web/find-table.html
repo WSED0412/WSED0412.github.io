@@ -180,6 +180,9 @@
       margin-bottom: 12px;
       text-align: center;
     }
+    .offline-tag-bar {
+      margin-bottom: 6px;
+    }
     .offline-tag {
       display: inline-block;
       background: var(--warning-bg);
@@ -189,7 +192,7 @@
       padding: 2px 8px;
       border-radius: 4px;
       font-weight: 800;
-      margin-left: 6px;
+      margin-left: 0;
       vertical-align: middle;
     }
     body[data-offline="true"] .result-card {
@@ -204,9 +207,9 @@
       opacity: 0.95;
     }
     body[data-offline="true"] .offline-tag {
-      background: var(--warning-text);
+      background: #f59e0b;
       color: #141212;
-      border: 1px solid #FFFFFF;
+      border: 1px solid #fef08a;
       font-weight: 900;
     }
 
@@ -1066,6 +1069,39 @@
       background: var(--card-bg);
     }
 
+    /* 選手退賽樣式 (DATA-CONTRACT 3.6, PROJECT.md 第 10 節) */
+    .btn-drop {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      min-width: 120px;
+      padding: 8px 16px;
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-drop:hover, .btn-drop:active {
+      background: rgba(74, 31, 28, 0.4);
+      color: var(--danger-text);
+      border-color: var(--danger-border);
+    }
+    .drop-status-text {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+    .drop-status-text.dropped {
+      color: var(--danger-text);
+      font-weight: 700;
+    }
+
     /* 確認彈窗 (360x640 不用捲動就要看到) */
     .confirm-modal-overlay {
       position: fixed;
@@ -1299,6 +1335,20 @@
     </div>
   </div>
 
+  <!-- 退賽確認彈窗 (PROJECT.md 第 10 節, review.py [30]) -->
+  <div id="dropConfirmModal" class="confirm-modal-overlay" style="display: none;">
+    <div class="confirm-modal-box" style="border-color: var(--danger-border);">
+      <div class="confirm-modal-title" style="color: var(--danger-text);">確定退出比賽？</div>
+      <div class="confirm-outcome-text" style="font-size: 0.95rem; text-align: left; padding: 0 4px;">
+        退賽後不會被排進下一輪；要回來請找<strong>主辦</strong>（規則 414.7）。
+      </div>
+      <div class="confirm-btns-row" style="margin-top: 16px;">
+        <button type="button" id="dropConfirm" class="btn-confirm" style="background: var(--danger-border); color: #fff;">確認退賽</button>
+        <button type="button" id="dropCancel" class="btn-cancel">取消</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 尚未連上賽務系統錯誤畫面 (硬性規定 1) -->
   <div class="disconnected-overlay" id="disconnectedScreen">
     <div class="disconnected-icon">⚠️</div>
@@ -1314,7 +1364,7 @@
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
 
-    const CURRENT_CONTRACT_VERSION = 11;
+    const CURRENT_CONTRACT_VERSION = 12;
     const STORAGE_KEY_SEARCH = 'riftbound_find_table_last_query';
     const STORAGE_KEY_HISTORY = 'riftbound_find_table_history';
 
@@ -1421,6 +1471,7 @@
 
     // 讀取資料 (DATA-CONTRACT 1.10: 時間換算優先用 Date 標頭)
     async function fetchData() {
+      if (document.visibilityState === 'hidden') return;
       const primaryUrl = getDataSourceUrl();
       try {
         const responseTime = Date.now();
@@ -1566,6 +1617,7 @@
         rawJsonText = text;
         snapshotData = data;
         renderAll();
+        checkFreshness();
 
         if (!autoLoginChecked && isReportingEnabled() && !isOfflineMode) {
           autoLoginChecked = true;
@@ -1575,6 +1627,7 @@
         }
       } catch (err) {
         console.warn('賽務資料讀取失敗:', err);
+        checkFreshness();
         if (!snapshotData) {
           document.getElementById('disconnectedScreen').style.display = 'flex';
         }
@@ -1587,7 +1640,7 @@
       if (params.get('demo')) return;
       const staleEl = document.getElementById('staleBanner');
       if (!staleEl) return;
-      if (isOfflineMode) {
+      if (isOfflineMode || document.visibilityState === 'hidden') {
         staleEl.style.display = 'none';
         return;
       }
@@ -2130,13 +2183,16 @@
         lastRenderedPlayerId = matchedPairing.p1.id;
         pinFormVisible = false;
         resultSection.innerHTML = `
-          <div class="bye-card">
-            <div class="bye-title">本輪輪空 ${isOfflineMode ? '<span class="offline-tag">舊資料</span>' : ''}</div>
-            <div class="bye-desc">
-              選手 <strong>${escapeHtml(matchedPairing.p1.name)}</strong>（${escapeHtml(matchedPairing.p1.id)}）本輪輪空，不需出賽。
-            </div>
-            <div style="margin-top: 10px; font-size: 0.85rem; color: var(--success-text);">
-              請留意下一輪的公布時間與現場廣播。
+          <div class="result-card-wrap">
+            ${isOfflineMode ? '<div class="offline-tag-bar"><span class="offline-tag">舊資料</span></div>' : ''}
+            <div class="bye-card">
+              <div class="bye-title">本輪輪空</div>
+              <div class="bye-desc">
+                選手 <strong>${escapeHtml(matchedPairing.p1.name)}</strong>（${escapeHtml(matchedPairing.p1.id)}）本輪輪空，不需出賽。
+              </div>
+              <div style="margin-top: 10px; font-size: 0.85rem; color: var(--success-text);">
+                請留意下一輪的公布時間與現場廣播。
+              </div>
             </div>
           </div>
         `;
@@ -2210,7 +2266,9 @@
       let resultBarHtml = '';
       const res = matchedPairing.result;
       if (!res) {
-        resultBarHtml = `<div class="match-result-bar res-ongoing">對戰進行中</div>`;
+        resultBarHtml = isOfflineMode
+          ? `<div class="match-result-bar res-ongoing">未完賽</div>`
+          : `<div class="match-result-bar res-ongoing">對戰進行中</div>`;
       } else if (res.status === 'confirmed') {
         if (res.double_loss) {
           resultBarHtml = `
@@ -2237,53 +2295,55 @@
       const roundLabel = (snapshotData.round ? snapshotData.round.label : '') || '';
 
       resultSection.innerHTML = `
-        <div class="result-card">
-          <div class="result-header">
-            <div class="table-number-wrap">
-              <span style="font-size: 0.9rem; color: var(--text-secondary);">桌號</span>
-              <span class="table-badge-large">第 ${tableNum} 桌</span>
-              ${isFeature ? '<span class="feature-tag">直播桌</span>' : ''}
-              ${isOfflineMode ? '<span class="offline-tag">舊資料</span>' : ''}
-            </div>
-            <div class="round-indicator">
-              ${escapeHtml(roundLabel)}
-            </div>
-          </div>
-
-          <div class="match-players">
-            <!-- 我方 -->
-            <div class="player-box self">
-              <div class="player-label self-tag">
-                <span>我方 (${escapeHtml(selfPlayer.id)})</span>
-                <span>賽前積分：${selfPlayer.points} 分</span>
+        <div class="result-card-wrap">
+          ${isOfflineMode ? '<div class="offline-tag-bar"><span class="offline-tag">舊資料</span></div>' : ''}
+          <div class="result-card">
+            <div class="result-header">
+              <div class="table-number-wrap">
+                <span style="font-size: 0.9rem; color: var(--text-secondary);">桌號</span>
+                <span class="table-badge-large">第 ${tableNum} 桌</span>
+                ${isFeature ? '<span class="feature-tag">直播桌</span>' : ''}
               </div>
-              <div class="player-name">${escapeHtml(selfPlayer.name)}</div>
-              <div class="player-stats">賽前戰績：${escapeHtml(selfPlayer.record)}</div>
-            </div>
-
-            <!-- 對手 -->
-            <div class="player-box">
-              <div class="player-label">
-                <span>對手 (${escapeHtml(oppPlayer.id)})</span>
-                <span>賽前積分：${oppPlayer.points} 分</span>
+              <div class="round-indicator">
+                ${escapeHtml(roundLabel)}
               </div>
-              <div class="player-name">${escapeHtml(oppPlayer.name)}</div>
-              <div class="player-stats">賽前戰績：${escapeHtml(oppPlayer.record)}</div>
             </div>
+
+            <div class="match-players">
+              <!-- 我方 -->
+              <div class="player-box self">
+                <div class="player-label self-tag">
+                  <span>我方 (${escapeHtml(selfPlayer.id)})</span>
+                  <span>賽前積分：${selfPlayer.points} 分</span>
+                </div>
+                <div class="player-name">${escapeHtml(selfPlayer.name)}</div>
+                <div class="player-stats">賽前戰績：${escapeHtml(selfPlayer.record)}</div>
+              </div>
+
+              <!-- 對手 -->
+              <div class="player-box">
+                <div class="player-label">
+                  <span>對手 (${escapeHtml(oppPlayer.id)})</span>
+                  <span>賽前積分：${oppPlayer.points} 分</span>
+                </div>
+                <div class="player-name">${escapeHtml(oppPlayer.name)}</div>
+                <div class="player-stats">賽前戰績：${escapeHtml(oppPlayer.record)}</div>
+              </div>
+            </div>
+
+            <!-- 桌次時間與補時詳細 -->
+            <div class="table-details">
+              ${endsAtHtml}
+              ${extHtml}
+              ${(!endsAtHtml && !extHtml) ? (isOfflineMode ? '<div style="color: var(--text-secondary); text-align: center;">標準時間（無補時）</div>' : '<div style="color: var(--text-secondary); text-align: center;">標準時間進行中（無補時）</div>') : ''}
+            </div>
+
+            <!-- 成績狀態 -->
+            ${resultBarHtml}
+
+            <!-- 成績回報卡 (DATA-CONTRACT 3.2) -->
+            <div id="reportCardArea"></div>
           </div>
-
-          <!-- 桌次時間與補時詳細 -->
-          <div class="table-details">
-            ${endsAtHtml}
-            ${extHtml}
-            ${(!endsAtHtml && !extHtml) ? '<div style="color: var(--text-secondary); text-align: center;">標準時間進行中（無補時）</div>' : ''}
-          </div>
-
-          <!-- 成績狀態 -->
-          ${resultBarHtml}
-
-          <!-- 成績回報卡 (DATA-CONTRACT 3.2) -->
-          <div id="reportCardArea"></div>
         </div>
       `;
 
@@ -2561,6 +2621,30 @@
         `;
       }
 
+      // 選手自己退賽區塊 (DATA-CONTRACT 3.6, PROJECT.md 第 10 節)
+      const dropInfo = (currentPlayerMeData && currentPlayerMeData.drop) || {};
+      const isDropped = Boolean(dropInfo.dropped);
+      const canDrop = Boolean(dropInfo.can_drop);
+      const dropReason = dropInfo.reason || '';
+
+      let dropStatusHtml = '';
+      let dropBtnHtml = '';
+
+      if (isDropped) {
+        dropStatusHtml = `<div id="dropStatus" class="drop-status-text dropped">${escapeHtml(dropReason || '你已經退賽')}</div>`;
+      } else if (canDrop) {
+        dropBtnHtml = `<button type="button" id="dropBtn" class="btn-drop">退出比賽</button>`;
+      } else {
+        dropStatusHtml = `<div id="dropStatus" class="drop-status-text">${escapeHtml(dropReason)}</div>`;
+      }
+
+      const playerDropSectionHtml = `
+        <div class="player-drop-card" id="playerDropCard" style="margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--card-border); text-align: center;">
+          ${dropStatusHtml}
+          ${dropBtnHtml}
+        </div>
+      `;
+
       container.innerHTML = `
         <div class="report-card-wrap">
           <div class="report-box-wrap" id="reportLoggedIn">
@@ -2580,6 +2664,8 @@
             <div id="reportError" class="pin-error-msg" style="display: none;"></div>
 
             ${judgeCallSectionHtml}
+
+            ${playerDropSectionHtml}
           </div>
         </div>
       `;
@@ -2588,6 +2674,14 @@
       const logoutBtn = document.getElementById('reportLogout');
       if (logoutBtn) {
         logoutBtn.addEventListener('click', handleLogout);
+      }
+
+      const dropBtn = document.getElementById('dropBtn');
+      if (dropBtn) {
+        dropBtn.addEventListener('click', () => {
+          const modal = document.getElementById('dropConfirmModal');
+          if (modal) modal.style.display = 'flex';
+        });
       }
 
       const sameBtn = document.getElementById('reportSameAsOpp');
@@ -2642,7 +2736,10 @@
     }
 
     // 處理 PIN 送出登入
+    let isSubmittingPin = false;
     async function handlePinSubmit() {
+      const pinSubmitBtn = document.getElementById('pinSubmit');
+      if (isSubmittingPin || (pinSubmitBtn && pinSubmitBtn.disabled)) return;
       const pinInput = document.getElementById('pinInput');
       const pinError = document.getElementById('pinError');
       const pinVal = (pinInput ? pinInput.value : '').trim();
@@ -2658,6 +2755,13 @@
         return;
       }
       const pid = currentSelfPlayer.id;
+
+      isSubmittingPin = true;
+      const origText = pinSubmitBtn ? pinSubmitBtn.textContent : '';
+      if (pinSubmitBtn) {
+        pinSubmitBtn.disabled = true;
+        pinSubmitBtn.textContent = '驗證中…';
+      }
 
       try {
         const apiUrl = getApiUrl('/api/player/me');
@@ -2695,6 +2799,12 @@
         if (pinError) {
           pinError.textContent = '無法連線到主機，請確認網路';
           pinError.style.display = 'block';
+        }
+      } finally {
+        isSubmittingPin = false;
+        if (pinSubmitBtn) {
+          pinSubmitBtn.disabled = false;
+          pinSubmitBtn.textContent = origText;
         }
       }
     }
@@ -2743,12 +2853,16 @@
     }
 
     // 確認送出成績 (呼叫 /api/player/report)
+    let isSubmittingReport = false;
     async function handleReportConfirmClick() {
-      if (!pendingReportValues || !authPlayerId || !authPin) return;
+      if (isSubmittingReport || !pendingReportValues || !authPlayerId || !authPin) return;
       const btn = document.getElementById('reportConfirm');
       const modal = document.getElementById('reportConfirmModal');
-      btn.disabled = true;
-      btn.textContent = '送出中...';
+      isSubmittingReport = true;
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '送出中...';
+      }
 
       try {
         const roundNo = (snapshotData && snapshotData.round) ? snapshotData.round.number : 1;
@@ -2770,7 +2884,7 @@
 
         if (!res.ok || !data || !data.ok) {
           const msg = (data && data.message) ? data.message : `回報失敗 (HTTP ${res.status})`;
-          modal.style.display = 'none';
+          if (modal) modal.style.display = 'none';
           const repErr = document.getElementById('reportError');
           if (repErr) {
             repErr.textContent = msg;
@@ -2781,7 +2895,7 @@
 
         // 回報成功
         currentPlayerMeData = data;
-        modal.style.display = 'none';
+        if (modal) modal.style.display = 'none';
         lastMatchCardFingerprint = '';
         renderReportCard();
 
@@ -2789,15 +2903,18 @@
         fetchData();
       } catch (err) {
         console.warn('成績回報失敗:', err);
-        modal.style.display = 'none';
+        if (modal) modal.style.display = 'none';
         const repErr = document.getElementById('reportError');
         if (repErr) {
           repErr.textContent = '連線失敗，請稍後再試';
           repErr.style.display = 'block';
         }
       } finally {
-        btn.disabled = false;
-        btn.textContent = '確認送出';
+        isSubmittingReport = false;
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = '確認送出';
+        }
       }
     }
 
@@ -2816,15 +2933,61 @@
       renderReportCard();
     }
 
-    // 處理呼叫裁判送出
-    async function handleCallSubmit() {
+    // 處理選手退賽送出 (DATA-CONTRACT 3.6, PROJECT.md 第 10 節)
+    let isSubmittingDrop = false;
+    async function handleDropConfirmClick() {
+      const dropConfirmBtn = document.getElementById('dropConfirm');
+      if (isSubmittingDrop || (dropConfirmBtn && dropConfirmBtn.disabled)) return;
       if (!authPlayerId || !authPin) return;
+
+      isSubmittingDrop = true;
+      if (dropConfirmBtn) {
+        dropConfirmBtn.disabled = true;
+        dropConfirmBtn.textContent = '處理中...';
+      }
+
+      try {
+        const apiUrl = getApiUrl('/api/player/drop');
+        const res = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            player_id: authPlayerId,
+            pin: authPin
+          })
+        });
+
+        const data = await res.json().catch(() => null);
+        if (res.ok && data && data.ok) {
+          currentPlayerMeData = data;
+          const modal = document.getElementById('dropConfirmModal');
+          if (modal) modal.style.display = 'none';
+          renderReportCard();
+        } else {
+          alert((data && data.message) ? data.message : '退賽失敗');
+        }
+      } catch (err) {
+        alert('連線失敗：' + (err.message || '網路異常'));
+      } finally {
+        isSubmittingDrop = false;
+        if (dropConfirmBtn) {
+          dropConfirmBtn.disabled = false;
+          dropConfirmBtn.textContent = '確認退賽';
+        }
+      }
+    }
+
+    // 處理呼叫裁判送出
+    let isSubmittingCall = false;
+    async function handleCallSubmit() {
+      if (isSubmittingCall || !authPlayerId || !authPin) return;
       const noteEl = document.getElementById('callNote');
       const noteVal = (noteEl ? noteEl.value : '').trim().slice(0, 40);
       const curRound = (snapshotData && snapshotData.round) ? snapshotData.round.number : 1;
       const submitBtn = document.getElementById('callSubmit');
       const errEl = document.getElementById('callError');
       if (errEl) errEl.style.display = 'none';
+      isSubmittingCall = true;
       if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.textContent = '送出中...';
@@ -2865,6 +3028,7 @@
           errEl.style.display = 'block';
         }
       } finally {
+        isSubmittingCall = false;
         if (submitBtn) {
           submitBtn.disabled = false;
           submitBtn.textContent = '送出呼叫';
@@ -2873,12 +3037,14 @@
     }
 
     // 處理取消呼叫裁判
+    let isCancelingCall = false;
     async function handleCallCancel() {
-      if (!authPlayerId || !authPin) return;
+      if (isCancelingCall || !authPlayerId || !authPin) return;
       const curRound = (snapshotData && snapshotData.round) ? snapshotData.round.number : 1;
       const cancelBtn = document.getElementById('callCancel');
       const errEl = document.getElementById('callError');
       if (errEl) errEl.style.display = 'none';
+      isCancelingCall = true;
       if (cancelBtn) {
         cancelBtn.disabled = true;
         cancelBtn.textContent = '取消中...';
@@ -2919,6 +3085,7 @@
           errEl.style.display = 'block';
         }
       } finally {
+        isCancelingCall = false;
         if (cancelBtn) {
           cancelBtn.disabled = false;
           cancelBtn.textContent = '取消呼叫裁判';
@@ -3258,6 +3425,34 @@
           if (modal) modal.style.display = 'none';
         });
       }
+
+      const dropConfirmBtn = document.getElementById('dropConfirm');
+      if (dropConfirmBtn) {
+        dropConfirmBtn.addEventListener('click', handleDropConfirmClick);
+      }
+
+      const dropCancelBtn = document.getElementById('dropCancel');
+      if (dropCancelBtn) {
+        dropCancelBtn.addEventListener('click', () => {
+          const modal = document.getElementById('dropConfirmModal');
+          if (modal) modal.style.display = 'none';
+        });
+      }
+
+      function handleVisibilityChange() {
+        if (document.visibilityState === 'hidden') {
+          if (pollTimer) {
+            clearInterval(pollTimer);
+            pollTimer = null;
+          }
+        } else {
+          fetchData();
+          if (!pollTimer) {
+            pollTimer = setInterval(fetchData, 5000);
+          }
+        }
+      }
+      document.addEventListener('visibilitychange', handleVisibilityChange);
 
       updateStandingsLink();
       fetchData();

@@ -436,7 +436,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 11;
+    const CURRENT_CONTRACT_VERSION = 12;
     let snapshotData = null;
 
     function getDataSourceUrl() {
@@ -490,7 +490,10 @@
       el.textContent = '';
     }
 
+    let isSubmittingCheckin = false;
     async function handleCheckinSubmit() {
+      const btn = document.getElementById('checkinSubmit');
+      if (isSubmittingCheckin || (btn && btn.disabled)) return;
       hideMsg();
       const idInput = document.getElementById('checkinId');
       const pinInput = document.getElementById('checkinPin');
@@ -512,6 +515,13 @@
 
       if (rawName.trim().length > 0) {
         payload.display_name = rawName.trim();
+      }
+
+      isSubmittingCheckin = true;
+      const origText = btn ? btn.textContent : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '報到中…';
       }
 
       try {
@@ -567,6 +577,12 @@
         doneEl.style.display = 'block';
       } catch (err) {
         showMsg(err.message);
+      } finally {
+        isSubmittingCheckin = false;
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = origText;
+        }
       }
     }
 

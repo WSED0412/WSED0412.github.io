@@ -589,7 +589,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 11;
+    const CURRENT_CONTRACT_VERSION = 12;
 
     let snapshotData = null;
     let cachedStandingsData = null;
@@ -660,6 +660,10 @@
       if (params.get('demo')) return;
       const staleEl = document.getElementById('staleBanner');
       if (!staleEl) return;
+      if (document.visibilityState === 'hidden') {
+        staleEl.style.display = 'none';
+        return;
+      }
       const diffMs = Date.now() - lastContentChangeTime;
       if (diffMs > 90000) {
         const mins = Math.max(1, Math.floor(diffMs / 60000));
@@ -826,6 +830,7 @@
     }
 
     async function fetchData() {
+      if (document.visibilityState === 'hidden') return;
       const primaryUrl = getDataSourceUrl();
       try {
         const responseTime = Date.now();
@@ -871,6 +876,7 @@
           rawJsonText = text;
         }
 
+        checkFreshness();
         snapshotData = data;
         renderSnapshotHeader();
 
@@ -886,6 +892,7 @@
           }
         }
       } catch (err) {
+        checkFreshness();
         console.warn('賽務快照讀取失敗:', err);
         if (!snapshotData) {
           document.getElementById('disconnectedScreen').style.display = 'flex';
@@ -978,6 +985,21 @@
       if (retryBtn) {
         retryBtn.addEventListener('click', fetchData);
       }
+
+      function handleVisibilityChange() {
+        if (document.visibilityState === 'hidden') {
+          if (pollTimer) {
+            clearInterval(pollTimer);
+            pollTimer = null;
+          }
+        } else {
+          fetchData();
+          if (!pollTimer) {
+            pollTimer = setInterval(fetchData, 4000);
+          }
+        }
+      }
+      document.addEventListener('visibilitychange', handleVisibilityChange);
 
       fetchData();
       pollTimer = setInterval(fetchData, 4000);

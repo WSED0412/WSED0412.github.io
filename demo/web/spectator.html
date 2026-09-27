@@ -659,7 +659,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 11;
+    const CURRENT_CONTRACT_VERSION = 12;
     const STORAGE_KEY_TOKEN = 'riftbound_viewer_device_token';
 
     let snapshotData = null;
@@ -776,6 +776,10 @@
       if (params.get('demo')) return;
       const staleEl = document.getElementById('staleBanner');
       if (!staleEl) return;
+      if (document.visibilityState === 'hidden') {
+        staleEl.style.display = 'none';
+        return;
+      }
       const diffMs = Date.now() - lastContentChangeTime;
       if (diffMs > 90000) {
         const mins = Math.max(1, Math.floor(diffMs / 60000));
@@ -787,6 +791,7 @@
     }
 
     async function fetchData() {
+      if (document.visibilityState === 'hidden') return;
       const primaryUrl = getDataSourceUrl();
       try {
         const responseTime = Date.now();
@@ -835,7 +840,9 @@
         rawJsonText = text;
         snapshotData = data;
         renderAll();
+        checkFreshness();
       } catch (err) {
+        checkFreshness();
         if (!snapshotData) {
           document.getElementById('disconnectedScreen').style.display = 'flex';
         }
@@ -1048,6 +1055,7 @@
 
     // 渲染賽程面板
     function renderScheduleTab() {
+      if (!snapshotData) return;
       const round = snapshotData.round || {};
       const schedule = snapshotData.schedule || {};
       const clock = snapshotData.clock || {};
@@ -1282,6 +1290,21 @@
 
       const retryBtn = document.getElementById('retryBtn');
       if (retryBtn) retryBtn.addEventListener('click', fetchData);
+
+      function handleVisibilityChange() {
+        if (document.visibilityState === 'hidden') {
+          if (pollTimer) {
+            clearInterval(pollTimer);
+            pollTimer = null;
+          }
+        } else {
+          fetchData();
+          if (!pollTimer) {
+            pollTimer = setInterval(fetchData, 5000);
+          }
+        }
+      }
+      document.addEventListener('visibilitychange', handleVisibilityChange);
 
       // 初始讀取與輪詢
       fetchData();
