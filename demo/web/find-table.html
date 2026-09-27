@@ -102,6 +102,16 @@
       border-color: var(--success-border);
       color: var(--success-text);
     }
+    .status-badge.offline {
+      background: var(--warning-bg);
+      border-color: var(--warning-border);
+      color: var(--warning-text);
+    }
+    body[data-offline="true"] .status-badge {
+      background: var(--warning-bg) !important;
+      border-color: var(--warning-border) !important;
+      color: var(--warning-text) !important;
+    }
     .header-nav {
       display: flex;
       justify-content: flex-end;
@@ -145,6 +155,59 @@
       margin-bottom: 12px;
       text-align: center;
       border: 1px solid var(--danger-border);
+    }
+    .offline-banner {
+      background: var(--warning-bg);
+      color: var(--warning-text);
+      border: 1.5px solid var(--warning-border);
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.5;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .round-updated-notice {
+      background: var(--success-bg);
+      color: var(--success-text);
+      border: 1.5px solid var(--success-border);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .offline-tag {
+      display: inline-block;
+      background: var(--warning-bg);
+      color: var(--warning-text);
+      border: 1px solid var(--warning-border);
+      font-size: 0.8rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 800;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    body[data-offline="true"] .result-card {
+      border-color: var(--warning-border);
+      background: #012836;
+      filter: grayscale(1);
+      opacity: 0.95;
+    }
+    body[data-offline="true"] .bye-card {
+      border-color: var(--warning-border);
+      filter: grayscale(1);
+      opacity: 0.95;
+    }
+    body[data-offline="true"] .offline-tag {
+      background: var(--warning-text);
+      color: #141212;
+      border: 1px solid #FFFFFF;
+      font-weight: 900;
     }
 
     /* 休息／大字公告橫幅 (DATA-CONTRACT 1.8) */
@@ -1090,6 +1153,12 @@
       資料格式已更新，請重新整理頁面
     </div>
 
+    <!-- 離線舊資料橫幅 (DATA-CONTRACT 1.17) -->
+    <div id="offlineBanner" class="offline-banner" style="display: none;"></div>
+
+    <!-- 輪次更新提示 (DATA-CONTRACT 1.17) -->
+    <div id="roundUpdatedNotice" class="round-updated-notice" style="display: none;"></div>
+
     <!-- 資料過期提示 (DATA-CONTRACT 1.10) -->
     <div id="staleBanner" class="stale-warning" style="display: none;"></div>
 
@@ -1241,9 +1310,17 @@
   </div>
 
   <script>
+    if ('serviceWorker' in navigator && window.isSecureContext) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+
     const CURRENT_CONTRACT_VERSION = 11;
     const STORAGE_KEY_SEARCH = 'riftbound_find_table_last_query';
     const STORAGE_KEY_HISTORY = 'riftbound_find_table_history';
+
+    let isOfflineMode = false;
+    let offlineRoundLabel = '';
+    let roundUpdatedNoticeTimer = null;
 
     function updateStandingsLink() {
       const params = new URLSearchParams(window.location.search);
@@ -1356,8 +1433,101 @@
           throw new Error(`HTTP ${res.status}`);
         }
 
+        const isOfflineCopy = res.headers.get('X-Offline-Copy') === '1';
         const text = await res.text();
         const data = JSON.parse(text);
+
+        // 離線舊資料判定 (DATA-CONTRACT 1.17)
+        const wasOffline = isOfflineMode;
+        if (isOfflineCopy) {
+          // 若超過 12 小時，當作沒有資料（照舊顯示「尚未連上」）
+          const isExpired = data.server_now && (Date.now() - data.server_now > 12 * 3600 * 1000);
+          if (isExpired) {
+            snapshotData = null;
+            rawJsonText = '';
+            isOfflineMode = false;
+            document.body.removeAttribute('data-offline');
+            const offlineBanner = document.getElementById('offlineBanner');
+            if (offlineBanner) {
+              offlineBanner.style.display = 'none';
+              offlineBanner.textContent = '';
+            }
+            document.getElementById('disconnectedScreen').style.display = 'flex';
+            return;
+          }
+
+          // 進入離線舊資料狀態
+          isOfflineMode = true;
+          document.body.setAttribute('data-offline', 'true');
+          offlineRoundLabel = (data.round && data.round.label) || '';
+          const statusEl = document.getElementById('eventStatus');
+          if (statusEl) {
+            statusEl.className = 'status-badge offline';
+            statusEl.textContent = '離線';
+          }
+
+          const offlineBanner = document.getElementById('offlineBanner');
+          if (offlineBanner) {
+            const timeStr = formatTimeHHMM(data.server_now);
+            const roundLabel = (data.round && data.round.label)
+              ? data.round.label
+              : (data.round ? `第 ${data.round.number} 輪` : '賽事');
+            offlineBanner.textContent = `連不上系統，下面是 ${timeStr} 存下的${roundLabel}資料。新一輪可能已經公布，請看現場公告或牆上的配對表。`;
+            offlineBanner.style.display = 'block';
+          }
+
+          const staleEl = document.getElementById('staleBanner');
+          if (staleEl) staleEl.style.display = 'none';
+          document.getElementById('disconnectedScreen').style.display = 'none';
+
+          if (!demoOffsetCalculated && data.server_now) {
+            serverOffsetMs = data.server_now - responseTime;
+            demoOffsetCalculated = true;
+          }
+
+          // 離線回應不算收到新內容，不更新 lastContentChangeTime
+          if (text === rawJsonText && snapshotData && wasOffline) {
+            updateClockDisplay();
+            return;
+          }
+
+          rawJsonText = text;
+          snapshotData = data;
+          renderAll();
+          return;
+        }
+
+        // 正常即時回應（無 X-Offline-Copy）
+        if (isOfflineMode) {
+          isOfflineMode = false;
+          document.body.removeAttribute('data-offline');
+          const statusEl = document.getElementById('eventStatus');
+          if (statusEl) {
+            statusEl.className = 'status-badge' + ((data.event && data.event.status === 'live') ? ' live' : '');
+            statusEl.textContent = (data.event && data.event.status === 'live') ? '進行中' : '賽事';
+          }
+          const offlineBanner = document.getElementById('offlineBanner');
+          if (offlineBanner) {
+            offlineBanner.style.display = 'none';
+            offlineBanner.textContent = '';
+          }
+
+          // 輪次變更提示 (DATA-CONTRACT 1.17)
+          const newRoundLabel = (data.round && data.round.label) || '';
+          if (offlineRoundLabel && newRoundLabel && offlineRoundLabel !== newRoundLabel) {
+            const noticeEl = document.getElementById('roundUpdatedNotice');
+            if (noticeEl) {
+              noticeEl.textContent = `已更新到${newRoundLabel}`;
+              noticeEl.style.display = 'block';
+              if (roundUpdatedNoticeTimer) clearTimeout(roundUpdatedNoticeTimer);
+              roundUpdatedNoticeTimer = setTimeout(() => {
+                noticeEl.style.display = 'none';
+                noticeEl.textContent = '';
+              }, 10000);
+            }
+          }
+          offlineRoundLabel = '';
+        }
 
         // DATA-CONTRACT 1.10: 示範模式的時間換算
         // 示範檔的時間固定在 2026-09-26，不讀 Date 標頭，只在第一次載入時用 server_now 算一次 offset，之後不再重算
@@ -1387,8 +1557,8 @@
 
         document.getElementById('disconnectedScreen').style.display = 'none';
 
-        // 資料未變動則不重繪整個 DOM，保持焦點與操作
-        if (text === rawJsonText) {
+        // 資料未變動則不重繪整個 DOM，保持焦點與操作（剛切換狀態除外）
+        if (text === rawJsonText && !wasOffline) {
           return;
         }
 
@@ -1397,10 +1567,10 @@
         snapshotData = data;
         renderAll();
 
-        if (!autoLoginChecked && isReportingEnabled()) {
+        if (!autoLoginChecked && isReportingEnabled() && !isOfflineMode) {
           autoLoginChecked = true;
           checkAutoLogin();
-        } else if (authPlayerId && authPin && isReportingEnabled()) {
+        } else if (authPlayerId && authPin && isReportingEnabled() && !isOfflineMode) {
           refreshPlayerMeSilently();
         }
       } catch (err) {
@@ -1417,6 +1587,10 @@
       if (params.get('demo')) return;
       const staleEl = document.getElementById('staleBanner');
       if (!staleEl) return;
+      if (isOfflineMode) {
+        staleEl.style.display = 'none';
+        return;
+      }
       const diffMs = Date.now() - lastContentChangeTime;
       if (diffMs > 90000) {
         const mins = Math.max(1, Math.floor(diffMs / 60000));
@@ -1431,7 +1605,7 @@
     function renderLateReminder() {
       const banner = document.getElementById('lateReminderBanner');
       if (!banner) return;
-      if (!snapshotData || !snapshotData.clock) {
+      if (isOfflineMode || !snapshotData || !snapshotData.clock) {
         banner.style.display = 'none';
         banner.textContent = '';
         return;
@@ -1487,7 +1661,10 @@
       const statusEl = document.getElementById('eventStatus');
       const st = event.status || 'live';
       statusEl.className = 'status-badge';
-      if (st === 'live') {
+      if (isOfflineMode) {
+        statusEl.classList.add('offline');
+        statusEl.textContent = '離線';
+      } else if (st === 'live') {
         statusEl.classList.add('live');
         statusEl.textContent = '進行中';
       } else if (st === 'paused') {
@@ -1606,7 +1783,7 @@
         const remaining = Math.max(0, progress.tables_total - (progress.tables_done || 0));
         progressRemaining.textContent = `全場還剩 ${remaining} 桌（已完賽 ${progress.tables_done || 0}/${progress.tables_total}）`;
 
-        if (progress.latest_end_at && clock.state === 'running') {
+        if (progress.latest_end_at && clock.state === 'running' && !isOfflineMode) {
           latestEndRow.style.display = 'flex';
           const tStr = formatTimeHHMM(progress.latest_end_at);
           latestEndVal.textContent = `表定最晚 ${tStr} 結束（時間到後有延長回合）`;
@@ -1627,6 +1804,13 @@
       const clock = snapshotData.clock;
       const round = snapshotData.round;
       const clockEl = document.getElementById('clockDisplay');
+
+      if (isOfflineMode) {
+        clockEl.textContent = '計時資訊要連上才看得到';
+        clockEl.style.color = 'var(--text-secondary)';
+        updateJudgeCallStatusText();
+        return;
+      }
 
       if (round && round.phase === 'finished') {
         clockEl.textContent = '本輪已結束';
@@ -1916,7 +2100,7 @@
       const p2 = matchedPairing.p2;
       const p1Str = p1 ? `${p1.id}-${p1.name}-${p1.points}-${p1.record}` : '';
       const p2Str = p2 ? `${p2.id}-${p2.name}-${p2.points}-${p2.record}` : 'bye';
-      const endsAt = matchedPairing.ends_at || 0;
+      const endsAt = (matchedPairing.ends_at && !isOfflineMode) ? matchedPairing.ends_at : 0;
       const extStr = (matchedPairing.extensions || []).map(e => `${e.minutes}-${e.reason || ''}`).join(',');
       const res = matchedPairing.result;
       const resStr = res ? `${res.status}-${res.p1_games ?? ''}-${res.p2_games ?? ''}-${res.draws ?? ''}-${res.double_loss ? 1 : 0}` : 'none';
@@ -1927,7 +2111,7 @@
       const jc = currentPlayerMeData && currentPlayerMeData.judge_call;
       const jcStr = jc ? `${jc.state}-${jc.by_me ? 1 : 0}-${jc.reason || ''}-${jc.reason_label || ''}-${jc.note || ''}` : 'none';
 
-      return `${roundStr}|${matchedPairing.table}|${matchedPairing.feature ? 1 : 0}|${isP1 ? 1 : 0}|${p1Str}|${p2Str}|${endsAt}|${extStr}|${resStr}|${repEnabled}|${authStr}|${repStr}|${jcStr}|${callFormVisible ? 1 : 0}|${selectedCallReason}`;
+      return `${roundStr}|${matchedPairing.table}|${matchedPairing.feature ? 1 : 0}|${isP1 ? 1 : 0}|${p1Str}|${p2Str}|${endsAt}|${extStr}|${resStr}|${repEnabled}|${authStr}|${repStr}|${jcStr}|${callFormVisible ? 1 : 0}|${selectedCallReason}|${isOfflineMode ? 1 : 0}`;
     }
 
     // 渲染單一對戰卡片
@@ -1942,12 +2126,12 @@
 
       // 檢查是否輪空 (p2 === null)
       if (!matchedPairing.p2) {
-        lastMatchCardFingerprint = `bye-${matchedPairing.p1.id}-${snapshotData.round ? snapshotData.round.number : 1}`;
+        lastMatchCardFingerprint = `bye-${matchedPairing.p1.id}-${snapshotData.round ? snapshotData.round.number : 1}-${isOfflineMode ? 1 : 0}`;
         lastRenderedPlayerId = matchedPairing.p1.id;
         pinFormVisible = false;
         resultSection.innerHTML = `
           <div class="bye-card">
-            <div class="bye-title">本輪輪空</div>
+            <div class="bye-title">本輪輪空 ${isOfflineMode ? '<span class="offline-tag">舊資料</span>' : ''}</div>
             <div class="bye-desc">
               選手 <strong>${escapeHtml(matchedPairing.p1.name)}</strong>（${escapeHtml(matchedPairing.p1.id)}）本輪輪空，不需出賽。
             </div>
@@ -2010,9 +2194,9 @@
         `;
       }
 
-      // 表定結束時間 (DATA-CONTRACT 1.5)
+      // 表定結束時間 (DATA-CONTRACT 1.5, 離線時不顯示)
       let endsAtHtml = '';
-      if (matchedPairing.ends_at) {
+      if (matchedPairing.ends_at && !isOfflineMode) {
         const endsTimeStr = formatTimeHHMM(matchedPairing.ends_at);
         endsAtHtml = `
           <div class="table-detail-row">
@@ -2059,6 +2243,7 @@
               <span style="font-size: 0.9rem; color: var(--text-secondary);">桌號</span>
               <span class="table-badge-large">第 ${tableNum} 桌</span>
               ${isFeature ? '<span class="feature-tag">直播桌</span>' : ''}
+              ${isOfflineMode ? '<span class="offline-tag">舊資料</span>' : ''}
             </div>
             <div class="round-indicator">
               ${escapeHtml(roundLabel)}
@@ -2109,6 +2294,18 @@
     function renderReportCard(preservedPinVal = '', isPinFocused = false, pinSelStart = null, pinSelEnd = null, preservedPinError = '', isPinErrorVisible = false, preservedCallNote = '', isCallNoteFocused = false) {
       const container = document.getElementById('reportCardArea');
       if (!container) return;
+
+      // 離線舊資料狀態：不提供回報或叫裁判功能 (DATA-CONTRACT 1.17)
+      if (isOfflineMode) {
+        container.innerHTML = `
+          <div class="report-card-wrap">
+            <div style="color: var(--text-secondary); text-align: center; padding: 12px 14px; font-size: 0.9rem; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px;">
+              離線狀態下無法登入回報成績或呼叫裁判，請連上網路後再試。
+            </div>
+          </div>
+        `;
+        return;
+      }
 
       // 檢查是否開放線上回報 (DATA-CONTRACT 1.2: api_base 不為 null)
       if (!isReportingEnabled()) {
