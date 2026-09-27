@@ -357,6 +357,20 @@
       border-color: var(--accent);
     }
 
+    /* 遲到提醒橫幅 (DATA-CONTRACT 1.16, 規則 703.8) */
+    .late-reminder-banner {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
     /* 查詢結果卡片 */
     .result-section {
       margin-bottom: 16px;
@@ -1176,6 +1190,9 @@
       <div id="candidatesList"></div>
     </div>
 
+    <!-- 遲到提醒全場橫幅 (DATA-CONTRACT 1.16, 規則 703.8) -->
+    <div class="late-reminder-banner" id="lateReminderBanner" style="display: none;"></div>
+
     <!-- 查詢結果卡片 -->
     <section class="result-section" id="resultSection" style="display: none;">
       <!-- 動態插入結果 -->
@@ -1224,7 +1241,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 10;
+    const CURRENT_CONTRACT_VERSION = 11;
     const STORAGE_KEY_SEARCH = 'riftbound_find_table_last_query';
     const STORAGE_KEY_HISTORY = 'riftbound_find_table_history';
 
@@ -1410,6 +1427,34 @@
       }
     }
 
+    // 遲到提醒全場橫幅 (DATA-CONTRACT 1.16, 規則 703.8)
+    function renderLateReminder() {
+      const banner = document.getElementById('lateReminderBanner');
+      if (!banner) return;
+      if (!snapshotData || !snapshotData.clock) {
+        banner.style.display = 'none';
+        banner.textContent = '';
+        return;
+      }
+      const clock = snapshotData.clock;
+      const startedAt = clock.started_at;
+      const state = clock.state;
+      const lateLossSec = clock.late_loss_sec || 600;
+
+      if (startedAt && state !== 'not_started') {
+        const serverNow = Date.now() + serverOffsetMs;
+        const elapsedSec = Math.floor((serverNow - startedAt) / 1000);
+        if (elapsedSec >= 0 && elapsedSec < lateLossSec) {
+          const elapsedM = Math.floor(elapsedSec / 60);
+          banner.textContent = `開賽 ${elapsedM} 分鐘 · 超過 10 分鐘未入座判場敗（規則 703.8）`;
+          banner.style.display = 'block';
+          return;
+        }
+      }
+      banner.style.display = 'none';
+      banner.textContent = '';
+    }
+
     // 渲染所有元件
     function renderAll() {
       if (!snapshotData) return;
@@ -1421,6 +1466,7 @@
       renderDemoChips();
       renderQueryFromInput();
       renderAllPairings();
+      renderLateReminder();
     }
 
     // 檢查版本號 (DATA-CONTRACT 1.1)
@@ -3022,6 +3068,7 @@
       clockTimer = setInterval(() => {
         updateClockDisplay();
         renderScheduleAndBreak();
+        renderLateReminder();
         checkFreshness();
       }, 1000);
     });

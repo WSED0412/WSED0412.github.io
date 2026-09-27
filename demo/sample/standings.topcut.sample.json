@@ -1,5 +1,5 @@
 {
-  "contract_version": 10,
+  "contract_version": 11,
   "label": "瑞士輪最終排名",
   "through_round": 5,
   "total_swiss_rounds": 5,
@@ -211,5 +211,5 @@
       "tied_by_lot": false
     }
   ],
-  "version": "cc6cbc68762d"
+  "version": "bd58962bec2b"
 }

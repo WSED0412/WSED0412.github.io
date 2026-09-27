@@ -659,7 +659,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 10;
+    const CURRENT_CONTRACT_VERSION = 11;
     const STORAGE_KEY_TOKEN = 'riftbound_viewer_device_token';
 
     let snapshotData = null;
@@ -915,7 +915,7 @@
       const titleEl = document.getElementById('breakTitle');
       const descEl = document.getElementById('breakDesc');
       const updatedEl = document.getElementById('breakUpdated');
-      if (!banner) return;
+      if (!banner || !snapshotData) return;
 
       const schedule = snapshotData.schedule || {};
       const breakInfo = schedule.break;

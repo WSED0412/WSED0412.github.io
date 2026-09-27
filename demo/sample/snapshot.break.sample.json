@@ -1,5 +1,5 @@
 {
-  "contract_version": 10,
+  "contract_version": 11,
   "server_now": 1790397300000,
   "event": {
     "name": "示範賽事（假資料）",
@@ -21,7 +21,8 @@
       "tables_total": 8,
       "tables_done": 8,
       "latest_end_at": null,
-      "judge_calls_waiting": 0
+      "judge_calls_waiting": 0,
+      "late_tables": 0
     }
   },
   "clock": {
@@ -29,7 +30,10 @@
     "duration_sec": 3600,
     "ends_at": null,
     "remaining_sec": null,
-    "extra_turns": 3
+    "extra_turns": 3,
+    "started_at": null,
+    "late_warn_sec": 120,
+    "late_loss_sec": 600
   },
   "pairings": [
     {
@@ -56,7 +60,8 @@
       },
       "extensions": [],
       "ends_at": null,
-      "judge_call": null
+      "judge_call": null,
+      "late": null
     },
     {
       "table": 2,
@@ -82,7 +87,8 @@
       },
       "extensions": [],
       "ends_at": null,
-      "judge_call": null
+      "judge_call": null,
+      "late": null
     },
     {
       "table": 3,
@@ -108,7 +114,8 @@
       },
       "extensions": [],
       "ends_at": null,
-      "judge_call": null
+      "judge_call": null,
+      "late": null
     },
     {
       "table": 4,
@@ -134,7 +141,8 @@
       },
       "extensions": [],
       "ends_at": null,
-      "judge_call": null
+      "judge_call": null,
+      "late": null
     },
     {
       "table": 5,
@@ -160,7 +168,8 @@
       },
       "extensions": [],
       "ends_at": null,
-      "judge_call": null
+      "judge_call": null,
+      "late": null
     },
     {
       "table": 6,
@@ -186,7 +195,8 @@
       },
       "extensions": [],
       "ends_at": null,
-      "judge_call": null
+      "judge_call": null,
+      "late": null
     },
     {
       "table": 7,
@@ -212,7 +222,8 @@
       },
       "extensions": [],
       "ends_at": null,
-      "judge_call": null
+      "judge_call": null,
+      "late": null
     },
     {
       "table": 8,
@@ -238,7 +249,8 @@
       },
       "extensions": [],
       "ends_at": null,
-      "judge_call": null
+      "judge_call": null,
+      "late": null
     },
     {
       "table": null,
@@ -253,7 +265,8 @@
       "result": null,
       "extensions": [],
       "ends_at": null,
-      "judge_call": null
+      "judge_call": null,
+      "late": null
     }
   ],
   "schedule": {
@@ -265,7 +278,7 @@
     "updated_at": 1790397060000
   },
   "standings": {
-    "version": "869f168e5337",
+    "version": "a84fd471ef30",
     "label": "第 1 輪結束後"
   },
   "bracket": null

@@ -127,6 +127,29 @@
       font-weight: 700;
     }
 
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--accent-text);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: rgba(239, 125, 0, 0.12);
+      border: 1px solid rgba(239, 125, 0, 0.3);
+      white-space: nowrap;
+      min-height: 44px;
+      min-width: 44px;
+      box-sizing: border-box;
+      transition: background 0.15s ease;
+    }
+    .nav-link:hover, .nav-link:active {
+      background: rgba(239, 125, 0, 0.22);
+      color: var(--text-primary);
+    }
+
     /* 警告橫幅 */
     .banner {
       padding: 10px 14px;
@@ -559,6 +582,7 @@
         <span class="admin-badge">主辦方專用</span>
       </div>
       <div class="header-right">
+        <a id="printPairingsLink" href="print.html" class="nav-link" target="_blank">列印配對表</a>
         <span id="adminUserBar" class="admin-user-info" style="display: none;">
           主辦：<span id="adminNameDisplay" class="admin-user-name"></span>
         </span>
@@ -856,7 +880,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 10;
+    const CURRENT_CONTRACT_VERSION = 11;
     const SESSION_STORAGE_KEY_STAFF_PIN = 'riftbound_staff_pin';
 
     let snapshotData = null;
@@ -922,6 +946,17 @@
         }
         showMsg('proposeMsg', '這份提案已經由其他人公布，請重新產生', true);
       }
+    }
+
+    // 更新列印連結（保留 ?demo= 參數）
+    function updatePrintLinks() {
+      const params = new URLSearchParams(window.location.search);
+      const demo = params.get('demo');
+      const targetHref = demo ? `print.html?demo=${encodeURIComponent(demo)}` : 'print.html';
+      document.querySelectorAll('a[href*="print.html"]').forEach(a => {
+        a.setAttribute('href', targetHref);
+        a.href = targetHref;
+      });
     }
 
     // 取得資料來源 URL (DATA-CONTRACT 1.10)
@@ -1103,7 +1138,8 @@
         const prog = round.progress;
         const rem = Math.max(0, prog.tables_total - (prog.tables_done || 0));
         const waitingCalls = (typeof prog.judge_calls_waiting === 'number') ? prog.judge_calls_waiting : 0;
-        let text = `還剩 ${rem} 桌（已完賽 ${prog.tables_done || 0}/${prog.tables_total}） · 等裁判 ${waitingCalls} 桌`;
+        const lateTables = (typeof prog.late_tables === 'number') ? prog.late_tables : 0;
+        let text = `還剩 ${rem} 桌（已完賽 ${prog.tables_done || 0}/${prog.tables_total}） · 等裁判 ${waitingCalls} 桌 · 遲到 ${lateTables} 桌`;
         if (prog.latest_end_at && snapshotData.clock && snapshotData.clock.state === 'running') {
           text += ` · 表定最晚 ${formatTimeHHMM(prog.latest_end_at)}`;
         }
@@ -1935,6 +1971,7 @@
       document.getElementById('retryBtn').addEventListener('click', fetchData);
 
       // 初始化
+      updatePrintLinks();
       checkAutoLogin();
       fetchData();
       pollTimer = setInterval(fetchData, 5000);

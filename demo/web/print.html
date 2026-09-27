@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>符文戰場 — 紙本備援列印</title>
+  <style>
+    :root {
+      --bg: #01222F;
+      --card-bg: #013951;
+      --card-bg-alt: #012b3c;
+      --card-border: #0A5570;
+      --text-primary: #F9F9F9;
+      --text-secondary: #9FB8C4;
+      --accent: #EF7D00;
+      --accent-hover: #C86800;
+      --accent-text: #FF941E;
+      --highlight-bg: #1E3043;
+      --warning-bg: #3E3312;
+      --warning-border: #8A6D1F;
+      --warning-text: #F2C94C;
+      --danger-bg: #4A1F1C;
+      --danger-border: #A8443C;
+      --danger-text: #ED807A;
+      --chip-bg: #0A4A63;
+      --input-bg: #011A24;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      -webkit-text-size-adjust: 100%;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      min-height: 100svh;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 12px 14px 40px;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+
+    /* 頂部導覽列（螢幕上） */
+    .nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .page-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      color: var(--accent-text);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: rgba(239, 125, 0, 0.1);
+      border: 1px solid rgba(239, 125, 0, 0.25);
+      min-height: 44px;
+      min-width: 44px;
+      box-sizing: border-box;
+    }
+    .nav-link:active {
+      background: rgba(239, 125, 0, 0.2);
+    }
+
+    /* 警告橫幅 */
+    .banner {
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+      text-align: center;
+      font-weight: 600;
+    }
+    .contract-warning {
+      background: var(--warning-bg);
+      color: var(--warning-text);
+      border: 1px solid var(--warning-border);
+    }
+    .stale-warning {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      border: 1px solid var(--danger-border);
+    }
+    .unpublished-banner {
+      background: var(--warning-bg);
+      color: var(--warning-text);
+      border: 1px solid var(--warning-border);
+      padding: 16px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    /* 操作工具列 (切換鈕與列印鈕) */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 10px 12px;
+      border-radius: 8px;
+    }
+    .tab-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      flex: 1;
+    }
+    .tab-btn {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--chip-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      transition: background 0.15s ease;
+    }
+    .tab-btn:hover {
+      background: var(--card-border);
+    }
+    .tab-btn[aria-pressed="true"] {
+      background: var(--accent);
+      color: #141212;
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+    .btn-print {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--accent);
+      color: #141212;
+      border: 1px solid var(--accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      transition: background 0.15s ease;
+    }
+    .btn-print:hover {
+      background: var(--accent-hover);
+    }
+
+    /* .print-header 樣式 */
+    .print-header {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .print-header-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .print-event-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    .print-round-label {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent-text);
+      background: rgba(239, 125, 0, 0.15);
+      border: 1px solid rgba(239, 125, 0, 0.35);
+      padding: 2px 10px;
+      border-radius: 9999px;
+    }
+    .print-data-time {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    /* 表格共用樣式 */
+    .table-wrap {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 16px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      box-sizing: border-box;
+    }
+    .print-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+    .print-table th, .print-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--card-border);
+      vertical-align: middle;
+    }
+    .print-table th {
+      background: var(--card-bg-alt);
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+    .print-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .cell-table {
+      font-weight: 700;
+      color: var(--accent-text);
+      white-space: nowrap;
+    }
+    .cell-name-strong {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text-primary);
+    }
+    .cell-id {
+      font-family: monospace;
+      color: var(--text-secondary);
+    }
+    .name-table td {
+      padding: 12px 14px;
+    }
+
+    /* 結果單網格與卡片 (viewSlips) */
+    .slips-grid {
+      display: grid;
+      grid-template-columns: 100%;
+      gap: 14px;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    @media (min-width: 680px) {
+      .slips-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .result-slip {
+      background: var(--card-bg);
+      border: 1px dashed var(--card-border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      break-inside: avoid;
+      page-break-inside: avoid;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    .slip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 6px;
+    }
+    .slip-round-badge {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-text);
+    }
+    .slip-table-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    .slip-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .slip-table th, .slip-table td {
+      border: 1px solid var(--card-border);
+      padding: 6px 8px;
+      vertical-align: middle;
+    }
+    .slip-table th {
+      background: var(--card-bg-alt);
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+    .slip-pname {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .slip-pid {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-family: monospace;
+    }
+    .slip-footer {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-align: right;
+    }
+
+    /* 尚未連上賽務系統覆蓋層 */
+    .disconnected-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #01222F;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      z-index: 2000;
+    }
+    .disconnected-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+    .disconnected-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--danger-text);
+      margin-bottom: 8px;
+    }
+    .disconnected-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      max-width: 360px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    /* 列印專用樣式 (@media print) */
+    @media print {
+      @page {
+        margin: 10mm;
+        size: auto;
+      }
+
+      html, body {
+        background-color: #ffffff !important;
+        background: #ffffff !important;
+        color: #111111 !important;
+        font-size: 10pt;
+      }
+
+      .no-print,
+      .nav-bar,
+      .toolbar,
+      .btn,
+      .tab-btn,
+      #contractWarn,
+      #staleBanner,
+      #disconnectedScreen {
+        display: none !important;
+      }
+
+      .container {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+      }
+
+      .print-header {
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 2px solid #000000 !important;
+        border-radius: 0 !important;
+        padding: 0 0 6px 0 !important;
+        margin-bottom: 12px !important;
+      }
+
+      .print-event-name, .print-round-label, .print-data-time {
+        color: #000000 !important;
+      }
+      .print-round-label {
+        background: transparent !important;
+        border: 1px solid #000000 !important;
+        padding: 1px 8px !important;
+      }
+
+      .table-wrap {
+        border: none !important;
+        background: transparent !important;
+        overflow: visible !important;
+      }
+
+      table.print-table {
+        border-collapse: collapse !important;
+        width: 100% !important;
+        color: #000000 !important;
+      }
+
+      thead {
+        display: table-header-group !important;
+      }
+
+      tr {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+      }
+
+      .print-table th, .print-table td {
+        border: 1px solid #333333 !important;
+        color: #000000 !important;
+        padding: 5px 8px !important;
+        background: transparent !important;
+      }
+
+      .print-table th {
+        background-color: #f0f0f0 !important;
+        font-weight: 700 !important;
+      }
+
+      .cell-table, .cell-name-strong, .cell-id {
+        color: #000000 !important;
+      }
+
+      .slips-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 6mm !important;
+        width: 100% !important;
+      }
+
+      .result-slip {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+        border: 1.5px dashed #000000 !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 8px 10px !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+      }
+
+      .result-slip * {
+        color: #000000 !important;
+        background: transparent !important;
+      }
+
+      .slip-header {
+        border-bottom: 1px solid #000000 !important;
+      }
+
+      .slip-table th, .slip-table td {
+        border: 1px solid #555555 !important;
+        padding: 4px 6px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 頂部導覽 (僅螢幕) -->
+    <nav class="nav-bar no-print">
+      <h1 class="page-title">符文戰場 — 紙本備援列印</h1>
+      <div class="nav-links">
+        <a id="backToAdmin" href="admin.html" class="nav-link">返回控制台</a>
+        <a id="backToFind" href="find-table.html" class="nav-link">找桌頁</a>
+      </div>
+    </nav>
+
+    <!-- 版本警告 -->
+    <div id="contractWarn" class="banner contract-warning no-print" style="display: none;">
+      資料格式已更新，請重新整理頁面
+    </div>
+
+    <!-- 資料新鮮度警告 -->
+    <div id="staleBanner" class="banner stale-warning no-print" style="display: none;"></div>
+
+    <!-- 操作工具列 (切換鈕與列印鈕) -->
+    <div class="toolbar no-print">
+      <div class="tab-group" role="tablist">
+        <button type="button" id="printByTable" class="tab-btn" aria-pressed="true">依桌號配對表</button>
+        <button type="button" id="printByName" class="tab-btn" aria-pressed="false">依姓名配對表</button>
+        <button type="button" id="printSlips" class="tab-btn" aria-pressed="false">比賽結果單</button>
+      </div>
+      <button type="button" id="printNow" class="btn-print">🖨️ 列印</button>
+    </div>
+
+    <!-- 頁首：賽事名稱、輪次、資料時間 (紙本要看得出是哪個時間點印的) -->
+    <div class="print-header">
+      <div class="print-header-main">
+        <span class="print-event-name" id="printEventName">賽事載入中...</span>
+        <span class="print-round-label" id="printRoundLabel">待定</span>
+      </div>
+      <div class="print-data-time" id="printDataTime">資料時間 --:--</div>
+    </div>
+
+    <!-- 配對未公布提示 -->
+    <div id="unpublishedNotice" class="unpublished-banner" style="display: none;">
+      配對還沒公布
+    </div>
+
+    <!-- 檢視 1: 依桌號配對表 -->
+    <div id="viewByTable"></div>
+
+    <!-- 檢視 2: 依姓名配對表 -->
+    <div id="viewByName" style="display: none;"></div>
+
+    <!-- 檢視 3: 比賽結果單 -->
+    <div id="viewSlips" style="display: none;"></div>
+  </div>
+
+  <!-- 尚未連上賽務系統覆蓋層 -->
+  <div class="disconnected-overlay no-print" id="disconnectedScreen">
+    <div class="disconnected-icon">⚠️</div>
+    <div class="disconnected-title">尚未連上賽務系統</div>
+    <div class="disconnected-desc">
+      目前無法讀取賽事即時資料。<br>請確認賽事主機是否已啟動，或網路連線是否正常。
+    </div>
+    <button type="button" class="btn btn-print" id="retryBtn">重新連線</button>
+  </div>
+
+  <script>
+    const CURRENT_CONTRACT_VERSION = 11;
+
+    let snapshotData = null;
+    let rawJsonText = '';
+    let serverOffsetMs = 0;
+    let demoOffsetCalculated = false;
+    let lastContentChangeTime = Date.now();
+    let currentView = 'viewByTable';
+    let pollTimer = null;
+    let freshnessTimer = null;
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function formatTaiwanTime(tsMs) {
+      if (!tsMs) return '--:--';
+      const d = new Date(tsMs);
+      const twDate = new Date(d.getTime() + 8 * 3600 * 1000);
+      const hh = String(twDate.getUTCHours()).padStart(2, '0');
+      const mm = String(twDate.getUTCMinutes()).padStart(2, '0');
+      return `${hh}:${mm}`;
+    }
+
+    function getDataSourceUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const demo = params.get('demo');
+      if (demo === '1') {
+        return '../sample/snapshot.sample.json';
+      } else if (demo === 'break') {
+        return '../sample/snapshot.break.sample.json';
+      } else if (demo === 'topcut') {
+        return '../sample/snapshot.topcut.sample.json';
+      }
+      return '../snapshot.json';
+    }
+
+    function updateNavLinks() {
+      const params = new URLSearchParams(window.location.search);
+      const demo = params.get('demo');
+      const adminLink = document.getElementById('backToAdmin');
+      if (adminLink) {
+        adminLink.href = demo ? `admin.html?demo=${encodeURIComponent(demo)}` : 'admin.html';
+      }
+      const findLink = document.getElementById('backToFind');
+      if (findLink) {
+        findLink.href = demo ? `find-table.html?demo=${encodeURIComponent(demo)}` : 'find-table.html';
+      }
+    }
+
+    function switchView(viewName) {
+      currentView = viewName;
+      const tabs = [
+        { btnId: 'printByTable', viewId: 'viewByTable' },
+        { btnId: 'printByName', viewId: 'viewByName' },
+        { btnId: 'printSlips', viewId: 'viewSlips' }
+      ];
+
+      tabs.forEach(t => {
+        const btn = document.getElementById(t.btnId);
+        const view = document.getElementById(t.viewId);
+        if (t.viewId === viewName) {
+          if (btn) btn.setAttribute('aria-pressed', 'true');
+          if (view) view.style.display = 'block';
+        } else {
+          if (btn) btn.setAttribute('aria-pressed', 'false');
+          if (view) view.style.display = 'none';
+        }
+      });
+    }
+
+    function checkFreshness() {
+      if (!snapshotData) return;
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('demo')) return;
+      const staleEl = document.getElementById('staleBanner');
+      if (!staleEl) return;
+      const diffMs = Date.now() - lastContentChangeTime;
+      if (diffMs > 90000) {
+        const mins = Math.max(1, Math.floor(diffMs / 60000));
+        staleEl.textContent = `資料已 ${mins} 分鐘沒更新，請留意現場廣播`;
+        staleEl.style.display = 'block';
+      } else {
+        staleEl.style.display = 'none';
+      }
+    }
+
+    function renderVersionWarning() {
+      const warnEl = document.getElementById('contractWarn');
+      if (!warnEl || !snapshotData) return;
+      if (snapshotData.contract_version && snapshotData.contract_version > CURRENT_CONTRACT_VERSION) {
+        warnEl.style.display = 'block';
+      } else {
+        warnEl.style.display = 'none';
+      }
+    }
+
+    function renderViewByTable(pairings) {
+      const container = document.getElementById('viewByTable');
+      if (!container) return;
+
+      const seated = pairings.filter(p => p.table !== null).sort((a, b) => a.table - b.table);
+      const byes = pairings.filter(p => p.table === null);
+
+      let html = `
+        <div class="table-wrap">
+          <table class="print-table">
+            <thead>
+              <tr>
+                <th style="width: 15%;">桌號</th>
+                <th style="width: 42%;">選手 1</th>
+                <th style="width: 43%;">選手 2</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      for (const p of seated) {
+        const p1Text = `${escapeHtml(p.p1.name)} (${escapeHtml(p.p1.id)})`;
+        const p2Text = p.p2 ? `${escapeHtml(p.p2.name)} (${escapeHtml(p.p2.id)})` : '輪空';
+        html += `
+          <tr data-table="${p.table}">
+            <td class="cell-table">第 ${p.table} 桌</td>
+            <td class="cell-player">${p1Text}</td>
+            <td class="cell-player">${p2Text}</td>
+          </tr>
+        `;
+      }
+
+      for (const b of byes) {
+        const p1Text = `${escapeHtml(b.p1.name)} (${escapeHtml(b.p1.id)})`;
+        html += `
+          <tr data-table="bye">
+            <td class="cell-table">輪空</td>
+            <td class="cell-player">${p1Text}</td>
+            <td class="cell-player">輪空</td>
+          </tr>
+        `;
+      }
+
+      html += `
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    function renderViewByName(pairings) {
+      const container = document.getElementById('viewByName');
+      if (!container) return;
+
+      const playersList = [];
+
+      for (const p of pairings) {
+        if (p.table !== null) {
+          if (p.p1) {
+            playersList.push({
+              id: p.p1.id,
+              name: p.p1.name,
+              table: p.table,
+              opponent: p.p2 ? p.p2.name : '輪空',
+              isBye: false
+            });
+          }
+          if (p.p2) {
+            playersList.push({
+              id: p.p2.id,
+              name: p.p2.name,
+              table: p.table,
+              opponent: p.p1.name,
+              isBye: false
+            });
+          }
+        } else {
+          if (p.p1) {
+            playersList.push({
+              id: p.p1.id,
+              name: p.p1.name,
+              table: null,
+              opponent: '輪空',
+              isBye: true
+            });
+          }
+        }
+      }
+
+      const collator = new Intl.Collator('zh-Hant-TW', { numeric: true });
+      playersList.sort((a, b) => {
+        const cmp = collator.compare(a.name, b.name);
+        if (cmp !== 0) return cmp;
+        return a.id.localeCompare(b.id);
+      });
+
+      let html = `
+        <div class="table-wrap">
+          <table class="print-table name-table">
+            <thead>
+              <tr>
+                <th style="width: 30%;">選手姓名</th>
+                <th style="width: 20%;">選手編號</th>
+                <th style="width: 20%;">桌號</th>
+                <th style="width: 30%;">對手</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      for (const pl of playersList) {
+        const tableText = pl.isBye ? '輪空' : `第 ${pl.table} 桌`;
+        const oppText = pl.isBye ? '輪空' : escapeHtml(pl.opponent);
+        html += `
+          <tr data-id="${escapeHtml(pl.id)}" data-name="${escapeHtml(pl.name)}">
+            <td class="cell-name-strong">${escapeHtml(pl.name)}</td>
+            <td class="cell-id">${escapeHtml(pl.id)}</td>
+            <td class="cell-table">${tableText}</td>
+            <td class="cell-opp">${oppText}</td>
+          </tr>
+        `;
+      }
+
+      html += `
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    function renderViewSlips(pairings, roundLabel) {
+      const container = document.getElementById('viewSlips');
+      if (!container) return;
+
+      const seated = pairings.filter(p => p.table !== null && p.p2).sort((a, b) => a.table - b.table);
+
+      let html = '<div class="slips-grid">';
+
+      for (const p of seated) {
+        html += `
+          <div class="result-slip" data-table="${p.table}">
+            <div class="slip-header">
+              <span class="slip-round-badge">${escapeHtml(roundLabel)}</span>
+              <span class="slip-table-title">第 ${p.table} 桌</span>
+            </div>
+            <table class="slip-table">
+              <thead>
+                <tr>
+                  <th style="width: 38%;">選手</th>
+                  <th style="width: 28%;">成績填寫</th>
+                  <th style="width: 34%;">雙方簽名</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="slip-pname">${escapeHtml(p.p1.name)}</div>
+                    <div class="slip-pid">${escapeHtml(p.p1.id)}</div>
+                  </td>
+                  <td>
+                    <div>勝 ____ 局</div>
+                    <div>平手 ____ 局</div>
+                  </td>
+                  <td>
+                    <div>簽名：__________</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="slip-pname">${escapeHtml(p.p2.name)}</div>
+                    <div class="slip-pid">${escapeHtml(p.p2.id)}</div>
+                  </td>
+                  <td>
+                    <div>勝 ____ 局</div>
+                    <div>平手 ____ 局</div>
+                  </td>
+                  <td>
+                    <div>簽名：__________</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="slip-footer">
+              <span>注意事項：比賽結束後由勝方或雙方送交裁判台。</span>
+            </div>
+          </div>
+        `;
+      }
+
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    function renderAll() {
+      if (!snapshotData) return;
+      renderVersionWarning();
+
+      const eventName = (snapshotData.event && snapshotData.event.name) ? snapshotData.event.name : '符文戰場賽事';
+      const roundLabel = (snapshotData.round && snapshotData.round.label) ? snapshotData.round.label : '賽事進行中';
+      const dataTimeStr = formatTaiwanTime(snapshotData.server_now);
+
+      const nameEl = document.getElementById('printEventName');
+      if (nameEl) nameEl.textContent = eventName;
+      const roundEl = document.getElementById('printRoundLabel');
+      if (roundEl) roundEl.textContent = roundLabel;
+      const timeEl = document.getElementById('printDataTime');
+      if (timeEl) timeEl.textContent = `資料時間 ${dataTimeStr}`;
+
+      const unpublishedNotice = document.getElementById('unpublishedNotice');
+      const viewByTable = document.getElementById('viewByTable');
+      const viewByName = document.getElementById('viewByName');
+      const viewSlips = document.getElementById('viewSlips');
+
+      const isPublished = snapshotData.round && snapshotData.round.published;
+      if (!isPublished) {
+        if (unpublishedNotice) unpublishedNotice.style.display = 'block';
+        if (viewByTable) viewByTable.innerHTML = '';
+        if (viewByName) viewByName.innerHTML = '';
+        if (viewSlips) viewSlips.innerHTML = '';
+        return;
+      }
+
+      if (unpublishedNotice) unpublishedNotice.style.display = 'none';
+
+      renderViewByTable(snapshotData.pairings || []);
+      renderViewByName(snapshotData.pairings || []);
+      renderViewSlips(snapshotData.pairings || [], roundLabel);
+
+      switchView(currentView);
+    }
+
+    async function fetchData() {
+      const primaryUrl = getDataSourceUrl();
+      try {
+        const responseTime = Date.now();
+        let res = await fetch(primaryUrl, { cache: 'no-store' });
+        if (!res.ok && primaryUrl.startsWith('../')) {
+          const fallbackUrl = primaryUrl.replace(/^\.\.\//, '/');
+          res = await fetch(fallbackUrl, { cache: 'no-store' });
+        }
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const text = await res.text();
+        const data = JSON.parse(text);
+
+        const isDemo = !!new URLSearchParams(window.location.search).get('demo');
+        if (isDemo) {
+          if (!demoOffsetCalculated && data.server_now) {
+            serverOffsetMs = data.server_now - responseTime;
+            demoOffsetCalculated = true;
+          }
+        } else {
+          let dateHeaderMs = null;
+          try {
+            const dateHeader = res.headers.get('Date');
+            if (dateHeader) {
+              const t = new Date(dateHeader).getTime();
+              if (!isNaN(t)) dateHeaderMs = t;
+            }
+          } catch (e) {}
+
+          if (dateHeaderMs !== null) {
+            serverOffsetMs = dateHeaderMs - responseTime;
+          } else if (data.server_now) {
+            serverOffsetMs = data.server_now - responseTime;
+          }
+        }
+
+        const disScreen = document.getElementById('disconnectedScreen');
+        if (disScreen) disScreen.style.display = 'none';
+
+        if (text !== rawJsonText) {
+          lastContentChangeTime = Date.now();
+          rawJsonText = text;
+          snapshotData = data;
+          renderAll();
+        } else {
+          snapshotData = data;
+        }
+      } catch (err) {
+        console.warn('賽務快照讀取失敗:', err);
+        if (!snapshotData) {
+          const disScreen = document.getElementById('disconnectedScreen');
+          if (disScreen) disScreen.style.display = 'flex';
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateNavLinks();
+
+      document.getElementById('printByTable').addEventListener('click', () => switchView('viewByTable'));
+      document.getElementById('printByName').addEventListener('click', () => switchView('viewByName'));
+      document.getElementById('printSlips').addEventListener('click', () => switchView('viewSlips'));
+      document.getElementById('printNow').addEventListener('click', () => window.print());
+
+      const retryBtn = document.getElementById('retryBtn');
+      if (retryBtn) retryBtn.addEventListener('click', fetchData);
+
+      fetchData();
+      pollTimer = setInterval(fetchData, 4000);
+      freshnessTimer = setInterval(checkFreshness, 5000);
+    });
+  </script>
+</body>
+</html>

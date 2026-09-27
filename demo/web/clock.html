@@ -218,6 +218,20 @@
       margin-top: 8px;
     }
 
+    /* 遲到提醒全場橫幅 (DATA-CONTRACT 1.16, 規則 703.8) */
+    .late-reminder-banner {
+      background: var(--warning-bg);
+      border: 2px solid var(--warning-border);
+      color: var(--warning-text);
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: clamp(1rem, 1.8vw, 1.4rem);
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
     /* 計時主區塊 */
     .clock-main-card {
       flex: 1;
@@ -415,6 +429,9 @@
       <div class="break-giant-time" id="breakGiantTime">剛剛更新</div>
     </div>
 
+    <!-- 遲到提醒橫幅 (DATA-CONTRACT 1.16, 規則 703.8) -->
+    <div class="late-reminder-banner" id="lateReminderBanner" style="display: none;"></div>
+
     <!-- 計時主畫面 -->
     <main class="clock-main-card" id="clockCard">
       <div class="round-label-badge" id="roundLabel">--</div>
@@ -465,7 +482,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 10;
+    const CURRENT_CONTRACT_VERSION = 11;
     let snapshotData = null;
     let rawJsonText = '';
     let clockTimer = null;
@@ -593,6 +610,34 @@
       }
     }
 
+    // 遲到提醒全場橫幅 (DATA-CONTRACT 1.16, 規則 703.8)
+    function renderLateReminder() {
+      const banner = document.getElementById('lateReminderBanner');
+      if (!banner) return;
+      if (!snapshotData || !snapshotData.clock) {
+        banner.style.display = 'none';
+        banner.textContent = '';
+        return;
+      }
+      const clock = snapshotData.clock;
+      const startedAt = clock.started_at;
+      const state = clock.state;
+      const lateLossSec = clock.late_loss_sec || 600;
+
+      if (startedAt && state !== 'not_started') {
+        const serverNow = Date.now() + serverOffsetMs;
+        const elapsedSec = Math.floor((serverNow - startedAt) / 1000);
+        if (elapsedSec >= 0 && elapsedSec < lateLossSec) {
+          const elapsedM = Math.floor(elapsedSec / 60);
+          banner.textContent = `開賽 ${elapsedM} 分鐘 · 超過 10 分鐘未入座判場敗（規則 703.8）`;
+          banner.style.display = 'block';
+          return;
+        }
+      }
+      banner.style.display = 'none';
+      banner.textContent = '';
+    }
+
     function renderAll() {
       if (!snapshotData) return;
 
@@ -602,6 +647,7 @@
       renderScheduleAndBreak();
       renderProgressFooter();
       updateClockDisplay();
+      renderLateReminder();
     }
 
     // 檢查版本號 (DATA-CONTRACT 1.1)
@@ -923,6 +969,7 @@
         updateClockDisplay();
         renderScheduleAndBreak();
         renderProgressFooter();
+        renderLateReminder();
         checkFreshness();
       }, 1000);
     });

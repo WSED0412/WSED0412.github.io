@@ -1,5 +1,5 @@
 {
-  "contract_version": 10,
+  "contract_version": 11,
   "server_now": 1790391900000,
   "event": {
     "name": "示範賽事（假資料）",
@@ -20,16 +20,20 @@
     "progress": {
       "tables_total": 8,
       "tables_done": 3,
-      "latest_end_at": 1790394660000,
-      "judge_calls_waiting": 1
+      "latest_end_at": 1790395560000,
+      "judge_calls_waiting": 1,
+      "late_tables": 1
     }
   },
   "clock": {
     "state": "running",
     "duration_sec": 3600,
-    "ends_at": 1790394300000,
+    "ends_at": 1790395200000,
     "remaining_sec": null,
-    "extra_turns": 3
+    "extra_turns": 3,
+    "started_at": 1790391600000,
+    "late_warn_sec": 120,
+    "late_loss_sec": 600
   },
   "pairings": [
     {
@@ -56,7 +60,8 @@
       },
       "extensions": [],
       "ends_at": null,
-      "judge_call": null
+      "judge_call": null,
+      "late": null
     },
     {
       "table": 2,
@@ -80,11 +85,12 @@
           "reason": "驗牌"
         }
       ],
-      "ends_at": 1790394660000,
+      "ends_at": 1790395560000,
       "judge_call": {
         "state": "taken",
-        "called_at": 1790391120000
-      }
+        "called_at": 1790391780000
+      },
+      "late": null
     },
     {
       "table": 3,
@@ -109,8 +115,9 @@
         "double_loss": false
       },
       "extensions": [],
-      "ends_at": 1790394300000,
-      "judge_call": null
+      "ends_at": 1790395200000,
+      "judge_call": null,
+      "late": null
     },
     {
       "table": 4,
@@ -136,7 +143,8 @@
       },
       "extensions": [],
       "ends_at": null,
-      "judge_call": null
+      "judge_call": null,
+      "late": null
     },
     {
       "table": 5,
@@ -164,11 +172,12 @@
           "reason": "遲到"
         }
       ],
-      "ends_at": 1790394480000,
+      "ends_at": 1790395380000,
       "judge_call": {
         "state": "waiting",
         "called_at": 1790391660000
-      }
+      },
+      "late": null
     },
     {
       "table": 6,
@@ -194,7 +203,8 @@
       },
       "extensions": [],
       "ends_at": null,
-      "judge_call": null
+      "judge_call": null,
+      "late": null
     },
     {
       "table": 7,
@@ -219,8 +229,9 @@
         "double_loss": false
       },
       "extensions": [],
-      "ends_at": 1790394300000,
-      "judge_call": null
+      "ends_at": 1790395200000,
+      "judge_call": null,
+      "late": null
     },
     {
       "table": 8,
@@ -239,8 +250,14 @@
       },
       "result": null,
       "extensions": [],
-      "ends_at": 1790394300000,
-      "judge_call": null
+      "ends_at": 1790395200000,
+      "judge_call": null,
+      "late": {
+        "players": [
+          "R0005"
+        ],
+        "marked_at": 1790391720000
+      }
     },
     {
       "table": null,
@@ -255,7 +272,8 @@
       "result": null,
       "extensions": [],
       "ends_at": null,
-      "judge_call": null
+      "judge_call": null,
+      "late": null
     }
   ],
   "schedule": {
@@ -264,7 +282,7 @@
     "updated_at": 1790391720000
   },
   "standings": {
-    "version": "1be9f9321440",
+    "version": "ccc9b4130add",
     "label": "第 2 輪結束後"
   },
   "bracket": null

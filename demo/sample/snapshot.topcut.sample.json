@@ -1,5 +1,5 @@
 {
-  "contract_version": 10,
+  "contract_version": 11,
   "server_now": 1790408400000,
   "event": {
     "name": "示範賽事（假資料）",
@@ -21,7 +21,8 @@
       "tables_total": 2,
       "tables_done": 1,
       "latest_end_at": 1790410200000,
-      "judge_calls_waiting": 0
+      "judge_calls_waiting": 0,
+      "late_tables": 0
     }
   },
   "clock": {
@@ -29,7 +30,10 @@
     "duration_sec": 3600,
     "ends_at": 1790410200000,
     "remaining_sec": null,
-    "extra_turns": 3
+    "extra_turns": 3,
+    "started_at": 1790406600000,
+    "late_warn_sec": 120,
+    "late_loss_sec": 600
   },
   "pairings": [
     {
@@ -56,7 +60,8 @@
       },
       "extensions": [],
       "ends_at": null,
-      "judge_call": null
+      "judge_call": null,
+      "late": null
     },
     {
       "table": 2,
@@ -76,7 +81,8 @@
       "result": null,
       "extensions": [],
       "ends_at": 1790410200000,
-      "judge_call": null
+      "judge_call": null,
+      "late": null
     }
   ],
   "schedule": {
@@ -85,7 +91,7 @@
     "updated_at": 1790408100000
   },
   "standings": {
-    "version": "cc6cbc68762d",
+    "version": "bd58962bec2b",
     "label": "瑞士輪最終排名"
   },
   "bracket": {

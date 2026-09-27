@@ -241,8 +241,13 @@
       min-height: 44px;
     }
 
-    .call-take, .call-done {
+    .call-take, .call-done, .late-mark, .late-arrived, .late-extend, .late-loss {
       min-height: 44px;
+    }
+
+    .late-item-danger {
+      border-color: var(--danger-border) !important;
+      background: rgba(74, 31, 28, 0.4) !important;
     }
 
     .btn:active {
@@ -867,6 +872,19 @@
     <!-- 裁判作業面板（登入後顯示） -->
     <main id="judgeSection" style="display: none;">
 
+      <!-- 區塊: 遲到處理 (DATA-CONTRACT 1.16, PROJECT.md 第 10 節) -->
+      <section class="judge-card" id="lateSection">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <h2 class="card-title" style="margin-bottom: 0;">⏰ 遲到選手處理</h2>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 8px;">
+          本輪被標記遲到的桌次，依開賽時間倒數（規則 703.8）。
+        </p>
+        <div id="lateList" class="call-list">
+          <div class="empty-state-sm">目前沒有遲到桌</div>
+        </div>
+      </section>
+
       <!-- 區塊 0: 裁判呼叫佇列 (DATA-CONTRACT 3.5, PROJECT.md 第 10 節) -->
       <section class="judge-card" id="judgeCallsSection">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
@@ -1109,7 +1127,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 10;
+    const CURRENT_CONTRACT_VERSION = 11;
     const SESSION_STORAGE_KEY_STAFF_PIN = 'riftbound_judge_staff_pin';
 
     let snapshotData = null;
@@ -1240,6 +1258,7 @@
         if (currentTable) {
           renderTableDetail(currentTable);
         }
+        renderLateList();
       } catch (err) {
         if (!snapshotData) {
           document.getElementById('disconnectedScreen').style.display = 'flex';
@@ -1334,6 +1353,7 @@
         judgeUserBar.style.display = 'inline-block';
         judgeLogoutBtn.style.display = 'inline-flex';
         judgeNameDisplay.textContent = judgeName || '裁判';
+        renderLateList();
       } else {
         loginSection.style.display = 'block';
         judgeSection.style.display = 'none';
@@ -1396,6 +1416,7 @@
       renderTableDetail(null);
       renderConflictList([]);
       renderCallList([]);
+      renderLateList();
       try {
         sessionStorage.removeItem(SESSION_STORAGE_KEY_STAFF_PIN);
       } catch (e) {}
@@ -1639,6 +1660,340 @@
       lastCallFingerprint = newFingerprint;
     }
 
+    // 遲到處理區塊 (DATA-CONTRACT 1.16, 規則 703.8)
+    let lastLateFingerprint = '';
+
+    function getLateFingerprint(latePairings, clock) {
+      const startedAt = clock ? clock.started_at : 0;
+      return latePairings.map(p => {
+        const pids = (p.late && p.late.players) ? p.late.players.slice().sort().join(',') : '';
+        return `${p.table}:${pids}:${startedAt}`;
+      }).join('|');
+    }
+
+    function renderLateList() {
+      const listEl = document.getElementById('lateList');
+      if (!listEl) return;
+      if (!snapshotData || !snapshotData.pairings) {
+        listEl.innerHTML = '<div class="empty-state-sm">目前沒有遲到桌</div>';
+        lastLateFingerprint = '';
+        return;
+      }
+
+      const clock = snapshotData.clock;
+      const startedAt = clock ? clock.started_at : null;
+      const lateWarnSec = (clock && clock.late_warn_sec) || 120;
+      const lateLossSec = (clock && clock.late_loss_sec) || 600;
+
+      const latePairings = snapshotData.pairings.filter(p => {
+        return p.table !== null && p.late && Array.isArray(p.late.players) && p.late.players.length > 0;
+      });
+      latePairings.sort((a, b) => a.table - b.table);
+
+      if (latePairings.length === 0) {
+        lastLateFingerprint = '';
+        listEl.innerHTML = '<div class="empty-state-sm">目前沒有遲到桌</div>';
+        return;
+      }
+
+      const fingerprint = getLateFingerprint(latePairings, clock);
+      if (fingerprint === lastLateFingerprint && listEl.children.length > 0 && !listEl.querySelector('.empty-state-sm')) {
+        updateLateTimes();
+        return;
+      }
+
+      const serverNow = Date.now() + serverOffsetMs;
+      const savedScroll = listEl.scrollTop;
+
+      listEl.innerHTML = latePairings.map(p => {
+        const latePlayers = p.late.players || [];
+        const lateNames = latePlayers.map(pid => {
+          if (p.p1 && p.p1.id === pid) return p.p1.name;
+          if (p.p2 && p.p2.id === pid) return p.p2.name;
+          return pid;
+        }).join('、');
+
+        let elapsedSec = 0;
+        let isStarted = Boolean(startedAt);
+        if (isStarted) {
+          elapsedSec = Math.max(0, Math.floor((serverNow - startedAt) / 1000));
+        }
+
+        const elapsedM = Math.floor(elapsedSec / 60);
+        const elapsedS = String(elapsedSec % 60).padStart(2, '0');
+        const elapsedText = isStarted ? `開賽 ${elapsedM}:${elapsedS}` : '計時尚未開始';
+
+        const isLateLoss = isStarted && (elapsedSec >= lateLossSec);
+        let phaseText = '';
+        if (!isStarted) {
+          phaseText = '計時開始後才會計算遲到';
+        } else if (elapsedSec < lateWarnSec) {
+          phaseText = '2 分鐘內：警告並補時';
+        } else if (elapsedSec < lateLossSec) {
+          phaseText = '超過 2 分鐘：警告並補時（高等級賽事為局敗）';
+        } else {
+          phaseText = '已超過 10 分鐘：可判場敗（規則 703.8.c）';
+        }
+
+        let remainingText = '';
+        if (isStarted && !isLateLoss) {
+          const remSec = Math.max(0, lateLossSec - elapsedSec);
+          const remM = Math.floor(remSec / 60);
+          const remS = String(remSec % 60).padStart(2, '0');
+          remainingText = `距離 10 分鐘還有 ${remM}:${remS}`;
+        }
+
+        const arrivedButtonsHtml = latePlayers.map(pid => {
+          let pName = pid;
+          if (p.p1 && p.p1.id === pid) pName = p.p1.name;
+          else if (p.p2 && p.p2.id === pid) pName = p.p2.name;
+          return `<button type="button" class="btn btn-secondary btn-sm late-arrived" data-player="${pid}" data-table="${p.table}">${escapeHtml(pName)}已到</button>`;
+        }).join('');
+
+        const p1Name = p.p1 ? escapeHtml(p.p1.name) : '無選手';
+        const p2Name = p.p2 ? escapeHtml(p.p2.name) : '無選手';
+
+        return `
+          <div class="call-item late-item ${isLateLoss ? 'late-item-danger' : ''}" data-table="${p.table}">
+            <div class="call-item-header">
+              <span class="call-table-title">第 ${p.table} 桌</span>
+              <div class="call-item-badges">
+                <span class="call-state-badge ${isLateLoss ? 'waiting' : 'taken'}" style="${isLateLoss ? 'background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text);' : ''}">
+                  ${isLateLoss ? '可判場敗' : '遲到中'}
+                </span>
+                <span class="call-item-time late-elapsed-span">${elapsedText}</span>
+              </div>
+            </div>
+            <div class="call-item-body">
+              <div class="call-reason-row">
+                <span>遲到選手：</span>
+                <span class="call-reason-label" style="color: ${isLateLoss ? 'var(--danger-text)' : 'var(--warning-text)'};">${escapeHtml(lateNames)}</span>
+              </div>
+              <div class="call-note-text" style="background: rgba(0,0,0,0.2);">
+                <div class="late-phase-span">階段：<strong>${phaseText}</strong></div>
+                <div class="late-rem-span">${remainingText}</div>
+              </div>
+              <div class="call-item-meta">
+                <span>對戰：${p1Name} vs ${p2Name}</span>
+              </div>
+            </div>
+            <div class="call-item-actions">
+              ${arrivedButtonsHtml}
+              <button type="button" class="btn btn-primary btn-sm late-extend" data-table="${p.table}">
+                補時（遲到）
+              </button>
+              <button type="button" class="btn btn-danger btn-sm late-loss" data-table="${p.table}" ${isLateLoss ? '' : 'disabled'}>
+                判場敗
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      listEl.scrollTop = savedScroll;
+      lastLateFingerprint = fingerprint;
+    }
+
+    function updateLateTimes() {
+      const listEl = document.getElementById('lateList');
+      if (!listEl) return;
+      if (!snapshotData || !snapshotData.clock || !snapshotData.pairings) return;
+
+      const clock = snapshotData.clock;
+      const startedAt = clock.started_at;
+      const lateWarnSec = clock.late_warn_sec || 120;
+      const lateLossSec = clock.late_loss_sec || 600;
+      const serverNow = Date.now() + serverOffsetMs;
+
+      listEl.querySelectorAll('.late-item').forEach(itemEl => {
+        const tableNum = parseInt(itemEl.getAttribute('data-table'), 10);
+        const p = snapshotData.pairings.find(x => x.table === tableNum);
+        if (!p || !p.late) return;
+
+        let elapsedSec = 0;
+        let isStarted = Boolean(startedAt);
+        if (isStarted) {
+          elapsedSec = Math.max(0, Math.floor((serverNow - startedAt) / 1000));
+        }
+
+        const elapsedM = Math.floor(elapsedSec / 60);
+        const elapsedS = String(elapsedSec % 60).padStart(2, '0');
+        const elapsedText = isStarted ? `開賽 ${elapsedM}:${elapsedS}` : '計時尚未開始';
+
+        const isLateLoss = isStarted && (elapsedSec >= lateLossSec);
+        let phaseText = '';
+        if (!isStarted) {
+          phaseText = '計時開始後才會計算遲到';
+        } else if (elapsedSec < lateWarnSec) {
+          phaseText = '2 分鐘內：警告並補時';
+        } else if (elapsedSec < lateLossSec) {
+          phaseText = '超過 2 分鐘：警告並補時（高等級賽事為局敗）';
+        } else {
+          phaseText = '已超過 10 分鐘：可判場敗（規則 703.8.c）';
+        }
+
+        let remainingText = '';
+        if (isStarted && !isLateLoss) {
+          const remSec = Math.max(0, lateLossSec - elapsedSec);
+          const remM = Math.floor(remSec / 60);
+          const remS = String(remSec % 60).padStart(2, '0');
+          remainingText = `距離 10 分鐘還有 ${remM}:${remS}`;
+        }
+
+        const elapsedSpan = itemEl.querySelector('.late-elapsed-span');
+        if (elapsedSpan) elapsedSpan.textContent = elapsedText;
+
+        const phaseSpan = itemEl.querySelector('.late-phase-span');
+        if (phaseSpan) phaseSpan.innerHTML = `階段：<strong>${phaseText}</strong>`;
+
+        const remSpan = itemEl.querySelector('.late-rem-span');
+        if (remSpan) remSpan.textContent = remainingText;
+
+        const lossBtn = itemEl.querySelector('.late-loss');
+        if (lossBtn) {
+          lossBtn.disabled = !isLateLoss;
+        }
+
+        if (isLateLoss) {
+          itemEl.classList.add('late-item-danger');
+        } else {
+          itemEl.classList.remove('late-item-danger');
+        }
+      });
+    }
+
+    function handleLateMark(tableNum, playerId) {
+      if (!tableNum || !playerId) return;
+      const roundNum = getEffectiveRound();
+      let pName = playerId;
+      if (currentTable) {
+        if (currentTable.p1 && currentTable.p1.id === playerId) pName = currentTable.p1.name;
+        else if (currentTable.p2 && currentTable.p2.id === playerId) pName = currentTable.p2.name;
+      }
+      showConfirm('標記未到確認', `確定要將第 ${tableNum} 桌 ${pName}（${playerId}）標記為未到嗎？`, async () => {
+        try {
+          await callApi('/api/staff/late_mark', { round: roundNum, table: tableNum, player_id: playerId });
+          await fetchData();
+          if (currentTable && currentTable.table === tableNum) {
+            await openTableDetail(tableNum);
+          }
+        } catch (err) {
+          showMsg('lookupMsg', err.message);
+        }
+      });
+    }
+
+    function handleLateClear(tableNum, playerId) {
+      if (!tableNum || !playerId) return;
+      const roundNum = getEffectiveRound();
+      let pName = playerId;
+      if (snapshotData && snapshotData.pairings) {
+        const p = snapshotData.pairings.find(x => x.table === tableNum);
+        if (p) {
+          if (p.p1 && p.p1.id === playerId) pName = p.p1.name;
+          else if (p.p2 && p.p2.id === playerId) pName = p.p2.name;
+        }
+      }
+      showConfirm('選手已到確認', `確定要將第 ${tableNum} 桌 ${pName}（${playerId}）標記為已到嗎？`, async () => {
+        try {
+          await callApi('/api/staff/late_clear', { round: roundNum, table: tableNum, player_id: playerId });
+          await fetchData();
+          if (currentTable && currentTable.table === tableNum) {
+            await openTableDetail(tableNum);
+          }
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    }
+
+    function handleLateExtend(tableNum) {
+      if (!tableNum) return;
+      const roundNum = getEffectiveRound();
+      const serverNow = Date.now() + serverOffsetMs;
+      const startedAt = (snapshotData && snapshotData.clock) ? snapshotData.clock.started_at : null;
+      let elapsedSec = 0;
+      if (startedAt) {
+        elapsedSec = Math.max(0, Math.floor((serverNow - startedAt) / 1000));
+      }
+      const minutes = Math.min(10, Math.max(1, Math.ceil(elapsedSec / 60)));
+
+      showConfirm('遲到補時確認', `第 ${tableNum} 桌 補時 ${minutes} 分鐘（理由：遲到）`, async () => {
+        try {
+          await callApi('/api/staff/extend', { round: roundNum, table: tableNum, minutes: minutes, reason: '遲到' });
+          await fetchData();
+          if (currentTable && currentTable.table === tableNum) {
+            await openTableDetail(tableNum);
+          }
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    }
+
+    function handleLateLoss(tableNum) {
+      if (!tableNum) return;
+      const roundNum = getEffectiveRound();
+      if (!snapshotData || !snapshotData.pairings) return;
+      const p = snapshotData.pairings.find(x => x.table === tableNum);
+      if (!p || !p.late || !p.late.players) return;
+
+      const latePlayers = p.late.players;
+      const lateNames = latePlayers.map(pid => {
+        if (p.p1 && p.p1.id === pid) return p.p1.name;
+        if (p.p2 && p.p2.id === pid) return p.p2.name;
+        return pid;
+      }).join('、');
+
+      const p1Late = p.p1 && latePlayers.includes(p.p1.id);
+      const p2Late = p.p2 && latePlayers.includes(p.p2.id);
+      const bothLate = (latePlayers.length >= 2) || (p1Late && p2Late);
+
+      showConfirm('判場敗確認', `第 ${tableNum} 桌 ${lateNames} 遲到超過 10 分鐘，判場敗`, async () => {
+        try {
+          let body;
+          if (bothLate) {
+            body = {
+              round: roundNum,
+              table: tableNum,
+              p1_games: 0,
+              p2_games: 0,
+              draws: 0,
+              double_loss: true,
+              rule: '703.8.d'
+            };
+          } else if (p1Late) {
+            body = {
+              round: roundNum,
+              table: tableNum,
+              p1_games: 0,
+              p2_games: 2,
+              draws: 0,
+              double_loss: false,
+              rule: '703.8.c'
+            };
+          } else {
+            body = {
+              round: roundNum,
+              table: tableNum,
+              p1_games: 2,
+              p2_games: 0,
+              draws: 0,
+              double_loss: false,
+              rule: '703.8.c'
+            };
+          }
+          await callApi('/api/staff/result', body);
+          await fetchData();
+          if (currentTable && currentTable.table === tableNum) {
+            await openTableDetail(tableNum);
+          }
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    }
+
     // 爭議清單定時器
     function startConflictTimer() {
       stopConflictTimer();
@@ -1797,7 +2152,15 @@
             <span class="table-badge ${stateClass}">狀態：${stateText}</span>
           </div>
           <div class="table-players">
-            <strong>${p1Name}</strong> (${p1Id}) <span class="vs-text">vs</span> <strong>${p2Name}</strong> (${p2Id})
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;">
+              <div><strong>${p1Name}</strong> (${p1Id})</div>
+              ${tb.p1 ? `<button type="button" class="btn btn-warning btn-sm late-mark" data-player="${p1Id}" data-table="${tb.table}">標記未到</button>` : ''}
+            </div>
+            <div style="text-align: center; margin: 2px 0;"><span class="vs-text">vs</span></div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; flex-wrap: wrap; gap: 6px;">
+              <div><strong>${p2Name}</strong> (${p2Id})</div>
+              ${tb.p2 ? `<button type="button" class="btn btn-warning btn-sm late-mark" data-player="${p2Id}" data-table="${tb.table}">標記未到</button>` : ''}
+            </div>
           </div>
           <div class="table-reports-box">
             <div class="report-subtitle">雙方各自回報紀錄：</div>
@@ -2240,10 +2603,50 @@
       // 重新連線
       document.getElementById('retryBtn').addEventListener('click', fetchData);
 
+      // 遲到清單動作委派
+      const lateListEl = document.getElementById('lateList');
+      if (lateListEl) {
+        lateListEl.addEventListener('click', (e) => {
+          const arrivedBtn = e.target.closest('.late-arrived');
+          if (arrivedBtn) {
+            const pid = arrivedBtn.getAttribute('data-player');
+            const tbl = parseInt(arrivedBtn.getAttribute('data-table'), 10);
+            handleLateClear(tbl, pid);
+            return;
+          }
+          const extendBtn = e.target.closest('.late-extend');
+          if (extendBtn) {
+            const tbl = parseInt(extendBtn.getAttribute('data-table'), 10);
+            handleLateExtend(tbl);
+            return;
+          }
+          const lossBtn = e.target.closest('.late-loss');
+          if (lossBtn && !lossBtn.disabled) {
+            const tbl = parseInt(lossBtn.getAttribute('data-table'), 10);
+            handleLateLoss(tbl);
+            return;
+          }
+        });
+      }
+
+      // 桌況詳情遲到標記動作委派
+      const tableDetailEl = document.getElementById('tableDetail');
+      if (tableDetailEl) {
+        tableDetailEl.addEventListener('click', (e) => {
+          const markBtn = e.target.closest('.late-mark');
+          if (markBtn) {
+            const pid = markBtn.getAttribute('data-player');
+            const tbl = parseInt(markBtn.getAttribute('data-table'), 10);
+            handleLateMark(tbl, pid);
+          }
+        });
+      }
+
       // 初始化
       checkAutoLogin();
       fetchData();
       pollTimer = setInterval(fetchData, 5000);
+      setInterval(updateLateTimes, 1000);
       setInterval(checkFreshness, 1000);
     });
   </script>
