@@ -170,6 +170,13 @@
       border-color: var(--accent);
       font-weight: 700;
     }
+    .tab-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      background: var(--chip-bg);
+      border-color: var(--card-border);
+      color: var(--text-secondary);
+    }
     .btn-print {
       min-height: 44px;
       min-width: 44px;
@@ -392,6 +399,136 @@
       line-height: 1.6;
     }
 
+    /* 分區列印樣式 (螢幕) */
+    .zone-group {
+      break-before: page;
+      page-break-before: always;
+      margin-bottom: 24px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .zone-heading {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      box-sizing: border-box;
+      width: 100%;
+      word-break: break-word;
+    }
+    .zone-heading-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .zone-heading-name {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--accent-text);
+    }
+    .zone-heading-hint {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .zone-heading-range {
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      font-weight: 700;
+      background: var(--chip-bg);
+      border: 1px solid var(--card-border);
+      padding: 2px 10px;
+      border-radius: 6px;
+    }
+    .zone-heading-round {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--accent-text);
+      background: rgba(239, 125, 0, 0.15);
+      border: 1px solid rgba(239, 125, 0, 0.35);
+      padding: 2px 10px;
+      border-radius: 9999px;
+    }
+    .zone-guide {
+      background: var(--card-bg);
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin-bottom: 24px;
+      box-sizing: border-box;
+      width: 100%;
+      word-break: break-word;
+    }
+    .zone-guide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 8px;
+    }
+    .zone-guide-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--accent-text);
+    }
+    .zone-guide-round {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      background: var(--chip-bg);
+      border: 1px solid var(--card-border);
+      padding: 4px 12px;
+      border-radius: 9999px;
+    }
+    .zone-guide-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+    .zone-guide-grid {
+      display: grid;
+      grid-template-columns: 100%;
+      gap: 12px;
+      box-sizing: border-box;
+      width: 100%;
+    }
+    @media (min-width: 600px) {
+      .zone-guide-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      }
+    }
+    .zone-guide-card {
+      background: var(--card-bg-alt);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-sizing: border-box;
+    }
+    .zone-guide-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    .zone-guide-range {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent-text);
+    }
+
     /* 列印專用樣式 (@media print) */
     @media print {
       @page {
@@ -511,6 +648,98 @@
         border: 1px solid #555555 !important;
         padding: 4px 6px !important;
       }
+
+      .zone-group {
+        break-before: page !important;
+        page-break-before: always !important;
+        margin-bottom: 0 !important;
+      }
+
+      .zone-heading {
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 2px solid #000000 !important;
+        border-radius: 0 !important;
+        padding: 0 0 6px 0 !important;
+        margin-bottom: 12px !important;
+        color: #000000 !important;
+      }
+
+      .zone-heading-name,
+      .zone-heading-hint,
+      .zone-heading-range,
+      .zone-heading-round {
+        color: #000000 !important;
+        background: transparent !important;
+        border: none !important;
+      }
+
+      .zone-heading-name {
+        font-size: 14pt !important;
+        font-weight: 800 !important;
+      }
+
+      .zone-heading-hint {
+        font-size: 10pt !important;
+        font-weight: normal !important;
+      }
+
+      .zone-heading-range {
+        font-size: 11pt !important;
+        font-weight: 700 !important;
+      }
+
+      .zone-heading-round {
+        border: 1px solid #000000 !important;
+        padding: 1px 8px !important;
+        font-size: 10pt !important;
+      }
+
+      .zone-guide {
+        background: #ffffff !important;
+        border: 2px solid #000000 !important;
+        border-radius: 0 !important;
+        padding: 16px !important;
+        margin-bottom: 20px !important;
+        color: #000000 !important;
+      }
+
+      .zone-guide-header {
+        border-bottom: 2px solid #000000 !important;
+      }
+
+      .zone-guide-title,
+      .zone-guide-round,
+      .zone-guide-desc,
+      .zone-guide-name,
+      .zone-guide-range {
+        color: #000000 !important;
+        background: transparent !important;
+      }
+
+      .zone-guide-title {
+        font-size: 20pt !important;
+      }
+
+      .zone-guide-round {
+        border: 1px solid #000000 !important;
+        padding: 2px 10px !important;
+      }
+
+      .zone-guide-card {
+        background: #f9f9f9 !important;
+        border: 1.5px solid #000000 !important;
+        border-radius: 0 !important;
+        color: #000000 !important;
+      }
+
+      .zone-guide-name {
+        font-size: 14pt !important;
+      }
+
+      .zone-guide-range {
+        font-size: 12pt !important;
+      }
     }
   </style>
 </head>
@@ -539,6 +768,7 @@
         <button type="button" id="printByTable" class="tab-btn" aria-pressed="true">依桌號配對表</button>
         <button type="button" id="printByName" class="tab-btn" aria-pressed="false">依姓名配對表</button>
         <button type="button" id="printSlips" class="tab-btn" aria-pressed="false">比賽結果單</button>
+        <button type="button" id="printSplitZone" class="tab-btn" aria-pressed="false" disabled title="主辦還沒設定分區">依分區分開印</button>
       </div>
       <button type="button" id="printNow" class="btn-print">🖨️ 列印</button>
     </div>
@@ -588,6 +818,7 @@
     let currentView = 'viewByTable';
     let pollTimer = null;
     let freshnessTimer = null;
+    let isSplitZone = false;
 
     function escapeHtml(str) {
       if (str === null || str === undefined) return '';
@@ -681,9 +912,163 @@
       }
     }
 
+    function getZoneInfo(zoneName, zones) {
+      if (!zones || !zones.length) return null;
+      return zones.find(z => z.name === zoneName) || null;
+    }
+
+    function getZoneRangeText(z) {
+      if (!z || z.from == null || z.to == null) return '';
+      if (z.from === z.to) return `第 ${z.from} 桌`;
+      return `第 ${z.from}～${z.to} 桌`;
+    }
+
+    function renderZoneHeadingHtml(zoneName, zones, roundLabel) {
+      const z = getZoneInfo(zoneName, zones);
+      const hint = (z && z.hint) ? z.hint : '';
+      const range = z ? getZoneRangeText(z) : '';
+
+      return `
+        <div class="zone-heading">
+          <div class="zone-heading-title">
+            <span class="zone-heading-name">${escapeHtml(zoneName)}</span>
+            ${hint ? `<span class="zone-heading-hint">（${escapeHtml(hint)}）</span>` : ''}
+            ${range ? `<span class="zone-heading-range">${escapeHtml(range)}</span>` : ''}
+          </div>
+          <div class="zone-heading-round">${escapeHtml(roundLabel)}</div>
+        </div>
+      `;
+    }
+
+    function renderZoneGuideHtml(zones, roundLabel) {
+      if (!zones || !zones.length) return '';
+
+      let cardsHtml = '';
+      for (const z of zones) {
+        const range = getZoneRangeText(z);
+        const hint = z.hint ? `（${escapeHtml(z.hint)}）` : '';
+        cardsHtml += `
+          <div class="zone-guide-card">
+            <div class="zone-guide-name">${escapeHtml(z.name)} ${hint}</div>
+            <div class="zone-guide-range">${escapeHtml(range)}</div>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="zone-guide">
+          <div class="zone-guide-header">
+            <h2 class="zone-guide-title">分區總表</h2>
+            <span class="zone-guide-round">${escapeHtml(roundLabel)}</span>
+          </div>
+          <div class="zone-guide-desc">比賽場地分區與桌號對照表：</div>
+          <div class="zone-guide-grid">
+            ${cardsHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    function updateSplitZoneButton() {
+      const splitBtn = document.getElementById('printSplitZone');
+      if (!splitBtn) return;
+      const hasZones = !!(snapshotData && snapshotData.event && Array.isArray(snapshotData.event.zones) && snapshotData.event.zones.length > 0);
+      if (!hasZones) {
+        splitBtn.disabled = true;
+        splitBtn.setAttribute('aria-pressed', 'false');
+        splitBtn.title = '主辦還沒設定分區';
+        isSplitZone = false;
+      } else {
+        splitBtn.disabled = false;
+        splitBtn.title = '';
+        splitBtn.setAttribute('aria-pressed', isSplitZone ? 'true' : 'false');
+      }
+    }
+
+    function toggleSplitZone() {
+      const hasZones = !!(snapshotData && snapshotData.event && Array.isArray(snapshotData.event.zones) && snapshotData.event.zones.length > 0);
+      if (!hasZones) return;
+      isSplitZone = !isSplitZone;
+      updateSplitZoneButton();
+      renderAll();
+    }
+
     function renderViewByTable(pairings) {
       const container = document.getElementById('viewByTable');
       if (!container) return;
+
+      const zones = (snapshotData && snapshotData.event && Array.isArray(snapshotData.event.zones))
+        ? snapshotData.event.zones : [];
+      const roundLabel = (snapshotData && snapshotData.round && snapshotData.round.label)
+        ? snapshotData.round.label : '賽事進行中';
+
+      if (isSplitZone && zones.length > 0) {
+        const zoneNames = zones.map(z => z.name);
+        const hasUnzoned = pairings.some(p => !(p.zone && zoneNames.includes(p.zone)));
+        const groupNames = [...zoneNames, ...(hasUnzoned ? ['未分區'] : [])];
+
+        let html = '';
+        for (const zName of groupNames) {
+          const zonePairings = pairings.filter(p => {
+            const z = (p.zone && zoneNames.includes(p.zone)) ? p.zone : '未分區';
+            return z === zName;
+          });
+
+          const seated = zonePairings.filter(p => p.table !== null).sort((a, b) => a.table - b.table);
+          const byes = zonePairings.filter(p => p.table === null);
+
+          html += `
+            <div class="zone-group" data-zone="${escapeHtml(zName)}">
+              ${renderZoneHeadingHtml(zName, zones, roundLabel)}
+              <div class="table-wrap">
+                <table class="print-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 12%;">桌號</th>
+                      <th style="width: 14%;">分區</th>
+                      <th style="width: 37%;">選手 1</th>
+                      <th style="width: 37%;">選手 2</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+          `;
+
+          for (const p of seated) {
+            const p1Text = `${escapeHtml(p.p1.name)} (${escapeHtml(p.p1.id)})`;
+            const p2Text = p.p2 ? `${escapeHtml(p.p2.name)} (${escapeHtml(p.p2.id)})` : '輪空';
+            html += `
+              <tr data-table="${p.table}">
+                <td class="cell-table">第 ${p.table} 桌</td>
+                <td class="cell-zone">${escapeHtml(p.zone || '—')}</td>
+                <td class="cell-player">${p1Text}</td>
+                <td class="cell-player">${p2Text}</td>
+              </tr>
+            `;
+          }
+
+          for (const b of byes) {
+            const p1Text = `${escapeHtml(b.p1.name)} (${escapeHtml(b.p1.id)})`;
+            html += `
+              <tr data-table="bye">
+                <td class="cell-table">輪空</td>
+                <td class="cell-zone">—</td>
+                <td class="cell-player">${p1Text}</td>
+                <td class="cell-player">輪空</td>
+              </tr>
+            `;
+          }
+
+          html += `
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          `;
+        }
+
+        container.innerHTML = html;
+        return;
+      }
 
       const seated = pairings.filter(p => p.table !== null).sort((a, b) => a.table - b.table);
       const byes = pairings.filter(p => p.table === null);
@@ -740,6 +1125,11 @@
       const container = document.getElementById('viewByName');
       if (!container) return;
 
+      const zones = (snapshotData && snapshotData.event && Array.isArray(snapshotData.event.zones))
+        ? snapshotData.event.zones : [];
+      const roundLabel = (snapshotData && snapshotData.round && snapshotData.round.label)
+        ? snapshotData.round.label : '賽事進行中';
+
       const playersList = [];
 
       for (const p of pairings) {
@@ -779,6 +1169,69 @@
       }
 
       const collator = new Intl.Collator('zh-Hant-TW', { numeric: true });
+
+      if (isSplitZone && zones.length > 0) {
+        const zoneNames = zones.map(z => z.name);
+        const hasUnzoned = playersList.some(pl => !(pl.zone && zoneNames.includes(pl.zone)));
+        const groupNames = [...zoneNames, ...(hasUnzoned ? ['未分區'] : [])];
+
+        let html = renderZoneGuideHtml(zones, roundLabel);
+
+        for (const zName of groupNames) {
+          const groupPlayers = playersList.filter(pl => {
+            const z = (pl.zone && zoneNames.includes(pl.zone)) ? pl.zone : '未分區';
+            return z === zName;
+          });
+
+          groupPlayers.sort((a, b) => {
+            const cmp = collator.compare(a.name, b.name);
+            if (cmp !== 0) return cmp;
+            return a.id.localeCompare(b.id);
+          });
+
+          html += `
+            <div class="zone-group" data-zone="${escapeHtml(zName)}">
+              ${renderZoneHeadingHtml(zName, zones, roundLabel)}
+              <div class="table-wrap">
+                <table class="print-table name-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 25%;">選手姓名</th>
+                      <th style="width: 18%;">選手編號</th>
+                      <th style="width: 15%;">桌號</th>
+                      <th style="width: 15%;">分區</th>
+                      <th style="width: 27%;">對手</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+          `;
+
+          for (const pl of groupPlayers) {
+            const tableText = pl.isBye ? '輪空' : `第 ${pl.table} 桌`;
+            const oppText = pl.isBye ? '輪空' : escapeHtml(pl.opponent);
+            html += `
+              <tr data-id="${escapeHtml(pl.id)}" data-name="${escapeHtml(pl.name)}">
+                <td class="cell-name-strong">${escapeHtml(pl.name)}</td>
+                <td class="cell-id">${escapeHtml(pl.id)}</td>
+                <td class="cell-table">${tableText}</td>
+                <td class="cell-zone">${escapeHtml(pl.zone || '—')}</td>
+                <td class="cell-opp">${oppText}</td>
+              </tr>
+            `;
+          }
+
+          html += `
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          `;
+        }
+
+        container.innerHTML = html;
+        return;
+      }
+
       playersList.sort((a, b) => {
         const cmp = collator.compare(a.name, b.name);
         if (cmp !== 0) return cmp;
@@ -827,12 +1280,13 @@
       const container = document.getElementById('viewSlips');
       if (!container) return;
 
+      const zones = (snapshotData && snapshotData.event && Array.isArray(snapshotData.event.zones))
+        ? snapshotData.event.zones : [];
+
       const seated = pairings.filter(p => p.table !== null && p.p2).sort((a, b) => a.table - b.table);
 
-      let html = '<div class="slips-grid">';
-
-      for (const p of seated) {
-        html += `
+      function renderSlipCard(p) {
+        return `
           <div class="result-slip" data-table="${p.table}">
             <div class="slip-header">
               <span class="slip-round-badge">${escapeHtml(roundLabel)}</span>
@@ -882,6 +1336,38 @@
         `;
       }
 
+      if (isSplitZone && zones.length > 0) {
+        const zoneNames = zones.map(z => z.name);
+        const hasUnzoned = seated.some(p => !(p.zone && zoneNames.includes(p.zone)));
+        const groupNames = [...zoneNames, ...(hasUnzoned ? ['未分區'] : [])];
+
+        let html = '';
+        for (const zName of groupNames) {
+          const zoneSlips = seated.filter(p => {
+            const z = (p.zone && zoneNames.includes(p.zone)) ? p.zone : '未分區';
+            return z === zName;
+          });
+
+          if (zoneSlips.length === 0) continue;
+
+          html += `
+            <div class="zone-group" data-zone="${escapeHtml(zName)}">
+              ${renderZoneHeadingHtml(zName, zones, roundLabel)}
+              <div class="slips-grid">
+                ${zoneSlips.map(renderSlipCard).join('')}
+              </div>
+            </div>
+          `;
+        }
+
+        container.innerHTML = html;
+        return;
+      }
+
+      let html = '<div class="slips-grid">';
+      for (const p of seated) {
+        html += renderSlipCard(p);
+      }
       html += '</div>';
       container.innerHTML = html;
     }
@@ -889,6 +1375,7 @@
     function renderAll() {
       if (!snapshotData) return;
       renderVersionWarning();
+      updateSplitZoneButton();
 
       const eventName = (snapshotData.event && snapshotData.event.name) ? snapshotData.event.name : '符文戰場賽事';
       const roundLabel = (snapshotData.round && snapshotData.round.label) ? snapshotData.round.label : '賽事進行中';
@@ -990,6 +1477,11 @@
       document.getElementById('printByName').addEventListener('click', () => switchView('viewByName'));
       document.getElementById('printSlips').addEventListener('click', () => switchView('viewSlips'));
       document.getElementById('printNow').addEventListener('click', () => window.print());
+
+      const splitZoneBtn = document.getElementById('printSplitZone');
+      if (splitZoneBtn) {
+        splitZoneBtn.addEventListener('click', toggleSplitZone);
+      }
 
       const retryBtn = document.getElementById('retryBtn');
       if (retryBtn) retryBtn.addEventListener('click', fetchData);
