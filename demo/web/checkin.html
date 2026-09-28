@@ -344,6 +344,12 @@
       <div class="card-title">選手自助報到</div>
       <div class="card-desc">請依照現場報到單上的編號與個人 PIN 碼完成報到。</div>
 
+      <!-- 身分自動帶入提示 (PROJECT.md 第三十輪, review.py [34]) -->
+      <div id="playerAuthNote" style="display: none; margin-bottom: 16px; padding: 10px 14px; background: rgba(239, 125, 0, 0.12); border: 1.5px solid rgba(239, 125, 0, 0.35); border-radius: 8px; font-size: 0.9rem; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+        <span id="playerAuthText" style="color: var(--accent-text); font-weight: 700;"></span>
+        <button type="button" id="playerSwitch" class="btn btn-secondary" style="width: auto; min-width: 100px; min-height: 44px; height: 44px; padding: 0 14px; font-size: 0.85rem; font-weight: 700; white-space: nowrap;">不是你？換人</button>
+      </div>
+
       <div class="form-group">
         <label for="checkinId" class="form-label">選手編號</label>
         <input
@@ -561,6 +567,17 @@
           nameInput.value = resolvedName;
         }
 
+        // 記住編號與 PIN（示範模式不寫入，PROJECT.md 第三十輪）
+        const isDemo = !!new URLSearchParams(window.location.search).get('demo');
+        if (!isDemo) {
+          try {
+            localStorage.setItem('riftbound_player_auth', JSON.stringify({
+              player_id: playerId,
+              pin: pin
+            }));
+          } catch (e) {}
+        }
+
         // 檢查是否需要登錄牌表 (PROJECT.md 第十一輪任務, DATA-CONTRACT 1.12, 6)
         const isDecklistRequired = !!(
           (snapshotData && snapshotData.event && snapshotData.event.checkin && snapshotData.event.checkin.decklist_required) ||
@@ -587,6 +604,85 @@
           btn.disabled = false;
           btn.textContent = origText;
         }
+      }
+    }
+
+    let autoLoginChecked = false;
+
+    function applyAutoAuth(playerId, pin, data) {
+      const idInput = document.getElementById('checkinId');
+      const pinInput = document.getElementById('checkinPin');
+      if (idInput) idInput.value = playerId;
+      if (pinInput) pinInput.value = pin;
+
+      const noteEl = document.getElementById('playerAuthNote');
+      const textEl = document.getElementById('playerAuthText');
+      const name = (data && data.player && data.player.name) || (data && data.checkin && data.checkin.display_name) || '';
+      if (textEl) {
+        textEl.textContent = name ? `已帶入 ${playerId} ${name} 的資料` : `已帶入 ${playerId} 的資料`;
+      }
+      if (noteEl) {
+        noteEl.style.display = 'flex';
+      }
+    }
+
+    function handlePlayerSwitch() {
+      try {
+        localStorage.removeItem('riftbound_player_auth');
+      } catch (e) {}
+      const idInput = document.getElementById('checkinId');
+      const pinInput = document.getElementById('checkinPin');
+      const nameInput = document.getElementById('checkinName');
+      if (idInput) idInput.value = '';
+      if (pinInput) pinInput.value = '';
+      if (nameInput) nameInput.value = '';
+      const noteEl = document.getElementById('playerAuthNote');
+      if (noteEl) noteEl.style.display = 'none';
+      const textEl = document.getElementById('playerAuthText');
+      if (textEl) textEl.textContent = '';
+    }
+
+    async function checkAutoLogin() {
+      if (autoLoginChecked) return;
+      autoLoginChecked = true;
+
+      const isDemo = !!new URLSearchParams(window.location.search).get('demo');
+      if (isDemo) return;
+
+      let savedAuth = null;
+      try {
+        const str = localStorage.getItem('riftbound_player_auth');
+        if (str) savedAuth = JSON.parse(str);
+      } catch (e) {}
+
+      if (!savedAuth || !savedAuth.player_id || !savedAuth.pin) {
+        return;
+      }
+
+      try {
+        const apiUrl = getApiUrl('/api/player/me');
+        const res = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            player_id: savedAuth.player_id,
+            pin: savedAuth.pin
+          })
+        });
+
+        if (res.status === 401) {
+          try {
+            localStorage.removeItem('riftbound_player_auth');
+          } catch (e) {}
+          return;
+        }
+
+        const data = await res.json().catch(() => null);
+        if (res.ok && data && data.ok) {
+          applyAutoAuth(savedAuth.player_id, savedAuth.pin, data);
+        }
+      } catch (err) {
+        console.warn('自動驗證失敗:', err);
       }
     }
 
@@ -620,6 +716,11 @@
       document.getElementById('checkinRename').addEventListener('click', handleCheckinRename);
       document.getElementById('retryBtn').addEventListener('click', fetchData);
 
+      const playerSwitchBtn = document.getElementById('playerSwitch');
+      if (playerSwitchBtn) {
+        playerSwitchBtn.addEventListener('click', handlePlayerSwitch);
+      }
+
       const checkinPinToggle = document.getElementById('checkinPinToggle');
       if (checkinPinToggle) {
         checkinPinToggle.addEventListener('click', () => {
@@ -640,7 +741,9 @@
       document.getElementById('checkinName').addEventListener('keydown', enterHandler);
 
       updateNavLinks();
-      fetchData();
+      fetchData().finally(() => {
+        checkAutoLogin();
+      });
     });
   </script>
 </body>

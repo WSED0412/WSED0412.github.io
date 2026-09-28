@@ -271,6 +271,31 @@
       text-align: center;
     }
 
+    /* 送出前確認彈窗 (360x640 不用捲動就看得到) */
+    .confirm-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(1, 34, 47, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 16px;
+    }
+    .confirm-modal-box {
+      background: var(--card-bg);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      padding: 18px;
+      width: 100%;
+      max-width: 320px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+    }
+
     .nav-links {
       text-align: center;
       margin-top: 20px;
@@ -352,6 +377,12 @@
       <div class="card-title">純文字牌表登錄</div>
       <div class="card-desc">依賽事規則，構築賽必須在第一輪開始前登錄牌表。送出後將立即鎖定。</div>
 
+      <!-- 身分自動帶入提示 (PROJECT.md 第三十輪, review.py [34]) -->
+      <div id="playerAuthNote" style="display: none; margin-bottom: 16px; padding: 10px 14px; background: rgba(239, 125, 0, 0.12); border: 1.5px solid rgba(239, 125, 0, 0.35); border-radius: 8px; font-size: 0.9rem; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+        <span id="playerAuthText" style="color: var(--accent-text); font-weight: 700;"></span>
+        <button type="button" id="playerSwitch" class="btn" style="width: auto; min-width: 100px; min-height: 44px; height: 44px; padding: 0 14px; font-size: 0.85rem; font-weight: 700; background: var(--chip-bg); color: var(--text-primary); border: 1px solid var(--card-border); border-radius: 6px; cursor: pointer; white-space: nowrap;">不是你？換人</button>
+      </div>
+
       <!-- 格式範例說明 -->
       <div class="example-box">
         <div class="example-title">📋 牌表填寫格式範例</div>
@@ -419,6 +450,19 @@
     <footer>
       符文戰場賽事系統 · 純文字牌表登錄
     </footer>
+  </div>
+
+  <!-- 牌表送出前確認彈窗 (PROJECT.md 第三十輪, review.py [18], [34]) -->
+  <div id="decklistConfirmModal" class="confirm-modal-overlay" style="display: none;">
+    <div class="confirm-modal-box">
+      <div class="confirm-modal-title" style="font-size: 1.15rem; font-weight: 800; margin-bottom: 8px; color: var(--text-primary);">確認送出牌表</div>
+      <div id="decklistConfirmCounts" class="confirm-outcome-text" style="font-size: 1rem; margin: 12px 0; line-height: 1.5; color: var(--text-primary);">主牌組 0 張、備牌 0 張</div>
+      <div class="confirm-note" style="font-size: 0.85rem; color: var(--warning-text); font-weight: 700; margin-bottom: 16px; line-height: 1.4;">送出後就鎖定，要更正得找裁判</div>
+      <div class="confirm-btns-row" style="display: flex; gap: 8px;">
+        <button type="button" id="decklistConfirm" class="btn btn-primary" style="flex: 1; height: 44px; min-height: 44px; font-size: 0.95rem; font-weight: 800;">確認送出</button>
+        <button type="button" id="decklistCancel" class="btn" style="flex: 1; height: 44px; min-height: 44px; font-size: 0.95rem; font-weight: 700; background: var(--chip-bg); color: var(--text-primary); border: 1px solid var(--card-border); border-radius: 8px;">取消</button>
+      </div>
+    </div>
   </div>
 
   <!-- 尚未連上賽務系統畫面 -->
@@ -547,11 +591,10 @@
       }
     }
 
-    // 牌表送出處理
-    let isSubmittingDecklist = false;
-    async function handleDecklistSubmit() {
+    // 牌表送出處理（第三十輪：先跳彈窗確認張數與鎖定警告，按確認才送出）
+    function handleDecklistSubmit() {
       const btn = document.getElementById('decklistSubmit');
-      if (isSubmittingDecklist || (btn && btn.disabled)) return;
+      if (btn && btn.disabled) return;
 
       const problemsEl = document.getElementById('decklistProblems');
       problemsEl.style.display = 'none';
@@ -577,11 +620,61 @@
         return;
       }
 
+      const counts = calculateDeckCounts(text);
+      const confirmCountsEl = document.getElementById('decklistConfirmCounts');
+      if (confirmCountsEl) {
+        confirmCountsEl.textContent = `主牌組 ${counts.main} 張、備牌 ${counts.side} 張`;
+      }
+
+      const modalEl = document.getElementById('decklistConfirmModal');
+      if (modalEl) {
+        modalEl.style.display = 'flex';
+      }
+    }
+
+    function handleDecklistCancel() {
+      const modalEl = document.getElementById('decklistConfirmModal');
+      if (modalEl) {
+        modalEl.style.display = 'none';
+      }
+    }
+
+    let isSubmittingDecklist = false;
+    async function handleDecklistConfirm() {
+      const confirmBtn = document.getElementById('decklistConfirm');
+      if (isSubmittingDecklist || (confirmBtn && confirmBtn.disabled)) return;
+
+      const problemsEl = document.getElementById('decklistProblems');
+      problemsEl.style.display = 'none';
+      problemsEl.innerHTML = '';
+
+      const idInput = document.getElementById('decklistId');
+      const pinInput = document.getElementById('decklistPin');
+      const textInput = document.getElementById('decklistText');
+
+      const playerId = (idInput ? idInput.value : '').trim().toUpperCase();
+      const pin = (pinInput ? pinInput.value : '').trim();
+      const text = (textInput ? textInput.value : '').trim();
+
+      if (!playerId || !pin) {
+        handleDecklistCancel();
+        problemsEl.textContent = '請輸入選手編號與個人 PIN 碼';
+        problemsEl.style.display = 'block';
+        return;
+      }
+
+      if (!text) {
+        handleDecklistCancel();
+        problemsEl.textContent = '請貼上牌表內容';
+        problemsEl.style.display = 'block';
+        return;
+      }
+
       isSubmittingDecklist = true;
-      const origText = btn ? btn.textContent : '';
-      if (btn) {
-        btn.disabled = true;
-        btn.textContent = '登錄中…';
+      const origText = confirmBtn ? confirmBtn.textContent : '';
+      if (confirmBtn) {
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = '送出中…';
       }
 
       try {
@@ -598,6 +691,8 @@
 
         const data = await res.json().catch(() => null);
 
+        handleDecklistCancel();
+
         if (!res.ok || !data || !data.ok) {
           // 逐項列出 problems
           if (data && data.problems && Array.isArray(data.problems) && data.problems.length > 0) {
@@ -612,7 +707,18 @@
           return;
         }
 
-        // 送出成功
+        // 送出成功：記住編號與 PIN（示範模式不寫入，PROJECT.md 第三十輪）
+        const isDemo = !!new URLSearchParams(window.location.search).get('demo');
+        if (!isDemo) {
+          try {
+            localStorage.setItem('riftbound_player_auth', JSON.stringify({
+              player_id: playerId,
+              pin: pin
+            }));
+          } catch (e) {}
+        }
+
+        // 登錄完成畫面
         const doneEl = document.getElementById('decklistDone');
         const summary = (data.decklist && data.decklist.summary) || {};
         const parsed = calculateDeckCounts(text);
@@ -632,22 +738,107 @@
         doneEl.style.display = 'block';
 
       } catch (err) {
+        handleDecklistCancel();
         problemsEl.textContent = err.message || '網路連線異常，請稍後再試';
         problemsEl.style.display = 'block';
       } finally {
         isSubmittingDecklist = false;
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = origText;
+        if (confirmBtn) {
+          confirmBtn.disabled = false;
+          confirmBtn.textContent = origText;
         }
+      }
+    }
+
+    let autoLoginChecked = false;
+
+    function applyAutoAuth(playerId, pin, data) {
+      const idInput = document.getElementById('decklistId');
+      const pinInput = document.getElementById('decklistPin');
+      if (idInput) idInput.value = playerId;
+      if (pinInput) pinInput.value = pin;
+
+      const noteEl = document.getElementById('playerAuthNote');
+      const textEl = document.getElementById('playerAuthText');
+      const name = (data && data.player && data.player.name) || (data && data.checkin && data.checkin.display_name) || '';
+      if (textEl) {
+        textEl.textContent = name ? `已帶入 ${playerId} ${name} 的資料` : `已帶入 ${playerId} 的資料`;
+      }
+      if (noteEl) {
+        noteEl.style.display = 'flex';
+      }
+    }
+
+    function handlePlayerSwitch() {
+      try {
+        localStorage.removeItem('riftbound_player_auth');
+      } catch (e) {}
+      const idInput = document.getElementById('decklistId');
+      const pinInput = document.getElementById('decklistPin');
+      if (idInput) idInput.value = '';
+      if (pinInput) pinInput.value = '';
+      const noteEl = document.getElementById('playerAuthNote');
+      if (noteEl) noteEl.style.display = 'none';
+      const textEl = document.getElementById('playerAuthText');
+      if (textEl) textEl.textContent = '';
+    }
+
+    async function checkAutoLogin() {
+      if (autoLoginChecked) return;
+      autoLoginChecked = true;
+
+      const isDemo = !!new URLSearchParams(window.location.search).get('demo');
+      if (isDemo) return;
+
+      let savedAuth = null;
+      try {
+        const str = localStorage.getItem('riftbound_player_auth');
+        if (str) savedAuth = JSON.parse(str);
+      } catch (e) {}
+
+      if (!savedAuth || !savedAuth.player_id || !savedAuth.pin) {
+        return;
+      }
+
+      try {
+        const apiUrl = getApiUrl('/api/player/me');
+        const res = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            player_id: savedAuth.player_id,
+            pin: savedAuth.pin
+          })
+        });
+
+        if (res.status === 401) {
+          try {
+            localStorage.removeItem('riftbound_player_auth');
+          } catch (e) {}
+          return;
+        }
+
+        const data = await res.json().catch(() => null);
+        if (res.ok && data && data.ok) {
+          applyAutoAuth(savedAuth.player_id, savedAuth.pin, data);
+        }
+      } catch (err) {
+        console.warn('自動驗證失敗:', err);
       }
     }
 
     window.addEventListener('DOMContentLoaded', () => {
       updateNavLinks();
       document.getElementById('decklistSubmit').addEventListener('click', handleDecklistSubmit);
+      document.getElementById('decklistConfirm').addEventListener('click', handleDecklistConfirm);
+      document.getElementById('decklistCancel').addEventListener('click', handleDecklistCancel);
       document.getElementById('decklistText').addEventListener('input', updateLiveCount);
       document.getElementById('retryBtn').addEventListener('click', fetchData);
+
+      const playerSwitchBtn = document.getElementById('playerSwitch');
+      if (playerSwitchBtn) {
+        playerSwitchBtn.addEventListener('click', handlePlayerSwitch);
+      }
 
       const decklistPinToggle = document.getElementById('decklistPinToggle');
       if (decklistPinToggle) {
@@ -661,7 +852,9 @@
         });
       }
 
-      fetchData();
+      fetchData().finally(() => {
+        checkAutoLogin();
+      });
     });
   </script>
 </body>
