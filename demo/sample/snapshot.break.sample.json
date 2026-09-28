@@ -1,5 +1,5 @@
 {
-  "contract_version": 12,
+  "contract_version": 13,
   "server_now": 1790397300000,
   "event": {
     "name": "示範賽事（假資料）",
@@ -8,7 +8,8 @@
     "note": "午休時間請把個人物品帶走，13:30 準時開始第 2 輪。",
     "api_base": null,
     "checkin": null,
-    "viewers": 42
+    "viewers": 42,
+    "zones": []
   },
   "round": {
     "number": 1,
@@ -61,6 +62,7 @@
       "extensions": [],
       "ends_at": null,
       "judge_call": null,
+      "zone": null,
       "late": null
     },
     {
@@ -88,6 +90,7 @@
       "extensions": [],
       "ends_at": null,
       "judge_call": null,
+      "zone": null,
       "late": null
     },
     {
@@ -115,6 +118,7 @@
       "extensions": [],
       "ends_at": null,
       "judge_call": null,
+      "zone": null,
       "late": null
     },
     {
@@ -142,6 +146,7 @@
       "extensions": [],
       "ends_at": null,
       "judge_call": null,
+      "zone": null,
       "late": null
     },
     {
@@ -169,6 +174,7 @@
       "extensions": [],
       "ends_at": null,
       "judge_call": null,
+      "zone": null,
       "late": null
     },
     {
@@ -196,6 +202,7 @@
       "extensions": [],
       "ends_at": null,
       "judge_call": null,
+      "zone": null,
       "late": null
     },
     {
@@ -223,6 +230,7 @@
       "extensions": [],
       "ends_at": null,
       "judge_call": null,
+      "zone": null,
       "late": null
     },
     {
@@ -250,6 +258,7 @@
       "extensions": [],
       "ends_at": null,
       "judge_call": null,
+      "zone": null,
       "late": null
     },
     {
@@ -266,6 +275,7 @@
       "extensions": [],
       "ends_at": null,
       "judge_call": null,
+      "zone": null,
       "late": null
     }
   ],
@@ -278,7 +288,7 @@
     "updated_at": 1790397060000
   },
   "standings": {
-    "version": "302dc35a26f4",
+    "version": "760e2d73d36d",
     "label": "第 1 輪結束後"
   },
   "bracket": null

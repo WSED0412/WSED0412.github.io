@@ -872,6 +872,19 @@
     <!-- 裁判作業面板（登入後顯示） -->
     <main id="judgeSection" style="display: none;">
 
+      <!-- 區塊: 分區篩選 (DATA-CONTRACT 1.18, PROJECT.md 第二十八輪) -->
+      <section class="judge-card" id="zoneFilterCard" style="display: none; padding: 12px 14px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 200px;">
+            <label for="zoneFilter" class="form-label" style="margin-bottom: 0; white-space: nowrap; font-weight: 700;">分區篩選：</label>
+            <select id="zoneFilter" class="select-input" style="flex: 1; min-height: 44px; font-size: 1rem;">
+              <option value="">全部</option>
+            </select>
+          </div>
+          <div id="zoneHiddenNote" style="font-size: 0.85rem; font-weight: 700; color: var(--warning-text); display: none;"></div>
+        </div>
+      </section>
+
       <!-- 區塊: 遲到處理 (DATA-CONTRACT 1.16, PROJECT.md 第 10 節) -->
       <section class="judge-card" id="lateSection">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
@@ -1127,7 +1140,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 12;
+    const CURRENT_CONTRACT_VERSION = 13;
     const SESSION_STORAGE_KEY_STAFF_PIN = 'riftbound_judge_staff_pin';
 
     let snapshotData = null;
@@ -1151,6 +1164,141 @@
     let firstSeenCallTimes = new Map();
     let currentCalls = [];
     let hasInitializedCalls = false;
+
+    // 分區篩選狀態 (DATA-CONTRACT 1.18, PROJECT.md 第二十八輪)
+    const STORAGE_KEY_ZONE = 'riftbound_judge_zone_filter';
+
+    function getSavedZone() {
+      try {
+        return localStorage.getItem(STORAGE_KEY_ZONE) || '';
+      } catch (e) {
+        return '';
+      }
+    }
+
+    function saveZone(z) {
+      try {
+        if (z) {
+          localStorage.setItem(STORAGE_KEY_ZONE, z);
+        } else {
+          localStorage.removeItem(STORAGE_KEY_ZONE);
+        }
+      } catch (e) {}
+    }
+
+    function updateZoneFilterOptions() {
+      const select = document.getElementById('zoneFilter');
+      const card = document.getElementById('zoneFilterCard');
+      if (!select) return;
+
+      const zones = (snapshotData && snapshotData.event && Array.isArray(snapshotData.event.zones))
+        ? snapshotData.event.zones
+        : [];
+
+      if (!zones || zones.length === 0) {
+        if (card) card.style.display = 'none';
+        select.style.display = 'none';
+        const note = document.getElementById('zoneHiddenNote');
+        if (note) {
+          note.style.display = 'none';
+          note.textContent = '';
+        }
+        select.value = '';
+        applyZoneFilter();
+        return;
+      }
+
+      if (card) card.style.display = 'block';
+      select.style.display = '';
+
+      const saved = getSavedZone();
+      const zoneNames = zones.map(z => z.name);
+      const currentVal = zoneNames.includes(saved) ? saved : '';
+
+      let html = '<option value="">全部</option>';
+      zones.forEach(z => {
+        html += `<option value="${escapeHtml(z.name)}">${escapeHtml(z.name)}</option>`;
+      });
+      select.innerHTML = html;
+      select.value = currentVal;
+
+      applyZoneFilter();
+    }
+
+    function applyZoneFilter() {
+      const select = document.getElementById('zoneFilter');
+      const note = document.getElementById('zoneHiddenNote');
+      if (!select) return;
+
+      const zones = (snapshotData && snapshotData.event && Array.isArray(snapshotData.event.zones))
+        ? snapshotData.event.zones
+        : [];
+
+      let selectedZone = select.value;
+      if (!zones || zones.length === 0) {
+        selectedZone = '';
+      }
+
+      const tableZoneMap = new Map();
+      if (snapshotData && Array.isArray(snapshotData.pairings)) {
+        snapshotData.pairings.forEach(p => {
+          if (p.table !== null && p.table !== undefined) {
+            tableZoneMap.set(p.table, p.zone || null);
+          }
+        });
+      }
+
+      let hiddenCount = 0;
+
+      // 1. #callList .call-item
+      const callItems = document.querySelectorAll('#callList .call-item');
+      callItems.forEach(item => {
+        const tableNum = parseInt(item.getAttribute('data-table'), 10);
+        const z = tableZoneMap.get(tableNum) || null;
+        if (!selectedZone || selectedZone === '全部' || z === selectedZone) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+          hiddenCount++;
+        }
+      });
+
+      // 2. #lateList .late-item
+      const lateItems = document.querySelectorAll('#lateList .late-item');
+      lateItems.forEach(item => {
+        const tableNum = parseInt(item.getAttribute('data-table'), 10);
+        const z = tableZoneMap.get(tableNum) || null;
+        if (!selectedZone || selectedZone === '全部' || z === selectedZone) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+          hiddenCount++;
+        }
+      });
+
+      // 3. #conflictList .conflict-open
+      const conflictItems = document.querySelectorAll('#conflictList .conflict-open');
+      conflictItems.forEach(item => {
+        const tableNum = parseInt(item.getAttribute('data-table'), 10);
+        const z = tableZoneMap.get(tableNum) || null;
+        if (!selectedZone || selectedZone === '全部' || z === selectedZone) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+          hiddenCount++;
+        }
+      });
+
+      if (note) {
+        if (selectedZone && selectedZone !== '全部' && hiddenCount > 0) {
+          note.textContent = `其他區還有 ${hiddenCount} 筆`;
+          note.style.display = 'block';
+        } else {
+          note.textContent = '';
+          note.style.display = 'none';
+        }
+      }
+    }
 
     // 取得資料來源 URL (DATA-CONTRACT 1.10)
     function getDataSourceUrl() {
@@ -1260,6 +1408,7 @@
           renderTableDetail(currentTable);
         }
         renderLateList();
+        updateZoneFilterOptions();
         checkFreshness();
       } catch (err) {
         checkFreshness();
@@ -1361,6 +1510,7 @@
         judgeLogoutBtn.style.display = 'inline-flex';
         judgeNameDisplay.textContent = judgeName || '裁判';
         renderLateList();
+        updateZoneFilterOptions();
       } else {
         loginSection.style.display = 'block';
         judgeSection.style.display = 'none';
@@ -1440,6 +1590,7 @@
       renderConflictList([]);
       renderCallList([]);
       renderLateList();
+      updateZoneFilterOptions();
       try {
         sessionStorage.removeItem(SESSION_STORAGE_KEY_STAFF_PIN);
       } catch (e) {}
@@ -1582,6 +1733,7 @@
       if (!sortedCalls.length) {
         lastCallFingerprint = '';
         listEl.innerHTML = '<div class="empty-state-sm">目前沒有等待處理的呼叫</div>';
+        applyZoneFilter();
         return;
       }
 
@@ -1589,6 +1741,7 @@
       const newFingerprint = getCallFingerprint(sortedCalls);
       if (newFingerprint === lastCallFingerprint && listEl.children.length > 0 && !listEl.querySelector('.empty-state-sm')) {
         updateCallTimes();
+        applyZoneFilter();
         return;
       }
 
@@ -1681,6 +1834,7 @@
 
       listEl.scrollTop = savedScroll;
       lastCallFingerprint = newFingerprint;
+      applyZoneFilter();
     }
 
     // 遲到處理區塊 (DATA-CONTRACT 1.16, 規則 703.8)
@@ -1716,12 +1870,14 @@
       if (latePairings.length === 0) {
         lastLateFingerprint = '';
         listEl.innerHTML = '<div class="empty-state-sm">目前沒有遲到桌</div>';
+        applyZoneFilter();
         return;
       }
 
       const fingerprint = getLateFingerprint(latePairings, clock);
       if (fingerprint === lastLateFingerprint && listEl.children.length > 0 && !listEl.querySelector('.empty-state-sm')) {
         updateLateTimes();
+        applyZoneFilter();
         return;
       }
 
@@ -1815,6 +1971,7 @@
 
       listEl.scrollTop = savedScroll;
       lastLateFingerprint = fingerprint;
+      applyZoneFilter();
     }
 
     function updateLateTimes() {
@@ -2051,6 +2208,7 @@
       const container = document.getElementById('conflictList');
       if (!tables || tables.length === 0) {
         container.innerHTML = '<div class="empty-state-sm">目前沒有爭議桌</div>';
+        applyZoneFilter();
         return;
       }
 
@@ -2064,6 +2222,7 @@
           </button>
         `;
       }).join('');
+      applyZoneFilter();
     }
 
     // 查桌處理
@@ -2694,6 +2853,15 @@
             const tbl = parseInt(markBtn.getAttribute('data-table'), 10);
             handleLateMark(tbl, pid);
           }
+        });
+      }
+
+      // 分區篩選事件監聽
+      const zoneFilterSelect = document.getElementById('zoneFilter');
+      if (zoneFilterSelect) {
+        zoneFilterSelect.addEventListener('change', () => {
+          saveZone(zoneFilterSelect.value);
+          applyZoneFilter();
         });
       }
 

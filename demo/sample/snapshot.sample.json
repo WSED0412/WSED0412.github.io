@@ -1,5 +1,5 @@
 {
-  "contract_version": 12,
+  "contract_version": 13,
   "server_now": 1790391900000,
   "event": {
     "name": "示範賽事（假資料）",
@@ -8,7 +8,21 @@
     "note": "這是示範資料，只在網址加 ?demo=1 時出現。",
     "api_base": null,
     "checkin": null,
-    "viewers": 137
+    "viewers": 137,
+    "zones": [
+      {
+        "from": 1,
+        "to": 4,
+        "name": "A 區",
+        "hint": "靠窗"
+      },
+      {
+        "from": 5,
+        "to": 8,
+        "name": "B 區",
+        "hint": "靠牆"
+      }
+    ]
   },
   "round": {
     "number": 3,
@@ -61,6 +75,7 @@
       "extensions": [],
       "ends_at": null,
       "judge_call": null,
+      "zone": "A 區",
       "late": null
     },
     {
@@ -90,6 +105,7 @@
         "state": "taken",
         "called_at": 1790391780000
       },
+      "zone": "A 區",
       "late": null
     },
     {
@@ -117,6 +133,7 @@
       "extensions": [],
       "ends_at": 1790395200000,
       "judge_call": null,
+      "zone": "A 區",
       "late": null
     },
     {
@@ -144,6 +161,7 @@
       "extensions": [],
       "ends_at": null,
       "judge_call": null,
+      "zone": "A 區",
       "late": null
     },
     {
@@ -177,6 +195,7 @@
         "state": "waiting",
         "called_at": 1790391660000
       },
+      "zone": "B 區",
       "late": null
     },
     {
@@ -204,6 +223,7 @@
       "extensions": [],
       "ends_at": null,
       "judge_call": null,
+      "zone": "B 區",
       "late": null
     },
     {
@@ -231,6 +251,7 @@
       "extensions": [],
       "ends_at": 1790395200000,
       "judge_call": null,
+      "zone": "B 區",
       "late": null
     },
     {
@@ -252,6 +273,7 @@
       "extensions": [],
       "ends_at": 1790395200000,
       "judge_call": null,
+      "zone": "B 區",
       "late": {
         "players": [
           "R0005"
@@ -273,6 +295,7 @@
       "extensions": [],
       "ends_at": null,
       "judge_call": null,
+      "zone": null,
       "late": null
     }
   ],
@@ -282,7 +305,7 @@
     "updated_at": 1790391720000
   },
   "standings": {
-    "version": "fa19932d2378",
+    "version": "98ac32cb1591",
     "label": "第 2 輪結束後"
   },
   "bracket": null

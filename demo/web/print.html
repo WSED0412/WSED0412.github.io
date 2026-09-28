@@ -578,7 +578,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 12;
+    const CURRENT_CONTRACT_VERSION = 13;
 
     let snapshotData = null;
     let rawJsonText = '';
@@ -693,9 +693,10 @@
           <table class="print-table">
             <thead>
               <tr>
-                <th style="width: 15%;">桌號</th>
-                <th style="width: 42%;">選手 1</th>
-                <th style="width: 43%;">選手 2</th>
+                <th style="width: 12%;">桌號</th>
+                <th style="width: 14%;">分區</th>
+                <th style="width: 37%;">選手 1</th>
+                <th style="width: 37%;">選手 2</th>
               </tr>
             </thead>
             <tbody>
@@ -707,6 +708,7 @@
         html += `
           <tr data-table="${p.table}">
             <td class="cell-table">第 ${p.table} 桌</td>
+            <td class="cell-zone">${escapeHtml(p.zone || '—')}</td>
             <td class="cell-player">${p1Text}</td>
             <td class="cell-player">${p2Text}</td>
           </tr>
@@ -718,6 +720,7 @@
         html += `
           <tr data-table="bye">
             <td class="cell-table">輪空</td>
+            <td class="cell-zone">—</td>
             <td class="cell-player">${p1Text}</td>
             <td class="cell-player">輪空</td>
           </tr>
@@ -746,6 +749,7 @@
               id: p.p1.id,
               name: p.p1.name,
               table: p.table,
+              zone: p.zone || null,
               opponent: p.p2 ? p.p2.name : '輪空',
               isBye: false
             });
@@ -755,6 +759,7 @@
               id: p.p2.id,
               name: p.p2.name,
               table: p.table,
+              zone: p.zone || null,
               opponent: p.p1.name,
               isBye: false
             });
@@ -765,6 +770,7 @@
               id: p.p1.id,
               name: p.p1.name,
               table: null,
+              zone: null,
               opponent: '輪空',
               isBye: true
             });
@@ -784,10 +790,11 @@
           <table class="print-table name-table">
             <thead>
               <tr>
-                <th style="width: 30%;">選手姓名</th>
-                <th style="width: 20%;">選手編號</th>
-                <th style="width: 20%;">桌號</th>
-                <th style="width: 30%;">對手</th>
+                <th style="width: 25%;">選手姓名</th>
+                <th style="width: 18%;">選手編號</th>
+                <th style="width: 15%;">桌號</th>
+                <th style="width: 15%;">分區</th>
+                <th style="width: 27%;">對手</th>
               </tr>
             </thead>
             <tbody>
@@ -801,6 +808,7 @@
             <td class="cell-name-strong">${escapeHtml(pl.name)}</td>
             <td class="cell-id">${escapeHtml(pl.id)}</td>
             <td class="cell-table">${tableText}</td>
+            <td class="cell-zone">${escapeHtml(pl.zone || '—')}</td>
             <td class="cell-opp">${oppText}</td>
           </tr>
         `;

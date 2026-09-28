@@ -589,7 +589,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 12;
+    const CURRENT_CONTRACT_VERSION = 13;
 
     let snapshotData = null;
     let cachedStandingsData = null;
@@ -697,11 +697,27 @@
       if (labelEl && snapshotData.standings && snapshotData.standings.label) {
         labelEl.textContent = snapshotData.standings.label;
       }
+      if (snapshotData.event && snapshotData.event.mode === 'A') {
+        if (labelEl) labelEl.textContent = '官方賽的排名以官方平台為準';
+      }
     }
 
     function showNoStandings() {
+      const isModeA = !!(snapshotData && snapshotData.event && snapshotData.event.mode === 'A');
+
       const noMsg = document.getElementById('noStandingsMsg');
-      if (noMsg) noMsg.style.display = 'block';
+      if (noMsg) {
+        const titleEl = noMsg.querySelector('.no-standings-title');
+        const descEl = noMsg.querySelector('.no-standings-desc');
+        if (isModeA) {
+          if (titleEl) titleEl.textContent = '官方賽的排名以官方平台為準';
+          if (descEl) descEl.textContent = '本賽事成績與排名請至官方平台查看。';
+        } else {
+          if (titleEl) titleEl.textContent = '第 1 輪結束後才會有排名';
+          if (descEl) descEl.textContent = '目前第 1 輪尚未結束，請先查看目前桌次與對手。';
+        }
+        noMsg.style.display = 'block';
+      }
 
       const searchSec = document.getElementById('searchSection');
       if (searchSec) searchSec.style.display = 'none';
@@ -710,13 +726,13 @@
       if (tableWrap) tableWrap.style.display = 'none';
 
       const labelEl = document.getElementById('standingsLabel');
-      if (labelEl) labelEl.textContent = '尚未產生排名';
+      if (labelEl) labelEl.textContent = isModeA ? '官方賽的排名以官方平台為準' : '尚未產生排名';
 
       const noteEl = document.getElementById('standingsNote');
       if (noteEl) noteEl.style.display = 'none';
 
       const metaEl = document.getElementById('standingsMeta');
-      if (metaEl) metaEl.textContent = '第 1 輪結束後才會公布';
+      if (metaEl) metaEl.textContent = isModeA ? '以官方平台為準' : '第 1 輪結束後才會公布';
     }
 
     function renderStandings(data) {
@@ -881,8 +897,9 @@
         renderSnapshotHeader();
 
         // 檢查排名資料 (DATA-CONTRACT 1.11, 第 4 節)
-        if (!snapshotData.standings || !snapshotData.standings.version) {
-          // 第 1 輪結束後才會有排名，不要去讀 standings.json
+        const isModeA = !!(snapshotData.event && snapshotData.event.mode === 'A');
+        if (isModeA || !snapshotData.standings || !snapshotData.standings.version) {
+          // 模式 A 永遠不要讀 standings.json；或第 1 輪結束後才會有排名
           showNoStandings();
         } else {
           const targetVer = snapshotData.standings.version;

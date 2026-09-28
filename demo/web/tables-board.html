@@ -347,6 +347,15 @@
       border-radius: 4px;
       font-weight: 700;
     }
+    .zone-tag {
+      background: var(--chip-bg);
+      color: var(--text-primary);
+      border: 1px solid var(--card-border);
+      font-size: 0.75rem;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
 
     /* 狀態標籤 */
     .status-pill {
@@ -740,7 +749,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 12;
+    const CURRENT_CONTRACT_VERSION = 13;
     let snapshotData = null;
     let rawJsonText = '';
     let pollTimer = null;
@@ -1194,6 +1203,7 @@
             <div class="card-header">
               <div class="table-title-wrap">
                 <span class="table-title">第 ${pair.table} 桌</span>
+                ${pair.zone ? `<span class="zone-tag">${escapeHtml(pair.zone)}</span>` : ''}
                 ${pair.feature ? '<span class="feature-tag">直播桌</span>' : ''}
               </div>
               <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
@@ -1264,7 +1274,10 @@
         return `
           <div class="completed-card" data-table="${pair.table}">
             <div class="completed-card-header">
-              <span class="completed-table-num">第 ${pair.table} 桌</span>
+              <div style="display: flex; gap: 6px; align-items: center;">
+                <span class="completed-table-num">第 ${pair.table} 桌</span>
+                ${pair.zone ? `<span class="zone-tag">${escapeHtml(pair.zone)}</span>` : ''}
+              </div>
               ${statusBadge}
             </div>
             <div class="completed-players">

@@ -456,17 +456,39 @@
       margin-bottom: 12px;
       padding-bottom: 10px;
       border-bottom: 1px solid var(--card-border);
+      gap: 8px;
+    }
+    .table-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
     }
     .table-number-wrap {
       display: flex;
       align-items: baseline;
       gap: 6px;
+      flex-wrap: wrap;
+    }
+    .table-number-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .table-badge-large {
       font-size: 2rem;
       font-weight: 900;
       color: var(--accent-text);
       line-height: 1.1;
+      white-space: nowrap;
+    }
+    .table-zone-detail {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      line-height: 1.3;
+      margin-top: 2px;
     }
     .feature-tag {
       background: var(--info-bg);
@@ -478,12 +500,16 @@
       font-weight: 700;
       margin-left: 6px;
       vertical-align: middle;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .round-indicator {
       font-size: 0.9rem;
       color: var(--text-secondary);
       font-weight: 600;
       text-align: right;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     /* 對戰雙方 */
@@ -776,6 +802,7 @@
     }
     .pin-input {
       flex: 1;
+      min-width: 0;
       height: 44px;
       background: var(--card-bg);
       border: 1.5px solid var(--card-border);
@@ -789,7 +816,28 @@
     .pin-input:focus {
       border-color: var(--accent);
     }
+    .btn-pin-toggle {
+      flex-shrink: 0;
+      height: 44px;
+      min-width: 44px;
+      padding: 0 12px;
+      background: var(--chip-bg);
+      color: var(--text-primary);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-pin-toggle:active {
+      background: var(--card-border);
+    }
     .btn-pin-submit {
+      flex-shrink: 0;
       height: 44px;
       padding: 0 18px;
       background: var(--accent);
@@ -799,6 +847,7 @@
       border-radius: 6px;
       cursor: pointer;
       min-width: 68px;
+      white-space: nowrap;
     }
     .btn-pin-submit:active {
       background: var(--accent-hover);
@@ -1364,7 +1413,7 @@
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
 
-    const CURRENT_CONTRACT_VERSION = 12;
+    const CURRENT_CONTRACT_VERSION = 13;
     const STORAGE_KEY_SEARCH = 'riftbound_find_table_last_query';
     const STORAGE_KEY_HISTORY = 'riftbound_find_table_history';
 
@@ -1409,6 +1458,7 @@
     let pendingReportValues = null;
     let trackedPlayerId = null;
     let pinFormVisible = false;
+    let pinVisible = false;
     let lastMatchCardFingerprint = '';
     let lastRenderedPlayerId = null;
 
@@ -2108,7 +2158,15 @@
         resultSection.style.display = 'none';
         candidatesBox.style.display = 'block';
         candidatesList.innerHTML = partialMatches.map(m => {
-          const tableText = m.pair.table === null ? '本輪輪空' : `第 ${m.pair.table} 桌`;
+          let tableText = m.pair.table === null ? '本輪輪空' : `第 ${m.pair.table} 桌`;
+          if (m.pair.table !== null && m.pair.zone) {
+            let hint = '';
+            if (snapshotData && snapshotData.event && Array.isArray(snapshotData.event.zones)) {
+              const fz = snapshotData.event.zones.find(z => z && z.name === m.pair.zone);
+              if (fz && fz.hint) hint = fz.hint.trim();
+            }
+            tableText += ` · ${escapeHtml(m.pair.zone)}${hint ? `（${escapeHtml(hint)}）` : ''}`;
+          }
           return `
             <button type="button" class="candidate-btn" data-player-id="${escapeHtml(m.player.id)}">
               <span><strong>${escapeHtml(m.player.name)}</strong> (${escapeHtml(m.player.id)})</span>
@@ -2164,7 +2222,7 @@
       const jc = currentPlayerMeData && currentPlayerMeData.judge_call;
       const jcStr = jc ? `${jc.state}-${jc.by_me ? 1 : 0}-${jc.reason || ''}-${jc.reason_label || ''}-${jc.note || ''}` : 'none';
 
-      return `${roundStr}|${matchedPairing.table}|${matchedPairing.feature ? 1 : 0}|${isP1 ? 1 : 0}|${p1Str}|${p2Str}|${endsAt}|${extStr}|${resStr}|${repEnabled}|${authStr}|${repStr}|${jcStr}|${callFormVisible ? 1 : 0}|${selectedCallReason}|${isOfflineMode ? 1 : 0}`;
+      return `${roundStr}|${matchedPairing.table}|${matchedPairing.zone || ''}|${matchedPairing.feature ? 1 : 0}|${isP1 ? 1 : 0}|${p1Str}|${p2Str}|${endsAt}|${extStr}|${resStr}|${repEnabled}|${authStr}|${repStr}|${jcStr}|${callFormVisible ? 1 : 0}|${selectedCallReason}|${isOfflineMode ? 1 : 0}`;
     }
 
     // 渲染單一對戰卡片
@@ -2205,9 +2263,10 @@
       const tableNum = matchedPairing.table;
       const isFeature = matchedPairing.feature;
 
-      // 若切換到不同選手，重設 PIN 展開狀態
+      // 若切換到不同選手，重設 PIN 展開狀態與顯示狀態
       if (lastRenderedPlayerId !== selfPlayer.id) {
         pinFormVisible = false;
+        pinVisible = false;
         lastRenderedPlayerId = selfPlayer.id;
       }
 
@@ -2224,6 +2283,9 @@
         pinFormVisible = true;
       }
       const oldPinInput = document.getElementById('pinInput');
+      if (oldPinInput) {
+        pinVisible = (oldPinInput.type === 'text');
+      }
       const preservedPinVal = oldPinInput ? oldPinInput.value : '';
       const isPinFocused = oldPinInput && (document.activeElement === oldPinInput);
       const pinSelStart = oldPinInput ? oldPinInput.selectionStart : null;
@@ -2294,19 +2356,33 @@
 
       const roundLabel = (snapshotData.round ? snapshotData.round.label : '') || '';
 
+      const tableText = `第 ${tableNum} 桌`;
+      let zoneHtml = '';
+      if (matchedPairing.zone) {
+        let hint = '';
+        if (snapshotData && snapshotData.event && Array.isArray(snapshotData.event.zones)) {
+          const foundZone = snapshotData.event.zones.find(z => z && z.name === matchedPairing.zone);
+          if (foundZone && foundZone.hint) {
+            hint = foundZone.hint.trim();
+          }
+        }
+        zoneHtml = `<div class="table-zone-detail">${escapeHtml(matchedPairing.zone)}${hint ? `（${escapeHtml(hint)}）` : ''}</div>`;
+      }
+
       resultSection.innerHTML = `
         <div class="result-card-wrap">
           ${isOfflineMode ? '<div class="offline-tag-bar"><span class="offline-tag">舊資料</span></div>' : ''}
           <div class="result-card">
             <div class="result-header">
-              <div class="table-number-wrap">
-                <span style="font-size: 0.9rem; color: var(--text-secondary);">桌號</span>
-                <span class="table-badge-large">第 ${tableNum} 桌</span>
-                ${isFeature ? '<span class="feature-tag">直播桌</span>' : ''}
+              <div class="table-title-group">
+                <div class="table-number-wrap">
+                  <span class="table-number-label">桌號</span>
+                  <span class="table-badge-large">${tableText}</span>
+                  ${isFeature ? '<span class="feature-tag">直播桌</span>' : ''}
+                </div>
+                ${zoneHtml}
               </div>
-              <div class="round-indicator">
-                ${escapeHtml(roundLabel)}
-              </div>
+              <div class="round-indicator">${escapeHtml(roundLabel)}</div>
             </div>
 
             <div class="match-players">
@@ -2388,6 +2464,9 @@
 
       // 若直接呼叫 renderReportCard() 且未帶參數，嘗試從現有 DOM 保留輸入
       const existingPinInput = document.getElementById('pinInput');
+      if (existingPinInput) {
+        pinVisible = (existingPinInput.type === 'text');
+      }
       const finalPinVal = preservedPinVal || (existingPinInput ? existingPinInput.value : '');
       const finalPinFocused = isPinFocused || (existingPinInput && document.activeElement === existingPinInput);
       const finalPinStart = pinSelStart !== null ? pinSelStart : (existingPinInput ? existingPinInput.selectionStart : null);
@@ -2417,7 +2496,8 @@
             <div class="pin-form-wrap" id="pinForm" style="${pinFormVisible ? 'display: block;' : 'display: none;'}">
               <div class="pin-form-title">請輸入 6 位數個人 PIN 碼進行成績回報：</div>
               <div class="pin-input-group">
-                <input type="text" id="pinInput" class="pin-input" inputmode="numeric" autocomplete="off" placeholder="例如 000001" maxlength="10">
+                <input type="${pinVisible ? 'text' : 'password'}" id="pinInput" class="pin-input" inputmode="numeric" autocomplete="off" placeholder="例如 000001" maxlength="10">
+                <button type="button" id="pinToggle" class="btn-pin-toggle" aria-pressed="${pinVisible ? 'true' : 'false'}">${pinVisible ? '隱藏' : '顯示'}</button>
                 <button type="button" id="pinSubmit" class="btn-pin-submit">送出</button>
               </div>
               <div id="pinError" class="pin-error-msg" style="${finalPinErrorVisible ? 'display: block;' : 'display: none;'}">${escapeHtml(finalPinError)}</div>
@@ -2435,6 +2515,18 @@
               const pinInput = document.getElementById('pinInput');
               if (pinInput) pinInput.focus();
             }
+          });
+        }
+
+        const pinToggle = document.getElementById('pinToggle');
+        if (pinToggle) {
+          pinToggle.addEventListener('click', () => {
+            const pinIn = document.getElementById('pinInput');
+            if (!pinIn) return;
+            pinVisible = (pinIn.type === 'password');
+            pinIn.type = pinVisible ? 'text' : 'password';
+            pinToggle.setAttribute('aria-pressed', pinVisible ? 'true' : 'false');
+            pinToggle.textContent = pinVisible ? '隱藏' : '顯示';
           });
         }
 

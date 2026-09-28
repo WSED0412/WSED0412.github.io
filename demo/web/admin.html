@@ -395,6 +395,16 @@
       color: var(--danger-text);
       border-color: var(--danger-border);
     }
+    button[data-next="true"] {
+      background: #c2410c !important;
+      color: #ffffff !important;
+      border: 2px solid #f97316 !important;
+      box-shadow: 0 0 10px rgba(234, 88, 12, 0.5);
+      font-weight: 800;
+    }
+    button[data-next="true"]:hover {
+      background: #9a3412 !important;
+    }
 
     /* 訊息顯示框 */
     .msg-box {
@@ -685,7 +695,13 @@
         <div id="checkinMsg" class="msg-box" style="display: none;"></div>
 
         <!-- 報到清單 -->
-        <div class="card-subtitle" style="margin-top: 14px;">報到狀態名單（未報到排在前）</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+          <div class="card-subtitle" style="margin-top: 0; margin-bottom: 0;">報到狀態名單（未報到排在前）</div>
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <button type="button" id="noShowCopy" class="btn btn-secondary" style="min-height: 44px; padding: 6px 14px; font-size: 0.85rem;">複製未報到／已退賽名單</button>
+            <span id="noShowCopyMsg" style="font-size: 0.82rem; color: var(--success-text); font-weight: 700;"></span>
+          </div>
+        </div>
         <div id="checkinList" class="table-wrap" style="max-height: 280px; overflow-y: auto;">
           <div class="empty-state-sm">請點擊「重新整理報到清單」載入選手</div>
         </div>
@@ -745,6 +761,33 @@
         <div id="scheduleMsg" class="msg-box" style="display: none;"></div>
       </section>
 
+      <!-- 區塊: 桌號分區設定 (DATA-CONTRACT 1.18, PROJECT.md 第二十七輪) -->
+      <section class="admin-card">
+        <h2 class="card-title">📍 桌號分區設定</h2>
+        <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px;">
+          設定會場桌號的分區與方位說明（如 A 區靠窗、B 區靠牆）。選手於找桌頁查桌時會直接看到所在分區與方向指引。<br>
+          格式為一行一區：<code>起-迄, 名稱, 說明</code>（說明可省略；逗號全半形皆可；清空儲存即取消分區）。
+        </p>
+
+        <div style="background: var(--input-bg); border: 1px solid var(--panel-border); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5;">
+          <strong style="color: var(--text-primary);">格式範例：</strong><br>
+          <code>1-64, A 區, 靠窗</code><br>
+          <code>65-128, B 區, 靠牆</code><br>
+          <code>129-256, C 區, 二樓</code>
+        </div>
+
+        <div class="form-group">
+          <label for="zonesText" class="form-label">分區清單（一行一區）：</label>
+          <textarea id="zonesText" class="input-text" rows="5" style="width: 100%; font-family: monospace; font-size: 1rem; line-height: 1.4; resize: vertical;" placeholder="1-64, A 區, 靠窗&#10;65-128, B 區, 靠牆"></textarea>
+        </div>
+
+        <div class="form-row">
+          <button type="button" id="zonesSave" class="btn btn-primary">儲存分區設定</button>
+        </div>
+
+        <div id="zonesMsg" class="msg-box" style="display: none;"></div>
+      </section>
+
       <!-- 區塊 3 (模式 A): 官方配對表匯入 -->
       <section class="admin-card" id="modeAImportSection" style="display: none;">
         <h2 class="card-title">📥 官方配對表匯入（模式 A）</h2>
@@ -793,8 +836,9 @@
           本輪所有桌次完賽後，點擊「產生下一輪配對提案」預覽。確認或微調後點擊「公布下一輪配對」。
         </p>
 
-        <div class="form-row" style="margin-bottom: 12px;">
+        <div class="form-row" style="margin-bottom: 12px; align-items: center; gap: 10px; flex-wrap: wrap;">
           <button type="button" id="proposeBtn" class="btn btn-accent">產生下一輪配對提案</button>
+          <span id="proposeHint" style="font-size: 0.88rem; color: var(--text-sub); font-weight: 600;"></span>
         </div>
 
         <div id="proposeMsg" class="msg-box" style="display: none;"></div>
@@ -829,7 +873,7 @@
 
         <!-- 公布配對按鈕 -->
         <div style="padding-top: 10px; border-top: 1px dashed var(--panel-border);">
-          <button type="button" id="publishBtn" class="btn btn-danger-action" style="width: 100%;">
+          <button type="button" id="publishBtn" class="btn btn-danger-action" style="width: 100%;" disabled>
             📢 公布下一輪配對（需確認）
           </button>
         </div>
@@ -921,7 +965,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 12;
+    const CURRENT_CONTRACT_VERSION = 13;
     const SESSION_STORAGE_KEY_STAFF_PIN = 'riftbound_staff_pin';
 
     let snapshotData = null;
@@ -936,6 +980,9 @@
     let lastPreviewedImportText = null;
     let lastPreviewedImportLabel = null;
 
+    // 桌號分區設定狀態 (DATA-CONTRACT 1.18, PROJECT.md 第二十七輪)
+    let zonesTextInitialized = false;
+
     // 主辦身分狀態
     let staffPin = null;
     let adminName = '';
@@ -943,6 +990,105 @@
     let pendingConfirmAction = null;
     let checkinAutoTimer = null;
     let lastProposalCheckTime = 0;
+
+    // 更新「公布配對」按鈕可用狀態 (PROJECT.md 第二十七輪：未產生提案時停用)
+    function updatePublishBtnState() {
+      const pubBtn = document.getElementById('publishBtn');
+      if (!pubBtn) return;
+      if (!currentProposal || !currentProposal.proposal_id) {
+        pubBtn.disabled = true;
+      } else {
+        pubBtn.disabled = false;
+      }
+    }
+
+    // ------------------------------------------------ 桌號分區設定 (DATA-CONTRACT 1.18, /api/admin/zones)
+    function formatZonesText(zones) {
+      if (!Array.isArray(zones) || zones.length === 0) return '';
+      return zones.map(z => {
+        const range = (z.from === z.to) ? `${z.from}` : `${z.from}-${z.to}`;
+        const name = z.name || '';
+        const hint = (z.hint && z.hint.trim()) ? `, ${z.hint.trim()}` : '';
+        return `${range}, ${name}${hint}`;
+      }).join('\n');
+    }
+
+    function parseZonesText(text) {
+      const lines = text.split('\n');
+      const zones = [];
+      for (let i = 0; i < lines.length; i++) {
+        const rawLine = lines[i];
+        const line = rawLine.trim();
+        if (!line) continue;
+        const parts = line.split(/[,，]/).map(s => s.trim());
+        const rangePart = parts[0] || '';
+        const m = rangePart.match(/^(\d+)(?:\s*[-~～至到]\s*(\d+))?$/);
+        if (!m) {
+          throw new Error(`第 ${i + 1} 行格式有誤：桌號範圍需為數字（如 1-64），請檢查`);
+        }
+        const from = parseInt(m[1], 10);
+        const to = m[2] !== undefined ? parseInt(m[2], 10) : from;
+        const name = parts[1] || '';
+        if (!name) {
+          throw new Error(`第 ${i + 1} 行格式有誤：缺少分區名稱，請檢查`);
+        }
+        const hint = parts[2] || '';
+        zones.push({ from, to, name, hint });
+      }
+      return zones;
+    }
+
+    function populateZonesInput(force = false) {
+      const zonesTextEl = document.getElementById('zonesText');
+      if (!zonesTextEl) return;
+      if (!force && (zonesTextInitialized || document.activeElement === zonesTextEl)) {
+        return;
+      }
+      const zones = (snapshotData && snapshotData.event && snapshotData.event.zones) || [];
+      zonesTextEl.value = formatZonesText(zones);
+      if (snapshotData && snapshotData.event && snapshotData.event.zones !== undefined) {
+        zonesTextInitialized = true;
+      }
+    }
+
+    let isSavingZones = false;
+    async function handleSaveZones() {
+      const btn = document.getElementById('zonesSave');
+      if (isSavingZones || (btn && btn.disabled)) return;
+      hideMsg('zonesMsg');
+      const text = (document.getElementById('zonesText').value || '');
+      let zones;
+      try {
+        zones = parseZonesText(text);
+      } catch (parseErr) {
+        showMsg('zonesMsg', parseErr.message);
+        return;
+      }
+
+      isSavingZones = true;
+      const origText = btn ? btn.textContent : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '儲存中…';
+      }
+
+      try {
+        const res = await callApi('/api/admin/zones', { zones });
+        showMsg('zonesMsg', '分區設定已儲存', false);
+        if (snapshotData && snapshotData.event) {
+          snapshotData.event.zones = res.zones || zones;
+        }
+        await fetchData();
+      } catch (err) {
+        showMsg('zonesMsg', err.message);
+      } finally {
+        isSavingZones = false;
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = origText;
+        }
+      }
+    }
 
     function startCheckinAutoRefresh() {
       if (checkinAutoTimer) clearInterval(checkinAutoTimer);
@@ -985,6 +1131,7 @@
 
       if (isStale) {
         currentProposal = null;
+        updatePublishBtnState();
         const tbody = document.getElementById('proposalTableBody');
         if (tbody) {
           tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #f87171; padding: 16px;"><strong>這份提案已經由其他人公布，請重新產生</strong></td></tr>';
@@ -1242,14 +1389,39 @@
         modeBSection.style.display = isModeA ? 'none' : 'block';
       }
       const proposeBtn = document.getElementById('proposeBtn');
+      const proposeHint = document.getElementById('proposeHint');
       if (proposeBtn) {
         if (isModeA) {
           proposeBtn.style.display = 'none';
           proposeBtn.disabled = true;
+          proposeBtn.removeAttribute('data-next');
+          if (proposeHint) proposeHint.textContent = '';
         } else {
           proposeBtn.style.display = '';
-          proposeBtn.disabled = false;
+          const prog = round && round.progress;
+          let left = 0;
+          if (prog && typeof prog.tables_total === 'number') {
+            left = Math.max(0, prog.tables_total - (prog.tables_done || 0));
+          }
+          if (round && left > 0) {
+            proposeBtn.disabled = true;
+            proposeBtn.removeAttribute('data-next');
+            if (proposeHint) {
+              proposeHint.textContent = `這一輪還有 ${left} 桌沒有結果`;
+            }
+          } else {
+            proposeBtn.disabled = false;
+            proposeBtn.setAttribute('data-next', 'true');
+            if (proposeHint) {
+              proposeHint.textContent = '';
+            }
+          }
         }
+      }
+
+      updatePublishBtnState();
+      if (!zonesTextInitialized) {
+        populateZonesInput(false);
       }
 
       updateClockDisplay();
@@ -1451,6 +1623,7 @@
         if (pinInput) pinInput.value = '';
         renderAuthUI();
         startCheckinAutoRefresh();
+        populateZonesInput(true);
         await loadExistingProposal();
         await fetchCheckinList();
       } catch (err) {
@@ -1475,12 +1648,19 @@
       adminName = '';
       currentProposal = null;
       renderProposalTable(null);
+      updatePublishBtnState();
+      zonesTextInitialized = false;
+      const zonesTextEl = document.getElementById('zonesText');
+      if (zonesTextEl) zonesTextEl.value = '';
+      hideMsg('zonesMsg');
       const countEl = document.getElementById('checkinCount');
       if (countEl) countEl.textContent = '已報到 0 / 總數 0';
       const listEl = document.getElementById('checkinList');
       if (listEl) listEl.innerHTML = '<div class="empty-state-sm">請點擊「重新整理報到清單」載入選手</div>';
       hideMsg('addPlayerResult');
       hideMsg('checkinMsg');
+      const noShowCopyMsgEl = document.getElementById('noShowCopyMsg');
+      if (noShowCopyMsgEl) noShowCopyMsgEl.textContent = '';
       const noShowEl = document.getElementById('noShowNotice');
       if (noShowEl) noShowEl.style.display = 'none';
       lastPreviewedImportText = null;
@@ -1514,6 +1694,7 @@
           adminName = res.name || '示範主辦';
           renderAuthUI();
           startCheckinAutoRefresh();
+          populateZonesInput(true);
           await loadExistingProposal();
           await fetchCheckinList();
           return;
@@ -1540,6 +1721,7 @@
       } catch (err) {
         // 載入失敗不阻斷其他功能
       }
+      updatePublishBtnState();
     }
 
     // 計時操作
@@ -1668,6 +1850,56 @@
       listEl.innerHTML = html;
     }
 
+    // 複製未報到／已退賽名單 (PROJECT.md 第二十八輪)
+    async function handleNoShowCopy() {
+      const msgEl = document.getElementById('noShowCopyMsg');
+      if (msgEl) msgEl.textContent = '';
+      try {
+        const res = await callApi('/api/staff/checkin_list', {});
+        const rows = res.rows || [];
+        const lines = [];
+        for (const r of rows) {
+          if (r.dropped) {
+            lines.push(`${r.id || ''}\t${r.name || ''}\t已退賽`);
+          } else if (!r.checked_in) {
+            lines.push(`${r.id || ''}\t${r.name || ''}\t未報到`);
+          }
+        }
+        const textToCopy = lines.join('\n');
+        let copied = false;
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+          try {
+            await navigator.clipboard.writeText(textToCopy);
+            copied = true;
+          } catch (e) {
+            copied = false;
+          }
+        }
+        if (!copied) {
+          const ta = document.createElement('textarea');
+          ta.value = textToCopy;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          ta.style.top = '-9999px';
+          document.body.appendChild(ta);
+          ta.focus({ preventScroll: true });
+          ta.select();
+          try {
+            document.execCommand('copy');
+          } catch (e) {}
+          document.body.removeChild(ta);
+        }
+        if (msgEl) {
+          msgEl.textContent = `已複製 ${lines.length} 人`;
+        }
+      } catch (err) {
+        if (msgEl) {
+          msgEl.textContent = '複製失敗：' + (err.message || '未知錯誤');
+        }
+      }
+    }
+
     async function handleCheckinMark() {
       hideMsg('checkinMsg');
       const input = document.getElementById('checkinMarkId');
@@ -1733,6 +1965,7 @@
         const res = await callApi('/api/admin/propose', {});
         currentProposal = res.proposal;
         renderProposalTable(currentProposal);
+        updatePublishBtnState();
 
         const noShows = res.no_show_dropped;
         if (noShows && noShows.length > 0) {
@@ -1747,9 +1980,9 @@
       } finally {
         isProposing = false;
         if (btn) {
-          btn.disabled = false;
           btn.textContent = origText;
         }
+        renderSummary();
       }
     }
 
@@ -1814,6 +2047,7 @@
         const res = await callApi('/api/admin/swap', { a, b });
         currentProposal = res.proposal;
         renderProposalTable(currentProposal);
+        updatePublishBtnState();
         showMsg('proposeMsg', `選手 ${a} 與 ${b} 已交換配對`, false);
       } catch (err) {
         showMsg('proposeMsg', err.message);
@@ -2045,6 +2279,7 @@
           try {
             await callApi('/api/admin/publish', { proposal_id: currentProposal.proposal_id });
             currentProposal = null;
+            updatePublishBtnState();
             document.getElementById('proposalTableBody').innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--success); padding: 16px;">配對已正式公布！</td></tr>';
             showMsg('proposeMsg', '配對已正式公布！', false);
             await fetchData();
@@ -2244,6 +2479,10 @@
 
       // 現場報到管理 (PROJECT.md 10 第八輪任務)
       document.getElementById('checkinRefresh').addEventListener('click', fetchCheckinList);
+      const noShowCopyBtn = document.getElementById('noShowCopy');
+      if (noShowCopyBtn) {
+        noShowCopyBtn.addEventListener('click', handleNoShowCopy);
+      }
       document.getElementById('checkinMarkBtn').addEventListener('click', handleCheckinMark);
       document.getElementById('checkinMarkId').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') handleCheckinMark();
@@ -2272,6 +2511,12 @@
       document.getElementById('scheduleSave').addEventListener('click', handleSaveSchedule);
       document.getElementById('breakSave').addEventListener('click', handleSaveBreak);
       document.getElementById('breakClear').addEventListener('click', handleClearBreak);
+
+      // 桌號分區設定 (DATA-CONTRACT 1.18, PROJECT.md 第二十七輪)
+      const zonesSaveBtn = document.getElementById('zonesSave');
+      if (zonesSaveBtn) {
+        zonesSaveBtn.addEventListener('click', handleSaveZones);
+      }
 
       // 模式 A 官方配對表匯入 (PROJECT.md 第 10 節, DATA-CONTRACT 3.7)
       const importTextEl = document.getElementById('importText');

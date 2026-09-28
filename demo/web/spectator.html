@@ -659,7 +659,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 12;
+    const CURRENT_CONTRACT_VERSION = 13;
     const STORAGE_KEY_TOKEN = 'riftbound_viewer_device_token';
 
     let snapshotData = null;
@@ -1310,6 +1310,7 @@
       fetchData();
       pollTimer = setInterval(fetchData, 5000);
       clockTimer = setInterval(() => {
+        if (!snapshotData) return;
         updateClockDisplay();
         checkFreshness();
         renderBreakBanner();

@@ -482,7 +482,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 12;
+    const CURRENT_CONTRACT_VERSION = 13;
     let snapshotData = null;
     let rawJsonText = '';
     let clockTimer = null;
@@ -948,7 +948,27 @@
       }
     }
 
+    // 保持螢幕常亮 (Screen Wake Lock API, PROJECT.md 第 10 節第二十七輪任務)
+    let wakeLockSentinel = null;
+    async function requestWakeLock() {
+      try {
+        if ('wakeLock' in navigator && navigator.wakeLock && typeof navigator.wakeLock.request === 'function') {
+          wakeLockSentinel = await navigator.wakeLock.request('screen');
+        }
+      } catch (err) {
+        // 不支援或要求失敗：安靜跳過，不要有 JS 錯誤
+      }
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        requestWakeLock();
+      }
+    });
+
     window.addEventListener('DOMContentLoaded', () => {
+      requestWakeLock();
+
       const fsBtn = document.getElementById('fullscreenBtn');
       if (fsBtn) {
         if (!isFullscreenSupported()) {
