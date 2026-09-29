@@ -1092,6 +1092,14 @@
 
         <div id="deckInfoBox" style="margin-bottom: 10px;">
           <div style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 6px;" id="deckPlayerMeta"></div>
+          <div id="deckCodeActionRow" style="display: none; margin-bottom: 8px; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <button type="button" id="deckCopyCode" class="btn btn-secondary" style="min-width: 130px; min-height: 44px; height: 44px;">複製牌組碼</button>
+            <span id="deckCopyMsg" style="font-size: 0.82rem; color: var(--success-text); display: none;">已複製，請貼到組牌 App</span>
+          </div>
+          <div id="deckTextFormatNotice" style="display: none; font-size: 0.85rem; color: var(--text-sub); margin-bottom: 8px;">
+            這位選手用純文字登錄，沒有牌組碼
+          </div>
+          <div id="deckNotes" style="display: none; background: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning-text); border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; font-size: 0.85rem; line-height: 1.4; white-space: pre-line;"></div>
           <pre id="deckView" style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; font-size: 0.85rem; line-height: 1.4; color: #f8fafc; white-space: pre-wrap; word-break: break-word; min-height: 48px; max-height: 360px; overflow-y: auto;"></pre>
         </div>
 
@@ -1140,7 +1148,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 13;
+    const CURRENT_CONTRACT_VERSION = 14;
     const SESSION_STORAGE_KEY_STAFF_PIN = 'riftbound_judge_staff_pin';
 
     let snapshotData = null;
@@ -2607,7 +2615,9 @@
       }
     }
 
-    // 載入選手牌表 (DATA-CONTRACT 6.2)
+    let currentLoadedDeckCode = '';
+
+    // 載入選手牌表 (DATA-CONTRACT 6.2, 6.3)
     async function handleDeckLoad() {
       hideMsg('deckCheckMsg');
       const pidInput = document.getElementById('deckPlayerId');
@@ -2616,6 +2626,22 @@
         showMsg('deckCheckMsg', '請輸入選手編號');
         return;
       }
+
+      const copyBtn = document.getElementById('deckCopyCode');
+      const copyRow = document.getElementById('deckCodeActionRow');
+      const copyMsg = document.getElementById('deckCopyMsg');
+      const textNotice = document.getElementById('deckTextFormatNotice');
+      const notesEl = document.getElementById('deckNotes');
+      currentLoadedDeckCode = '';
+      if (copyRow) copyRow.style.display = 'none';
+      if (copyBtn) copyBtn.style.display = 'none';
+      if (copyMsg) copyMsg.style.display = 'none';
+      if (textNotice) textNotice.style.display = 'none';
+      if (notesEl) {
+        notesEl.textContent = '';
+        notesEl.style.display = 'none';
+      }
+
       try {
         const res = await callApi('/api/staff/decklist', { player_id: pid });
         const viewEl = document.getElementById('deckView');
@@ -2626,11 +2652,91 @@
         if (metaEl) {
           const playerName = (res.player && res.player.name) ? res.player.name : '';
           const lockStatus = res.locked ? '🔒 已鎖定' : '🔓 未鎖定';
-          metaEl.textContent = `選手：${pid} ${playerName} · ${lockStatus}`;
+          const formatBadge = (res.format === 'code') ? ' · 牌組碼' : ' · 純文字';
+          metaEl.textContent = `選手：${pid} ${playerName} · ${lockStatus}${formatBadge}`;
         }
+
+        if (res.format === 'code') {
+          currentLoadedDeckCode = res.code || '';
+          if (copyRow) copyRow.style.display = 'flex';
+          if (copyBtn) copyBtn.style.display = 'inline-flex';
+          if (textNotice) textNotice.style.display = 'none';
+
+          if (res.notes && Array.isArray(res.notes) && res.notes.length > 0) {
+            if (notesEl) {
+              notesEl.textContent = res.notes.join('\n');
+              notesEl.style.display = 'block';
+            }
+          } else {
+            if (notesEl) {
+              notesEl.textContent = '';
+              notesEl.style.display = 'none';
+            }
+          }
+        } else {
+          currentLoadedDeckCode = '';
+          if (copyRow) copyRow.style.display = 'none';
+          if (copyBtn) copyBtn.style.display = 'none';
+          if (textNotice) textNotice.style.display = 'block';
+          if (notesEl) {
+            notesEl.textContent = '';
+            notesEl.style.display = 'none';
+          }
+        }
+
         showMsg('deckCheckMsg', `選手 ${pid} 牌表載入成功`, false);
       } catch (err) {
         showMsg('deckCheckMsg', err.message);
+      }
+    }
+
+    // 複製牌組碼 (PROJECT.md 第三十一輪)
+    async function handleDeckCopy() {
+      if (!currentLoadedDeckCode) return;
+      const copyMsg = document.getElementById('deckCopyMsg');
+      let copied = false;
+
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        try {
+          await navigator.clipboard.writeText(currentLoadedDeckCode);
+          copied = true;
+        } catch (e) {
+          copied = false;
+        }
+      }
+
+      if (!copied) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = currentLoadedDeckCode;
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          ta.style.top = '-9999px';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          ta.setSelectionRange(0, ta.value.length);
+          const ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          if (ok) copied = true;
+        } catch (e) {
+          copied = false;
+        }
+      }
+
+      if (copied) {
+        if (copyMsg) {
+          copyMsg.textContent = '已複製，請貼到組牌 App';
+          copyMsg.style.display = 'inline';
+        }
+        showMsg('deckCheckMsg', '已複製，請貼到組牌 App', false);
+      } else {
+        if (copyMsg) {
+          copyMsg.textContent = '無法自動複製，請手動選取牌組碼';
+          copyMsg.style.display = 'inline';
+        }
+        showMsg('deckCheckMsg', '無法自動複製，請手動選取牌組碼');
       }
     }
 
@@ -2795,11 +2901,15 @@
       document.getElementById('newPinDone').addEventListener('click', handleNewPinDoneClick);
       document.getElementById('unlockBtn').addEventListener('click', handleUnlockPlayerClick);
 
-      // 驗牌作業 (PROJECT.md 第十一輪任務)
+      // 驗牌作業 (PROJECT.md 第十一輪任務、第三十一輪任務)
       document.getElementById('deckLoadBtn').addEventListener('click', handleDeckLoad);
       document.getElementById('deckPlayerId').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') handleDeckLoad();
       });
+      const copyCodeBtn = document.getElementById('deckCopyCode');
+      if (copyCodeBtn) {
+        copyCodeBtn.addEventListener('click', handleDeckCopy);
+      }
       document.getElementById('deckCheckOk').addEventListener('click', () => handleDeckCheck(true));
       document.getElementById('deckCheckFail').addEventListener('click', () => handleDeckCheck(false));
       document.getElementById('deckUnlockBtn').addEventListener('click', handleDeckUnlockClick);

@@ -289,11 +289,13 @@
       background: var(--card-bg);
       border: 2px solid var(--accent);
       border-radius: 12px;
-      padding: 18px;
+      padding: 14px 16px;
       width: 100%;
-      max-width: 320px;
+      max-width: 330px;
       text-align: center;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+      max-height: 92svh;
+      overflow-y: auto;
     }
 
     .nav-links {
@@ -374,8 +376,14 @@
 
     <!-- 登錄輸入區塊 -->
     <section class="card" id="decklistForm">
-      <div class="card-title">純文字牌表登錄</div>
+      <div class="card-title">選手牌表登錄</div>
       <div class="card-desc">依賽事規則，構築賽必須在第一輪開始前登錄牌表。送出後將立即鎖定。</div>
+
+      <!-- 登錄模式切換鈕 (PROJECT.md 第三十一輪, review.py [35]) -->
+      <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+        <button type="button" id="deckModeText" class="btn" aria-pressed="true" style="flex: 1; height: 44px; min-height: 44px; padding: 0 12px; font-size: 0.95rem; font-weight: 700; background: var(--accent); color: #141212; border: 1px solid var(--accent); border-radius: 8px; cursor: pointer;">貼上純文字</button>
+        <button type="button" id="deckModeCode" class="btn" aria-pressed="false" style="flex: 1; height: 44px; min-height: 44px; padding: 0 12px; font-size: 0.95rem; font-weight: 700; background: var(--chip-bg); color: var(--text-primary); border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer;">貼上牌組碼</button>
+      </div>
 
       <!-- 身分自動帶入提示 (PROJECT.md 第三十輪, review.py [34]) -->
       <div id="playerAuthNote" style="display: none; margin-bottom: 16px; padding: 10px 14px; background: rgba(239, 125, 0, 0.12); border: 1.5px solid rgba(239, 125, 0, 0.35); border-radius: 8px; font-size: 0.9rem; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
@@ -383,8 +391,8 @@
         <button type="button" id="playerSwitch" class="btn" style="width: auto; min-width: 100px; min-height: 44px; height: 44px; padding: 0 14px; font-size: 0.85rem; font-weight: 700; background: var(--chip-bg); color: var(--text-primary); border: 1px solid var(--card-border); border-radius: 6px; cursor: pointer; white-space: nowrap;">不是你？換人</button>
       </div>
 
-      <!-- 格式範例說明 -->
-      <div class="example-box">
+      <!-- 格式範例說明（純文字模式） -->
+      <div class="example-box" id="decklistExampleBox">
         <div class="example-title">📋 牌表填寫格式範例</div>
         <div>
           一行一張（<code>張數 卡名</code>），<code>---</code> 之後是備牌，<code>//</code> 開頭為註解：
@@ -425,7 +433,8 @@
         </div>
       </div>
 
-      <div class="form-group">
+      <!-- 純文字輸入區 -->
+      <div class="form-group" id="decklistTextGroup">
         <label for="decklistText" class="form-label">牌表內容</label>
         <textarea
           id="decklistText"
@@ -439,6 +448,26 @@
         </div>
       </div>
 
+      <!-- 牌組碼輸入區 (PROJECT.md 第三十一輪, review.py [35]) -->
+      <div class="form-group" id="decklistCodeGroup" style="display: none;">
+        <label for="decklistCode" class="form-label">牌組碼內容</label>
+        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px;">
+          從組牌 App 複製牌組碼後貼上
+        </div>
+        <textarea
+          id="decklistCode"
+          class="textarea-deck"
+          style="font-size: 16px; min-height: 140px;"
+          placeholder="請在此貼上組牌 App 複製的牌組碼..."
+          autocapitalize="characters"
+          autocomplete="off"
+          spellcheck="false"
+        ></textarea>
+        <div class="form-hint" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">
+          從組牌 App 複製牌組碼後貼上，送出前系統將自動向主機驗證並解析預覽。
+        </div>
+      </div>
+
       <button type="button" id="decklistSubmit" class="btn btn-primary">送出牌表（送出即鎖定）</button>
     </section>
 
@@ -448,16 +477,17 @@
     </div>
 
     <footer>
-      符文戰場賽事系統 · 純文字牌表登錄
+      符文戰場賽事系統 · 牌表登錄
     </footer>
   </div>
 
-  <!-- 牌表送出前確認彈窗 (PROJECT.md 第三十輪, review.py [18], [34]) -->
+  <!-- 牌表送出前確認彈窗 (PROJECT.md 第三十輪、第三十一輪, review.py [18], [34], [35]) -->
   <div id="decklistConfirmModal" class="confirm-modal-overlay" style="display: none;">
     <div class="confirm-modal-box">
-      <div class="confirm-modal-title" style="font-size: 1.15rem; font-weight: 800; margin-bottom: 8px; color: var(--text-primary);">確認送出牌表</div>
-      <div id="decklistConfirmCounts" class="confirm-outcome-text" style="font-size: 1rem; margin: 12px 0; line-height: 1.5; color: var(--text-primary);">主牌組 0 張、備牌 0 張</div>
-      <div class="confirm-note" style="font-size: 0.85rem; color: var(--warning-text); font-weight: 700; margin-bottom: 16px; line-height: 1.4;">送出後就鎖定，要更正得找裁判</div>
+      <div class="confirm-modal-title" style="font-size: 1.15rem; font-weight: 800; margin-bottom: 6px; color: var(--text-primary);">確認送出牌表</div>
+      <div id="decklistConfirmCounts" class="confirm-outcome-text" style="font-size: 1rem; margin: 6px 0; line-height: 1.4; color: var(--text-primary);">主牌組 0 張、備牌 0 張</div>
+      <div id="decklistPreview" style="display: none; margin: 6px 0 8px; text-align: left;"></div>
+      <div class="confirm-note" style="font-size: 0.82rem; color: var(--warning-text); font-weight: 700; margin-bottom: 12px; line-height: 1.4;">送出後就鎖定，要更正得找裁判</div>
       <div class="confirm-btns-row" style="display: flex; gap: 8px;">
         <button type="button" id="decklistConfirm" class="btn btn-primary" style="flex: 1; height: 44px; min-height: 44px; font-size: 0.95rem; font-weight: 800;">確認送出</button>
         <button type="button" id="decklistCancel" class="btn" style="flex: 1; height: 44px; min-height: 44px; font-size: 0.95rem; font-weight: 700; background: var(--chip-bg); color: var(--text-primary); border: 1px solid var(--card-border); border-radius: 8px;">取消</button>
@@ -476,8 +506,9 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 13;
+    const CURRENT_CONTRACT_VERSION = 14;
     let snapshotData = null;
+    let currentDeckMode = 'text';
 
     function getDataSourceUrl() {
       const params = new URLSearchParams(window.location.search);
@@ -549,7 +580,41 @@
         .replace(/'/g, '&#039;');
     }
 
-    // 前端即時張數解析計算
+    // 切換登錄模式 (PROJECT.md 第三十一輪, review.py [35])
+    function switchDeckMode(mode) {
+      currentDeckMode = mode;
+      const isCode = mode === 'code';
+      const modeTextBtn = document.getElementById('deckModeText');
+      const modeCodeBtn = document.getElementById('deckModeCode');
+      const textGroup = document.getElementById('decklistTextGroup');
+      const exampleBox = document.getElementById('decklistExampleBox');
+      const codeGroup = document.getElementById('decklistCodeGroup');
+
+      if (modeTextBtn) {
+        modeTextBtn.setAttribute('aria-pressed', isCode ? 'false' : 'true');
+        modeTextBtn.style.background = isCode ? 'var(--chip-bg)' : 'var(--accent)';
+        modeTextBtn.style.color = isCode ? 'var(--text-primary)' : '#141212';
+        modeTextBtn.style.borderColor = isCode ? 'var(--card-border)' : 'var(--accent)';
+      }
+      if (modeCodeBtn) {
+        modeCodeBtn.setAttribute('aria-pressed', isCode ? 'true' : 'false');
+        modeCodeBtn.style.background = isCode ? 'var(--accent)' : 'var(--chip-bg)';
+        modeCodeBtn.style.color = isCode ? '#141212' : 'var(--text-primary)';
+        modeCodeBtn.style.borderColor = isCode ? 'var(--accent)' : 'var(--card-border)';
+      }
+
+      if (textGroup) textGroup.style.display = isCode ? 'none' : 'block';
+      if (exampleBox) exampleBox.style.display = isCode ? 'none' : 'block';
+      if (codeGroup) codeGroup.style.display = isCode ? 'block' : 'none';
+
+      const problemsEl = document.getElementById('decklistProblems');
+      if (problemsEl) {
+        problemsEl.style.display = 'none';
+        problemsEl.innerHTML = '';
+      }
+    }
+
+    // 前端即時張數解析計算（純文字模式用）
     function calculateDeckCounts(text) {
       if (!text) return { main: 0, side: 0 };
       const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
@@ -591,10 +656,10 @@
       }
     }
 
-    // 牌表送出處理（第三十輪：先跳彈窗確認張數與鎖定警告，按確認才送出）
-    function handleDecklistSubmit() {
-      const btn = document.getElementById('decklistSubmit');
-      if (btn && btn.disabled) return;
+    // 牌表送出前處理（第三十一輪：支援牌組碼 dry_run 預覽）
+    async function handleDecklistSubmit() {
+      const submitBtn = document.getElementById('decklistSubmit');
+      if (submitBtn && submitBtn.disabled) return;
 
       const problemsEl = document.getElementById('decklistProblems');
       problemsEl.style.display = 'none';
@@ -602,11 +667,8 @@
 
       const idInput = document.getElementById('decklistId');
       const pinInput = document.getElementById('decklistPin');
-      const textInput = document.getElementById('decklistText');
-
       const playerId = (idInput ? idInput.value : '').trim().toUpperCase();
       const pin = (pinInput ? pinInput.value : '').trim();
-      const text = (textInput ? textInput.value : '').trim();
 
       if (!playerId || !pin) {
         problemsEl.textContent = '請輸入選手編號與個人 PIN 碼';
@@ -614,21 +676,117 @@
         return;
       }
 
-      if (!text) {
-        problemsEl.textContent = '請貼上牌表內容';
-        problemsEl.style.display = 'block';
-        return;
-      }
+      if (currentDeckMode === 'code') {
+        const codeInput = document.getElementById('decklistCode');
+        const code = (codeInput ? codeInput.value : '').trim();
+        if (!code) {
+          problemsEl.textContent = '請貼上牌組碼';
+          problemsEl.style.display = 'block';
+          return;
+        }
 
-      const counts = calculateDeckCounts(text);
-      const confirmCountsEl = document.getElementById('decklistConfirmCounts');
-      if (confirmCountsEl) {
-        confirmCountsEl.textContent = `主牌組 ${counts.main} 張、備牌 ${counts.side} 張`;
-      }
+        // 牌組碼模式：先送 dry_run 向主機要預覽 (DATA-CONTRACT 6.3)
+        const origText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = '解析預覽中…';
 
-      const modalEl = document.getElementById('decklistConfirmModal');
-      if (modalEl) {
-        modalEl.style.display = 'flex';
+        try {
+          const url = getApiUrl('/api/player/decklist');
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              player_id: playerId,
+              pin: pin,
+              code: code,
+              dry_run: true
+            })
+          });
+
+          const data = await res.json().catch(() => null);
+
+          if (!res.ok || !data || !data.ok) {
+            let html = '';
+            if (data && data.message) {
+              html += `<div style="font-weight: 700; margin-bottom: 4px;">${escapeHtml(data.message)}</div>`;
+            }
+            if (data && data.problems && Array.isArray(data.problems) && data.problems.length > 0) {
+              html += '<ul style="margin: 0; padding-left: 20px;">' +
+                data.problems.map(p => `<li>${escapeHtml(p)}</li>`).join('') +
+                '</ul>';
+            }
+            problemsEl.innerHTML = html || (data && data.message) || `牌表送出失敗 (HTTP ${res.status})`;
+            problemsEl.style.display = 'block';
+            return;
+          }
+
+          // dry_run 成功，打開確認彈窗
+          const summary = (data.preview && data.preview.summary) || {};
+          const mainCount = typeof summary.main_count === 'number' ? summary.main_count : 0;
+          const sideCount = typeof summary.sideboard_count === 'number' ? summary.sideboard_count : 0;
+          const confirmCountsEl = document.getElementById('decklistConfirmCounts');
+          if (confirmCountsEl) {
+            confirmCountsEl.textContent = `主牌組 ${mainCount} 張、備牌 ${sideCount} 張`;
+          }
+
+          const previewEl = document.getElementById('decklistPreview');
+          if (previewEl) {
+            let previewHtml = `
+              <div style="font-size: 0.82rem; color: var(--warning-text); font-weight: 700; margin-bottom: 6px;">
+                牌組碼只有卡片編號，請對照 App 確認張數
+              </div>
+            `;
+            if (data.preview && data.preview.notes && Array.isArray(data.preview.notes) && data.preview.notes.length > 0) {
+              previewHtml += `
+                <div style="font-size: 0.8rem; color: var(--accent-text); margin-bottom: 6px; line-height: 1.4;">
+                  ${data.preview.notes.map(n => `<div>• ${escapeHtml(n)}</div>`).join('')}
+                </div>
+              `;
+            }
+            if (data.preview && data.preview.text) {
+              previewHtml += `
+                <pre style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 6px; padding: 8px 10px; font-size: 0.78rem; line-height: 1.35; color: var(--text-primary); text-align: left; white-space: pre-wrap; word-break: break-all; max-height: 100px; overflow-y: auto;">${escapeHtml(data.preview.text)}</pre>
+              `;
+            }
+            previewEl.innerHTML = previewHtml;
+            previewEl.style.display = 'block';
+          }
+
+          const modalEl = document.getElementById('decklistConfirmModal');
+          if (modalEl) modalEl.style.display = 'flex';
+
+        } catch (err) {
+          problemsEl.textContent = err.message || '網路連線異常，請稍後再試';
+          problemsEl.style.display = 'block';
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = origText;
+        }
+
+      } else {
+        // 純文字模式（照第三十輪）
+        const textInput = document.getElementById('decklistText');
+        const text = (textInput ? textInput.value : '').trim();
+        if (!text) {
+          problemsEl.textContent = '請貼上牌表內容';
+          problemsEl.style.display = 'block';
+          return;
+        }
+
+        const counts = calculateDeckCounts(text);
+        const confirmCountsEl = document.getElementById('decklistConfirmCounts');
+        if (confirmCountsEl) {
+          confirmCountsEl.textContent = `主牌組 ${counts.main} 張、備牌 ${counts.side} 張`;
+        }
+
+        const previewEl = document.getElementById('decklistPreview');
+        if (previewEl) {
+          previewEl.innerHTML = '';
+          previewEl.style.display = 'none';
+        }
+
+        const modalEl = document.getElementById('decklistConfirmModal');
+        if (modalEl) modalEl.style.display = 'flex';
       }
     }
 
@@ -650,11 +808,8 @@
 
       const idInput = document.getElementById('decklistId');
       const pinInput = document.getElementById('decklistPin');
-      const textInput = document.getElementById('decklistText');
-
       const playerId = (idInput ? idInput.value : '').trim().toUpperCase();
       const pin = (pinInput ? pinInput.value : '').trim();
-      const text = (textInput ? textInput.value : '').trim();
 
       if (!playerId || !pin) {
         handleDecklistCancel();
@@ -663,11 +818,35 @@
         return;
       }
 
-      if (!text) {
-        handleDecklistCancel();
-        problemsEl.textContent = '請貼上牌表內容';
-        problemsEl.style.display = 'block';
-        return;
+      let payload;
+      if (currentDeckMode === 'code') {
+        const codeInput = document.getElementById('decklistCode');
+        const code = (codeInput ? codeInput.value : '').trim();
+        if (!code) {
+          handleDecklistCancel();
+          problemsEl.textContent = '請貼上牌組碼';
+          problemsEl.style.display = 'block';
+          return;
+        }
+        payload = {
+          player_id: playerId,
+          pin: pin,
+          code: code
+        };
+      } else {
+        const textInput = document.getElementById('decklistText');
+        const text = (textInput ? textInput.value : '').trim();
+        if (!text) {
+          handleDecklistCancel();
+          problemsEl.textContent = '請貼上牌表內容';
+          problemsEl.style.display = 'block';
+          return;
+        }
+        payload = {
+          player_id: playerId,
+          pin: pin,
+          text: text
+        };
       }
 
       isSubmittingDecklist = true;
@@ -682,11 +861,7 @@
         const res = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            player_id: playerId,
-            pin: pin,
-            text: text
-          })
+          body: JSON.stringify(payload)
         });
 
         const data = await res.json().catch(() => null);
@@ -694,11 +869,15 @@
         handleDecklistCancel();
 
         if (!res.ok || !data || !data.ok) {
-          // 逐項列出 problems
           if (data && data.problems && Array.isArray(data.problems) && data.problems.length > 0) {
-            problemsEl.innerHTML = '<ul style="margin: 0; padding-left: 20px;">' +
+            let html = '';
+            if (data.message) {
+              html += `<div style="font-weight: 700; margin-bottom: 4px;">${escapeHtml(data.message)}</div>`;
+            }
+            html += '<ul style="margin: 0; padding-left: 20px;">' +
               data.problems.map(p => `<li>${escapeHtml(p)}</li>`).join('') +
               '</ul>';
+            problemsEl.innerHTML = html;
           } else {
             const errorMsg = (data && data.message) ? data.message : `牌表送出失敗 (HTTP ${res.status})`;
             problemsEl.textContent = errorMsg;
@@ -721,9 +900,15 @@
         // 登錄完成畫面
         const doneEl = document.getElementById('decklistDone');
         const summary = (data.decklist && data.decklist.summary) || {};
-        const parsed = calculateDeckCounts(text);
-        const mainCount = typeof summary.main_count === 'number' ? summary.main_count : parsed.main;
-        const sideCount = typeof summary.sideboard_count === 'number' ? summary.sideboard_count : parsed.side;
+        let mainCount, sideCount;
+        if (currentDeckMode === 'code') {
+          mainCount = typeof summary.main_count === 'number' ? summary.main_count : 0;
+          sideCount = typeof summary.sideboard_count === 'number' ? summary.sideboard_count : 0;
+        } else {
+          const parsed = calculateDeckCounts(payload.text);
+          mainCount = typeof summary.main_count === 'number' ? summary.main_count : parsed.main;
+          sideCount = typeof summary.sideboard_count === 'number' ? summary.sideboard_count : parsed.side;
+        }
         const distinct = summary.distinct ? `（${summary.distinct} 種卡片）` : '';
 
         doneEl.innerHTML = `
@@ -834,6 +1019,15 @@
       document.getElementById('decklistCancel').addEventListener('click', handleDecklistCancel);
       document.getElementById('decklistText').addEventListener('input', updateLiveCount);
       document.getElementById('retryBtn').addEventListener('click', fetchData);
+
+      const modeTextBtn = document.getElementById('deckModeText');
+      if (modeTextBtn) {
+        modeTextBtn.addEventListener('click', () => switchDeckMode('text'));
+      }
+      const modeCodeBtn = document.getElementById('deckModeCode');
+      if (modeCodeBtn) {
+        modeCodeBtn.addEventListener('click', () => switchDeckMode('code'));
+      }
 
       const playerSwitchBtn = document.getElementById('playerSwitch');
       if (playerSwitchBtn) {
