@@ -481,12 +481,14 @@
     </footer>
   </div>
 
-  <!-- 牌表送出前確認彈窗 (PROJECT.md 第三十輪、第三十一輪, review.py [18], [34], [35]) -->
+  <!-- 牌表送出前確認彈窗 (PROJECT.md 第三十輪、第三十一輪、第三十二輪, review.py [18], [34], [35], [36]) -->
   <div id="decklistConfirmModal" class="confirm-modal-overlay" style="display: none;">
     <div class="confirm-modal-box">
       <div class="confirm-modal-title" style="font-size: 1.15rem; font-weight: 800; margin-bottom: 6px; color: var(--text-primary);">確認送出牌表</div>
       <div id="decklistConfirmCounts" class="confirm-outcome-text" style="font-size: 1rem; margin: 6px 0; line-height: 1.4; color: var(--text-primary);">主牌組 0 張、備牌 0 張</div>
-      <div id="decklistPreview" style="display: none; margin: 6px 0 8px; text-align: left;"></div>
+      <div id="decklistPreview" style="display: none; margin: 6px 0 8px; text-align: left;">
+        <div id="decklistCardsNotice" style="display: none; font-size: 0.72rem; color: var(--text-secondary); line-height: 1.35; margin-top: 6px; text-align: left; word-break: break-all;"></div>
+      </div>
       <div class="confirm-note" style="font-size: 0.82rem; color: var(--warning-text); font-weight: 700; margin-bottom: 12px; line-height: 1.4;">送出後就鎖定，要更正得找裁判</div>
       <div class="confirm-btns-row" style="display: flex; gap: 8px;">
         <button type="button" id="decklistConfirm" class="btn btn-primary" style="flex: 1; height: 44px; min-height: 44px; font-size: 0.95rem; font-weight: 800;">確認送出</button>
@@ -506,7 +508,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 14;
+    const CURRENT_CONTRACT_VERSION = 15;
     let snapshotData = null;
     let currentDeckMode = 'text';
 
@@ -726,14 +728,32 @@
           const sideCount = typeof summary.sideboard_count === 'number' ? summary.sideboard_count : 0;
           const confirmCountsEl = document.getElementById('decklistConfirmCounts');
           if (confirmCountsEl) {
-            confirmCountsEl.textContent = `主牌組 ${mainCount} 張、備牌 ${sideCount} 張`;
+            let countsText = `主牌組 ${mainCount} 張、備牌 ${sideCount} 張`;
+            if (summary.breakdown && typeof summary.breakdown === 'object') {
+              const b = summary.breakdown;
+              const bdParts = [];
+              if (typeof b.main === 'number') bdParts.push(`主牌組 ${b.main}`);
+              if (typeof b.rune === 'number') bdParts.push(`符文 ${b.rune}`);
+              if (typeof b.battlefield === 'number') bdParts.push(`戰場 ${b.battlefield}`);
+              if (typeof b.legend === 'number') bdParts.push(`傳奇 ${b.legend}`);
+              if (typeof b.unknown === 'number' && b.unknown > 0) bdParts.push(`未知 ${b.unknown}`);
+              if (bdParts.length > 0) {
+                countsText += `（${bdParts.join('・')}）`;
+              }
+            }
+            confirmCountsEl.textContent = countsText;
           }
 
           const previewEl = document.getElementById('decklistPreview');
           if (previewEl) {
+            const hasCards = !!(data.preview && data.preview.cards);
+            const tipText = hasCards
+              ? '卡名來自社群資料（英文），請對照 App 確認張數'
+              : '牌組碼只有卡片編號，請對照 App 確認張數';
+
             let previewHtml = `
               <div style="font-size: 0.82rem; color: var(--warning-text); font-weight: 700; margin-bottom: 6px;">
-                牌組碼只有卡片編號，請對照 App 確認張數
+                ${escapeHtml(tipText)}
               </div>
             `;
             if (data.preview && data.preview.notes && Array.isArray(data.preview.notes) && data.preview.notes.length > 0) {
@@ -745,7 +765,16 @@
             }
             if (data.preview && data.preview.text) {
               previewHtml += `
-                <pre style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 6px; padding: 8px 10px; font-size: 0.78rem; line-height: 1.35; color: var(--text-primary); text-align: left; white-space: pre-wrap; word-break: break-all; max-height: 100px; overflow-y: auto;">${escapeHtml(data.preview.text)}</pre>
+                <pre style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 6px; padding: 8px 10px; font-size: 0.78rem; line-height: 1.35; color: var(--text-primary); text-align: left; white-space: pre-wrap; word-break: break-all; max-height: 80px; overflow-y: auto;">${escapeHtml(data.preview.text)}</pre>
+              `;
+            }
+            if (hasCards && data.preview.cards && data.preview.cards.notice) {
+              previewHtml += `
+                <div id="decklistCardsNotice" style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.35; margin-top: 6px; text-align: left; word-break: break-all;">${escapeHtml(data.preview.cards.notice)}</div>
+              `;
+            } else {
+              previewHtml += `
+                <div id="decklistCardsNotice" style="display: none; font-size: 0.72rem; color: var(--text-secondary); line-height: 1.35; margin-top: 6px; text-align: left; word-break: break-all;"></div>
               `;
             }
             previewEl.innerHTML = previewHtml;
@@ -781,7 +810,7 @@
 
         const previewEl = document.getElementById('decklistPreview');
         if (previewEl) {
-          previewEl.innerHTML = '';
+          previewEl.innerHTML = '<div id="decklistCardsNotice" style="display: none;"></div>';
           previewEl.style.display = 'none';
         }
 
@@ -911,12 +940,26 @@
         }
         const distinct = summary.distinct ? `（${summary.distinct} 種卡片）` : '';
 
+        let breakdownText = '';
+        if (summary.breakdown && typeof summary.breakdown === 'object') {
+          const b = summary.breakdown;
+          const bdParts = [];
+          if (typeof b.main === 'number') bdParts.push(`主牌組 ${b.main}`);
+          if (typeof b.rune === 'number') bdParts.push(`符文 ${b.rune}`);
+          if (typeof b.battlefield === 'number') bdParts.push(`戰場 ${b.battlefield}`);
+          if (typeof b.legend === 'number') bdParts.push(`傳奇 ${b.legend}`);
+          if (typeof b.unknown === 'number' && b.unknown > 0) bdParts.push(`未知 ${b.unknown}`);
+          if (bdParts.length > 0) {
+            breakdownText = ` · ${bdParts.join('・')}`;
+          }
+        }
+
         doneEl.innerHTML = `
           <div style="font-size: 1.3rem; font-weight: 800; color: var(--success-text); margin-bottom: 6px;">✅ 牌表登錄完成</div>
           <div style="font-size: 1rem; font-weight: 700; color: var(--danger-text); margin-bottom: 12px;">🔒 已鎖定，要更正請找裁判</div>
           <div style="background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 10px; text-align: left; font-size: 0.9rem;">
             <div><strong>選手編號：</strong>${escapeHtml(playerId)}</div>
-            <div style="margin-top: 4px;"><strong>張數統計：</strong>主牌組 ${mainCount} 張、備牌 ${sideCount} 張 ${distinct}</div>
+            <div style="margin-top: 4px;"><strong>張數統計：</strong>主牌組 ${mainCount} 張、備牌 ${sideCount} 張 ${distinct}${breakdownText}</div>
             <div style="margin-top: 4px; font-size: 0.8rem; color: var(--text-secondary);">依賽事規則 401.3，牌表送出後不可更改。若需更正請至裁判桌由裁判解鎖。</div>
           </div>
         `;

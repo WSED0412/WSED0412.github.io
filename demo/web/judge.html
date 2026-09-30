@@ -1101,6 +1101,7 @@
           </div>
           <div id="deckNotes" style="display: none; background: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning-text); border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; font-size: 0.85rem; line-height: 1.4; white-space: pre-line;"></div>
           <pre id="deckView" style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; font-size: 0.85rem; line-height: 1.4; color: #f8fafc; white-space: pre-wrap; word-break: break-word; min-height: 48px; max-height: 360px; overflow-y: auto;"></pre>
+          <div id="deckCardsNotice" style="display: none; font-size: 0.78rem; color: var(--text-secondary); line-height: 1.35; margin-top: 8px; white-space: pre-line;"></div>
         </div>
 
         <div class="form-group" style="margin-top: 10px;">
@@ -1148,7 +1149,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 14;
+    const CURRENT_CONTRACT_VERSION = 15;
     const SESSION_STORAGE_KEY_STAFF_PIN = 'riftbound_judge_staff_pin';
 
     let snapshotData = null;
@@ -2632,6 +2633,7 @@
       const copyMsg = document.getElementById('deckCopyMsg');
       const textNotice = document.getElementById('deckTextFormatNotice');
       const notesEl = document.getElementById('deckNotes');
+      const noticeEl = document.getElementById('deckCardsNotice');
       currentLoadedDeckCode = '';
       if (copyRow) copyRow.style.display = 'none';
       if (copyBtn) copyBtn.style.display = 'none';
@@ -2640,6 +2642,10 @@
       if (notesEl) {
         notesEl.textContent = '';
         notesEl.style.display = 'none';
+      }
+      if (noticeEl) {
+        noticeEl.textContent = '';
+        noticeEl.style.display = 'none';
       }
 
       try {
@@ -2653,7 +2659,32 @@
           const playerName = (res.player && res.player.name) ? res.player.name : '';
           const lockStatus = res.locked ? '🔒 已鎖定' : '🔓 未鎖定';
           const formatBadge = (res.format === 'code') ? ' · 牌組碼' : ' · 純文字';
-          metaEl.textContent = `選手：${pid} ${playerName} · ${lockStatus}${formatBadge}`;
+          let breakdownInfo = '';
+          if (res.summary && res.summary.breakdown && typeof res.summary.breakdown === 'object') {
+            const b = res.summary.breakdown;
+            const bdParts = [];
+            if (typeof b.main === 'number') bdParts.push(`主牌組 ${b.main}`);
+            if (typeof b.rune === 'number') bdParts.push(`符文 ${b.rune}`);
+            if (typeof b.battlefield === 'number') bdParts.push(`戰場 ${b.battlefield}`);
+            if (typeof b.legend === 'number') bdParts.push(`傳奇 ${b.legend}`);
+            if (typeof b.unknown === 'number' && b.unknown > 0) bdParts.push(`未知 ${b.unknown}`);
+            if (bdParts.length > 0) {
+              breakdownInfo = ` · ${bdParts.join('・')}`;
+            }
+          }
+          metaEl.textContent = `選手：${pid} ${playerName} · ${lockStatus}${formatBadge}${breakdownInfo}`;
+        }
+
+        if (res.cards && res.cards.notice) {
+          if (noticeEl) {
+            noticeEl.textContent = res.cards.notice;
+            noticeEl.style.display = 'block';
+          }
+        } else {
+          if (noticeEl) {
+            noticeEl.textContent = '';
+            noticeEl.style.display = 'none';
+          }
         }
 
         if (res.format === 'code') {
@@ -2686,6 +2717,10 @@
 
         showMsg('deckCheckMsg', `選手 ${pid} 牌表載入成功`, false);
       } catch (err) {
+        if (noticeEl) {
+          noticeEl.textContent = '';
+          noticeEl.style.display = 'none';
+        }
         showMsg('deckCheckMsg', err.message);
       }
     }

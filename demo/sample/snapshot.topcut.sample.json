@@ -1,5 +1,5 @@
 {
-  "contract_version": 14,
+  "contract_version": 15,
   "server_now": 1790408400000,
   "event": {
     "name": "示範賽事（假資料）",
@@ -94,7 +94,7 @@
     "updated_at": 1790408100000
   },
   "standings": {
-    "version": "18f2f018ae63",
+    "version": "aa1b77a3252e",
     "label": "瑞士輪最終排名"
   },
   "bracket": {

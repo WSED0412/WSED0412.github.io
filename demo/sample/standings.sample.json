@@ -1,5 +1,5 @@
 {
-  "contract_version": 14,
+  "contract_version": 15,
   "label": "第 2 輪結束後",
   "through_round": 2,
   "total_swiss_rounds": 5,
@@ -211,5 +211,5 @@
       "tied_by_lot": false
     }
   ],
-  "version": "0d3e2cf78889"
+  "version": "3cb5b43532a7"
 }
