@@ -1,5 +1,5 @@
 {
-  "contract_version": 15,
+  "contract_version": 16,
   "server_now": 1790391900000,
   "event": {
     "name": "示範賽事（假資料）",
@@ -305,7 +305,7 @@
     "updated_at": 1790391720000
   },
   "standings": {
-    "version": "3cb5b43532a7",
+    "version": "9672d555ae90",
     "label": "第 2 輪結束後"
   },
   "bracket": null

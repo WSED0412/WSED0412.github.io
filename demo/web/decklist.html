@@ -508,7 +508,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 15;
+    const CURRENT_CONTRACT_VERSION = 16;
     let snapshotData = null;
     let currentDeckMode = 'text';
 
@@ -694,16 +694,21 @@
 
         try {
           const url = getApiUrl('/api/player/decklist');
-          const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              player_id: playerId,
-              pin: pin,
-              code: code,
-              dry_run: true
-            })
-          });
+          let res;
+          try {
+            res = await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                player_id: playerId,
+                pin: pin,
+                code: code,
+                dry_run: true
+              })
+            });
+          } catch (networkErr) {
+            throw new Error('沒有送出：連不上主機，請確認網路後再按一次');
+          }
 
           const data = await res.json().catch(() => null);
 
@@ -785,7 +790,10 @@
           if (modalEl) modalEl.style.display = 'flex';
 
         } catch (err) {
-          problemsEl.textContent = err.message || '網路連線異常，請稍後再試';
+          const msg = (err && err.message && !err.message.includes('Failed to fetch'))
+            ? err.message
+            : '沒有送出：連不上主機，請確認網路後再按一次';
+          problemsEl.textContent = msg;
           problemsEl.style.display = 'block';
         } finally {
           submitBtn.disabled = false;
@@ -887,11 +895,16 @@
 
       try {
         const url = getApiUrl('/api/player/decklist');
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+        let res;
+        try {
+          res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        } catch (networkErr) {
+          throw new Error('沒有送出：連不上主機，請確認網路後再按一次');
+        }
 
         const data = await res.json().catch(() => null);
 
@@ -967,7 +980,10 @@
 
       } catch (err) {
         handleDecklistCancel();
-        problemsEl.textContent = err.message || '網路連線異常，請稍後再試';
+        const msg = (err && err.message && !err.message.includes('Failed to fetch'))
+          ? err.message
+          : '沒有送出：連不上主機，請確認網路後再按一次';
+        problemsEl.textContent = msg;
         problemsEl.style.display = 'block';
       } finally {
         isSubmittingDecklist = false;

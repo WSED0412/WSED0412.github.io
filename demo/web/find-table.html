@@ -1413,7 +1413,7 @@
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
 
-    const CURRENT_CONTRACT_VERSION = 15;
+    const CURRENT_CONTRACT_VERSION = 16;
     const STORAGE_KEY_SEARCH = 'riftbound_find_table_last_query';
     const STORAGE_KEY_HISTORY = 'riftbound_find_table_history';
 
@@ -2857,11 +2857,16 @@
 
       try {
         const apiUrl = getApiUrl('/api/player/me');
-        const res = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ player_id: pid, pin: pinVal })
-        });
+        let res;
+        try {
+          res = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ player_id: pid, pin: pinVal })
+          });
+        } catch (networkErr) {
+          throw new Error('沒有送出：連不上主機，請確認網路後再按一次');
+        }
 
         const data = await res.json().catch(() => null);
 
@@ -2889,7 +2894,10 @@
       } catch (err) {
         console.warn('PIN 驗證網路失敗:', err);
         if (pinError) {
-          pinError.textContent = '無法連線到主機，請確認網路';
+          const msg = (err && err.message && !err.message.includes('Failed to fetch'))
+            ? err.message
+            : '沒有送出：連不上主機，請確認網路後再按一次';
+          pinError.textContent = msg;
           pinError.style.display = 'block';
         }
       } finally {
@@ -2959,18 +2967,23 @@
       try {
         const roundNo = (snapshotData && snapshotData.round) ? snapshotData.round.number : 1;
         const apiUrl = getApiUrl('/api/player/report');
-        const res = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            player_id: authPlayerId,
-            pin: authPin,
-            round: roundNo,
-            my_wins: pendingReportValues.my_wins,
-            opp_wins: pendingReportValues.opp_wins,
-            draws: pendingReportValues.draws
-          })
-        });
+        let res;
+        try {
+          res = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              player_id: authPlayerId,
+              pin: authPin,
+              round: roundNo,
+              my_wins: pendingReportValues.my_wins,
+              opp_wins: pendingReportValues.opp_wins,
+              draws: pendingReportValues.draws
+            })
+          });
+        } catch (networkErr) {
+          throw new Error('沒有送出：連不上主機，請確認網路後再按一次');
+        }
 
         const data = await res.json().catch(() => null);
 
@@ -2998,7 +3011,10 @@
         if (modal) modal.style.display = 'none';
         const repErr = document.getElementById('reportError');
         if (repErr) {
-          repErr.textContent = '連線失敗，請稍後再試';
+          const msg = (err && err.message && !err.message.includes('Failed to fetch'))
+            ? err.message
+            : '沒有送出：連不上主機，請確認網路後再按一次';
+          repErr.textContent = msg;
           repErr.style.display = 'block';
         }
       } finally {
@@ -3040,14 +3056,19 @@
 
       try {
         const apiUrl = getApiUrl('/api/player/drop');
-        const res = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            player_id: authPlayerId,
-            pin: authPin
-          })
-        });
+        let res;
+        try {
+          res = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              player_id: authPlayerId,
+              pin: authPin
+            })
+          });
+        } catch (networkErr) {
+          throw new Error('沒有送出：連不上主機，請確認網路後再按一次');
+        }
 
         const data = await res.json().catch(() => null);
         if (res.ok && data && data.ok) {
@@ -3059,7 +3080,10 @@
           alert((data && data.message) ? data.message : '退賽失敗');
         }
       } catch (err) {
-        alert('連線失敗：' + (err.message || '網路異常'));
+        const msg = (err && err.message && !err.message.includes('Failed to fetch'))
+          ? err.message
+          : '沒有送出：連不上主機，請確認網路後再按一次';
+        alert(msg);
       } finally {
         isSubmittingDrop = false;
         if (dropConfirmBtn) {
@@ -3087,17 +3111,22 @@
 
       try {
         const apiUrl = getApiUrl('/api/player/call_judge');
-        const res = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            player_id: authPlayerId,
-            pin: authPin,
-            round: curRound,
-            reason: selectedCallReason || 'rules',
-            note: noteVal
-          })
-        });
+        let res;
+        try {
+          res = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              player_id: authPlayerId,
+              pin: authPin,
+              round: curRound,
+              reason: selectedCallReason || 'rules',
+              note: noteVal
+            })
+          });
+        } catch (networkErr) {
+          throw new Error('沒有送出：連不上主機，請確認網路後再按一次');
+        }
         const data = await res.json().catch(() => null);
         if (!res.ok || !data || !data.ok) {
           const msg = (data && data.message) ? data.message : `呼叫失敗 (HTTP ${res.status})`;
@@ -3116,7 +3145,10 @@
       } catch (err) {
         console.warn('呼叫裁判失敗:', err);
         if (errEl) {
-          errEl.textContent = '連線失敗，請稍後再試';
+          const msg = (err && err.message && !err.message.includes('Failed to fetch'))
+            ? err.message
+            : '沒有送出：連不上主機，請確認網路後再按一次';
+          errEl.textContent = msg;
           errEl.style.display = 'block';
         }
       } finally {
@@ -3144,15 +3176,20 @@
 
       try {
         const apiUrl = getApiUrl('/api/player/call_cancel');
-        const res = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            player_id: authPlayerId,
-            pin: authPin,
-            round: curRound
-          })
-        });
+        let res;
+        try {
+          res = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              player_id: authPlayerId,
+              pin: authPin,
+              round: curRound
+            })
+          });
+        } catch (networkErr) {
+          throw new Error('沒有送出：連不上主機，請確認網路後再按一次');
+        }
         const data = await res.json().catch(() => null);
         if (!res.ok || !data || !data.ok) {
           const msg = (data && data.message) ? data.message : `取消失敗 (HTTP ${res.status})`;
@@ -3173,7 +3210,10 @@
       } catch (err) {
         console.warn('取消呼叫失敗:', err);
         if (errEl) {
-          errEl.textContent = '連線失敗，請稍後再試';
+          const msg = (err && err.message && !err.message.includes('Failed to fetch'))
+            ? err.message
+            : '沒有送出：連不上主機，請確認網路後再按一次';
+          errEl.textContent = msg;
           errEl.style.display = 'block';
         }
       } finally {

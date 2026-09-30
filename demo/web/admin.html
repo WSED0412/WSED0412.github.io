@@ -705,6 +705,20 @@
         <div id="checkinList" class="table-wrap" style="max-height: 280px; overflow-y: auto;">
           <div class="empty-state-sm">請點擊「重新整理報到清單」載入選手</div>
         </div>
+
+        <!-- 已報到但還沒交牌表 (PROJECT.md 第三十三輪, DATA-CONTRACT 3.3, 6.5) -->
+        <div id="noDeckSection" style="display: none; margin-top: 14px; padding: 12px; background: rgba(239, 125, 0, 0.08); border: 1px solid var(--accent); border-radius: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+            <div id="noDeckCount" style="font-weight: 700; color: var(--accent-text); font-size: 0.95rem;">
+              已報到但還沒交牌表：0 人
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <button type="button" id="noDeckCopy" class="btn btn-secondary" style="min-height: 44px; padding: 6px 14px; font-size: 0.85rem;">複製未交牌表名單</button>
+              <span id="noDeckCopyMsg" style="font-size: 0.82rem; color: var(--success-text); font-weight: 700;"></span>
+            </div>
+          </div>
+          <div id="noDeckList" class="table-wrap" style="max-height: 180px; overflow-y: auto;"></div>
+        </div>
       </section>
 
       <!-- 區塊 1: 計時管理 -->
@@ -965,7 +979,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 15;
+    const CURRENT_CONTRACT_VERSION = 16;
     const SESSION_STORAGE_KEY_STAFF_PIN = 'riftbound_staff_pin';
 
     let snapshotData = null;
@@ -1181,11 +1195,18 @@
         payload.staff_pin = staffPin;
       }
 
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+      let res;
+      try {
+        res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } catch (networkErr) {
+        const err = new Error('沒有送出：連不上主機，請確認網路後再按一次');
+        err.isNetwork = true;
+        throw err;
+      }
 
       const data = await res.json().catch(() => null);
 
@@ -1661,6 +1682,14 @@
       hideMsg('checkinMsg');
       const noShowCopyMsgEl = document.getElementById('noShowCopyMsg');
       if (noShowCopyMsgEl) noShowCopyMsgEl.textContent = '';
+      const noDeckSection = document.getElementById('noDeckSection');
+      if (noDeckSection) noDeckSection.style.display = 'none';
+      const noDeckCountEl = document.getElementById('noDeckCount');
+      if (noDeckCountEl) noDeckCountEl.textContent = '已報到但還沒交牌表：0 人';
+      const noDeckListEl = document.getElementById('noDeckList');
+      if (noDeckListEl) noDeckListEl.innerHTML = '';
+      const noDeckCopyMsgEl = document.getElementById('noDeckCopyMsg');
+      if (noDeckCopyMsgEl) noDeckCopyMsgEl.textContent = '';
       const noShowEl = document.getElementById('noShowNotice');
       if (noShowEl) noShowEl.style.display = 'none';
       lastPreviewedImportText = null;
@@ -1848,6 +1877,39 @@
       }
       html += '</tbody></table>';
       listEl.innerHTML = html;
+
+      // 已報到但還沒交牌表 (PROJECT.md 第三十三輪, DATA-CONTRACT 3.3, 6.5)
+      const noDeckSection = document.getElementById('noDeckSection');
+      const noDeckCountEl = document.getElementById('noDeckCount');
+      const noDeckListEl = document.getElementById('noDeckList');
+      const noDeckCopyMsg = document.getElementById('noDeckCopyMsg');
+
+      if (data.decklist_required) {
+        if (noDeckSection) noDeckSection.style.display = 'block';
+        const missingRows = (data.rows || []).filter(r => r.checked_in && !r.has_decklist && !r.dropped);
+        if (noDeckCountEl) {
+          noDeckCountEl.textContent = `已報到但還沒交牌表：${missingRows.length} 人`;
+        }
+        if (noDeckListEl) {
+          if (missingRows.length === 0) {
+            noDeckListEl.innerHTML = '<div class="empty-state-sm" style="color: var(--success-text);">所有已報到選手皆已繳交牌表</div>';
+          } else {
+            let ndHtml = '<table class="admin-table"><thead><tr>' +
+              '<th style="width: 30%;">選手編號</th>' +
+              '<th style="width: 70%;">姓名</th>' +
+              '</tr></thead><tbody>';
+            for (const r of missingRows) {
+              ndHtml += `<tr><td><strong>${escapeHtml(r.id)}</strong></td><td>${escapeHtml(r.name)}</td></tr>`;
+            }
+            ndHtml += '</tbody></table>';
+            noDeckListEl.innerHTML = ndHtml;
+          }
+        }
+      } else {
+        if (noDeckSection) noDeckSection.style.display = 'none';
+        if (noDeckListEl) noDeckListEl.innerHTML = '';
+        if (noDeckCopyMsg) noDeckCopyMsg.textContent = '';
+      }
     }
 
     // 複製未報到／已退賽名單 (PROJECT.md 第二十八輪)
@@ -1892,6 +1954,51 @@
         }
         if (msgEl) {
           msgEl.textContent = `已複製 ${lines.length} 人`;
+        }
+      } catch (err) {
+        if (msgEl) {
+          msgEl.textContent = '複製失敗：' + (err.message || '未知錯誤');
+        }
+      }
+    }
+
+    // 複製已報到但還沒交牌表名單 (PROJECT.md 第三十三輪, review.py [37])
+    async function handleNoDeckCopy() {
+      const msgEl = document.getElementById('noDeckCopyMsg');
+      if (msgEl) msgEl.textContent = '';
+      try {
+        const res = await callApi('/api/staff/checkin_list', {});
+        const rows = res.rows || [];
+        const missingRows = rows.filter(r => r.checked_in && !r.has_decklist && !r.dropped);
+        const lines = missingRows.map(r => `${r.id || ''}\t${r.name || ''}`);
+        const textToCopy = lines.join('\n');
+        let copied = false;
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+          try {
+            await navigator.clipboard.writeText(textToCopy);
+            copied = true;
+          } catch (e) {
+            copied = false;
+          }
+        }
+        if (!copied) {
+          const ta = document.createElement('textarea');
+          ta.value = textToCopy;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          ta.style.top = '-9999px';
+          document.body.appendChild(ta);
+          ta.focus({ preventScroll: true });
+          ta.select();
+          try {
+            document.execCommand('copy');
+            copied = true;
+          } catch (e) {}
+          document.body.removeChild(ta);
+        }
+        if (msgEl) {
+          msgEl.textContent = `已複製 ${missingRows.length} 人`;
         }
       } catch (err) {
         if (msgEl) {
@@ -2482,6 +2589,10 @@
       const noShowCopyBtn = document.getElementById('noShowCopy');
       if (noShowCopyBtn) {
         noShowCopyBtn.addEventListener('click', handleNoShowCopy);
+      }
+      const noDeckCopyBtn = document.getElementById('noDeckCopy');
+      if (noDeckCopyBtn) {
+        noDeckCopyBtn.addEventListener('click', handleNoDeckCopy);
       }
       document.getElementById('checkinMarkBtn').addEventListener('click', handleCheckinMark);
       document.getElementById('checkinMarkId').addEventListener('keydown', (e) => {

@@ -828,6 +828,41 @@
       margin-bottom: 18px;
       line-height: 1.5;
     }
+
+    /* 逐張打勾核對牌組 (PROJECT.md 第三十三輪, DATA-CONTRACT 6.5) */
+    .deck-check-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      min-height: 44px;
+      padding: 8px 12px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      text-align: left;
+      cursor: pointer;
+      box-sizing: border-box;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .deck-check-row:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .deck-check-row[aria-pressed="true"] {
+      background: var(--chip-bg);
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .deck-section-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--accent-text);
+      margin-top: 10px;
+      margin-bottom: 4px;
+      padding-left: 2px;
+    }
   </style>
 </head>
 <body>
@@ -948,6 +983,13 @@
           <div class="form-row">
             <input type="number" id="lookupTable" class="input-number" min="1" inputmode="numeric" placeholder="桌號 (數字)">
             <button type="button" id="lookupBtn" class="btn btn-primary">查詢此桌</button>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top: 10px;">
+          <label for="lookupPlayer" class="form-label">或輸入選手編號查桌</label>
+          <div class="form-row">
+            <input type="text" id="lookupPlayer" class="input-text" placeholder="例如 R0001">
+            <button type="button" id="lookupPlayerBtn" class="btn btn-secondary">用編號查桌</button>
           </div>
         </div>
         <div id="lookupMsg" class="msg-box" style="display: none;"></div>
@@ -1099,7 +1141,21 @@
           <div id="deckTextFormatNotice" style="display: none; font-size: 0.85rem; color: var(--text-sub); margin-bottom: 8px;">
             這位選手用純文字登錄，沒有牌組碼
           </div>
+          <div id="deckProblems" style="display: none; background: var(--danger-bg); border: 1px solid var(--danger-border); color: var(--danger-text); border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; font-size: 0.85rem; line-height: 1.4; white-space: pre-line;"></div>
           <div id="deckNotes" style="display: none; background: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning-text); border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; font-size: 0.85rem; line-height: 1.4; white-space: pre-line;"></div>
+
+          <!-- 逐張打勾核對牌組區 (PROJECT.md 第三十三輪, DATA-CONTRACT 6.5) -->
+          <div id="deckCheckSection" style="display: none; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+              <span id="deckCheckProgress" style="font-size: 0.9rem; font-weight: 700; color: var(--accent-text);">已核對 0 / 0 張</span>
+              <button type="button" id="deckCheckReset" class="btn btn-secondary" style="min-height: 44px; padding: 4px 12px; font-size: 0.85rem;">清空核對</button>
+            </div>
+            <div id="deckCheckList" style="display: flex; flex-direction: column; gap: 6px;"></div>
+          </div>
+
+          <div style="margin-top: 10px; margin-bottom: 6px;">
+            <button type="button" id="deckViewToggle" class="btn btn-secondary btn-sm" style="min-height: 44px; padding: 4px 10px; font-size: 0.8rem;">收起列印版</button>
+          </div>
           <pre id="deckView" style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; font-size: 0.85rem; line-height: 1.4; color: #f8fafc; white-space: pre-wrap; word-break: break-word; min-height: 48px; max-height: 360px; overflow-y: auto;"></pre>
           <div id="deckCardsNotice" style="display: none; font-size: 0.78rem; color: var(--text-secondary); line-height: 1.35; margin-top: 8px; white-space: pre-line;"></div>
         </div>
@@ -1149,7 +1205,7 @@
   </div>
 
   <script>
-    const CURRENT_CONTRACT_VERSION = 15;
+    const CURRENT_CONTRACT_VERSION = 16;
     const SESSION_STORAGE_KEY_STAFF_PIN = 'riftbound_judge_staff_pin';
 
     let snapshotData = null;
@@ -1339,11 +1395,18 @@
         payload.staff_pin = staffPin;
       }
 
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+      let res;
+      try {
+        res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } catch (networkErr) {
+        const err = new Error('沒有送出：連不上主機，請確認網路後再按一次');
+        err.isNetwork = true;
+        throw err;
+      }
 
       const data = await res.json().catch(() => null);
 
@@ -2246,6 +2309,37 @@
       await openTableDetail(tableNum);
     }
 
+    // 用選手編號查桌 (PROJECT.md 第三十三輪, review.py [37])
+    async function handleLookupPlayer() {
+      hideMsg('lookupMsg');
+      const playerInput = (document.getElementById('lookupPlayer').value || '').trim().toUpperCase();
+      if (!playerInput) {
+        showMsg('lookupMsg', '請輸入選手編號');
+        return;
+      }
+      if (!snapshotData || !Array.isArray(snapshotData.pairings) || snapshotData.pairings.length === 0) {
+        showMsg('lookupMsg', '這一輪找不到這位選手');
+        return;
+      }
+      const found = snapshotData.pairings.find(p => {
+        const p1Id = (p.p1 && p.p1.id) ? p.p1.id.toUpperCase() : '';
+        const p2Id = (p.p2 && p.p2.id) ? p.p2.id.toUpperCase() : '';
+        return p1Id === playerInput || p2Id === playerInput;
+      });
+
+      if (!found) {
+        showMsg('lookupMsg', '這一輪找不到這位選手');
+        return;
+      }
+
+      if (found.table === null || !found.p2) {
+        showMsg('lookupMsg', '這位選手本輪輪空');
+        return;
+      }
+
+      await openTableDetail(found.table);
+    }
+
     // 打開並載入特定桌次詳情
     async function openTableDetail(tableNum) {
       hideMsg('lookupMsg');
@@ -2617,8 +2711,108 @@
     }
 
     let currentLoadedDeckCode = '';
+    let isDeckViewCollapsed = false;
 
-    // 載入選手牌表 (DATA-CONTRACT 6.2, 6.3)
+    function renderDeckCheckList(rows) {
+      const sectionEl = document.getElementById('deckCheckSection');
+      const listEl = document.getElementById('deckCheckList');
+      if (!sectionEl || !listEl) return;
+
+      if (!rows || !Array.isArray(rows) || rows.length === 0) {
+        sectionEl.style.display = 'none';
+        listEl.innerHTML = '';
+        return;
+      }
+
+      sectionEl.style.display = 'block';
+      let currentSection = null;
+      let html = '';
+      rows.forEach(r => {
+        const secLabel = r.section_label || '主牌組';
+        if (secLabel !== currentSection) {
+          currentSection = secLabel;
+          html += `<div class="deck-section-title">${escapeHtml(secLabel)}</div>`;
+        }
+        const count = r.count || 0;
+        const code = r.code ? escapeHtml(r.code) : '';
+        const name = r.name ? escapeHtml(r.name) : '';
+        const labelParts = [`${count}×`];
+        if (code) labelParts.push(code);
+        if (name) labelParts.push(name);
+        const cardLabel = labelParts.join(' ');
+
+        html += `<button type="button" class="deck-check-row" aria-pressed="false" data-count="${count}">` +
+          `<span>${cardLabel}</span>` +
+          `<span class="deck-check-state" style="font-size: 1.1rem; color: var(--accent-text); margin-left: 8px;">☐</span>` +
+          `</button>`;
+      });
+
+      listEl.innerHTML = html;
+
+      listEl.querySelectorAll('.deck-check-row').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const isPressed = btn.getAttribute('aria-pressed') === 'true';
+          const next = !isPressed;
+          btn.setAttribute('aria-pressed', next ? 'true' : 'false');
+          const stateEl = btn.querySelector('.deck-check-state');
+          if (stateEl) {
+            stateEl.textContent = next ? '☑' : '☐';
+          }
+          updateDeckCheckProgress();
+        });
+      });
+
+      updateDeckCheckProgress();
+    }
+
+    function updateDeckCheckProgress() {
+      const listEl = document.getElementById('deckCheckList');
+      const progEl = document.getElementById('deckCheckProgress');
+      if (!listEl || !progEl) return;
+      const rows = listEl.querySelectorAll('.deck-check-row');
+      let checkedCount = 0;
+      let totalCount = 0;
+      rows.forEach(r => {
+        const c = parseInt(r.getAttribute('data-count'), 10) || 0;
+        totalCount += c;
+        if (r.getAttribute('aria-pressed') === 'true') {
+          checkedCount += c;
+        }
+      });
+
+      if (totalCount > 0 && checkedCount === totalCount) {
+        progEl.textContent = `已核對 ${checkedCount} / ${totalCount} 張 · 全部核對完成`;
+      } else {
+        progEl.textContent = `已核對 ${checkedCount} / ${totalCount} 張`;
+      }
+    }
+
+    function resetDeckChecks() {
+      const listEl = document.getElementById('deckCheckList');
+      if (!listEl) return;
+      listEl.querySelectorAll('.deck-check-row').forEach(r => {
+        r.setAttribute('aria-pressed', 'false');
+        const stateEl = r.querySelector('.deck-check-state');
+        if (stateEl) stateEl.textContent = '☐';
+      });
+      updateDeckCheckProgress();
+    }
+
+    function handleToggleDeckView() {
+      const viewEl = document.getElementById('deckView');
+      const toggleBtn = document.getElementById('deckViewToggle');
+      if (!viewEl || !toggleBtn) return;
+      isDeckViewCollapsed = !isDeckViewCollapsed;
+      if (isDeckViewCollapsed) {
+        viewEl.style.display = 'none';
+        toggleBtn.textContent = '顯示列印版';
+      } else {
+        viewEl.style.display = 'block';
+        toggleBtn.textContent = '收起列印版';
+      }
+    }
+
+    // 載入選手牌表 (DATA-CONTRACT 6.2, 6.3, 6.5)
     async function handleDeckLoad() {
       hideMsg('deckCheckMsg');
       const pidInput = document.getElementById('deckPlayerId');
@@ -2632,6 +2826,7 @@
       const copyRow = document.getElementById('deckCodeActionRow');
       const copyMsg = document.getElementById('deckCopyMsg');
       const textNotice = document.getElementById('deckTextFormatNotice');
+      const problemsEl = document.getElementById('deckProblems');
       const notesEl = document.getElementById('deckNotes');
       const noticeEl = document.getElementById('deckCardsNotice');
       currentLoadedDeckCode = '';
@@ -2639,6 +2834,10 @@
       if (copyBtn) copyBtn.style.display = 'none';
       if (copyMsg) copyMsg.style.display = 'none';
       if (textNotice) textNotice.style.display = 'none';
+      if (problemsEl) {
+        problemsEl.innerHTML = '';
+        problemsEl.style.display = 'none';
+      }
       if (notesEl) {
         notesEl.textContent = '';
         notesEl.style.display = 'none';
@@ -2674,6 +2873,22 @@
           }
           metaEl.textContent = `選手：${pid} ${playerName} · ${lockStatus}${formatBadge}${breakdownInfo}`;
         }
+
+        // 牌表問題 (PROJECT.md 第三十三輪, DATA-CONTRACT 6.5)
+        if (res.problems && Array.isArray(res.problems) && res.problems.length > 0) {
+          if (problemsEl) {
+            problemsEl.innerHTML = res.problems.map(p => `<div>⚠️ ${escapeHtml(p)}</div>`).join('');
+            problemsEl.style.display = 'block';
+          }
+        } else {
+          if (problemsEl) {
+            problemsEl.innerHTML = '';
+            problemsEl.style.display = 'none';
+          }
+        }
+
+        // 逐張打勾清單 (PROJECT.md 第三十三輪, DATA-CONTRACT 6.5)
+        renderDeckCheckList(res.rows || []);
 
         if (res.cards && res.cards.notice) {
           if (noticeEl) {
@@ -2721,6 +2936,7 @@
           noticeEl.textContent = '';
           noticeEl.style.display = 'none';
         }
+        renderDeckCheckList([]);
         showMsg('deckCheckMsg', err.message);
       }
     }
@@ -2917,6 +3133,16 @@
       document.getElementById('lookupTable').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') handleLookup();
       });
+      const lookupPlayerBtn = document.getElementById('lookupPlayerBtn');
+      if (lookupPlayerBtn) {
+        lookupPlayerBtn.addEventListener('click', handleLookupPlayer);
+      }
+      const lookupPlayerInput = document.getElementById('lookupPlayer');
+      if (lookupPlayerInput) {
+        lookupPlayerInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') handleLookupPlayer();
+        });
+      }
 
       // 判定與撤銷
       document.getElementById('resSubmit').addEventListener('click', handleResultSubmit);
@@ -2936,7 +3162,7 @@
       document.getElementById('newPinDone').addEventListener('click', handleNewPinDoneClick);
       document.getElementById('unlockBtn').addEventListener('click', handleUnlockPlayerClick);
 
-      // 驗牌作業 (PROJECT.md 第十一輪任務、第三十一輪任務)
+      // 驗牌作業 (PROJECT.md 第十一輪任務、第三十一輪任務、第三十三輪任務)
       document.getElementById('deckLoadBtn').addEventListener('click', handleDeckLoad);
       document.getElementById('deckPlayerId').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') handleDeckLoad();
@@ -2944,6 +3170,14 @@
       const copyCodeBtn = document.getElementById('deckCopyCode');
       if (copyCodeBtn) {
         copyCodeBtn.addEventListener('click', handleDeckCopy);
+      }
+      const deckCheckResetBtn = document.getElementById('deckCheckReset');
+      if (deckCheckResetBtn) {
+        deckCheckResetBtn.addEventListener('click', resetDeckChecks);
+      }
+      const deckViewToggleBtn = document.getElementById('deckViewToggle');
+      if (deckViewToggleBtn) {
+        deckViewToggleBtn.addEventListener('click', handleToggleDeckView);
       }
       document.getElementById('deckCheckOk').addEventListener('click', () => handleDeckCheck(true));
       document.getElementById('deckCheckFail').addEventListener('click', () => handleDeckCheck(false));
