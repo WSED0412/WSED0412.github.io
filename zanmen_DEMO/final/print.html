@@ -1,0 +1,381 @@
+<!doctype html>
+<!--
+  贊鬥盃 BEYBLADE X — 紙本備援列印頁
+  ------------------------------------------------------------------
+  2026-08-01 那場 16 強改回紙本時，對戰表是「手抄」的 —— 抄的當下比賽停著，
+  抄錯一個名字就是一場爭議。這一頁讓主辦在系統還活著的時候（或任何一個時間點）
+  按一下就印出三種紙：
+
+    ① 資格賽對戰表：依區、依輪次，已完成的帶比分，未定的寫「M03 勝者」
+    ② 16 強分組表：四組的籤位、循環賽六場、空白積分表、名次賽對照
+    ③ 結果單：每場一張，桌邊裁判手寫計分；右下角「已輸入系統」打勾，
+       系統恢復後照著補登，才知道哪幾張補過了
+
+  只讀 snapshot.json（公開資料），不寫入任何東西、不需要 PIN。
+  連不到大腦時**絕對不印假資料** —— 印出一張看起來正確的假對戰表，比印不出來更糟。
+  已經抓到過一份的話保留著，但每一頁都印上「資料時間」，紙本之間才分得出新舊。
+
+  建議用法：每一輪開打前、16 強抽完籤後各印一份放在主辦桌，系統出事就直接拿出來用。
+-->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>贊鬥盃 · 紙本備援</title>
+<link rel="stylesheet" href="fonts.css" />
+<style>
+  :root{
+    --bg:#0d0913;--surface:#171020;--surface2:#1e1529;--line:#2c1d38;--line2:#3a2749;
+    --magenta:#e73473;--magenta-dim:#751c3c;--cyan:#28e8b6;--ink:#f5eef2;--muted:#9c8aa8;--muted2:#6a5a78;
+    --f-disp:"Saira Condensed","Noto Sans TC","Microsoft JhengHei","PingFang TC",sans-serif;--f-body:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;--f-mono:"Chivo Mono",monospace;
+    --paper:#ffffff;--pink:#111;--pline:#999;--pmuted:#555;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--f-body)}
+
+  /* ---------- 工具列（只在螢幕上） ---------- */
+  .bar{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--line);
+    padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+  .brand{font-family:var(--f-disp);font-weight:900;font-style:italic;font-size:20px;white-space:nowrap}
+  .brand b{color:var(--magenta)}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap}
+  .tab{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line2);background:var(--surface2);
+    color:var(--muted);font:700 15px var(--f-body);cursor:pointer}
+  .tab.on{background:var(--magenta);border-color:var(--magenta);color:#fff}
+  .opts{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:15px}
+  .opts label{display:flex;align-items:center;gap:6px;min-height:44px;cursor:pointer}
+  .opts select{font:16px var(--f-body);min-height:44px;padding:0 8px;border-radius:8px;
+    background:var(--surface2);color:var(--ink);border:1px solid var(--line2)}
+  .opts input[type=checkbox]{width:20px;height:20px}
+  .btn{min-height:44px;padding:0 16px;border-radius:10px;border:1px solid var(--line2);background:var(--surface2);
+    color:var(--ink);font:700 15px var(--f-body);cursor:pointer}
+  .btn.go{background:var(--cyan);border-color:var(--cyan);color:#06231a}
+  .btn:disabled{opacity:.5;cursor:default}
+  .acts{display:flex;gap:8px;margin-left:auto}
+  .stat{flex:1 0 100%;font-size:13px;color:var(--muted);font-family:var(--f-mono)}
+  .stat.err{color:#ff8fb4;font-family:var(--f-body);font-weight:700}
+  .hint{font-size:13px;color:var(--muted);flex:1 0 100%;line-height:1.5}
+
+  /* ---------- 紙面（螢幕預覽 + 列印） ---------- */
+  .sheets{padding:16px;display:flex;flex-direction:column;align-items:center;gap:16px}
+  .sheet{background:var(--paper);color:#111;width:100%;max-width:210mm;padding:12mm 10mm;border-radius:4px;
+    font-family:var(--f-body);font-size:12px;line-height:1.35}
+  .empty{color:var(--muted);padding:40px 16px;text-align:center;font-size:15px;line-height:1.6}
+  .sh{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #111;
+    padding-bottom:4px;margin-bottom:8px;gap:10px}
+  .sh h2{margin:0;font-size:18px}
+  .sh .ts{font-size:11px;color:var(--pmuted);white-space:nowrap}
+  h3{font-size:14px;margin:12px 0 4px}
+  h3 .n{font-weight:400;color:var(--pmuted);font-size:12px}
+  .note{font-size:11px;color:var(--pmuted);margin:2px 0 6px}
+  table{width:100%;border-collapse:collapse;margin-bottom:4px;color:inherit;font-size:inherit}
+  th,td{border:1px solid var(--pline);padding:3px 5px;text-align:left;vertical-align:middle}
+  th{background:#eee;font-size:11px;font-weight:700}
+  td.c,th.c{text-align:center}
+  td.code{font-family:var(--f-mono);font-size:11px;white-space:nowrap;width:1%;min-width:46px}
+  th{white-space:nowrap}
+  td.mid{font-family:var(--f-mono);font-size:11px;white-space:nowrap;width:1%}
+  td.sc{font-family:var(--f-mono);text-align:center;white-space:nowrap;width:12%}
+  td.box{width:9%}
+  .win{font-weight:900}
+  .tbd{color:var(--pmuted);font-style:italic}
+  .done td{color:#666}
+  .done td.win{color:#111}
+  tr{page-break-inside:avoid;break-inside:avoid}
+
+  .grp{page-break-inside:avoid;break-inside:avoid;margin-bottom:10px}
+  .grid td{height:22px}
+
+  /* 結果單：一張 A4 放四張，沿虛線剪開 */
+  .slip{border:1.5px solid #111;border-radius:3px;padding:7px 9px;margin-bottom:6mm;
+    page-break-inside:avoid;break-inside:avoid;position:relative}
+  .slip+.slip::before{content:"";position:absolute;left:-4mm;right:-4mm;top:-3.6mm;border-top:1px dashed #999}
+  .slip .hd{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:5px}
+  .slip .hd .ev{font-weight:900;font-size:13px}
+  .slip .hd .id{font-family:var(--f-mono);font-size:15px;font-weight:700}
+  .slip .hd .rd{font-size:12px}
+  .slip .hd .tb{margin-left:auto;font-size:12px}
+  .slip .hd .sys{font-family:var(--f-mono);font-size:10px;color:var(--pmuted)}
+  .slip table td{height:30px}
+  .slip td.tot{width:16%;font-size:10px;color:var(--pmuted);vertical-align:top}
+  .slip .pname{font-size:15px;font-weight:700}
+  .slip .ticks{display:flex;gap:3px}
+  .slip .ticks i{display:inline-block;width:16px;height:16px;border:1px solid #777}
+  .slip .ft{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;margin-top:5px;align-items:center}
+  .slip .ft .rule{color:var(--pmuted)}
+  .slip .ft .sig{margin-left:auto}
+  .sq{display:inline-block;width:13px;height:13px;border:1.3px solid #111;vertical-align:-2px;margin-right:3px}
+
+  @media (max-width:640px){
+    .brand{font-size:18px}
+    .acts{margin-left:0;flex:1 0 100%}
+    .acts .btn{flex:1}
+    .sheets{padding:10px 0}
+    .sheet{padding:10px 8px;border-radius:0}
+    .sheet{overflow-x:auto}
+  }
+
+  @media print{
+    @page{size:A4;margin:9mm}
+    body{background:#fff;color:#111}
+    .bar,.empty{display:none !important}
+    .sheets{padding:0;display:block}
+    .sheet{max-width:none;padding:0;border-radius:0;page-break-after:always;break-after:page}
+    .sheet:last-child{page-break-after:auto;break-after:auto}
+    th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+.orgwrap,.orgbar{display:none!important}</style>
+
+<div class="bar">
+  <div class="brand"><b>贊鬥盃</b> 紙本備援</div>
+  <div class="tabs" id="tabs">
+    <button class="tab" data-v="qual">資格賽對戰表</button>
+    <button class="tab" data-v="final">16 強分組表</button>
+    <button class="tab" data-v="slip">結果單</button>
+  </div>
+  <div class="opts" id="opts"></div>
+  <div class="acts">
+    <button class="btn" id="reload">重新抓資料</button>
+    <button class="btn go" id="print">列印</button>
+  </div>
+  <div class="stat" id="stat">讀取中…</div>
+</div>
+<div class="sheets" id="out"></div>
+
+<script>
+const READ_BASE=".";  // 部署時填 CDN 網址（空 = 同源）
+const DIVS=["A","B","C","D"];
+// 跟 brain.py 的 RR_SCHEDULE 同一份：籤位 1v2/3v4、1v3/2v4、1v4/2v3
+const RR_SCHEDULE=[[[0,1],[2,3]],[[0,2],[1,3]],[[0,3],[1,2]]];
+// 跟 brain.py 的 WIN_TYPES 同一份（印在結果單上給裁判對照）
+const WIN_RULE="極限 3・擊飛 2・爆裂 2・迴轉 1";
+
+let SNAP=null, SNAP_AT=0, LOAD_ERR="";
+const S={view:"qual", div:"ALL", hideDone:false, slipScope:"qual", slipTbd:false};
+try{ Object.assign(S, JSON.parse(localStorage.getItem("zanmen_print")||"{}")); }catch(e){}
+function saveS(){ try{ localStorage.setItem("zanmen_print", JSON.stringify(S)); }catch(e){} }
+
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const hhmm=t=>{const d=new Date(t);return d.toLocaleString("zh-TW",{hour12:false,month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit",second:"2-digit"});};
+const stamp=()=>`資料時間 ${esc(hhmm(SNAP_AT))}`;
+
+async function load(){
+  const b=document.getElementById("reload"); b.disabled=true;
+  try{
+    const r=await fetch(READ_BASE+"/snapshot.json",{cache:"no-store"});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const d=await r.json();
+    if(!d||!d.bracket||!d.state) throw new Error("資料格式不對");
+    SNAP=d; SNAP_AT=Date.now(); LOAD_ERR="";
+  }catch(e){
+    LOAD_ERR=String(e&&e.message||e);
+  }finally{ b.disabled=false; render(); }
+}
+
+/* ---------- 工具 ---------- */
+function pname(p){ return p ? `<span>${esc(p.name||p.code)}</span>` : ""; }
+function pcode(p){ return p ? esc(p.code) : ""; }
+// 系統的場次編號從 R0 起算（A-R0-M05），但畫面和標題都寫「第 1 輪／R1」。
+// 紙上一律換成 R1-M05，不然裁判會以為 R0 是另一輪。
+function shortId(id){ return String(id).replace(/^[A-D]-R(\d+)-/,(_,n)=>`R${+n+1}-`); }
+function isBye(m){ return m.state==="complete" && (!m.p1 || !m.p2); }
+// 單淘汰：第 r 輪第 i 場由上一輪第 2i、2i+1 場的勝者進來（brain.py build_division 的固定樹）
+function feeder(rounds, ri, mi, side){
+  if(ri===0) return "（輪空）";
+  const prev=rounds[ri-1].matches[mi*2+(side==="p1"?0:1)];
+  return prev ? `${shortId(prev.id)} 勝者` : "待定";
+}
+function divsSel(){ return S.div==="ALL"?DIVS:[S.div]; }
+
+/* ---------- ① 資格賽對戰表 ---------- */
+function renderQual(){
+  const br=SNAP.bracket||{}; let html="";
+  for(const dv of divsSel()){
+    const d=br[dv]; if(!d) continue;
+    const rounds=d.rounds||[]; let body="";
+    rounds.forEach((r,ri)=>{
+      const ms=r.matches.map((m,mi)=>({m,mi})).filter(x=>!isBye(x.m));
+      const left=ms.filter(x=>x.m.state!=="complete").length;
+      const show=S.hideDone?ms.filter(x=>x.m.state!=="complete"):ms;
+      if(!show.length) return;
+      const last=ri===rounds.length-1;
+      body+=`<h3>第 ${ri+1} 輪（R${ri+1}） <span class="n">共 ${ms.length} 場，未完成 ${left} 場</span></h3>`;
+      if(last) body+=`<div class="note">本區最後一輪：勝者進「勝部」、敗者進「敗部」，兩邊都晉級 16 強。</div>`;
+      body+=`<table><tr><th>場次</th><th>編號</th><th>選手</th><th class="c">比分</th><th>編號</th><th>選手</th><th class="c">勝方</th></tr>`;
+      for(const {m,mi} of show){
+        const done=m.state==="complete";
+        const w1=m.winner==="p1", w2=m.winner==="p2";
+        const side=(k,won)=> m[k]
+          ? `<td class="code">${pcode(m[k])}</td><td class="${won?"win":""}">${pname(m[k])}</td>`
+          : `<td class="code"></td><td class="tbd">${esc(feeder(rounds,ri,mi,k))}</td>`;
+        body+=`<tr class="${done?"done":""}"><td class="mid">${esc(shortId(m.id))}</td>${side("p1",w1)}`+
+              `<td class="sc">${done&&m.s1!=null?`${m.s1} - ${m.s2}`:"　-　"}</td>${side("p2",w2)}`+
+              `<td class="box c">${done?(w1?"左":"右"):""}</td></tr>`;
+      }
+      body+=`</table>`;
+    });
+    if(!body) body=`<div class="note">這一區沒有${S.hideDone?"未完成的":""}場次。</div>`;
+    html+=`<section class="sheet"><div class="sh"><h2>${dv} 區 資格賽對戰表</h2><span class="ts">${stamp()}</span></div>${body}</section>`;
+  }
+  return html;
+}
+
+/* ---------- 16 強：循環賽結果從選手戰績找 ---------- */
+function rrResult(a,b){
+  // 回傳 a 對 b 的結果（以 a 的角度），沒打過回 null
+  const pa=(SNAP.players||{})[a]; if(!pa) return null;
+  const h=(pa.history||[]).find(x=>x.vs===b && String(x.rd).startsWith("循環"));
+  return h||null;
+}
+function groupMatches(g){
+  const gr=((SNAP.placement||{}).groups||{})[g]; const mem=(gr&&gr.members)||[];
+  const out=[];
+  if(mem.length<4) return out;
+  RR_SCHEDULE.forEach((pairs,ri)=>pairs.forEach(([a,b],pi)=>{
+    const p1=mem[a], p2=mem[b]; const r=rrResult(p1.code,p2.code);
+    out.push({id:`G${g}-${ri+1}-${pi+1}`, rd:`循環 R${ri+1}`, p1, p2, sa:a+1, sb:b+1,
+              done:!!r, w:r?(r.result==="W"?"p1":"p2"):null, score:r?r.score:null});
+  }));
+  return out;
+}
+const GROUP_NOTE={A:"勝部（抽籤 1–4 號）",B:"勝部（抽籤 5–8 號）",C:"敗部（抽籤 1–4 號）",D:"敗部（抽籤 5–8 號）"};
+
+function renderFinal(){
+  const pv=SNAP.placement||{};
+  if(!pv.drawn) return `<div class="empty">16 強還沒抽籤，這一頁沒有東西可以印。<br>抽完籤之後按「重新抓資料」。</div>`;
+  let groups="";
+  for(const g of DIVS){
+    const gr=(pv.groups||{})[g]||{}; const mem=gr.members||[];
+    const ms=groupMatches(g);
+    groups+=`<div class="grp"><h3>${g} 組 <span class="n">${GROUP_NOTE[g]}${gr.done?"・循環賽已打完":""}</span></h3>`;
+    groups+=`<table class="grid"><tr><th class="c">組內順位</th><th>編號</th><th>選手</th><th class="c">勝</th><th class="c">敗</th><th class="c">得分</th><th class="c">失分</th><th class="c">名次</th></tr>`;
+    mem.forEach((p,i)=>{ groups+=`<tr><td class="c">${i+1}</td><td class="code">${pcode(p)}</td><td>${pname(p)}</td><td class="box"></td><td class="box"></td><td class="box"></td><td class="box"></td><td class="box"></td></tr>`; });
+    groups+=`</table><table><tr><th>輪</th><th>場次</th><th>順位・選手</th><th class="c">比分</th><th>順位・選手</th><th class="c">勝方</th></tr>`;
+    for(const m of ms){
+      groups+=`<tr class="${m.done?"done":""}"><td class="mid">${esc(m.rd)}</td><td class="mid">${esc(m.id)}</td>`+
+        `<td class="${m.w==="p1"?"win":""}">${m.sa}. ${pname(m.p1)} <span class="code">${pcode(m.p1)}</span></td>`+
+        `<td class="sc">${m.done?esc(m.score):"　-　"}</td>`+
+        `<td class="${m.w==="p2"?"win":""}">${m.sb}. ${pname(m.p2)} <span class="code">${pcode(m.p2)}</span></td>`+
+        `<td class="box c">${m.done?(m.w==="p1"?"左":"右"):""}</td></tr>`;
+    }
+    groups+=`</table><div class="note">組內名次：勝場 → 同分的人互相對戰 → 得失分；三項都一樣時由主辦現場裁定。</div></div>`;
+  }
+  let place=`<table><tr><th>場次</th><th>選手</th><th class="c">比分</th><th>選手</th><th>勝者／敗者</th></tr>`;
+  for(const m of [...(pv.ab||[]),...(pv.cd||[])]){
+    const [ga,gb,r]=m.from||["?","?","?"];
+    const s=(p,lbl,won)=> p?`<td class="${won?"win":""}">${pname(p)} <span class="code">${pcode(p)}</span></td>`:`<td class="tbd">${esc(lbl)}</td>`;
+    const done=m.state==="complete";
+    place+=`<tr class="${done?"done":""}"><td class="mid">${esc(m.id)}</td>${s(m.p1,`${ga} 組第 ${r} 名`,m.winner==="p1")}`+
+      `<td class="sc">${done&&m.s1!=null?`${m.s1} - ${m.s2}`:"　-　"}</td>${s(m.p2,`${gb} 組第 ${r} 名`,m.winner==="p2")}`+
+      `<td>第 ${m.win_place}／${m.lose_place} 名</td></tr>`;
+  }
+  place+=`</table>`;
+  return `<section class="sheet"><div class="sh"><h2>16 強 小組循環賽</h2><span class="ts">${stamp()}</span></div>${groups}</section>`+
+         `<section class="sheet"><div class="sh"><h2>16 強 名次賽</h2><span class="ts">${stamp()}</span></div>`+
+         `<div class="note">A·B 兩組同名次對打爭第 1–8 名，C·D 兩組爭第 9–16 名。</div>${place}</section>`;
+}
+
+/* ---------- ③ 結果單 ---------- */
+function slipList(){
+  const out=[];
+  if(S.slipScope==="qual"){
+    const br=SNAP.bracket||{};
+    for(const dv of divsSel()){
+      const rounds=(br[dv]||{}).rounds||[];
+      rounds.forEach((r,ri)=>r.matches.forEach((m,mi)=>{
+        if(m.state==="complete") return;
+        const ready=m.p1&&m.p2;
+        if(!ready && !S.slipTbd) return;
+        out.push({id:`${dv}-${shortId(m.id)}`, sys:m.id, rd:`${dv} 區 第 ${ri+1} 輪`,
+          p1:m.p1, p2:m.p2,
+          l1:m.p1?"":feeder(rounds,ri,mi,"p1"), l2:m.p2?"":feeder(rounds,ri,mi,"p2")});
+      }));
+    }
+  }else{
+    const pv=SNAP.placement||{};
+    if(!pv.drawn) return null;
+    for(const g of DIVS) for(const m of groupMatches(g)){
+      if(m.done) continue;
+      out.push({id:m.id, rd:`${g} 組 ${m.rd}`, p1:m.p1, p2:m.p2, l1:"", l2:""});
+    }
+    for(const m of [...(pv.ab||[]),...(pv.cd||[])]){
+      if(m.state==="complete") continue;
+      const ready=m.p1&&m.p2;
+      if(!ready && !S.slipTbd) continue;
+      const [ga,gb,r]=m.from||["?","?","?"];
+      out.push({id:m.id, rd:`名次賽 第 ${m.win_place}／${m.lose_place} 名`, p1:m.p1, p2:m.p2,
+        l1:m.p1?"":`${ga} 組第 ${r} 名`, l2:m.p2?"":`${gb} 組第 ${r} 名`});
+    }
+  }
+  return out;
+}
+function slipHtml(x){
+  const ticks=`<span class="ticks">${"<i></i>".repeat(10)}</span>`;
+  const row=(p,lbl)=>`<tr><td class="code">${p?pcode(p):"編號"}</td>`+
+    `<td class="pname">${p?pname(p):`<span class="tbd">${esc(lbl)}</span>`}</td>`+
+    `<td>${ticks}</td><td class="tot">總分</td><td class="box c"><span class="sq"></span>勝</td></tr>`;
+  return `<div class="slip"><div class="hd"><span class="ev">贊鬥盃 結果單</span>`+
+    `<span class="id">${esc(x.id)}</span><span class="rd">${esc(x.rd)}</span>`+
+    // 系統編號從 R0 起算，補登（results.csv）要用這一個，所以兩個都印
+    (x.sys&&x.sys!==x.id?`<span class="sys">系統編號 ${esc(x.sys)}</span>`:"")+`<span class="tb">桌號 ______</span></div>`+
+    `<table>${row(x.p1,x.l1)}${row(x.p2,x.l2)}</table>`+
+    `<div class="ft"><span class="rule">先到 4 分・${WIN_RULE}（得分格每格記一次得分方式）</span>`+
+    `<span class="sig">裁判 ____________　時間 ___:___</span><span><span class="sq"></span>已輸入系統</span></div></div>`;
+}
+function renderSlips(){
+  const list=slipList();
+  if(list===null) return `<div class="empty">16 強還沒抽籤，沒有 16 強的結果單可以印。</div>`;
+  if(!list.length) return `<div class="empty">目前沒有需要印的結果單（${S.slipScope==="qual"?"選的分區場次都打完了，或對手還沒確定 —— 可以勾「包含對手未定的場次」":"16 強都打完了"}）。</div>`;
+  let html="", per=4;
+  for(let i=0;i<list.length;i+=per){
+    html+=`<section class="sheet"><div class="sh"><h2>結果單</h2><span class="ts">${stamp()}・第 ${i/per+1} 頁／共 ${Math.ceil(list.length/per)} 頁</span></div>`+
+      list.slice(i,i+per).map(slipHtml).join("")+`</section>`;
+  }
+  return html;
+}
+
+/* ---------- 畫面 ---------- */
+function renderOpts(){
+  const o=document.getElementById("opts");
+  const divSel=`<label>分區 <select id="oDiv">${["ALL",...DIVS].map(d=>`<option value="${d}"${S.div===d?" selected":""}>${d==="ALL"?"全部":d+" 區"}</option>`).join("")}</select></label>`;
+  if(S.view==="qual"){
+    o.innerHTML=divSel+`<label><input type="checkbox" id="oHide"${S.hideDone?" checked":""}>只印還沒打完的場次</label>`;
+  }else if(S.view==="slip"){
+    o.innerHTML=`<label>範圍 <select id="oScope"><option value="qual"${S.slipScope==="qual"?" selected":""}>資格賽</option><option value="final"${S.slipScope==="final"?" selected":""}>16 強</option></select></label>`+
+      (S.slipScope==="qual"?divSel:"")+
+      `<label><input type="checkbox" id="oTbd"${S.slipTbd?" checked":""}>包含對手未定的場次（名字留白）</label>`;
+  }else o.innerHTML="";
+  const on=(id,ev,fn)=>{const e=document.getElementById(id); if(e) e.addEventListener(ev,fn);};
+  on("oDiv","change",e=>{S.div=e.target.value; saveS(); render();});
+  on("oHide","change",e=>{S.hideDone=e.target.checked; saveS(); render();});
+  on("oScope","change",e=>{S.slipScope=e.target.value; saveS(); render();});
+  on("oTbd","change",e=>{S.slipTbd=e.target.checked; saveS(); render();});
+}
+function render(){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.dataset.v===S.view));
+  renderOpts();
+  const st=document.getElementById("stat"), out=document.getElementById("out"), pb=document.getElementById("print");
+  if(!SNAP){
+    st.className="stat err";
+    st.textContent=LOAD_ERR?`連不上大腦（${LOAD_ERR}）。沒有資料就不能印 —— 確認大腦有在跑，再按「重新抓資料」。`:"讀取中…";
+    out.innerHTML=""; pb.disabled=true; return;
+  }
+  pb.disabled=false;
+  if(LOAD_ERR){
+    st.className="stat err";
+    st.textContent=`剛才重新抓資料失敗（${LOAD_ERR}）。下面是 ${hhmm(SNAP_AT)} 抓到的舊資料，印出來的紙上也會寫這個時間。`;
+  }else{
+    st.className="stat";
+    st.textContent=`資料時間 ${hhmm(SNAP_AT)}　·　要印最新的狀況，印之前先按「重新抓資料」`;
+  }
+  out.innerHTML = S.view==="qual"?renderQual() : S.view==="final"?renderFinal() : renderSlips();
+  if(!out.innerHTML.trim()) out.innerHTML=`<div class="empty">還沒有賽程資料（可能還在報到／檢錄階段）。</div>`;
+  pb.disabled=!out.querySelector(".sheet");
+}
+
+document.getElementById("tabs").addEventListener("click",e=>{
+  const v=e.target.closest(".tab"); if(!v) return; S.view=v.dataset.v; saveS(); render();
+});
+document.getElementById("reload").addEventListener("click",load);
+document.getElementById("print").addEventListener("click",()=>window.print());
+load();
+</script>

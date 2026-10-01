@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<!--
+  贊鬥盃 BEYBLADE X — 賽況小條（角落常駐）(obs-overview-bar.html)
+  ------------------------------------------------------------------
+      OBS → 來源 → 瀏覽器
+      網址  http://<大腦IP>:8080/obs-overview-bar.html
+      寬 1920  高 1080　背景透明，內容貼在下緣
+      （不要勾「關閉來源時關閉」）
+
+  一直掛著、不擋主畫面。全螢幕版是另一個檔：obs-overview.html
+  兩個讀的是同一份 overview.json，數字不會兜不起來。
+
+  網址參數
+      ?pos=bottom|top      貼上緣或下緣（預設 bottom）
+      ?feat=1              連重點選手也一起輪播（預設只有數字）
+      ?ms=1000             多久更新一次
+-->
+<title>賽況小條 · 贊鬥盃</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root{
+    --magenta:#e73473; --cyan:#28e8b6; --amber:#ffb020; --muted:#9c8aa8; --ink:#f5eef2;
+    --f-disp:"Saira Condensed","Noto Sans TC","Microsoft JhengHei","PingFang TC",sans-serif;
+    --f-mono:"Chivo Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0}
+  /* 疊圖一定要透明背景，OBS 才疊得上去 */
+  html,body{height:100%;background:transparent;overflow:hidden;
+    font-family:var(--f-disp);color:var(--ink);-webkit-font-smoothing:antialiased}
+  .bar{position:absolute;left:48px;right:48px;display:flex;align-items:center;gap:26px;
+    background:#0d0913e8;border:1px solid #ffffff1f;border-radius:16px;
+    padding:14px 26px;box-shadow:0 18px 50px -18px #000}
+  .bar.bottom{bottom:44px}
+  .bar.top{top:44px}
+
+  .tag{font-family:var(--f-mono);font-size:14px;letter-spacing:.2em;color:var(--muted);
+    border:1px solid #ffffff26;border-radius:999px;padding:5px 13px;flex:0 0 auto}
+  .n{font-family:var(--f-disp);font-weight:900;font-size:46px;line-height:1;color:var(--cyan);
+    padding-block:.08em;margin-block:-.08em}
+  .lab{font-size:15px;color:var(--muted);margin-left:-14px}
+  .prog{flex:0 0 260px}
+  .prog .bar2{height:9px;border-radius:999px;background:#ffffff1f;overflow:hidden}
+  .prog .bar2 i{display:block;height:100%;background:linear-gradient(90deg,var(--magenta),var(--cyan))}
+  .prog .m{font-family:var(--f-mono);font-size:13px;color:var(--muted);margin-top:5px}
+
+  .feat{margin-left:auto;display:flex;align-items:center;gap:14px;overflow:hidden;flex:0 1 auto}
+  .fp{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+  .fp .dot{width:10px;height:10px;border-radius:50%;background:var(--c);flex:0 0 auto}
+  .fp .nm{font-weight:900;font-size:24px;color:var(--c);white-space:nowrap;
+    padding-block:.14em;margin-block:-.14em}
+  .fp.out{opacity:.38}
+  .fp.out .nm{color:var(--muted);text-decoration:line-through;text-decoration-thickness:2px}
+  .fp.out .dot{background:var(--muted)}
+
+  .off{display:none;align-items:center;gap:8px;font-family:var(--f-mono);
+    font-size:14px;color:#ff5a6a;margin-left:auto}
+  .off.on{display:flex}
+  .off i{width:9px;height:9px;border-radius:50%;background:#ff5a6a;animation:bk 1.2s infinite}
+  @keyframes bk{50%{opacity:.25}}
+
+  /* ══ 粉白配色　?theme=pink ══════════════════════════════════ */
+  html.pink{ --magenta:#EE1F7A; --cyan:#EE1F7A; --amber:#c8761a; --ink:#14141C;
+             --muted:rgba(20,20,28,.60); }
+  html.pink .bar{background:#fffffff2;border-color:rgba(238,31,122,.30);
+                 box-shadow:0 18px 50px -18px rgba(238,31,122,.45)}
+  html.pink .tag{color:rgba(20,20,28,.55);border-color:rgba(238,31,122,.30)}
+  html.pink .prog .bar2{background:rgba(238,31,122,.16)}
+  html.pink .prog .bar2 i{background:linear-gradient(90deg,#EE1F7A,#ff7ab0)}
+  /* 同上：白底上名字用深色，顏色留在圓點上 */
+  html.pink .fp .nm{color:var(--ink)}
+  html.pink .fp.out .nm{color:rgba(20,20,28,.42)}
+  html.pink .fp.out .dot{background:rgba(20,20,28,.42)}
+  html.pink .off{color:#c8102e}
+  html.pink .off i{background:#c8102e}
+.orgwrap,.orgbar{display:none!important}</style>
+</head>
+<body>
+<div class="bar bottom" id="bar" style="display:none">
+  <span class="tag" id="phase">—</span>
+  <span class="n" id="alive">—</span><span class="lab">人存活</span>
+  <div class="prog">
+    <div class="bar2"><i id="pi" style="width:0%"></i></div>
+    <div class="m" id="pm">— / — 場</div>
+  </div>
+  <div class="feat" id="feat"></div>
+  <div class="off" id="off"><i></i>斷線</div>
+</div>
+
+<script>
+// 配色：?theme=pink（或 &light=1）切成粉白版，跟待機三卡同一套。
+// 沒帶參數就是原本的深色版。
+(function(){
+  var q = new URLSearchParams(location.search);
+  // 粉白是預設，深色版才帶 ?dark=1（或 ?theme=dark）。
+  // 舊網址上的 ?light=1 / ?theme=pink 留著也不會壞，只是變成多餘的。
+  if (!q.has("dark") && q.get("theme") !== "dark")
+    document.documentElement.classList.add("pink");
+})();
+</script>
+<script>
+const $ = s => document.querySelector(s);
+const Q  = new URLSearchParams(location.search);
+const MS = +Q.get("ms") || 1000;
+const esc = s => String(s==null?"":s).replace(/[&<>"]/g,
+  c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const PHASE = {qual:"資格賽", finals:"16 強決賽", done:"賽事結束"};
+
+$("#bar").className = "bar " + (Q.get("pos") === "top" ? "top" : "bottom");
+const SHOW_FEAT = Q.get("feat") !== "0";
+
+/* 逾時保護：理由見 obs-overlay.html 同一段。這條小條是整場常駐的，
+   主機睡著時如果紅點不亮，它會安靜地顯示過期的存活人數。 */
+function grab(url, ms){
+  const c = new AbortController(), t = setTimeout(() => c.abort(), ms);
+  return fetch(url, {cache:"no-store", signal:c.signal}).finally(() => clearTimeout(t));
+}
+
+let lastSig = "";
+let busyPull = false;
+async function pull(){
+  if (busyPull) return;
+  busyPull = true;
+  try { await pullOnce(); } finally { busyPull = false; }
+}
+
+async function pullOnce(){
+  let d;
+  try{
+    const r = await grab("/overview.json", Math.max(2500, MS * 3));
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    d = await r.json();
+    $("#off").classList.remove("on");
+  }catch(e){
+    $("#off").classList.add("on");      // 只亮一顆紅點，不蓋主畫面
+    return;
+  }
+  if(!d || d.error) return;
+  $("#bar").style.display = "";
+  const sig = JSON.stringify([d.phase,d.alive,d.matches,d.progress||null,
+                              (d.featured||[]).map(f=>[f.code,f.alive])]);
+  if(sig === lastSig) return;
+  lastSig = sig;
+
+  $("#phase").textContent = PHASE[d.phase] || "";
+  $("#alive").textContent = d.alive;
+  // d.matches 缺欄（overview.json 剛好被讀到一半）時不要裸 deref → TypeError 會讓這一次
+  // 更新整個跳過。兜個空物件，這一格顯示 0 就好，下一輪就補回來。
+  // 還剩幾場：資格賽看四區合計，抽完籤之後看 16 強兩半合計（brain.py progress_view）
+  const P = d.progress || {};
+  const fin = d.phase !== "qual" && (P.F1 || P.F2);
+  const M = fin ? {left:(P.F1?P.F1.left:0)+(P.F2?P.F2.left:0), total:(P.F1?P.F1.total:0)+(P.F2?P.F2.total:0)}
+                : {left:Math.max(0,((d.matches||{}).total||0)-((d.matches||{}).done||0)), total:(d.matches||{}).total||0};
+  const pct = M.total ? Math.round((M.total - M.left) / M.total * 100) : 0;
+  $("#pi").style.width = pct + "%";
+  $("#pm").textContent = `${fin?"16 強":""}還剩 ${M.left} 場 · ${pct}%`;
+
+  const rows = SHOW_FEAT ? (d.featured||[]).filter(f=>f.found) : [];
+  // 小條放不下太多人：活著的優先，最多六位
+  rows.sort((a,b)=> (a.alive===b.alive) ? 0 : (a.alive ? -1 : 1));
+  $("#feat").innerHTML = rows.slice(0,6).map(f=>`
+    <span class="fp ${f.alive?'':'out'}" style="--c:${esc(f.color)}">
+      <span class="dot"></span><span class="nm">${esc(f.name)}</span>
+    </span>`).join("");
+}
+pull(); setInterval(pull, MS);
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>找不到這一頁</title>
+<script>
+(function(){
+  var p = location.pathname;
+  if (/^\/demo(\/|$)/.test(p)) {
+    location.replace(p.replace(/^\/demo/, "/riftbound_DEMO") + location.search + location.hash);
+  }
+})();
+</script>
+<style>body{margin:0;background:#0d0913;color:#f5eef2;font:16px "Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+padding:48px 16px}a{color:#28e8b6}</style>
+</head><body><p>找不到這一頁。回到 <a href="/">首頁</a>。</p></body></html>

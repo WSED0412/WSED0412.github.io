@@ -1,0 +1,1043 @@
+<!--
+  贊鬥盃 BEYBLADE X — 觀眾即時戰績查詢 (demo)
+  ------------------------------------------------------------------
+  觀眾用手機查：搜尋選手 → 即時狀態 + 戰績 + 對戰歷史；另有循環賽積分榜、
+  現正開打、最新結果。現在跑假資料，還會自己動（模擬比賽進行中）。
+  之後接真資料時，只要把 loadData() 換成 fetch 你發佈的
+      players.json / standings.json / state.json
+  就好（見 ===== DATA SOURCE ===== 註記）。這頁是純靜態，丟到
+  Cloudflare Pages / Netlify / GitHub Pages 就能給整場觀眾用，沒有 API 次數問題。
+-->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>贊鬥盃 · 即時戰績查詢</title>
+<link rel="stylesheet" href="fonts.css" />
+
+<style>
+  :root{
+    --bg:#0d0913;--bg2:#140d1c;--surface:#1b1224;--surface2:#22182d;--line:#33223f;
+    --magenta:#e73473;--magenta-dim:#751c3c;--cyan:#28e8b6;--cyan-dim:#0e5b48;
+    --amber:#ffb020;--red:#ff5a6a;--ink:#f5eef2;--muted:#9c8aa8;--muted2:#6f5f7d;
+    --f-disp:"Saira Condensed","Noto Sans TC","Microsoft JhengHei","PingFang TC",sans-serif;
+    --f-body:"Noto Sans TC","Microsoft JhengHei","PingFang TC","Inter",system-ui,sans-serif;
+    --f-mono:"Chivo Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{background:
+      radial-gradient(600px 380px at 90% -8%, #2a0f2340, transparent 60%),
+      var(--bg);
+    color:var(--ink);font-family:var(--f-body);-webkit-font-smoothing:antialiased;
+    max-width:520px;margin:0 auto;min-height:100vh;padding-bottom:40px}
+
+  /* header + search (sticky) */
+  .top{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,#160e1f,#160e1fe0);
+    -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:14px 16px 12px}
+  .brand{display:flex;align-items:baseline;gap:9px}
+  /* 這一列在 380px 手機上最擠：標誌收到 1em，讓「BEYBLADE X」和右側即時字樣不會被擠換行 */
+  .brand .c .logo{height:1em;vertical-align:-.12em}
+  .brand .c{font-family:var(--f-disp);font-weight:900;font-style:italic;font-size:23px;
+    min-width:0;white-space:nowrap}
+  .brand .c b{color:var(--magenta)}
+  .brand .live{margin-left:auto;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+  .brand .live i{color:var(--cyan);font-style:normal}
+  .brand .live .dot{display:inline-block;width:7px;height:7px;border-radius:50%;
+    background:var(--cyan);margin-right:5px;animation:blink 1.6s ease-in-out infinite;vertical-align:middle}
+  @keyframes blink{50%{opacity:.25}}
+  .search{margin-top:11px;position:relative}
+  .search input{width:100%;font-family:var(--f-body);font-size:16px;color:var(--ink);
+    background:var(--surface);border:1px solid var(--line);border-radius:13px;
+    padding:13px 14px 13px 42px;outline:none;transition:.15s}
+  .search input:focus{border-color:var(--magenta);background:#1f1428}
+  .search .ico{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted2);font-size:17px}
+
+  /* tabs */
+  .tabs{display:flex;gap:6px;padding:12px 16px 4px}
+  .tab{flex:1;font-family:var(--f-body);font-weight:700;font-size:14px;color:var(--muted);
+    background:transparent;border:0;border-bottom:2px solid transparent;padding:8px 4px;cursor:pointer;transition:.15s}
+  .tab.on{color:var(--ink);border-color:var(--magenta)}
+
+  .wrap{padding:6px 16px 0}
+  .sec-h{font-family:var(--f-disp);font-weight:900;font-size:15px;letter-spacing:.06em;
+    color:var(--muted);margin:18px 2px 9px;text-transform:uppercase}
+
+  /* generic card */
+  .card{background:linear-gradient(180deg,var(--surface),var(--bg2));
+    border:1px solid var(--line);border-radius:15px;padding:13px 14px;margin-bottom:9px}
+
+  /* status pill */
+  .pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;
+    padding:3px 9px;border-radius:999px;white-space:nowrap}
+  .pill.playing{background:#e734731f;color:#ff9ccb}
+  .pill.playing .d{width:6px;height:6px;border-radius:50%;background:var(--magenta);animation:blink 1.2s infinite}
+  .pill.advanced{background:#28e8b61f;color:var(--cyan)}
+  .pill.waiting{background:#ffb0201f;color:var(--amber)}
+  .pill.eliminated{background:#ffffff10;color:var(--muted)}
+  .pill.done{background:#ffb0201f;color:var(--amber)}   /* 名次已定 */
+
+  /* search result rows */
+  .row{display:flex;align-items:center;gap:12px;padding:12px 13px;cursor:pointer;
+    background:var(--surface);border:1px solid var(--line);border-radius:13px;margin-bottom:7px;transition:.12s}
+  .row:active{transform:scale(.99)}
+  .row:hover{border-color:var(--magenta-dim)}
+  .row .code{font-family:var(--f-mono);font-size:13px;color:var(--ink);width:56px;flex:0 0 auto}
+  .row .nm{font-family:var(--f-disp);font-weight:700;font-size:19px}
+  .row .rt{margin-left:auto;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+  .row .rt b{color:var(--cyan)}.row .rt i{color:var(--red);font-style:normal}
+
+  /* player detail */
+  .pcard-head{display:flex;align-items:flex-start;gap:13px}
+  .avatar{width:52px;height:52px;border-radius:14px;flex:0 0 auto;display:grid;place-items:center;
+    background:var(--surface2);border:1px solid var(--line);font-family:var(--f-disp);font-weight:900;
+    font-size:15px;color:var(--magenta);position:relative}
+  .avatar.playing::before{content:"";position:absolute;inset:-3px;border-radius:16px;
+    background:conic-gradient(from 0deg,var(--magenta),#ff7ab3,transparent 55%,var(--magenta));
+    -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 3px));
+            mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 3px));
+    animation:spin 1.15s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .pcard-head .who{min-width:0}
+  .pcard-head .who .nm{font-family:var(--f-disp);font-weight:900;font-size:26px;line-height:1.05}
+  .pcard-head .who .cd{font-family:var(--f-mono);font-size:13px;color:var(--ink);margin-top:2px}
+  .pcard-head .rec{margin-left:auto;text-align:right;flex:0 0 auto}
+  .pcard-head .rec .v{font-family:var(--f-disp);font-weight:900;font-size:26px}
+  .pcard-head .rec .v b{color:var(--cyan)}.pcard-head .rec .v i{color:var(--red);font-style:normal}
+  .pcard-head .rec .k{font-size:10px;letter-spacing:.15em;color:var(--muted2)}
+
+  .nowbox{margin-top:12px;border-radius:12px;padding:11px 12px;
+    background:#e7347314;border:1px solid var(--magenta-dim)}
+  .nowbox.next{background:#ffb02012;border-color:#7a5a12}
+  .nowbox .lab{font-size:11px;letter-spacing:.14em;color:#ff9ccb;text-transform:uppercase}
+  .nowbox.next .lab{color:var(--amber)}
+  .nowbox .mt{display:flex;align-items:center;gap:8px;margin-top:5px}
+  .nowbox .mt .vs{font-family:var(--f-disp);font-weight:900;font-size:18px}
+  .nowbox .mt .tb{margin-left:auto;font-family:var(--f-mono);font-size:13px;color:var(--ink);
+    background:#00000030;padding:3px 9px;border-radius:8px}
+
+  .hist{margin-top:6px}
+  .hrow{display:flex;align-items:center;gap:11px;padding:9px 2px;border-bottom:1px solid #ffffff08}
+  .hrow:last-child{border-bottom:0}
+  .hrow .rd{font-family:var(--f-mono);font-size:11px;color:var(--muted);width:46px;flex:0 0 auto}
+  .hrow .wl{width:22px;height:22px;flex:0 0 auto;border-radius:6px;display:grid;place-items:center;
+    font-family:var(--f-disp);font-weight:900;font-size:13px}
+  .hrow .wl.W{background:#28e8b61f;color:var(--cyan)}
+  .hrow .wl.L{background:#ff5a6a1f;color:var(--red)}
+  .hrow .op{font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hrow .op .oc{font-family:var(--f-mono);font-size:11px;color:var(--muted2);margin-right:6px}
+  .hrow .sc{margin-left:auto;font-family:var(--f-mono);font-size:14px;color:var(--muted)}
+
+  .back{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--muted);
+    background:transparent;border:0;cursor:pointer;padding:4px 0 10px}
+
+  /* standings */
+  .grp{margin-bottom:14px}
+  .grp .gh{font-family:var(--f-disp);font-weight:900;font-size:16px;margin:0 2px 7px;display:flex;align-items:center;gap:8px}
+  .grp .gh .tag{font-size:11px;color:var(--muted);font-weight:400;font-family:var(--f-body)}
+  table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:13px;overflow:hidden}
+  th,td{text-align:left;padding:9px 11px;font-size:14px}
+  th{font-family:var(--f-body);font-weight:500;font-size:11px;letter-spacing:.1em;color:var(--muted2);
+    text-transform:uppercase;background:#ffffff06}
+  td.r{font-family:var(--f-disp);font-weight:900;width:26px;color:var(--muted)}
+  tr.adv td.r{color:var(--cyan)}
+  tr.adv{background:#28e8b60a}
+  td .nm{font-family:var(--f-disp);font-weight:700;font-size:16px}
+  td .cd{font-family:var(--f-mono);font-size:10.5px;color:var(--ink)}
+  td.num{font-family:var(--f-mono);text-align:center;width:38px}
+  .adv-note{font-size:11px;color:var(--cyan);margin:2px 2px 0}
+  /* 同分標示：勝場、交手、小分差三項都分不出高下的人。
+     只是提醒，名次仍照現有規則排 —— 要不要加賽是主辦的決定。 */
+  .tiechip{display:inline-block;margin-left:6px;padding:1px 6px;border-radius:6px;
+    font-family:var(--f-body);font-size:10px;font-weight:500;letter-spacing:.04em;
+    color:var(--amber);background:#f5a62318;border:1px solid #f5a62355;vertical-align:2px}
+  tr.tied td.r{color:var(--amber)}
+  .tienote{font-size:11.5px;color:var(--amber);margin:7px 2px 0;line-height:1.5}
+  /* bracket tree */
+  .brtabs{display:flex;gap:6px;margin:2px 0 12px}
+  .brtab{flex:1;border:1px solid var(--line);background:var(--surface);color:var(--muted);
+    border-radius:10px;padding:8px 0;font-family:var(--f-disp);font-weight:900;font-size:15px;cursor:pointer}
+  .brtab.on{background:var(--magenta);border-color:var(--magenta);color:#fff}
+  .brscroll{overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch}
+  .brflow{display:flex;gap:16px;width:max-content;align-items:flex-start}
+  .brcol{display:flex;flex-direction:column;gap:9px;min-width:170px}
+  .brh{font-family:var(--f-disp);font-weight:900;font-size:14px;color:var(--muted);
+    letter-spacing:.05em;position:sticky;top:0}
+  .brm{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .brrow{display:flex;align-items:center;gap:7px;padding:8px 9px}
+  .brrow+.brrow{border-top:1px solid var(--line)}
+  .brs{font-family:var(--f-mono);font-size:10px;color:var(--muted2);width:14px;text-align:center;flex:0 0 auto}
+  .brn{font-family:var(--f-disp);font-weight:700;font-size:14px;color:var(--muted);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:96px}
+  .brsc{margin-left:auto;font-family:var(--f-mono);font-size:13px;color:var(--muted2);flex:0 0 auto}
+  .brrow.win .brn{color:var(--ink)} .brrow.win .brsc{color:var(--cyan)}
+  .brrow.win::before{content:"";width:3px;align-self:stretch;background:var(--magenta);margin:-8px 0 -8px -9px}
+  .brrow.tbd .brn{color:var(--muted2)}
+  /* 賽程檢視切換（索引 / 整棵樹） */
+  .schtog{display:flex;gap:6px;margin:0 0 12px}
+  .schtog button{flex:1;border:1px solid var(--line);background:var(--surface);color:var(--muted);
+    border-radius:10px;padding:9px 0;font-family:var(--f-body);font-weight:700;font-size:13px;cursor:pointer;transition:.12s}
+  .schtog button.on{background:var(--magenta);border-color:var(--magenta);color:#fff}
+  /* 整棵樹：輪次表頭場數、對戰編號、進行中高亮 */
+  .brhbox{position:sticky;top:0;background:linear-gradient(180deg,var(--bg) 72%,transparent);padding-bottom:7px;z-index:2}
+  .brhc{font-family:var(--f-mono);font-size:10px;color:var(--muted2);margin-top:2px}
+  .brmw{display:flex;flex-direction:column}
+  .brlbl{font-family:var(--f-mono);font-size:10px;color:var(--muted2);margin:0 0 3px 2px}
+  .brm.open{border-color:#751c3c;box-shadow:0 0 0 1px #e7347314 inset}
+  /* placement */
+  .pmatch{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);
+    border-radius:11px;padding:9px 11px;margin-bottom:7px}
+  .pmatch .pp{font-family:var(--f-mono);font-size:11px;color:var(--amber);flex:0 0 auto;width:70px}
+  .pmatch .pn{font-family:var(--f-disp);font-weight:700;font-size:15px;color:var(--muted);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;text-align:center}
+  .pmatch .pn.w{color:var(--cyan)}
+  .pmatch .pv{font-family:var(--f-disp);font-weight:900;font-size:11px;color:var(--magenta);flex:0 0 auto}
+  .pmatch.pend{opacity:.75}
+  .pmatch .pn.tbd{color:var(--muted2);font-style:italic}
+  .tbdnote{font-size:11px;color:var(--muted2);margin:8px 2px 0;line-height:1.6}
+  /* 賽程總覽清單 */
+  .srow{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);
+    border-radius:13px;padding:14px 14px;margin-bottom:8px;cursor:pointer;transition:.12s}
+  .srow:active{transform:scale(.99)} .srow:hover{border-color:var(--magenta-dim)}
+  .srow .sl{min-width:0;flex:1}
+  .srow .st{font-family:var(--f-disp);font-weight:900;font-size:19px}
+  .srow .ss{font-size:12px;color:var(--muted);margin-top:2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .srow .stag{flex:0 0 auto;font-size:11px;color:var(--cyan);border:1px solid var(--cyan-dim);
+    border-radius:999px;padding:3px 9px}
+  .srow .sar{flex:0 0 auto;color:var(--muted2);font-size:20px;line-height:1}
+  /* 最新結果 */
+  .rrow{background:var(--surface);border:1px solid var(--line);border-radius:13px;
+    padding:11px 13px;margin-bottom:7px}
+  .rmain{display:flex;align-items:baseline;gap:8px;min-width:0}
+  .rmain .rw{font-family:var(--f-disp);font-weight:900;font-size:18px;color:var(--cyan);cursor:pointer;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:42%}
+  .rmain .rd{font-size:11px;color:var(--ink);flex:0 0 auto}
+  .rmain .rl{font-family:var(--f-disp);font-weight:700;font-size:17px;color:var(--muted);cursor:pointer;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:42%}
+  .rmeta{display:flex;align-items:center;gap:7px;margin-top:4px;font-family:var(--f-mono);font-size:11px;color:var(--muted2)}
+  .rmeta .rvs{opacity:.5}
+  .rmeta .rrd{margin-left:auto;color:var(--muted)}
+  .rmeta .rsc{color:var(--ink);background:#ffffff0d;border-radius:6px;padding:2px 7px}
+  .grp .gh .tag.ok{color:var(--cyan)}
+  .finalr{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .fr{display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--line);
+    border-radius:10px;padding:8px 10px}
+  .fr .frn{font-family:var(--f-disp);font-weight:900;font-size:17px;color:var(--magenta);width:22px;text-align:center}
+  .fr:nth-child(1) .frn,.fr:nth-child(2) .frn,.fr:nth-child(3) .frn{color:var(--cyan)}
+  .fr .frname{font-family:var(--f-disp);font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  /* now-playing / recent */
+  .np{display:flex;align-items:center;gap:11px;padding:11px 13px;background:var(--surface);
+    border:1px solid var(--magenta-dim);border-radius:13px;margin-bottom:7px}
+  .np .t{width:34px;height:34px;flex:0 0 auto;border-radius:9px;display:grid;place-items:center;
+    font-family:var(--f-disp);font-weight:900;background:var(--surface2);border:1px solid var(--line);color:var(--magenta)}
+  .np .t small{display:block;font-size:8px;color:var(--ink);font-weight:400}
+  .np .m{min-width:0}
+  /* 改用 flex：名字和比分之間有固定的 gap，不會像原本那樣黏在一起；
+     名字用 flex 自然分配剩下的寬度，不用靠寫死的百分比去猜 */
+  .np .m .vs{font-family:var(--f-disp);font-weight:700;font-size:16px;
+    display:flex;align-items:baseline;gap:6px;white-space:nowrap;overflow:hidden}
+  .np .m .rd{font-family:var(--f-mono);font-size:11px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .np .d{margin-left:auto}
+  .np.wait{border-color:#7a5a12}
+  .np .m .vs .pn{font-family:var(--f-disp);font-weight:700;
+    flex:0 1 auto;min-width:0;overflow:hidden;vertical-align:bottom}
+  .np .m .vs .sv{font-family:var(--f-disp);font-weight:900;font-size:19px;color:var(--cyan);
+    flex:0 0 auto;transform-origin:center}
+  .np .m .vs .dash{color:var(--muted2);font-size:12px;flex:0 0 auto}
+  .np .m{position:relative}
+  /* 手機直立：兩個名字改成上下兩行。
+     左右並排時，扣掉桌號、比分、右邊的狀態欄，每個名字只剩 ~72px ——
+     8 字暱稱會被縮到 10px 還得跑馬燈，等於看不到。疊起來每行就有整條可用。
+     用 grid 而不是 nth-child 指定位置：加分時會多插一顆 .pop，
+     子元素序號會跑掉，但 .pop 是絕對定位、不參與 grid 自動排版，
+     所以「.pn 走第一欄、.sv 走第二欄」按 DOM 順序自己就排成兩列。 */
+  @media (max-width:520px){
+    .np .m{flex:1 1 auto}
+    .np .m .vs{display:grid;grid-template-columns:minmax(0,1fr) auto;
+      column-gap:8px;row-gap:3px;overflow:visible}
+    /* justify-self:start 讓虛線底線只畫在文字下面，不要拉滿整格 */
+    .np .m .vs > .pn{grid-column:1;justify-self:start;max-width:100%}
+    .np .m .vs > .sv{grid-column:2;justify-self:end}
+    .np .m .vs > .dash{display:none}
+  }
+  @keyframes svPop{0%{transform:scale(1)}25%{transform:scale(1.6);color:#fff}100%{transform:scale(1)}}
+  .np .sv.bump{animation:svPop .55s cubic-bezier(.2,.9,.3,1.4)}
+  @keyframes svFloat{0%{opacity:0;transform:translateY(3px)}20%{opacity:1}100%{opacity:0;transform:translateY(-20px)}}
+  .np .pop{position:absolute;right:0;top:-2px;font-family:var(--f-disp);font-weight:900;font-size:15px;
+    color:var(--magenta);pointer-events:none;animation:svFloat 1.3s ease-out forwards}
+  .recent{font-family:var(--f-mono);font-size:13px;color:var(--muted);line-height:2}
+  .recent b{color:var(--cyan)} .recent i{color:var(--muted2);font-style:normal}
+  .recent .code{color:var(--ink)}
+
+  .empty{color:var(--muted2);text-align:center;padding:34px 12px;font-size:14px}
+  .hidden{display:none}
+  @media (prefers-reduced-motion:reduce){.avatar.playing::before,.pill .d,.live .dot{animation:none}}
+
+  /* 活動標準字：高度用 em，沿用各頁 wordmark 原本的字級 */
+  .logo{height:1.15em;width:auto;display:inline-block;vertical-align:-.17em;flex:0 0 auto}
+
+  .brand .c b{font-size:11px;letter-spacing:.02em;white-space:nowrap}
+
+  .live.off{opacity:.4}
+  .live.off .dot{animation:none;background:var(--muted2)}
+  .live b{color:var(--ink);font-weight:700}
+
+  /* 賽事狀態提示條（未開始／暫停／結束時出現） */
+  #evbar{position:fixed;top:0;left:0;right:0;z-index:9999;display:none;
+    padding:calc(9px + env(safe-area-inset-top)) 16px 9px;text-align:center;
+    font-family:var(--f-body,sans-serif);font-weight:900;font-size:15px;line-height:1.35;
+    box-shadow:0 6px 24px -10px #000c}
+  #evbar.on{display:block}
+  #evbar.before{background:#ffb02e;color:#2a1600}
+  #evbar.paused{background:#e73473;color:#fff}
+  #evbar.done{background:#1f1530;color:#f4eefb;border-bottom:1px solid #2e2140}
+  #evbar small{display:block;font-weight:400;font-size:12px;opacity:.85;margin-top:2px}
+  body.evshift{padding-top:var(--evh,52px)}
+  #evbar.checkin{background:#2ee6a8;color:#04120e}
+  /* 舊資料警示：連不上大腦超過 25 秒，或拿到的是離線備份。放底部，不跟頂端的賽事橫幅打架。
+     整頁內容變灰 —— 舊比分絕不能看起來像即時的。 */
+  .prog{margin:-4px 0 12px;padding:9px 12px;border-radius:10px;background:var(--surface,#171020);
+    font-size:14px;font-weight:700;line-height:1.5}
+  #stalebar{position:fixed;left:0;right:0;bottom:0;z-index:9998;display:none;
+    background:#ffb02e;color:#2a1600;font-weight:700;font-size:14px;line-height:1.45;
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom));text-align:center}
+  #stalebar small{display:block;font-weight:400;font-size:12px;opacity:.85}
+  body.stale #stalebar{display:block}
+  body.stale{padding-bottom:var(--sth,64px)}
+  body.stale [id^="view-"]{filter:grayscale(1);opacity:.6}
+
+  .pill.paused{background:#3a1226;color:#ffa8c6;border-color:#7a2444}
+
+  .np .d{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+  .np .el{font-family:var(--f-mono);font-size:11px;color:#fabed1;white-space:nowrap}
+  .np.wait .el{color:var(--ink)}
+
+  .np .pn{cursor:pointer;border-bottom:1px dashed rgba(244,238,251,.28);max-width:100%}
+  .np .pn.mq{border-bottom:0}
+  .np .pn.mq .mqtrack{display:inline-flex;white-space:nowrap;animation:mqscroll linear infinite}
+  .np .pn.mq .mqgap{display:inline-block;width:2.4em;flex:0 0 auto}
+  @keyframes mqscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .np .pn:active{color:var(--magenta);border-bottom-color:var(--magenta)}
+  .np .d{flex:0 0 auto}
+  /* 主辦單位標誌：用深色底專用的白字版（主辦單位-深色底.svg），
+     直接放在深色底上。紅與黃維持原標準色，只有灰字換成白色。
+     白底的文件／印刷品請用原檔 主辦單位.svg。 */
+  .orgwrap{margin:34px auto 20px;padding:0 16px;text-align:center}
+  .orgwrap .lab{display:block;font-size:10.5px;letter-spacing:.22em;
+    color:#6f5f7d;margin-bottom:9px}
+  .orgwrap .lg{display:inline-block;line-height:0}
+  .orgwrap img{width:224px;max-width:66vw;height:auto;display:block}
+.orgwrap,.orgbar{display:none!important}</style>
+
+<div class="top">
+  <div class="brand">
+    <span class="c"><img class="logo" src="logo.svg" alt="贊鬥盃"> <b>L&rsquo;ARC HOTEL / BEYBLADE X</b></span>
+    <span class="live" id="livebox" title="即時更新"><span class="dot"></span><b id="on">—</b> 人在線</span>
+  </div>
+  <div class="search">
+    <span class="ico">⌕</span>
+    <input id="q" type="search" inputmode="search" placeholder="輸入編號或名字，例如 A-023 / 陳彥廷" autocomplete="off" />
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab on" data-v="live">現正開打</button>
+  <button class="tab" data-v="results">最新結果</button>
+  <button class="tab" data-v="players">查選手</button>
+  <button class="tab" data-v="sched">賽程</button>
+</div>
+
+<div class="wrap">
+  <div id="view-live"></div>
+  <div id="view-players" class="hidden"></div>
+  <div id="view-detail" class="hidden"></div>
+  <div id="view-results" class="hidden"></div>
+  <div id="view-sched" class="hidden"></div>
+</div>
+
+<div class="orgwrap">
+  <span class="lab">主辦單位</span>
+  <span class="lg"><img data-src-removed="org" alt="南科贊美酒店 L'ARC HOTEL"></span>
+</div>
+
+<script>
+/* ============================================================= *
+ *  ===== DATA SOURCE =====  (現為假資料 + 模擬)
+ *  接真資料：把 loadData() 換成
+ * *     const snap = await (await fetch(READ_BASE+"/snapshot.json")).json();
+ *     PLAYERS = snap.players; GROUPS = snap.standings; RECENT = snap.state.recent;
+ *  資料形狀就照下面 build 出來的樣子。
+ * ============================================================= */
+const NAMES=["陳彥廷","林郁翔","黃冠宇","張博勛","李承恩","吳宗翰","王柏睿","劉哲瑋","蔡尚儒","鄭凱文",
+ "許家豪","謝宇軒","曾柏翰","洪紹群","邱奕安","周廷威","簡廷宇","柯詠翔","賴品睿","江承澔","高梓恆",
+ "彭紹綸","董宇喬","鍾秉諺","方冠廷","石昀翰","唐子睿","官承勳","涂柏彥","范志豪","康祐辰","湯宇宸"];
+const ROUNDS=["R1","R2","R3","R4","R5"]; // 128→64→32→16→8→top4
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const ri=n=>Math.floor(Math.random()*n);
+
+let PLAYERS={};   // code -> player
+let GROUPS={};    // 組 -> [rows]
+let BRACKET={};   // div -> {rounds, survivors}
+let PLACEMENT={}; // {ab:[], cd:[], ranks:{}}
+let STATE={};     // 現場狀態（牌桌、比分）
+const SPREV={};   // 上次比分，用來播加分動畫
+let RECENT=[];    // 最近結果
+let LIVE=false;    // 讀得到大腦的 JSON 就 true
+// 假資料只在網址加 ?demo=1 時啟用（自己預覽版面用）。
+// 正式場讀不到資料就顯示「連線中」，絕不拿假對戰充數。
+const DEMO=new URLSearchParams(location.search).get("demo")==="1";
+const READ_BASE=".";  // 部署時填你的 CDN 網址（空 = 同源，本地/展示用）
+// 靜態資料（players/live/bracket.json）走 READ_BASE（可放 CDN），但即時心跳 /status 是大腦現算的、
+// 不會發佈到 CDN，一定要走 WRITE_BASE（通道）。空 = 同源（Method A 不受影響）。Method B（R2 分流）
+// 時把這行填成通道網址，這頁的自動重整/暫停結束橫幅/在線數/時鐘校正才不會因為打到 CDN 404 而失效。
+const WRITE_BASE=".";
+
+// 這份資料是什麼時候的（大腦時間不重要，看的是「多久沒拿到新的」）。
+// 從離線備份（sw.js）拿到的，用備份存下的時間；連線正常就是現在。
+let DATA_AT=0;
+async function loadData(){
+  try{
+    const live=await fetch(READ_BASE+"/live.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw 0;
+      DATA_AT = r.headers.get("X-Offline-Copy") ? (+r.headers.get("X-Cached-At")||DATA_AT) : Date.now();
+      return r.json()});
+    STATE=live.state||{}; GROUPS=live.standings||{}; PLACEMENT=live.placement||{};
+    window.__evPausedAt=(live.state&&live.state.paused_at)||0;   // 暫停中的計時凍結點
+    RECENT=(live.state&&live.state.recent)||[];
+    LIVE=true; return;
+  }catch(e){ LIVE=false; }
+  if(DEMO) loadFake();
+  // 真資料模式：一次抓取失敗（會場 Wi-Fi 瞬斷、request queue 滿、JSON 半截）不要清掉
+  // 畫面。保留最後一份好的資料繼續顯示，下一輪會自己重試補回來（比照疊圖頁）。舊寫法
+  // 一斷就把全部清空、下面的迴圈又只在 LIVE 時才抓，等於一次瞬斷就永久卡死，而畫面上
+  // 那句「會自動重試」是假的。從頭到尾沒抓成功過時 STATE 仍是空的，畫面自然顯示尚未連上。
+}
+// 大檔只在需要時抓（查選手 / 選手卡 / 賽程樹），並做短暫快取
+let _pAt=0,_bAt=0;
+async function needPlayers(force){
+  if(!LIVE) return;
+  if(!force && PLAYERS && Object.keys(PLAYERS).length && Date.now()-_pAt<8000) return;
+  try{
+    PLAYERS=await fetch(READ_BASE+"/players.json",{cache:"no-store"}).then(r=>r.json());
+    Object.values(PLAYERS).forEach(p=>{ if(p.next){p.opp={code:p.next.vs,name:p.next.vsName}; p.round=p.next.rd;} });
+    _pAt=Date.now();
+  }catch(e){}
+}
+async function needBracket(){
+  if(!LIVE) return;
+  if(BRACKET && Object.keys(BRACKET).length && Date.now()-_bAt<8000) return;
+  try{ BRACKET=await fetch(READ_BASE+"/bracket.json",{cache:"no-store"}).then(r=>r.json()); _bAt=Date.now(); }catch(e){}
+}
+function loadFake(){
+  PLAYERS={};GROUPS={};RECENT=[];
+  const divs=["A","B","C","D"];
+  divs.forEach(d=>{
+    const used=new Set();
+    for(let k=0;k<22;k++){                       // 每區給 22 位示意選手
+      let num;do{num=ri(128)+1}while(used.has(num));used.add(num);
+      const code=d+"-"+String(num).padStart(3,"0");
+      PLAYERS[code]={code,name:rnd(NAMES),div:d,w:0,l:0,history:[],status:"waiting",table:null,next:null};
+    }
+  });
+  const codes=Object.keys(PLAYERS);
+  // 幫每位捏一段合理的晉級歷程
+  codes.forEach(code=>{
+    const p=PLAYERS[code];
+    const wins=ri(6); // 0~5 勝
+    for(let r=0;r<wins;r++){
+      const opp=oppOf(p.div,code);
+      p.history.push({rd:ROUNDS[r]||("R"+(r+1)),result:"W",vs:opp.code,vsName:opp.name,score:rnd(["3-0","3-1","3-2"])});
+      p.w++;
+    }
+    const eliminated=Math.random()<0.62;
+    if(eliminated && wins<5){
+      const opp=oppOf(p.div,code);
+      p.history.push({rd:ROUNDS[wins]||("R"+(wins+1)),result:"L",vs:opp.code,vsName:opp.name,score:rnd(["1-3","2-3","0-3"])});
+      p.l++;p.status="eliminated";
+    }else{
+      p.status=Math.random()<0.45?"playing":(wins>=4?"advanced":"waiting");
+    }
+  });
+  // 挑一批 playing 的排上牌桌
+  const playing=codes.filter(c=>PLAYERS[c].status==="playing");
+  playing.forEach((c,i)=>{
+    const p=PLAYERS[c];const opp=oppOf(p.div,c);
+    const table=(i% 8)+1;
+    p.table=table;p.round=ROUNDS[Math.min(p.w,4)]||"R"+(p.w+1);
+    p.opp=opp;
+    p.next={rd:p.round,vs:opp.code,vsName:opp.name,table};
+  });
+  codes.filter(c=>PLAYERS[c].status==="advanced").forEach(c=>{
+    const p=PLAYERS[c];const opp=oppOf(p.div,c);
+    p.next={rd:"下一輪",vs:opp.code,vsName:opp.name,table:null};
+  });
+  // 循環賽積分榜：每區取前 4（示意）成一組，單循環各打 3 場
+  divs.forEach(d=>{
+    const four=codes.filter(c=>c.startsWith(d)).slice(0,4).map(c=>{
+      const wl=rnd([[3,0],[2,1],[2,1],[1,2],[0,3]]);
+      return {code:c,name:PLAYERS[c].name,w:wl[0],l:wl[1],diff:(wl[0]-wl[1])*rnd([2,3,4,1])};
+    });
+    four.sort((a,b)=>b.w-a.w||b.diff-a.diff);
+    four.forEach((r,i)=>r.rank=i+1);
+    GROUPS[d]=four;
+  });
+  // 最近結果
+  for(let i=0;i<10;i++){const c=rnd(codes);const o=oppOf(PLAYERS[c].div,c);
+    RECENT.push({w:{code:c,name:PLAYERS[c].name},l:{code:o.code,name:o.name},
+                 score:rnd(["4-1","4-2","4-3","5-3"]),round:"R2",div:PLAYERS[c].div});}
+  // 示範賽程樹
+  BRACKET={};
+  ["A","B","C","D"].forEach(d=>{
+    const cs=codes.filter(c=>c.startsWith(d)).slice(0,8);
+    const ms=[];
+    for(let i=0;i+1<cs.length;i+=2){
+      const a=cs[i],b=cs[i+1],win=Math.random()<0.5?'p1':'p2';
+      ms.push({id:`${d}-R0-M${i/2}`,p1:{seed:i+1,code:a,name:PLAYERS[a].name},
+        p2:{seed:i+2,code:b,name:PLAYERS[b].name},
+        s1:win==='p1'?4:rnd([0,1,2,3]),s2:win==='p2'?4:rnd([0,1,2,3]),winner:win,state:'complete'});
+    }
+    BRACKET[d]={rounds:[{name:"Round 1",matches:ms}],
+      survivors:cs.slice(0,4).map(c=>({code:c,name:PLAYERS[c].name}))};
+  });
+}
+function oppOf(div,notCode){
+  const pool=Object.keys(PLAYERS).filter(c=>c.startsWith(div)&&c!==notCode);
+  const c=rnd(pool)|| (div+"-000");
+  return {code:c,name:(PLAYERS[c]&&PLAYERS[c].name)||"—"};
+}
+/* ===== /DATA SOURCE ===== */
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+// 跳脫範圍要含引號，跟 table-board／judge 一致（B15）：只跳 & < > 的版本，
+// 安全**只因為**目前這頁的選手字串都落在 text context；哪天有人把名字塞進
+// attr="${...}" 就會破，而那種破法在 code review 上看不出來。
+// 也一併用 String(s==null?"":s) 收斂：數字 0 用 (s||"") 會變成空字串。
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,
+  c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const STAT={playing:"正在打",paused:"暫停中",advanced:"晉級",waiting:"等待中",
+            eliminated:"已淘汰",done:"已完賽"};
+function pill(s){return `<span class="pill ${s}">${s==="playing"?'<span class="d"></span>':''}${STAT[s]}</span>`;}
+const isPaused=()=>window.__evMode==="paused";
+let view="live", detailCode=null;
+
+/* ---------- views ---------- */
+function currentMatches(){
+  const out=[];
+  Object.entries((STATE&&STATE.divisions)||{}).forEach(([d,dd])=>{
+    (dd.tables||[]).forEach(t=>{ if(t.match) out.push({div:d,no:t.no,stream:t.stream,...t.match}); });
+  });
+  return out.sort((a,b)=> (a.div<b.div?-1:a.div>b.div?1:0) || a.no-b.no);
+}
+function noData(sel,what){
+  $(sel).innerHTML=`<div class="empty">尚未連上賽務系統${what?"（"+what+"）":""}<br>
+    <span style="font-size:12px;opacity:.7">畫面會自動重試，請稍候</span></div>`;
+}
+function elStr(start,assigned){
+  // 暫停期間停在「進入暫停的那一刻」，不然秒數會一直往前跳、恢復時再整個跳回去。
+  // __skew（秒）＝大腦時間 − 本機時間，由 /status 心跳校正：start 是大腦蓋的時刻，
+  // 「現在」也要用大腦時鐘，否則這台觀眾裝置時鐘偏掉，計時就跟著偏（快→跑太快、
+  // 慢→卡 00:00）。暫停支用的 __evPausedAt 本身就是伺服器 epoch，不用再校。
+  const now=window.__evPausedAt || (Math.floor(Date.now()/1000)+(window.__skew||0));
+  if(start){ const d=Math.max(0,now-start);
+    return `◷ ${String(Math.floor(d/60)).padStart(2,"0")}:${String(d%60).padStart(2,"0")}`; }
+  if(assigned){ const d=Math.max(0,now-assigned);
+    return `◌ ${String(Math.floor(d/60)).padStart(2,"0")}:${String(d%60).padStart(2,"0")}`; }
+  return "";
+}
+function tickEl(){
+  document.querySelectorAll("#view-live .el").forEach(el=>{
+    el.textContent=elStr(+el.dataset.start||0, +el.dataset.assigned||0);
+  });
+}
+setInterval(tickEl,1000);
+
+// 名字放不下時先把字級縮到剛好，縮到下限還是放不下才退回跑馬燈。
+// 跟大螢幕看板同一套（見 table-board.html 的 fitNames）。
+// 觀眾多半是在找「我家小孩在第幾桌」，滾動中的半截名字幫不上這個忙；
+// 靜態的小字一眼就看完，而且不會一直動。
+// dataset.full 記原文：這個函式每幾秒就會被重跑一次，不留原文的話
+// 第二次會量到上一次縮好的結果，越縮越小。
+const NAME_MIN_SCALE=0.62;    // 手機上再小就看不清了，比看板保守一點
+function fitNames(root){
+  const SPEED=42;
+  root.querySelectorAll(".pn[data-go]").forEach(el=>{
+    const text=(el.dataset.full!==undefined ? el.dataset.full : el.textContent)||"";
+    if(!text) return;
+    el.dataset.full=text;
+    el.classList.remove("mq"); el.style.fontSize=""; el.textContent=text;
+    const measure=()=>{
+      const p=document.createElement("span");
+      p.style.cssText="position:absolute;visibility:hidden;white-space:nowrap;left:-9999px;font:inherit;letter-spacing:inherit";
+      p.textContent=text; el.appendChild(p);
+      const w=p.offsetWidth; p.remove(); return w;
+    };
+    const avail=el.clientWidth;
+    let natural=measure();
+    if(natural<=avail+1) return;                 // 放得下就完全不動
+    const base=parseFloat(getComputedStyle(el).fontSize);
+    el.style.fontSize=(base*Math.max(NAME_MIN_SCALE,(avail-1)/natural)).toFixed(1)+"px";
+    natural=measure();
+    if(natural<=el.clientWidth+1) return;        // 縮完放得下了
+    const gapPx=Math.max(24, el.clientHeight*1.6), cyclePx=natural+gapPx, dur=cyclePx/SPEED;
+    const delay=-((Date.now()/1000)%dur);
+    el.classList.add("mq");
+    const go=el.dataset.go;
+    el.innerHTML=`<span class="mqtrack" style="animation-duration:${dur.toFixed(2)}s;animation-delay:${delay.toFixed(2)}s">
+      <span data-go="${esc(go)}">${esc(text)}</span><span class="mqgap"></span><span data-go="${esc(go)}">${esc(text)}</span></span>`;
+  });
+}
+/* 「還要等多久」：還剩幾場（brain.py progress_view）。只給場數，不估時間。
+   抽籤前講資格賽，抽完講 16 強兩半。 */
+function progLine(){
+  const p=(STATE&&STATE.progress)||{};
+  const one=(label,x)=> x&&x.left ? `${label}還剩 ${x.left} 場` : "";
+  const parts = (p.F1||p.F2) ? [one("爭 1-8 名",p.F1), one("爭 9-16 名",p.F2)] : [one("資格賽",p.qual)];
+  const t=parts.filter(Boolean).join("　·　");
+  return t?`<div class="prog">${t}</div>`:"";
+}
+let _liveSig="";
+function renderLive(){
+  if(!LIVE) return DEMO? renderLiveFake() : noData("#view-live");
+  const ms=currentMatches();
+  // 內容沒變就不重建：這裡每次還要逐一量測跑馬燈，多桌同時開打時
+  // 每 10 秒整段重繪＋逐一量測是白工，尤其現在還會強制同步重排版面。
+  const sig=isPaused()+"|"+progLine()+"|"+ms.map(m=>
+    [m.div,m.no,m.p1.code,m.p2.code,m.s1,m.s2,m.started,m.round,m.grp,m.stream].join(",")).join("|");
+  if(sig===_liveSig){ tickEl(); return; }   // 計時器仍要照跑，只是不重建 DOM
+  _liveSig=sig;
+  const playing=ms.filter(m=>m.started).length;
+  let h=`<div class="sec-h">${isPaused()?"賽事暫停中":"現正開打"} · ${playing} 桌${isPaused()?"待恢復":"進行中"} · ${ms.length-playing} 桌準備中</div>`+progLine();
+  h+= ms.length? ms.map(m=>{
+    const key=m.div+m.no, pid=m.p1.code+"|"+m.p2.code, pv=SPREV[key];
+    const same=pv&&pv.pid===pid;
+    const d1=same?(m.s1||0)-pv.s1:0, d2=same?(m.s2||0)-pv.s2:0;
+    SPREV[key]={pid,s1:m.s1||0,s2:m.s2||0};
+    const sc=(s,d)=>`<span class="sv ${(d>0&&!isPaused())?'bump':''}">${s||0}</span>${(d>0&&!isPaused())?`<span class="pop">+${d}</span>`:''}`;
+    return `<div class="np ${m.started?'':'wait'}">
+      <div class="t">${m.grp?m.no:m.div+m.no}<small>${m.grp?m.grp+'組':(m.stream?'直播':'桌')}</small></div>
+      <div class="m">
+        <div class="vs"><span class="pn" data-go="${m.p1.code}">${esc(m.p1.name)}</span>
+          ${sc(m.s1,d1)}<span class="dash">－</span>${sc(m.s2,d2)}
+          <span class="pn" data-go="${m.p2.code}">${esc(m.p2.name)}</span></div>
+        <div class="rd">${esc(m.round)} · ${m.p1.code} vs ${m.p2.code}</div></div>
+      <div class="d">${pill(m.started?(isPaused()?"paused":"playing"):"waiting")}
+        <span class="el" data-start="${m.start||0}" data-assigned="${m.assigned||0}">—</span></div>
+    </div>`;}).join("") : `<div class="empty">目前沒有正在進行的對戰</div>`;
+  $("#view-live").innerHTML=h;
+  bindGo("#view-live"); tickEl(); fitNames($("#view-live"));
+}
+
+/* ---------- 最新結果（獨立分頁，顯示暱稱＋編號） ---------- */
+function renderResults(){
+  const box=$("#view-results");
+  if(!RECENT.length){ box.innerHTML=`<div class="empty">尚無完成場次</div>`; return; }
+  box.innerHTML=`<div class="sec-h">最新結果 · ${RECENT.length} 場</div>`+
+    RECENT.map(r=>`<div class="rrow">
+      <div class="rmain">
+        <span class="rw" data-go="${r.w.code}">${esc(r.w.name)}</span>
+        <span class="rd">擊敗</span>
+        <span class="rl" data-go="${r.l.code}">${esc(r.l.name)}</span>
+      </div>
+      <div class="rmeta">
+        <span class="rc">${r.w.code}</span><span class="rvs">vs</span><span class="rc">${r.l.code}</span>
+        <span class="rrd">${esc(r.round||'')}</span>
+        <span class="rsc">${r.score||''}</span>
+      </div></div>`).join("");
+  bindGo("#view-results");
+}
+function renderLiveFake(){
+  const playing=Object.values(PLAYERS).filter(p=>p.status==="playing").sort((a,b)=>a.table-b.table);
+  let h=`<div class="sec-h">現正開打 · ${playing.length} 桌</div>`;
+  h+= playing.length? playing.map(p=>`
+    <div class="np" data-go="${p.code}">
+      <div class="t">${p.table}<small>桌</small></div>
+      <div class="m"><div class="vs">${esc(p.name)} <span style="color:var(--magenta)">vs</span> ${esc(p.opp.name)}</div>
+        <div class="rd">${p.round} · ${p.code} · ${p.opp.code}</div></div>
+      <div class="d">${pill("playing")}</div>
+    </div>`).join("") : `<div class="empty">目前沒有正在進行的對戰</div>`;
+  $("#view-live").innerHTML=h;
+  bindGo("#view-live");
+}
+
+function renderPlayers(term){
+  const box=$("#view-players");
+  term=(term||"").trim().toUpperCase();
+  if(!term){box.innerHTML=`<div class="empty">在上面輸入編號或名字開始查詢<br><span style="color:var(--muted2)">例如 A-023、林郁翔</span></div>`;return;}
+  const hits=Object.values(PLAYERS).filter(p=>
+    p.code.includes(term)||(p.name||"").toUpperCase().includes(term.replace(/\s/g,""))).slice(0,30);  // 名字也轉大寫比對，小寫拉丁暱稱才搜得到
+  box.innerHTML= hits.length? hits.map(p=>`
+    <div class="row" data-go="${p.code}">
+      <span class="code">${p.code}</span><span class="nm">${esc(p.name)}</span>
+      <span class="rt"><b>${p.w}</b>–<i>${p.l}</i></span>
+    </div>`).join("") : `<div class="empty">找不到「${esc(term)}」<br><span style="color:var(--muted2)">確認編號或名字是否正確</span></div>`;
+  bindGo("#view-players");
+}
+
+// 他在 16 強哪一組、目前第幾名
+function myGroup(code){
+  for(const g in (GROUPS||{})){
+    const r=(GROUPS[g]||[]).find(x=>x.code===code);
+    if(r) return Object.assign({g},r);
+  }
+  return null;
+}
+// 名次賽打完就有最終名次
+function myRank(code){
+  const rs=(PLACEMENT&&PLACEMENT.ranks)||{};
+  for(const k in rs){ if(rs[k] && rs[k].code===code) return k; }
+  return null;
+}
+function renderDetail(code){
+  const p=PLAYERS[code];const box=$("#view-detail");
+  if(!p){box.innerHTML=`<button class="back" data-back>‹ 返回</button><div class="empty">查無此選手</div>`;return;}
+  let now="";
+  const gi=myGroup(code), fin=myRank(code);
+  if(fin){
+    now=`<div class="nowbox next" style="border-color:var(--amber)">
+      <div class="lab" style="color:var(--amber)">最終名次</div>
+      <div class="mt"><span class="vs" style="font-size:19px">第 ${fin} 名</span></div></div>`;
+  }else if(p.status==="playing"&&p.next){
+    now=`<div class="nowbox"><div class="lab">正在進行 · ${p.next.rd}</div>
+      <div class="mt"><span class="vs">vs ${esc(p.next.vsName)}</span>
+      <span class="tb">${p.next.table} 號桌</span></div></div>`;
+  }else if(p.status==="advanced"&&p.next){
+    now=`<div class="nowbox next"><div class="lab">晉級 · 等待 ${p.next.rd}</div>
+      <div class="mt"><span class="vs">vs ${esc(p.next.vsName)}</span></div></div>`;
+  }else if(gi){
+    // 已經抽完籤分組了 —— 顯示現在的小組戰況，不要再停在「即將進入 A／B 組」那句
+    now=`<div class="nowbox next"><div class="lab">16 強小組賽 · ${gi.g} 組${p.part?" · "+p.part:""}</div>
+      <div class="mt"><span class="vs">組內第 ${gi.rank} 名 · ${gi.w} 勝 ${gi.l} 敗</span>
+      <span class="tb">${p.part==="敗部"?"爭 9～16 名":"爭 1～8 名"}</span></div></div>`;
+  }else if(p.status==="advanced"&&p.part){
+    // 資格賽打完、還沒抽籤的空窗期
+    now=`<div class="nowbox next"><div class="lab">晉級 16 強 · ${p.part}</div>
+      <div class="mt"><span class="vs">${p.part==="敗部"
+        ? "即將進入 C／D 組，爭第 9～16 名" : "即將進入 A／B 組，爭第 1～8 名"}</span></div></div>`;
+  }else if(p.status==="eliminated"){
+    now=`<div class="nowbox" style="background:#ffffff08;border-color:var(--line)">
+      <div class="lab" style="color:var(--muted)">已止步 · 感謝參賽</div></div>`;
+  }
+  // 倒敘：最新一場放最上面（slice 先複製，不要動到原陣列）
+  const hist=p.history.length? p.history.slice().reverse().map(x=>`
+    <div class="hrow"><span class="rd">${x.rd}</span>
+      <span class="wl ${x.result}">${x.result==="W"?"勝":"負"}</span>
+      <span class="op"><span class="oc">${x.vs}</span>${esc(x.vsName)}</span>
+      <span class="sc">${x.score}</span></div>`).join("") : `<div class="empty">尚無對戰紀錄</div>`;
+  box.innerHTML=`<button class="back" data-back>‹ 返回</button>
+    <div class="card">
+      <div class="pcard-head">
+        <div class="avatar ${p.status==="playing"?"playing":""}">${p.div}</div>
+        <div class="who"><div class="nm">${esc(p.name)}</div><div class="cd">${p.code} · ${p.div} 區</div>
+          <div style="margin-top:7px">${pill(p.status)}</div></div>
+        <div class="rec"><div class="v"><b>${p.w}</b>–<i>${p.l}</i></div><div class="k">勝 – 負</div></div>
+      </div>
+      ${now}
+    </div>
+    <div class="sec-h">對戰歷史</div>
+    <div class="card hist">${hist}</div>`;
+  box.querySelector("[data-back]").onclick=()=>{detailCode=null;switchView(view);};
+}
+
+
+function brRow(p,win,sc){
+  if(!p) return `<div class="brrow tbd"><span class="brs"></span><span class="brn">待定</span><span class="brsc">-</span></div>`;
+  return `<div class="brrow ${win?'win':''}"><span class="brs">${p.seed??''}</span>
+    <span class="brn">${esc(p.name||p.code)}</span><span class="brsc">${sc??'-'}</span></div>`;
+}
+
+/* ---------- 賽程（總覽 → 點進去看細節） ---------- */
+let sched=null;   // null=總覽；{t:'bracket',d}｜{t:'group',g}｜{t:'place'}
+let schedMode="index";  // index=下鑽式索引；tree=一次攤開整棵樹（bracket.html 風格）
+let treeDiv="A";        // 整棵樹目前顯示的賽區
+
+function schedToggle(){
+  return `<div class="schtog">
+    <button data-sm="index" class="${schedMode==='index'?'on':''}">索引</button>
+    <button data-sm="tree" class="${schedMode==='tree'?'on':''}">整棵樹</button></div>`;
+}
+function bindSchedToggle(){
+  document.querySelectorAll("[data-sm]").forEach(b=>b.onclick=()=>{
+    if(schedMode===b.dataset.sm) return;
+    schedMode=b.dataset.sm; sched=null;
+    if(schedMode==="tree") needBracket().then(()=>{ if(view==="sched"&&schedMode==="tree") renderSched(); });
+    renderSched();
+  });
+}
+
+/* 整棵樹：把 bracket.html 的攤開式賽程樹搬進賽程分頁（A–D 賽區切換） */
+function renderTreeOverview(){
+  const dv=BRACKET&&BRACKET[treeDiv];
+  let h=`<div class="brtabs">`+["A","B","C","D"].map(x=>
+    `<button class="brtab ${x===treeDiv?'on':''}" data-td="${x}">${x}</button>`).join("")+`</div>`;
+  if(!dv||!dv.rounds||!dv.rounds.length) return h+`<div class="empty">此區賽程尚未開始</div>`;
+  return h+brTreeBody(dv,"前 4 晉級","進入 16 強");
+}
+
+/* 賽程樹主體：輪次欄（含場數/已完成）＋ 每場 #編號 ＋ 晉級欄。索引細節頁與整棵樹共用 */
+function brTreeBody(dv,survTitle,survSub){
+  let h=`<div class="brscroll"><div class="brflow">`;
+  dv.rounds.forEach(rd=>{
+    const played=rd.matches.filter(m=>m.winner).length;   // winner 已修正：待定不再誤算
+    h+=`<div class="brcol"><div class="brhbox"><div class="brh">${esc(rd.name)}</div>
+        <div class="brhc">${rd.matches.length} 場 · 已完成 ${played}</div></div>`;
+    rd.matches.forEach((m,mi)=>{
+      h+=`<div class="brmw"><div class="brlbl">#${String(mi+1).padStart(2,"0")}</div>
+          <div class="brm ${m.state==='open'?'open':''}">${brRow(m.p1,m.winner==='p1',m.s1)}${brRow(m.p2,m.winner==='p2',m.s2)}</div></div>`;
+    });
+    h+=`</div>`;
+  });
+  if(dv.survivors&&dv.survivors.length){
+    h+=`<div class="brcol"><div class="brhbox"><div class="brh" style="color:var(--cyan)">${esc(survTitle)}</div>
+        <div class="brhc">${esc(survSub)}</div></div>`;
+    dv.survivors.forEach(s=>{ h+=`<div class="brmw"><div class="brm"><div class="brrow win">
+        <span class="brs"></span><span class="brn">${esc(s.name||s.code)}</span><span class="brsc"></span></div></div></div>`; });
+    h+=`</div>`;
+  }
+  return h+`</div></div>`;
+}
+function bindTreeTabs(){ document.querySelectorAll("[data-td]").forEach(b=>b.onclick=()=>{treeDiv=b.dataset.td;renderSched();}); }
+
+function renderSched(){
+  const box=$("#view-sched");
+  // 索引模式：下鑽細節頁（單一賽區樹 / 小組 / 名次賽）
+  if(schedMode==="index"){
+    if(sched && sched.t==="bracket"){ needBracket().then(()=>{ if(view==="sched"&&schedMode==="index"&&sched&&sched.t==="bracket") renderBracketDetail(); }); return renderBracketDetail(); }
+    if(sched && sched.t==="group")  return renderGroupDetail();
+    if(sched && sched.t==="place")  return renderPlaceDetail();
+  }
+  // 整棵樹模式
+  if(schedMode==="tree"){
+    box.innerHTML=schedToggle()+renderTreeOverview();
+    bindSchedToggle(); bindTreeTabs();
+    return;
+  }
+  // 索引總覽
+  const P=PLACEMENT||{}, Pg=P.groups||{}, drawn=P.drawn;
+  const row=(label,sub,go,tag)=>`<div class="srow" data-s='${go}'>
+      <div class="sl"><div class="st">${label}</div><div class="ss">${sub}</div></div>
+      ${tag?`<span class="stag">${tag}</span>`:''}<span class="sar">›</span></div>`;
+  let h=schedToggle()+`<div class="sec-h">資格賽 · 賽程樹</div>`;
+  ["A","B","C","D"].forEach(d=>{
+    const dv=BRACKET&&BRACKET[d];
+    const sv=(dv&&dv.survivors)||[];
+    h+=row(`${d} 賽區`, dv&&dv.rounds&&dv.rounds.length?`${dv.rounds.length} 輪 · 128 人單淘汰`:"尚未開始",
+           JSON.stringify({t:"bracket",d}), sv.length?`晉級 ${sv.length}`:"");
+  });
+  h+=`<div class="sec-h">16 強</div>`;
+  if(!drawn){
+    h+=`<div class="empty">尚未抽籤分組<br><span style="color:var(--muted2)">資格賽結束後在此顯示</span></div>`;
+  }else{
+    ["A","B","C","D"].forEach(g=>{
+      const gi=Pg[g]||{};
+      const tag=gi.done?"已打完":(gi.round?`第 ${gi.round} 輪`:"尚未開始");
+      const mem=(gi.members||[]).map(m=>m.name).join("、");
+      h+=row(`${g} 組`, mem||"—", JSON.stringify({t:"group",g}), tag);
+    });
+    const done=Object.keys((P.ranks)||{}).length;
+    h+=row("名次賽", "決 1~16 名", JSON.stringify({t:"place"}), done?`已定 ${done}/16`:"進行中");
+  }
+  box.innerHTML=h;
+  bindSchedToggle();
+  box.querySelectorAll(".srow").forEach(el=>el.onclick=()=>{ sched=JSON.parse(el.dataset.s); renderSched(); });
+}
+function backBar(t){ return `<button class="back" id="sback">‹ ${esc(t)}</button>`; }
+function bindBack(){ const b=$("#sback"); if(b) b.onclick=()=>{ sched=null; renderSched(); }; }
+
+function renderBracketDetail(){
+  const d=sched.d, dv=BRACKET&&BRACKET[d];
+  const box=$("#view-sched");
+  let h=backBar("返回賽程")+`<div class="sec-h">${d} 賽區 · 賽程樹</div>`;
+  if(!dv||!dv.rounds||!dv.rounds.length){ box.innerHTML=h+`<div class="empty">此區賽程尚未開始</div>`; return bindBack(); }
+  box.innerHTML=h+brTreeBody(dv,"晉級 16 強","前 4 名"); bindBack();
+}
+
+function renderGroupDetail(){
+  const g=sched.g, box=$("#view-sched");
+  const rows=(GROUPS&&GROUPS[g])||[];
+  let h=backBar("返回賽程")+`<div class="sec-h">${g} 組 · 小組賽</div>`;
+  if(!rows.length){ box.innerHTML=h+`<div class="empty">此組尚未開始</div>`; return bindBack(); }
+  const tied=rows.filter(r=>r.tie);
+  h+=`<table><thead><tr><th></th><th>選手</th><th class="num">勝</th><th class="num">負</th><th class="num">小分差</th></tr></thead><tbody>`+
+     rows.map(r=>`<tr class="${r.rank<=2?'adv':''} ${r.tie?'tied':''}" data-go="${r.code}">
+        <td class="r">${r.rank}</td>
+        <td><div class="nm">${esc(r.name)}${r.tie?`<span class="tiechip">同分</span>`:''}</div><div class="cd">${r.code}</div></td>
+        <td class="num">${r.w}</td><td class="num">${r.l}</td>
+        <td class="num" style="color:${r.diff>=0?'var(--cyan)':'var(--red)'}">${r.diff>0?'+':''}${r.diff}</td>
+      </tr>`).join("")+`</tbody></table>
+      <div class="tbdnote">同勝場時，依彼此交手勝負決定名次</div>`
+    // 三項都分不出高下時要講清楚，否則家長只會看到名次不一樣、卻找不到原因
+    + (tied.length?`<div class="tienote">⚠ 標示「同分」的 ${tied.length} 位選手，勝場、彼此交手、小分差三項完全相同，
+        目前的先後由抽籤序決定，尚待主辦裁定。</div>`:``);
+  box.innerHTML=h; bindBack(); bindGo("#view-sched");
+}
+
+function renderPlaceDetail(){
+  const box=$("#view-sched"), P=PLACEMENT||{}, ranks=P.ranks||{};
+  const pm=m=>{
+    const done=m.state==="complete";
+    const n1=(m.p1||{}).name, n2=(m.p2||{}).name;
+    return `<div class="pmatch ${done?'':'pend'}">
+      <span class="pp">爭 ${m.win_place}/${m.lose_place} 名</span>
+      <span class="pn ${m.winner==='p1'?'w':''} ${n1?'':'tbd'}">${n1?esc(n1):'待定'}</span>
+      <span class="pv">${done?`${m.s1}－${m.s2}`:'vs'}</span>
+      <span class="pn ${m.winner==='p2'?'w':''} ${n2?'':'tbd'}">${n2?esc(n2):'待定'}</span></div>`;
+  };
+  let h=backBar("返回賽程")+`<div class="sec-h">名次賽 · 決 1–8 名（A·B 組）</div>`+(P.ab||[]).map(pm).join("");
+  h+=`<div class="sec-h">名次賽 · 決 9–16 名（C·D 組）</div>`+(P.cd||[]).map(pm).join("");
+  h+=`<div class="tbdnote">「待定」表示該組小組賽尚未打完，名次確定後會自動填入</div>`;
+  if(Object.keys(ranks).length){
+    h+=`<div class="sec-h">最終名次</div><div class="finalr">`;
+    for(let i=1;i<=16;i++){const e=ranks[i];
+      h+=`<div class="fr"><span class="frn">${i}</span><span class="frname">${e?esc(e.name):'—'}</span></div>`;}
+    h+=`</div>`;
+  }
+  box.innerHTML=h; bindBack();
+}
+
+/* ---------- 點名字跳到選手卡 ---------- */
+function bindGo(sel){
+  document.querySelectorAll(sel+" [data-go]").forEach(el=>
+    el.onclick=(e)=>{ e.stopPropagation(); detailCode=el.dataset.go; switchView("detail"); });
+}
+
+/* ---------- 分頁切換 ---------- */
+function switchView(v){
+  ["live","results","players","detail","sched"].forEach(x=>
+    $("#view-"+x).classList.toggle("hidden", x!==v));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on", t.dataset.v===v));
+  if(v==="detail"){ renderDetail(detailCode); needPlayers().then(()=>{ if(detailCode) renderDetail(detailCode); }); return; }
+  view=v; detailCode=null;
+  if(v==="live") renderLive();
+  if(v==="results") renderResults();
+  if(v==="players"){ renderPlayers($("#q").value); needPlayers().then(()=>{ if(view==="players") renderPlayers($("#q").value); }); }
+  if(v==="sched"){ renderSched(); needBracket().then(()=>{ if(view==="sched") renderSched(); }); }
+}
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{detailCode=null;switchView(t.dataset.v);});
+$("#q").addEventListener("input",e=>{
+  if(view!=="players"){detailCode=null;switchView("players");}
+  renderPlayers(e.target.value);
+  needPlayers().then(()=>{ if(view==="players") renderPlayers($("#q").value); });
+});
+
+/* ---------- live simulation (讓 demo 會動；接真資料後刪掉) ---------- */
+function bump(){ const b=$("#livebox"); if(b) b.title="剛更新 "+new Date().toLocaleTimeString("zh-TW",{hour12:false}); }
+setInterval(async ()=>{
+  // 一律重試 loadData（不再用 if(LIVE) 卡住）—— 曾經斷線也要繼續抓才能自己恢復。
+  // 真資料模式（非 DEMO）永遠走這裡渲染；失敗時 loadData 保留上一份，畫面不會清空。
+  if(!DEMO){ await loadData(); bump();
+    if(view==="live"&&!detailCode)renderLive();
+    else if(view==="results")renderResults();
+    else if(view==="sched"){ if(schedMode==="tree"||(sched&&sched.t==="bracket")) await needBracket(); renderSched(); }
+    else if(view==="detail"&&detailCode){ await needPlayers(); renderDetail(detailCode); }
+    else if(view==="players"){ await needPlayers(); renderPlayers($("#q").value); }
+    return; }
+  if(LIVE){ await loadData(); bump();      // DEMO 模式但連得到真伺服器：照樣用真資料
+    if(view==="live"&&!detailCode)renderLive();
+    else if(view==="results")renderResults();
+    else if(view==="sched"){ if(schedMode==="tree"||(sched&&sched.t==="bracket")) await needBracket(); renderSched(); }
+    else if(view==="detail"&&detailCode){ await needPlayers(); renderDetail(detailCode); }
+    else if(view==="players"){ await needPlayers(); renderPlayers($("#q").value); }
+    return; }
+  const playing=Object.values(PLAYERS).filter(p=>p.status==="playing");  if(playing.length){
+    const p=rnd(playing);const won=Math.random()<0.55;
+    p.history.push({rd:p.round||"R?",result:won?"W":"L",vs:p.opp.code,vsName:p.opp.name,
+      score:won?rnd(["3-1","3-2","3-0"]):rnd(["1-3","2-3"])});
+    if(won){p.w++;p.status=Math.random()<0.5?"advanced":"waiting";}
+    else{p.l++;p.status="eliminated";}
+    p.table=null;
+    // 用 [length-1] 而不是 .at(-1)：.at() 要 Safari 15.4+，舊 iPhone/iPad 會
+    // TypeError。這裡雖然只在 ?demo=1 走到，但這頁是給觀眾開的，不留這種地雷。
+    const last = p.history[p.history.length - 1];
+    RECENT.unshift(won?{w:p.code,l:p.opp.code,score:last.score}
+                      :{w:p.opp.code,l:p.code,score:last.score.split("-").reverse().join("-")});
+    RECENT=RECENT.slice(0,10);
+    // 補一位新選手上桌
+    const cand=Object.values(PLAYERS).filter(q=>q.status==="waiting");
+    if(cand.length){const q=rnd(cand);const opp=oppOf(q.div,q.code);
+      q.status="playing";q.table=(ri(8))+1;q.round=ROUNDS[Math.min(q.w,4)]||"R?";q.opp=opp;
+      q.next={rd:q.round,vs:opp.code,vsName:opp.name,table:q.table};}
+  }
+  bump();
+  if(view==="live"&&!detailCode)renderLive();
+  if(view==="detail"&&detailCode)renderDetail(detailCode);
+},10000);
+
+
+/* ---------- 舊資料警示 ---------- */
+// 不靠「抓失敗」判斷，靠「多久沒拿到新的」：會場 Wi-Fi 斷掉時 fetch 常常是掛著
+// 不回，連失敗都不會發生，畫面就一直停在舊比分、計時器還在跑。
+const STALE_MS=25000;
+setInterval(()=>{
+  if(DEMO) return;
+  const age=DATA_AT?Date.now()-DATA_AT:0;
+  const on=DATA_AT&&age>STALE_MS;
+  document.body.classList.toggle("stale",!!on);
+  if(!on) return;
+  let b=document.getElementById("stalebar");
+  if(!b){ b=document.createElement("div"); b.id="stalebar"; document.body.appendChild(b); }
+  const t=new Date(DATA_AT).toLocaleTimeString("zh-TW",{hour12:false,hour:"2-digit",minute:"2-digit"});
+  const m=Math.floor(age/60000);
+  b.innerHTML=`連不上賽務系統 · 下面是 ${t} 的資料（${m<1?"不到 1":m} 分鐘前）`+
+    `<small>比分和桌次可能已經變了。畫面會自己重試，連上就會恢復。</small>`;
+  document.body.style.setProperty("--sth", b.offsetHeight+"px");
+},1000);
+
+/* 離線備份：斷線時重新整理也打得開這一頁（只在 HTTPS／localhost 有效）。
+   scope 限定在這一頁 —— 裁判、主辦頁不會經過 sw.js。 */
+if(!DEMO && "serviceWorker" in navigator && window.isSecureContext){
+  try{ false&&navigator.serviceWorker.register("/sw.js",{scope:"/spectator-lookup.html"}).catch(()=>{}); }catch(e){}
+}
+
+/* ---------- go ---------- */
+loadData().then(()=>switchView("live"));
+
+/* ---------- 同時在線人數 ---------- */
+// token 存 localStorage：同一台裝置開兩個分頁算一個人，重新整理也不會灌水
+const VTOK=(()=>{ try{ let t=localStorage.getItem("zanmen_vtok");
+  if(!t){ t=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem("zanmen_vtok",t); }
+  return t; }catch(e){ return Math.random().toString(36).slice(2); } })();
+// 在線人數改由共用心跳 /status 一併帶回，不再另外打一支端點
+window.__evHook=function(s){
+  const el=$("#on"), box=$("#livebox");
+  if(el && typeof s.n==="number"){ el.textContent=s.n; box&&box.classList.remove("off"); }
+};
+
+/* ---------- 賽事狀態 + 自動重整（共用心跳 /status） ---------- */
+(function(){
+  var BOOT=null, BAR=null, TOK=null;
+  try{ TOK=localStorage.getItem("zanmen_vtok");
+       if(!TOK){ TOK=Math.random().toString(36).slice(2)+Date.now().toString(36);
+                 localStorage.setItem("zanmen_vtok",TOK); } }catch(e){ TOK=""; }
+  function bar(){ if(!BAR){ BAR=document.createElement("div"); BAR.id="evbar";
+                            document.body.appendChild(BAR); } return BAR; }
+  window.__evOnline=function(){ return window.__evN||0; };
+  async function tick(){
+    try{
+      var s=await fetch((typeof WRITE_BASE!=="undefined"?WRITE_BASE:"")+"/status?v="+encodeURIComponent(TOK),
+                        {cache:"no-store"}).then(function(r){return r.json();});
+      // 伺服器換了一個（重開大腦／主辦按強制重整）→ 這個畫面自己重載
+      if(BOOT && s.boot!==BOOT){ location.reload(); return; }
+      BOOT=s.boot;
+      window.__evN=s.n; window.__evMode=s.mode; window.__evPausedAt=s.paused_at||0;
+      // 對時：跟大腦 now 校正本機時鐘（差 2 秒以上才校）
+      if(typeof s.now==="number"){ var dsk=s.now-Math.floor(Date.now()/1000);
+        window.__skew = Math.abs(dsk)>=2 ? dsk : 0; }
+      var b=bar();
+      if(s.mode==="live"){ b.className=""; document.body.classList.remove("evshift"); }
+      else{
+        b.className="on "+s.mode;
+        const E=t=>String(t==null?"":t).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+        // 跳脫而不是把 & < > 刪掉 -- 主辦打的字要原樣顯示,
+        // 而且主辦控制台的「觀眾看到的樣子」預覽才會跟這裡一致。
+        b.innerHTML=E(s.label||"")+(s.msg?"<small>"+E(s.msg)+"</small>":"");
+        document.body.classList.add("evshift");
+        // 放大／換行時提示條會變高，量實際高度，不要寫死 52px
+        document.body.style.setProperty("--evh", b.offsetHeight+"px");
+      }
+      if(window.__evHook) window.__evHook(s);
+    }catch(e){}
+  }
+  tick(); setInterval(tick,15000);
+  document.addEventListener("visibilitychange",function(){ if(!document.hidden) tick(); });
+})();
+</script>

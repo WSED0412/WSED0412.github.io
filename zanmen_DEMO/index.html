@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>贊鬥盃賽務系統 示範</title>
+<link rel="stylesheet" href="qual/fonts.css">
+<style>
+  :root{--bg:#0d0913;--surface:#171020;--line:#2c1d38;--magenta:#e73473;--cyan:#28e8b6;
+        --ink:#f5eef2;--muted:#9c8aa8;--f-disp:"Saira Condensed","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        --f-body:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;color-scheme:dark}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);line-height:1.6}
+  .wrap{max-width:960px;margin:0 auto;padding:40px 16px 64px}
+  .brand{font-family:var(--f-disp);font-weight:900;font-style:italic;font-size:clamp(34px,7vw,56px);
+         letter-spacing:-.01em;margin:0;text-wrap:balance}
+  .brand b{color:var(--magenta)}
+  .lead{color:var(--muted);margin:10px 0 0;max-width:62ch}
+  .note{margin:22px 0 0;padding:12px 16px;border:1px solid var(--line);border-radius:10px;
+        background:var(--surface);color:var(--muted);font-size:14px}
+  h2{font-size:20px;margin:40px 0 4px}
+  h2 small{font-weight:400;color:var(--muted);font-size:14px;margin-left:8px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:14px}
+  a.card{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:var(--surface);
+         color:var(--ink);text-decoration:none;min-width:0}
+  a.card:hover,a.card:focus-visible{border-color:var(--magenta);outline:none}
+  a.card b{display:block;font-size:16px}
+  a.card span{display:block;color:var(--muted);font-size:13px;margin-top:4px}
+  a.card i{font-style:normal;color:var(--cyan);font-size:12px;letter-spacing:.08em}
+  footer{margin-top:48px;color:var(--muted);font-size:13px}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 class="brand"><b>贊鬥盃</b> BEYBLADE X 賽務系統</h1>
+  <p class="lead">512 人的戰鬥陀螺賽事，用一台筆電跑完報到、檢錄、計分、大螢幕與直播。下面是兩個時間點的真實系統畫面。</p>
+  <p class="note">示範資料：選手名字是隨機組出來的假名，時間停在 2026/10/01 16:07 那一刻。這裡只能看、不能送出成績；裁判、主辦、報到這些工作人員頁不放在公開網站。</p>
+
+  <h2>資格賽進行中<small>四區各 128 人單淘汰，每區 8 張桌</small></h2>
+  <div class="grid">
+    <a class="card" href="qual/spectator-lookup.html"><i>觀眾 · 手機</i><b>即時戰績查詢</b><span>現正開打、還剩幾場、查選手</span></a>
+    <a class="card" href="qual/table-board.html?d=A"><i>場控 · 大螢幕</i><b>牌桌調度看板</b><span>八張桌、待戰隊列、還剩幾場</span></a>
+    <a class="card" href="qual/bracket.html"><i>觀眾 · 大螢幕</i><b>賽程樹</b><span>128 人單淘汰，四區切換</span></a>
+    <a class="card" href="qual/obs-overview.html"><i>直播 · 1920×1080</i><b>賽況總覽</b><span>還剩幾人、各區進度</span></a>
+    <a class="card" href="qual/print.html"><i>主辦 · 紙本備援</i><b>列印頁</b><span>對戰表、結果單，一鍵印</span></a>
+  </div>
+
+  <h2>16 強進行中<small>抽籤分四組循環，再打名次賽</small></h2>
+  <div class="grid">
+    <a class="card" href="final/spectator-lookup.html"><i>觀眾 · 手機</i><b>即時戰績查詢</b><span>16 強兩半各剩幾場、小組排名</span></a>
+    <a class="card" href="final/table-board.html?d=F1"><i>場控 · 大螢幕</i><b>16 強看板</b><span>爭 1~8 名的四張桌</span></a>
+    <a class="card" href="final/obs-overview.html"><i>直播 · 1920×1080</i><b>賽況總覽</b><span>四組即時排名</span></a>
+    <a class="card" href="final/obs-overlay.html?t=F-1"><i>直播 · 透明背景</i><b>對戰疊圖</b><span>直播桌的逐分比數</span></a>
+    <a class="card" href="final/print.html"><i>主辦 · 紙本備援</i><b>16 強分組表</b><span>切到「16 強分組表」分頁</span></a>
+  </div>
+
+  <h2>文件</h2>
+  <div class="grid">
+    <a class="card" href="docs/功能簡介.html"><i>簡報 · 29 頁</i><b>功能簡介</b><span>←→ 翻頁、F 全螢幕、G 總覽</span></a>
+    <a class="card" href="docs/工作人員小卡.html"><i>印出來護貝</i><b>工作人員情境小卡</b><span>遇到什麼狀況 → 按哪一顆鈕</span></a>
+  </div>
+
+  <footer>同一套做法的另一個系統：<a href="../riftbound_DEMO/">符文戰場賽事系統示範</a>　·　<a href="../">回到首頁</a></footer>
+</div>
+</body>
+</html>

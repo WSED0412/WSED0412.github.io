@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<!--
+  贊鬥盃 BEYBLADE X — 賽況總覽（全螢幕）(obs-overview.html)
+  ------------------------------------------------------------------
+      OBS → 來源 → 瀏覽器
+      網址  http://<大腦IP>:8080/obs-overview.html
+      寬 1920  高 1080　（不要勾「關閉來源時關閉」）
+
+  給換場空檔、中場休息、主持人講話時切過去用的整頁畫面。
+  角落常駐的小條是另一個檔：obs-overview-bar.html
+
+  ★ 為什麼不是畫賽程樹
+    一個賽區 126 場、四區 504 場。bracket.html 能用是因為觀眾拿在手上
+    可以滑、可以放大、可以慢慢找自己的小孩；直播畫面上一閃十秒，
+    沒有人找得到任何東西。所以這一頁**隨階段換內容**：
+
+      資格賽前期  還剩幾人的大數字 + 四區進度 + 重點選手
+      資格賽後期  同上，但重點選手區會愈來愈重要（人少了才看得到名字）
+      16 強之後   改成真正的對戰表（16 人剛好塞得下一個畫面）
+
+  ★ 重點選手的顏色
+    在 brain.py 同一個資料夾放一個「重點選手.txt」，一行一位：
+        A-001  #ffd700  衛冕者
+    改完存檔就生效。沒有那個檔案的話，這一區整個不會出現。
+
+  想調整更新頻率：網址加 ?ms=1000（預設 1000 毫秒）
+-->
+<title>賽況總覽 · 贊鬥盃</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root{
+    --bg:#0d0913; --surface:#1b1224; --line:#33223f;
+    --magenta:#e73473; --cyan:#28e8b6; --amber:#ffb020; --muted:#9c8aa8; --muted2:#6f5f7d;
+    --ink:#f5eef2;
+    --f-disp:"贊鬥中文","Saira Condensed","Noto Sans TC","Microsoft JhengHei","PingFang TC",sans-serif;
+    --f-body:"贊鬥中文","Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;
+    --f-mono:"贊鬥中文","Chivo Mono",monospace;
+  }
+
+/* ── 中文一律用思源黑體 Bold ──────────────────────────────────
+   直接把 font-weight:700 加在 body 上不行：--display 的第一順位是
+   Arial Black，那個家族只有一個字重，要求 700 會讓瀏覽器改用「合成
+   粗體」（把字描邊描粗），成品是糊的。
+
+   所以用 unicode-range 只攔中日韓那一段：中文字走這裡宣告的 Bold，
+   英數完全不受影響（照舊 Arial Black／Saira），維持原本的視覺。
+   font-weight: 400 900 是說「上層要求任何字重，都給我這一支」，
+   這樣連 --mono、--body 那些沒特別設粗的地方，中文也會是 Bold。
+
+   local() 依序試各種名字：Google 版叫 Noto Sans TC，Adobe 版叫
+   Source Han Sans／思源黑體，都沒有才退回系統的微軟正黑體 Bold。
+   ★ 三台電腦都要裝思源黑體，否則那台會退成微軟正黑體 —— 字偏細，
+     兩面牆擺在一起就看得出來不一樣。 */
+@font-face {
+  font-family: "贊鬥中文";
+  src: local("Noto Sans TC Bold"), local("NotoSansTC-Bold"),
+       local("Source Han Sans TC Bold"), local("SourceHanSansTC-Bold"),
+       local("思源黑體 Bold"), local("Microsoft JhengHei Bold");
+  unicode-range: U+2E80-2EFF, U+3000-303F, U+3040-30FF, U+3200-33FF,
+                 U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FE30-FE4F,
+                 U+FF00-FFEF;
+  font-weight: 400 900;
+  font-display: swap;
+}
+  *{box-sizing:border-box;margin:0}
+  html,body{height:100%;overflow:hidden}
+  /* 想要透明背景疊在畫面上，把下面這行的 background 改成 transparent */
+  body{background:
+      radial-gradient(1200px 700px at 80% -10%, #2a0f2340, transparent 60%),
+      radial-gradient(900px 600px at -10% 110%, #12313040, transparent 55%),
+      var(--bg);
+    color:var(--ink);font-family:var(--f-body);-webkit-font-smoothing:antialiased}
+  .page{height:100%;display:flex;flex-direction:column;padding:54px 72px 40px;gap:26px}
+
+  header{display:flex;align-items:baseline;gap:20px;flex:0 0 auto}
+  header .t{font-family:var(--f-disp);font-weight:900;font-style:italic;font-size:40px}
+  header .t b{color:var(--magenta)}
+  header .ph{font-family:var(--f-mono);font-size:18px;letter-spacing:.2em;color:var(--muted);
+    border:1px solid var(--line);border-radius:999px;padding:6px 16px}
+  header .clock{margin-left:auto;font-family:var(--f-mono);font-size:30px;color:var(--muted)}
+
+  /* ---------- 前期：大數字 ---------- */
+  .big{display:flex;align-items:center;gap:56px;flex:0 0 auto}
+  .big .n{font-family:var(--f-disp);font-weight:900;font-size:210px;line-height:.86;
+    letter-spacing:-.02em;color:var(--cyan);
+    padding-block:.06em;margin-block:-.06em}   /* 數字不會被上下切到 */
+  /* 「人」跟在大數字後面。字級用 em 綁在數字上，數字改大小它會一起跟著，
+     不用兩邊各調一次。translateY 把它壓到接近數字底線的位置。 */
+  .big .n .u{font-style:normal;font-size:.28em;font-weight:700;letter-spacing:.02em;
+    margin-left:.10em;color:var(--muted);display:inline-block;transform:translateY(-.12em)}
+  .big .lab{font-size:22px;color:var(--muted);letter-spacing:.24em;margin-bottom:14px}
+  .big .side{display:flex;flex-direction:column;gap:14px}
+  .big .kv{font-family:var(--f-mono);font-size:26px;color:var(--muted)}
+  .big .kv b{color:var(--ink);font-size:34px}
+
+  .divs{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;flex:0 0 auto}
+  /* 賽區卡：A/B/C/D 做成滿版的色塊放最上面，字放大；下半部（賽框）收窄。
+     依設計師的意見 —— 原本字母只有 34px、和「賽區」「4 人」擠在同一行，
+     遠遠看過去四張卡長得一模一樣，分不出哪張是哪區。 */
+  .dv{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+      padding:0;overflow:hidden}
+  .dv .h{display:flex;align-items:center;gap:14px;
+         background:var(--magenta);padding:8px 22px 10px}
+  .dv .h b{font-family:var(--f-disp);font-weight:900;font-size:54px;line-height:1;
+           letter-spacing:.04em;color:#fff}
+  .dv .h span{font-size:16px;color:rgba(255,255,255,.82);letter-spacing:.08em}
+  .dv .h i{margin-left:auto;font-style:normal;font-family:var(--f-mono);
+           font-size:24px;color:#fff}
+  .dv .bd{padding:13px 22px 15px}
+  .bar{height:8px;border-radius:999px;background:#2a1b36;overflow:hidden}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--magenta),var(--cyan))}
+  .dv .m{margin-top:8px;font-family:var(--f-mono);font-size:14px;color:var(--muted2)}
+  header .fleft{font-size:22px;font-weight:700}
+  header .fleft b{font-family:var(--f-disp);font-size:28px;margin:0 4px}
+
+  /* ---------- 重點選手 ---------- */
+  .feat{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+  .feat h2{font-size:14px;letter-spacing:.24em;color:var(--muted2);font-weight:700;margin-bottom:14px}
+  .fl{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;overflow:hidden}
+  .fp{display:flex;align-items:center;gap:14px;background:var(--surface);
+    border:1px solid var(--line);border-left:5px solid var(--c);border-radius:14px;padding:14px 18px}
+  .fp .nm{font-family:var(--f-disp);font-weight:900;font-size:34px;color:var(--c);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    padding-block:.14em;margin-block:-.14em}
+  .fp .tag{font-size:13px;color:var(--muted);border:1px solid var(--line);
+    border-radius:999px;padding:3px 10px;flex:0 0 auto}
+  .fp .st{margin-left:auto;font-family:var(--f-mono);font-size:17px;color:var(--cyan);flex:0 0 auto}
+  .fp.out{opacity:.4}
+  .fp.out .nm{color:var(--muted)}
+  .fp.out .st{color:var(--muted2)}
+  .fp.out .nm{text-decoration:line-through;text-decoration-thickness:3px}
+
+  /* ---------- 跑馬燈 ---------- */
+  /* ---------- 下半部：左邊戰果、右邊今日流程 ----------
+     原本這裡只有一行捲不完的小字，畫面下半 44% 是空的。場邊的人真正想知道
+     的其實是「現在在哪、幾點輪到我」，所以把節目表擺進來，而且是控台上
+     那一份 —— 改一次兩邊一起變，不會出現兩個版本的時間表。 */
+  .low{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:1.25fr 1fr;
+    gap:34px;border-top:1px solid var(--line);margin-top:22px;padding-top:20px}
+  .low .cap{font-family:var(--f-mono);font-size:15px;letter-spacing:.22em;
+    color:var(--magenta);margin-bottom:12px}
+  .low .col{min-height:0;overflow:hidden;display:flex;flex-direction:column}
+  .low .col > div:last-child{flex:1 1 auto;min-height:0;overflow:hidden}
+
+  .rrow{display:flex;align-items:baseline;gap:11px;padding:9px 0;
+    border-bottom:1px solid var(--line)}
+  .rrow .w{font-weight:800;font-size:23px;color:var(--ink)}
+  .rrow .l{font-size:19px;color:var(--muted)}
+  /* 資格賽只有勝敗、沒有比分（多桌回報頁不收比分，後端記成「—」）。
+     留一個永遠空著的欄位比沒有還糟，所以沒有比分時整個不畫。 */
+  .rrow .s{margin-left:auto;font-family:var(--f-mono);font-size:19px;
+    font-weight:700;color:var(--magenta)}
+  .rempty{color:var(--muted2);font-size:17px;padding:20px 0}
+
+  .rdrow{display:flex;align-items:baseline;gap:18px;padding:12px 0;
+    border-bottom:1px solid var(--line)}
+  .rdrow .t{font-family:var(--f-mono);font-size:23px;color:var(--muted);
+    font-weight:700;min-width:92px}
+  .rdrow .e{font-size:23px;font-weight:700;color:var(--ink)}
+  .rdrow .e small{display:block;font-size:15px;color:var(--muted2);
+    font-weight:400;margin-top:3px;white-space:normal}
+  .rdrow.past{opacity:.4}
+  .rdrow.now{background:var(--surface);border:1px solid var(--line);
+    border-radius:12px;padding:12px 16px;border-bottom:1px solid var(--line)}
+  .rdrow.now .t{color:var(--magenta)}
+  .rdday{font-family:var(--f-mono);font-size:14px;letter-spacing:.2em;
+    color:var(--muted2);padding:10px 0 4px}
+
+  /* ---------- 16 強之後：對戰表 ---------- */
+  .groups{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;flex:1 1 auto;min-height:0}
+  .gp{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px}
+  .gp h3{font-family:var(--f-disp);font-weight:900;font-size:26px;margin-bottom:4px}
+  .gp .sub{font-size:12px;color:var(--muted2);margin-bottom:14px}
+  .gr{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid #2a1b36}
+  .gr:first-of-type{border-top:0}
+  .gr .rk{font-family:var(--f-mono);font-size:15px;color:var(--muted2);width:22px}
+  .gr .nm{font-family:var(--f-disp);font-weight:900;font-size:26px;flex:1;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    padding-block:.14em;margin-block:-.14em}
+  .gr .wl{font-family:var(--f-mono);font-size:16px;color:var(--cyan)}
+  .gr.tie .rk{color:var(--amber)}
+
+  .off{position:absolute;top:26px;right:30px;display:none;gap:9px;align-items:center;
+    font-family:var(--f-mono);font-size:16px;color:#ff5a6a}
+  .off.on{display:flex}
+  .off i{width:11px;height:11px;border-radius:50%;background:#ff5a6a;animation:bk 1.2s infinite}
+  @keyframes bk{50%{opacity:.25}}
+
+  /* ══ 粉白配色　?theme=pink ══════════════════════════════════
+     顏色沿用美術那一包的待機三卡：粉紅 #EE1F7A 撐結構，白底承載內容，
+     文字改深色。切換用網址參數，不是另外複製一個檔 —— 兩份原始碼一定會走鐘。 */
+  html.pink{
+    --bg:#ffffff; --surface:#fff4f8; --line:rgba(238,31,122,.22);
+    --magenta:#EE1F7A; --cyan:#EE1F7A; --amber:#c8761a;
+    --ink:#14141C; --muted:rgba(20,20,28,.60); --muted2:rgba(20,20,28,.40);
+  }
+  html.pink body{
+    background:
+      radial-gradient(1200px 700px at 80% -10%, rgba(238,31,122,.10), transparent 60%),
+      radial-gradient(900px 600px at -10% 110%, rgba(238,31,122,.07), transparent 55%),
+      #fff;
+  }
+  html.pink .bar i{background:linear-gradient(90deg,#EE1F7A,#ff7ab0)}
+  html.pink .bar{background:rgba(238,31,122,.14)}
+  /* 淘汰的重點選手：深色底靠降低亮度，白底要靠降低彩度才看得出「淡掉」 */
+  html.pink .fp.out{opacity:.45;background:#faf7f8}
+  /* 重點選手的顏色是主辦為「深色底」挑的（金、青、淺藍…），放到白底上會糊掉。
+     粉白版把顏色留在左邊色條和淡淡的底色上，名字改用深色 —— 認得出是誰、
+     也還看得出是哪一位重點選手。 */
+  html.pink .fp{background:#fff;border-left-width:6px}
+  html.pink .fp .nm{color:var(--ink)}
+  html.pink .fp .st{color:#EE1F7A}
+  html.pink .fp.out .nm{color:rgba(20,20,28,.38)}
+  html.pink .fp.out .st{color:rgba(20,20,28,.34)}
+  html.pink .recent{border-top-color:rgba(238,31,122,.22)}
+  html.pink .off{color:#c8102e}
+  html.pink .off i{background:#c8102e}
+  /* 對戰表的列分隔線寫死成深紫，白底上會變成一條黑槓 */
+  html.pink .gr{border-top-color:rgba(238,31,122,.16)}
+.orgwrap,.orgbar{display:none!important}</style>
+</head>
+<body>
+<div class="off" id="off"><i></i>與賽務系統斷線</div>
+
+<div class="page">
+  <header>
+    <span class="t">2026 <b>贊鬥盃</b></span>
+    <span class="ph" id="phase">—</span>
+    <!-- 16 強兩半各還剩幾場。放在標題列而不是畫面中間：多一列會把最下面的戰果擠出 1080 -->
+    <span class="fleft" id="fleft"></span>
+    <span class="clock" id="clock">--:--</span>
+  </header>
+
+  <!-- 資格賽 -->
+  <section id="qual" style="display:none">
+    <div class="big">
+      <div>
+        <div class="lab">目前還剩</div>
+        <div class="n"><span id="alive">—</span><i class="u">人</i></div>
+      </div>
+      <div class="side">
+        <div class="kv">已淘汰　<b id="out">—</b> 人</div>
+        <div class="kv">還剩　<b id="mleft">—</b> 場（已完成 <span id="mdone">—</span> / <span id="mtotal">—</span>）</div>
+        <div class="kv" id="rdline">目前　<b id="rd">—</b></div>
+      </div>
+    </div>
+    <div class="divs" id="divs" style="margin-top:26px"></div>
+  </section>
+
+  <!-- 16 強之後 -->
+  <section id="fin" style="display:none;flex:1 1 auto;min-height:0">
+    <div class="groups" id="groups"></div>
+  </section>
+
+  <div class="feat" id="featwrap" style="display:none">
+    <h2>重點選手</h2>
+    <div class="fl" id="feat"></div>
+  </div>
+
+  <div class="low" id="low">
+    <div class="col"><div class="cap">最 近 戰 果</div><div id="recent"></div></div>
+    <div class="col"><div class="cap">今 日 流 程</div><div id="rundown"></div></div>
+  </div>
+</div>
+
+<script>
+// 配色：?theme=pink（或 &light=1）切成粉白版，跟待機三卡同一套。
+// 沒帶參數就是原本的深色版。
+(function(){
+  var q = new URLSearchParams(location.search);
+  // 粉白是預設，深色版才帶 ?dark=1（或 ?theme=dark）。
+  // 舊網址上的 ?light=1 / ?theme=pink 留著也不會壞，只是變成多餘的。
+  if (!q.has("dark") && q.get("theme") !== "dark")
+    document.documentElement.classList.add("pink");
+})();
+</script>
+<script>
+const $ = s => document.querySelector(s);
+const MS = +(new URLSearchParams(location.search).get("ms")) || 1000;
+const esc = s => String(s==null?"":s).replace(/[&<>"]/g,
+  c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const PHASE = {qual:"資格賽", finals:"16 強決賽", done:"賽事結束"};
+const STATUS = {playing:"進行中", waiting:"待戰", advanced:"晉級", eliminated:"淘汰", done:"完賽"};
+
+function clock(){
+  const d = new Date();
+  $("#clock").textContent = String(d.getHours()).padStart(2,"0")+":"+
+                            String(d.getMinutes()).padStart(2,"0");
+}
+clock(); setInterval(clock, 10000);
+
+function drawQual(d){
+  $("#qual").style.display = "";
+  $("#fleft").innerHTML = "";
+  $("#fin").style.display = "none";
+  $("#alive").textContent  = d.alive;
+  $("#out").textContent    = d.total - d.alive;
+  $("#mdone").textContent  = d.matches.done;
+  $("#mtotal").textContent = d.matches.total;
+  $("#mleft").textContent  = Math.max(0, (d.matches.total||0) - (d.matches.done||0));
+  $("#rd").textContent     = d.round || "—";
+  $("#rdline").style.display = d.round ? "" : "none";
+  $("#divs").innerHTML = (d.divs||[]).map(v=>{
+    const pct = v.m ? Math.round(v.done / v.m * 100) : 0;
+    return `<div class="dv">
+      <div class="h"><b>${esc(v.d)}</b><span>賽區</span><i>${v.alive} 人</i></div>
+      <div class="bd">
+        <div class="bar"><i style="width:${pct}%"></i></div>
+        <div class="m">還剩 ${Math.max(0, v.m - v.done)} 場 · ${pct}%</div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function drawFinals(d, st){
+  $("#qual").style.display = "none";
+  $("#fin").style.display = "";
+  const gs = (st && st.standings) || {};
+  // 16 強兩半各還剩幾場（brain.py progress_view，跟大螢幕看板同一份）
+  const P = d.progress || {};
+  const half = (lab, x) => x ? `${lab}還剩<b>${x.left}</b>場` : "";
+  $("#fleft").innerHTML = [half("爭 1~8 名", P.F1), half("爭 9~16 名", P.F2)].filter(Boolean).join("　·　");
+  // A·B 兩組同名次對打爭 1~8 名、C·D 爭 9~16 名（名次賽 PAB／PCD）。
+  // 寫法跟抽籤頁一致：號碼是抽籤號，不是名次。
+  const LAB = {A:"1~4 號 · 爭 1~8 名", B:"5~8 號 · 爭 1~8 名",
+               C:"1~4 號 · 爭 9~16 名", D:"5~8 號 · 爭 9~16 名"};
+  $("#groups").innerHTML = ["A","B","C","D"].map(g=>{
+    const rows = gs[g] || [];
+    return `<div class="gp"><h3>${g} 組</h3><div class="sub">${LAB[g]||""}</div>` +
+      (rows.length ? rows.map(r=>`
+        <div class="gr ${r.tie?'tie':''}">
+          <span class="rk">${r.rank}</span>
+          <span class="nm">${esc(r.nick||r.name||r.code)}</span>
+          <span class="wl">${r.w}勝${r.l}敗</span>
+        </div>`).join("")
+        : `<div class="sub">尚未開始</div>`) + `</div>`;
+  }).join("");
+}
+
+function drawFeatured(list){
+  const rows = (list||[]).filter(f=>f.found);
+  $("#featwrap").style.display = rows.length ? "" : "none";
+  if(!rows.length) return;
+  // 還活著的排前面；同樣狀態就照名單順序
+  rows.sort((a,b)=> (a.alive===b.alive) ? 0 : (a.alive ? -1 : 1));
+  $("#feat").innerHTML = rows.map(f=>`
+    <div class="fp ${f.alive?'':'out'}" style="--c:${esc(f.color)}">
+      <span class="nm">${esc(f.name)}</span>
+      ${f.tag ? `<span class="tag">${esc(f.tag)}</span>` : ""}
+      <span class="st">${f.alive ? (STATUS[f.status]||"") : "已淘汰"}</span>
+    </div>`).join("");
+}
+
+/* 逾時保護：理由見 obs-overlay.html 同一段。這一頁尤其要緊 —— 它會保留
+   最後一幀，主機睡著時如果紅點不亮，整面賽況總覽就是一份看起來正常、
+   實際上停在十分鐘前的資料。 */
+function grab(url, ms){
+  const c = new AbortController(), t = setTimeout(() => c.abort(), ms);
+  return fetch(url, {cache:"no-store", signal:c.signal}).finally(() => clearTimeout(t));
+}
+async function grabJSON(url){
+  const r = await grab(url, Math.max(2500, MS * 3));
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  return r.json();
+}
+
+let lastSig = "";
+let busyPull = false;
+async function pull(){
+  if (busyPull) return;
+  busyPull = true;
+  try { await pullOnce(); } finally { busyPull = false; }
+}
+
+async function pullOnce(){
+  let d, st;
+  try{
+    d = await grabJSON("./overview.json");
+    if(d && d.phase !== "qual")
+      st = await grabJSON("./live.json");
+    $("#off").classList.remove("on");
+  }catch(e){
+    // 連不到就保留最後一幀，只在角落亮一顆紅點 —— 直播畫面不要蓋大字
+    $("#off").classList.add("on");
+    return;
+  }
+  if(!d || d.error) return;
+  const sig = JSON.stringify([d.phase,d.alive,d.matches,d.round,
+                              (d.featured||[]).map(f=>[f.code,f.alive]),
+                              (d.divs||[]).map(v=>v.done),
+                              // 16 強階段上面那幾個數字都不會變，沒有這一項的話
+                              // 小組排名會一直停在第一次畫的樣子
+                              d.progress||null]);
+  if(sig !== lastSig){
+    lastSig = sig;
+    $("#phase").textContent = PHASE[d.phase] || "";
+    if(d.phase === "qual") drawQual(d); else drawFinals(d, st);
+    drawFeatured(d.featured);
+  }
+  const r = d.recent || [];
+  // 塞得下幾列就畫幾列。寫死筆數的話，換一台解析度不同的顯示器就會被切一半，
+  // 而「切一半的那一列」看起來像壞掉，不像「還有更多」。
+  const box = document.getElementById("recent");
+  const ROW = 53;                                  // 一列連分隔線的高度
+  const room = box ? Math.max(0, box.getBoundingClientRect().height) : 0;
+  const RECENT_N = room ? Math.max(3, Math.floor(room / ROW)) : 8;
+  // 「—」是後端對「沒收比分」的表示法，不是分數，不要畫出來
+  const hasScore = v => { const t=String(v==null?"":v).trim();
+                          return t && t!=="—" && t!=="-"; };
+  $("#recent").innerHTML = r.length
+    ? r.slice(0,RECENT_N).map(x=>`<div class="rrow">
+        <span class="w">${esc(x.w&&x.w.name||x.w)}</span>
+        <span class="l">勝 ${esc(x.l&&x.l.name||x.l)}</span>
+        ${hasScore(x.score)?`<span class="s">${esc(x.score)}</span>`:""}
+      </div>`).join("")
+    : `<div class="rempty">還沒有完成的場次</div>`;
+}
+/* ---------- 今日流程 ----------
+   讀的是控台那一份（overlay/控台/state.json 的 rundown），所以主控台改一次，
+   這一頁和 scenes.html 的節目表一起變 —— 不會出現兩個版本的時間表。
+   控台沒開或還沒設過，就用下面這份預設。
+
+   格式與 scenes.html 相同：
+       # 08.01 SAT            以 # 開頭＝日期標題
+       17:45  開場表演         時間、空白、項目
+       18:00  比賽開始 | 附註   用 | 分隔小字附註                       */
+const NL = String.fromCharCode(10);
+const RUNDOWN_DEFAULT = [
+  "# 08.01 SAT",
+  "17:45  開場表演",
+  "18:00  比賽開始",
+  "18:00  資格賽 | 無實況轉播，僅畫面與資格賽資訊",
+  "20:00  中場休息",
+  "20:30  16 強轉播",
+].join(NL);
+
+function drawRundown(text){
+  const box = document.getElementById("rundown");
+  if(!box) return;
+  const mins = s => { const m=String(s).match(/^(\d{1,2}):(\d{2})$/);
+                      return m ? (+m[1])*60 + (+m[2]) : null; };
+  const now = new Date(); const nowM = now.getHours()*60 + now.getMinutes();
+
+  const items = [];
+  for(const raw of String(text==null?"":text).split(NL)){
+    const line = raw.trim();
+    if(!line) continue;
+    if(line.startsWith("#")){ items.push({day:line.slice(1).trim()}); continue; }
+    const m = line.match(/^(\S+)\s+(.*)$/);
+    const [time, rest] = m ? [m[1], m[2]] : ["", line];
+    const parts = rest.split("|");
+    items.push({time, main:(parts[0]||"").trim(), note:(parts[1]||"").trim(),
+                at:mins(time)});
+  }
+  // 「現在進行中」＝最後一個開始時間已經過了的項目。用最後一個而不是第一個，
+  // 才不會在 18:00 有兩列同時亮起來。
+  let cur = -1;
+  items.forEach((it,i)=>{ if(it.at!=null && it.at<=nowM) cur=i; });
+
+  box.innerHTML = items.map((it,i)=>{
+    if(it.day) return `<div class="rdday">${esc(it.day)}</div>`;
+    const cls = i===cur ? "now" : (it.at!=null && it.at<nowM ? "past" : "");
+    return `<div class="rdrow ${cls}"><span class="t">${esc(it.time)}</span>
+      <span class="e">${esc(it.main)}${it.note?`<small>${esc(it.note)}</small>`:""}</span></div>`;
+  }).join("");
+}
+
+/* 控台沒開的時候那個檔不存在，fetch 會 404。功能上沒差（下面會退回預設），
+   但每 15 秒一次的 404 會把 OBS 瀏覽器來源的主控台洗版 —— 真正的錯誤就被
+   埋在裡面看不到了。所以 404 之後把間隔拉長到 60 秒；控台稍後才開也接得回來。 */
+let RD_LAST = null, RD_GAP = 15000;
+async function pullRundown(){
+  let txt = null, missing = false;
+  try{
+    const r = await fetch("overlay/控台/state.json?_=" + Date.now(), {cache:"no-store"});
+    if(r.ok){ const j = await r.json(); if(j && typeof j.rundown === "string") txt = j.rundown; }
+    else missing = true;
+  }catch(e){ missing = true; }
+  RD_GAP = missing ? 60000 : 15000;
+  const use = (txt && txt.trim()) ? txt : RUNDOWN_DEFAULT;
+  if(use !== RD_LAST) RD_LAST = use;
+  drawRundown(use);                    // 每次都重畫：「現在進行中」是哪一列會隨時間變
+  setTimeout(pullRundown, RD_GAP);
+}
+pullRundown();
+
+pull(); setInterval(pull, MS);
+</script>
+</body>
+</html>

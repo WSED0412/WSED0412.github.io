@@ -1,0 +1,303 @@
+<!--
+  贊鬥盃 BEYBLADE X — 賽程樹（單淘汰，Battlefy 風格）
+  ------------------------------------------------------------------
+  單淘汰階段的樹狀圖，會顯示小分、勝方晉級。由大腦服務、讀 bracket.json。
+  連不到大腦時進示範模式（假資料）以便預覽。
+  OBS：瀏覽器來源載入，可切分區、可捲動；想去背把 body 背景改 transparent。
+-->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>贊鬥盃 · 賽程樹</title>
+<link rel="stylesheet" href="fonts.css" />
+<style>
+  :root{
+    --bg:#0d0913;--surface:#171020;--surface2:#1e1529;--line:#2c1d38;--line2:#3a2749;
+    --magenta:#e73473;--magenta-dim:#751c3c;--cyan:#28e8b6;--ink:#f5eef2;--muted:#9c8aa8;--muted2:#6a5a78;
+    --f-disp:"Saira Condensed","Noto Sans TC","Microsoft JhengHei","PingFang TC",sans-serif;--f-body:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;--f-mono:"Chivo Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  html{height:100%}
+  body{background:var(--bg);color:var(--ink);font-family:var(--f-body);height:100%;display:flex;flex-direction:column}
+  .top{display:flex;align-items:center;gap:16px;padding:14px 20px;border-bottom:1px solid var(--line);flex:0 0 auto}
+  .brand{font-family:var(--f-disp);font-weight:900;font-style:italic;font-size:22px}
+  .brand b{color:var(--magenta)}
+  .divs{display:flex;gap:7px}
+  .dtab{width:40px;height:40px;border-radius:11px;border:1px solid var(--line);background:var(--surface);
+    color:var(--muted);font-family:var(--f-disp);font-weight:900;font-size:19px;cursor:pointer;display:grid;place-items:center;transition:.15s}
+  .dtab.on{background:var(--magenta);border-color:var(--magenta);color:#fff}
+  .live{margin-left:auto;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+  .live .d{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--cyan);margin-right:5px;animation:blink 1.6s infinite;vertical-align:middle}
+  @keyframes blink{50%{opacity:.25}}
+  /* 手機：標題、四顆分區鍵、連線狀態擠同一行的話，每一塊都會折成兩三行
+     （量到「即時 · 1 人在線」被折成三行）。改成分區鍵自己占一列並均分寬度，
+     其餘不折行 —— 順便讓分區鍵的點擊範圍變大。 */
+  @media (max-width:640px){
+    .top{flex-wrap:wrap;gap:9px 12px;padding:10px 14px}
+    .brand{font-size:18px;white-space:nowrap}
+    .live{white-space:nowrap;font-size:10.5px}
+    .divs{order:3;flex:1 0 100%;gap:8px}
+    .divs .dtab{flex:1;width:auto}
+  }
+
+  /* 賽程樹是這一頁唯一能捲的地方，手指必須落在它身上才滑得動。
+     min-height 是保險：底下那塊「主辦單位」是固定高度，螢幕一矮就會把這裡
+     擠成一條窄縫 —— 實測 390×664 的手機上只剩 223px，剩下 248px 是不會捲的
+     死區，手指滑在那裡毫無反應、鬆手就彈回原位，看起來就像「自己跳回來」。 */
+  .scroll{flex:1;overflow:auto;padding:22px;min-height:60vh}
+  .bracket{display:flex;align-items:stretch;gap:0;min-height:100%;width:max-content}
+  .round{display:flex;flex-direction:column;justify-content:space-around;min-width:250px;padding:0 22px 0 0}
+  .rhead{position:sticky;top:-22px;background:linear-gradient(180deg,var(--bg) 70%,transparent);
+    padding:2px 0 12px;z-index:2}
+  .rhead .rn{font-family:var(--f-disp);font-weight:900;font-size:20px}
+  .rhead .rs{font-family:var(--f-mono);font-size:11px;color:var(--muted);margin-top:2px}
+  .mwrap{position:relative;padding:9px 0;display:flex;flex-direction:column;justify-content:center;flex:0 0 auto}
+
+  .mlabel{font-family:var(--f-mono);font-size:10px;color:var(--muted2);margin:0 0 5px 2px}
+  .match{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;width:228px}
+  .prow{display:flex;align-items:center;gap:9px;padding:10px 11px;position:relative}
+  .prow+.prow{border-top:1px solid var(--line)}
+  .seed{font-family:var(--f-mono);font-size:11px;color:var(--muted2);width:16px;text-align:center;flex:0 0 auto}
+  .ava{width:22px;height:22px;border-radius:6px;flex:0 0 auto;display:grid;place-items:center;
+    background:var(--surface2);font-family:var(--f-disp);font-weight:900;font-size:11px;color:var(--muted)}
+  .pn{font-family:var(--f-body);font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted);max-width:100%}
+  .pn.mq{display:inline-block;vertical-align:bottom}
+  .pn.mq .mqtrack{display:inline-flex;white-space:nowrap;animation:mqscroll linear infinite}
+  .pn.mq .mqgap{display:inline-block;width:2.4em;flex:0 0 auto}
+  @keyframes mqscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .sc{margin-left:auto;font-family:var(--f-mono);font-size:15px;color:var(--muted2);flex:0 0 auto}
+  .prow.win .pn{color:var(--ink)} .prow.win .ava{color:var(--cyan)} .prow.win .sc{color:var(--cyan)}
+  .prow.win::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--magenta)}
+  .prow.tbd .pn{color:var(--muted2)}
+  .match.open{border-color:var(--magenta-dim);box-shadow:0 0 0 1px #e7347314 inset}
+
+  /* 連接線（右側水平段，讀起來像往下一輪流動） */
+  .round:not(:last-child) .mwrap::after{content:"";position:absolute;right:-22px;top:50%;width:22px;height:1px;background:var(--line2)}
+  .round:not(:first-child) .mwrap::before{content:"";position:absolute;left:-22px;top:50%;width:22px;height:1px;background:var(--line2)}
+
+  /* 晉級（前4）欄 */
+  .surv .match{border-color:var(--cyan);background:#28e8b60d}
+  .surv .prow{border:0}
+  .surv .tag{font-family:var(--f-mono);font-size:10px;color:var(--cyan);padding:2px 0 6px 2px}
+
+  .empty{color:var(--muted2);padding:40px;text-align:center}
+  @media (prefers-reduced-motion:reduce){.live .d{animation:none}}
+
+  /* 活動標準字：高度用 em，沿用各頁 wordmark 原本的字級 */
+  .logo{height:1.15em;width:auto;display:inline-block;vertical-align:-.17em;flex:0 0 auto}
+
+  /* 賽事狀態提示條（未開始／暫停／結束時出現） */
+  #evbar{position:fixed;top:0;left:0;right:0;z-index:9999;display:none;
+    padding:calc(9px + env(safe-area-inset-top)) 16px 9px;text-align:center;
+    font-family:var(--f-body,sans-serif);font-weight:900;font-size:15px;line-height:1.35;
+    box-shadow:0 6px 24px -10px #000c}
+  #evbar.on{display:block}
+  #evbar.before{background:#ffb02e;color:#2a1600}
+  #evbar.paused{background:#e73473;color:#fff}
+  #evbar.done{background:#1f1530;color:#f4eefb;border-bottom:1px solid #2e2140}
+  #evbar small{display:block;font-weight:400;font-size:12px;opacity:.85;margin-top:2px}
+  body.evshift{padding-top:var(--evh,52px)}
+  #evbar.checkin{background:#2ee6a8;color:#04120e}
+  /* 主辦單位標誌：用深色底專用的白字版（主辦單位-深色底.svg），
+     直接放在深色底上。紅與黃維持原標準色，只有灰字換成白色。
+     白底的文件／印刷品請用原檔 主辦單位.svg。 */
+  .orgwrap{margin:34px auto 20px;padding:0 16px;text-align:center}
+  .orgwrap .lab{display:block;font-size:10.5px;letter-spacing:.22em;
+    color:#6f5f7d;margin-bottom:9px}
+  .orgwrap .lg{display:inline-block;line-height:0}
+  .orgwrap img{width:224px;max-width:66vw;height:auto;display:block}
+  /* 手機／矮螢幕：主辦單位照樣露出，但不能占掉近一半的畫面 —— 那些像素要留給賽程樹 */
+  @media (max-width:640px), (max-height:760px){
+    .orgwrap{margin:10px auto 8px}
+    .orgwrap .lab{font-size:9.5px;margin-bottom:4px}
+    .orgwrap img{width:104px}
+  }
+.orgwrap,.orgbar{display:none!important}</style>
+
+<div class="top">
+  <div class="brand"><img class="logo" src="logo.svg" alt="贊鬥盃"> <b>賽程樹</b></div>
+  <div class="divs" id="divs"></div>
+  <div class="live"><span class="d"></span><span id="mode">連線中</span><span id="onwrap" style="margin-left:10px;display:none">· <b id="on">—</b> 人在線</span></div>
+</div>
+<div class="scroll"><div class="bracket" id="bracket"></div></div>
+
+<div class="orgwrap">
+  <span class="lab">主辦單位</span>
+  <span class="lg"><img data-src-removed="org" alt="南科贊美酒店 L'ARC HOTEL"></span>
+</div>
+
+<script>
+const DIVS=["A","B","C","D"]; let cur="A", DATA=null, DEMO=false;
+const READ_BASE=".";  // 部署時填 CDN 網址（空 = 同源）
+// bracket.json 走 READ_BASE（可放 CDN），但即時心跳 /status 是大腦現算的、不發佈到 CDN，
+// 一定要走 WRITE_BASE（通道）。空 = 同源（Method A 不受影響）。Method B 時填成通道網址，
+// 這頁的自動重整/暫停結束橫幅才不會因為打到 CDN 404 而失效。
+const WRITE_BASE=".";
+const $=s=>document.querySelector(s);
+// 跳脫範圍要含引號，跟 table-board／judge 一致（B15）：只跳 & < > 的版本，
+// 安全**只因為**目前這頁的選手字串都落在 text context；哪天有人把名字塞進
+// attr="${...}" 就會破，而那種破法在 code review 上看不出來。
+// 也一併用 String(s==null?"":s) 收斂：數字 0 用 (s||"") 會變成空字串。
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,
+  c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const initial=s=>(s||"?").trim().charAt(0);
+
+function tabs(){
+  $("#divs").innerHTML=DIVS.map(d=>`<button class="dtab ${d===cur?'on':''}" data-d="${d}">${d}</button>`).join("");
+  document.querySelectorAll(".dtab").forEach(b=>b.onclick=()=>{cur=b.dataset.d;render();});
+}
+
+async function load(){
+  try{
+    // 直接讀 bracket.json（91KB），不要為了這一塊去抓整包 snapshot.json（288KB）
+    DATA=await (await fetch(READ_BASE+"/bracket.json",{cache:"no-store"})).json();
+    DEMO=false; $("#mode").textContent="即時";
+  }catch(e){
+    // 假資料只在網址加 ?demo=1 時啟用。正式場讀不到大腦寧可空著，
+    // 也不能在大螢幕上投一棵假的賽程樹給觀眾看。
+    if(new URLSearchParams(location.search).get("demo")==="1"){
+      DEMO=true; $("#mode").textContent="示範模式（假資料）"; DATA=demoData();
+    }else if(DATA==null){
+      DEMO=false; $("#mode").textContent="尚未連上賽務系統";   // 從頭到尾沒讀成功過
+    }else{
+      // 曾經讀到過 → 一次瞬斷（會場 Wi-Fi、request queue 滿）不要把整棵樹換掉。
+      // 保留最後一份好的畫面，下一輪 load 會自己補回來 —— 否則小組賽階段 bracket.json
+      // 不再變動，簽章一樣就永遠不重繪，大螢幕會卡在「尚未連上」直到有人重載。
+      DEMO=false; $("#mode").textContent="連線中斷（顯示上一份）";
+    }
+  }
+  render();
+}
+
+function prow(p, side, winner, score){
+  if(!p) return `<div class="prow tbd"><span class="seed"></span>
+    <span class="ava">·</span><span class="pn">待定</span><span class="sc">-</span></div>`;
+  const win=winner===side;
+  return `<div class="prow ${win?'win':''}">
+    <span class="seed">${p.seed??''}</span>
+    <span class="ava">${esc(initial(p.name))}</span>
+    <span class="pn">${esc(p.name||p.code)}</span>
+    <span class="sc">${score??'-'}</span></div>`;
+}
+
+let _brSig="";
+function render(){
+  if(!DATA){
+    $("#bracket").innerHTML=`<div class="empty" style="padding:60px 20px;line-height:1.9">
+      尚未連上賽務系統<br>
+      <span style="font-size:13px;opacity:.75">賽程樹會在檢錄結束、系統建立賽程後出現</span></div>`;
+    return;
+  }
+  tabs();
+  const dv=DATA&&DATA[cur];
+  if(!dv){ $("#bracket").innerHTML=`<div class="empty">此分區尚無賽程</div>`; return; }
+  // 內容沒變就不重建：126 場的賽程樹全部重繪、加上逐一量測跑馬燈，
+  // 每次都做等於白工，而且量測是強制同步重排版面，元素一多會卡頓。
+  const sig=cur+"|"+JSON.stringify(dv.rounds.map(rd=>rd.matches.map(m=>
+    [m.p1&&m.p1.code, m.p2&&m.p2.code, m.winner, m.s1, m.s2, m.state])));  // cur 放進簽章：切分頁一定重繪
+  if(sig===_brSig){ return; }
+  _brSig=sig;
+  let html="";
+  dv.rounds.forEach((rd,i)=>{
+    const played=rd.matches.filter(m=>m.winner).length;
+    html+=`<div class="round"><div class="rhead"><div class="rn">${esc(rd.name)}</div>
+      <div class="rs">${rd.matches.length} 場 · 已完成 ${played}</div></div>`;
+    rd.matches.forEach((m,mi)=>{
+      html+=`<div class="mwrap"><div class="mlabel">#${String(mi+1).padStart(2,"0")}</div>
+        <div class="match ${m.state==='open'?'open':''}">
+          ${prow(m.p1,"p1",m.winner,m.s1)}
+          ${prow(m.p2,"p2",m.winner,m.s2)}
+        </div></div>`;
+    });
+    html+=`</div>`;
+  });
+  // 晉級（前4）欄
+  if(dv.survivors&&dv.survivors.length){
+    html+=`<div class="round surv"><div class="rhead"><div class="rn">前 4 晉級</div>
+      <div class="rs">進入循環賽</div></div>`;
+    dv.survivors.forEach(s=>{
+      html+=`<div class="mwrap"><div class="match"><div class="prow win">
+        <span class="ava">${esc(initial(s.name))}</span>
+        <span class="pn">${esc(s.name||s.code)}</span></div></div></div>`;
+    });
+    html+=`</div>`;
+  }
+  $("#bracket").innerHTML=html;
+  initMarquees($("#bracket"));
+}
+
+/* ---- 示範資料（連不到大腦時） ---- */
+function demoData(){
+  const nm=["陳彥廷","林郁翔","黃冠宇","張博勛","李承恩","吳宗翰","王柏睿","劉哲瑋"];
+  const p=(s)=>({seed:s,code:`A-00${s}`,name:nm[s-1]});
+  const r1=[[1,8],[4,5],[2,7],[3,6]].map((x,i)=>({id:`A-R0-M0${i}`,p1:p(x[0]),p2:p(x[1]),
+     s1:[3,3,3,0][i],s2:[0,0,0,3][i],winner:["p1","p1","p1","p2"][i],state:"complete"}));
+  return {A:{rounds:[{name:"Round 1",matches:r1}],
+    survivors:[p(1),p(4),p(2),p(6)]},B:{rounds:[],survivors:[]},C:{rounds:[],survivors:[]},D:{rounds:[],survivors:[]}};
+}
+
+// 放不下的暱稱掛跑馬燈（同一套技巧見 table-board.html）
+function initMarquees(root){
+  const SPEED=42;
+  root.querySelectorAll(".pn").forEach(el=>{
+    const text=el.textContent; if(!text) return;
+    const probe=document.createElement("span");
+    probe.style.cssText="position:absolute;visibility:hidden;white-space:nowrap;left:-9999px;font:inherit";
+    probe.textContent=text; el.appendChild(probe);
+    const natural=probe.offsetWidth, avail=el.clientWidth;
+    probe.remove();
+    if(natural<=avail+2) return;
+    const gapPx=Math.max(24, el.clientHeight*1.6), cyclePx=natural+gapPx, dur=cyclePx/SPEED;
+    const delay=-((Date.now()/1000)%dur);
+    el.classList.add("mq");
+    el.innerHTML=`<span class="mqtrack" style="animation-duration:${dur.toFixed(2)}s;animation-delay:${delay.toFixed(2)}s">
+      <span>${esc(text)}</span><span class="mqgap"></span><span>${esc(text)}</span></span>`;
+  });
+}
+load(); setInterval(load, 10000);
+
+/* ---------- 同時在線人數（與觀眾頁共用同一個 token） ---------- */
+const VTOK=(()=>{ try{ let t=localStorage.getItem("zanmen_vtok");
+  if(!t){ t=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem("zanmen_vtok",t); }
+  return t; }catch(e){ return Math.random().toString(36).slice(2); } })();
+window.__evHook=function(s){
+  const el=document.getElementById("on"), w=document.getElementById("onwrap");
+  if(el && typeof s.n==="number"){ el.textContent=s.n; if(w) w.style.display=""; }
+};
+
+/* ---------- 賽事狀態 + 自動重整（共用心跳 /status） ---------- */
+(function(){
+  var BOOT=null, BAR=null, TOK=null;
+  try{ TOK=localStorage.getItem("zanmen_vtok");
+       if(!TOK){ TOK=Math.random().toString(36).slice(2)+Date.now().toString(36);
+                 localStorage.setItem("zanmen_vtok",TOK); } }catch(e){ TOK=""; }
+  function bar(){ if(!BAR){ BAR=document.createElement("div"); BAR.id="evbar";
+                            document.body.appendChild(BAR); } return BAR; }
+  window.__evOnline=function(){ return window.__evN||0; };
+  async function tick(){
+    try{
+      var s=await fetch((typeof WRITE_BASE!=="undefined"?WRITE_BASE:"")+"/status?v="+encodeURIComponent(TOK),
+                        {cache:"no-store"}).then(function(r){return r.json();});
+      // 伺服器換了一個（重開大腦／主辦按強制重整）→ 這個畫面自己重載
+      if(BOOT && s.boot!==BOOT){ location.reload(); return; }
+      BOOT=s.boot;
+      window.__evN=s.n; window.__evMode=s.mode; window.__evPausedAt=s.paused_at||0;
+      var b=bar();
+      if(s.mode==="live"){ b.className=""; document.body.classList.remove("evshift"); }
+      else{
+        b.className="on "+s.mode;
+        const E=t=>String(t==null?"":t).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+        // 跳脫而不是把 & < > 刪掉 —— 主辦打的字要原樣顯示，
+        // 而且主辦控制台的「觀眾看到的樣子」預覽才會跟這裡一致。
+        b.innerHTML=E(s.label||"")+(s.msg?"<small>"+E(s.msg)+"</small>":"");
+        document.body.classList.add("evshift");
+        // 放大／換行時提示條會變高，量實際高度，不要寫死 52px
+        document.body.style.setProperty("--evh", b.offsetHeight+"px");
+      }
+      if(window.__evHook) window.__evHook(s);
+    }catch(e){}
+  }
+  tick(); setInterval(tick,15000);
+  document.addEventListener("visibilitychange",function(){ if(!document.hidden) tick(); });
+})();
+</script>

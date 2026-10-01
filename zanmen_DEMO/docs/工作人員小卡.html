@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>贊鬥盃 · 工作人員小卡</title>
+<style>
+:root{--bg:#fff;--ink:#1a1420;--muted:#6b5f7a;--line:#e2dced;--magenta:#c31f5c;
+      --cyan:#0d7f5e;--code:#f4f1f8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);line-height:1.85;
+     font-family:"Noto Sans TC","Microsoft JhengHei",-apple-system,sans-serif;
+     -webkit-font-smoothing:antialiased}
+.wrap{max-width:860px;margin:0 auto;padding:48px 28px 90px}
+h1{font-size:32px;line-height:1.35;margin:0 0 26px;letter-spacing:-.01em}
+h2{font-size:23px;margin:56px 0 14px;padding-top:20px;border-top:3px solid var(--magenta);
+   letter-spacing:-.01em}
+h3{font-size:17px;margin:30px 0 10px;color:var(--magenta)}
+p{margin:0 0 14px}
+a{color:var(--magenta)}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+ul,ol{margin:0 0 16px;padding-left:24px}
+li{margin:5px 0}
+blockquote{margin:18px 0;padding:14px 18px;background:#fbf7fd;
+           border-left:4px solid var(--magenta);border-radius:0 8px 8px 0;color:#4b3f5a}
+blockquote p:last-child{margin:0}
+code{background:var(--code);border-radius:5px;padding:2px 6px;font-size:.88em;
+     font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;word-break:break-all}
+pre{background:var(--code);border-radius:10px;padding:16px 18px;overflow-x:auto;margin:0 0 18px}
+pre code{background:none;padding:0;font-size:13px;line-height:1.7;word-break:normal}
+img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--line);
+    display:block;margin:8px 0 22px;background:#0a0710}
+table{border-collapse:collapse;width:100%;margin:0 0 22px;font-size:14.5px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{background:#faf7fc;font-weight:700;white-space:nowrap}
+td code{white-space:nowrap}
+@media print{
+  .wrap{max-width:none;padding:0 8mm}
+  body{font-size:11.5pt;line-height:1.7}
+  h2{page-break-after:avoid;page-break-before:auto}
+  h3{page-break-after:avoid}
+  img,table,blockquote,pre{page-break-inside:avoid}
+  a{color:inherit;text-decoration:none}
+}
+</style>
+</head>
+<body><div class="wrap">
+<h1 id="工作人員小卡">工作人員小卡</h1>
+<blockquote><p>印出來護貝，<b>每個崗位發自己那一段</b>。一個狀況一行，照順序按。<br>反引號裡的字（例如 <code>開始對戰</code>）就是畫面上那顆按鈕的字，找不到就是版本不對，問主辦。<br>為什麼要這樣做、每一頁的截圖，看 <code>操作手冊.html</code>。指令看 <code>README.md</code>。<br>產生可列印版：<code>python docs/md2html.py 工作人員小卡.md</code>。</p></blockquote>
+<hr>
+<h2 id="桌邊裁判裁判回報頁用裁判-pin">桌邊裁判（裁判回報頁，用裁判 PIN）</h2>
+<table><thead><tr><th>狀況</th><th>怎麼按</th></tr></thead><tbody><tr><td><b>雙方就位、陀螺檢查完</b></td><td><code>開始對戰</code>（計時從這一刻算）</td></tr><tr><td><b>打完了（一般桌）</b></td><td>點勝方 → 選比分 → 送出</td></tr><tr><td><b>逐分計分（16 強各桌；資格賽要逐分記的桌先按 <code>改用逐分計分板</code>）</b></td><td>每打完一招就按對應的得分方式。先到 4 分畫面會自己跳到確認</td></tr><tr><td>…畫面寫「兩下按太快，第二下沒有算」</td><td>手指彈到、同一顆鈕連按兩下，系統只算一下（防止一招被記兩次）。真的要再加就再按一次</td></tr><tr><td>…按錯一分</td><td><code>復原上一分</code></td></tr><tr><td>…要整場重來</td><td><code>歸零</code></td></tr><tr><td>…其實還沒開打就按了開始</td><td><code>退回準備</code></td></tr><tr><td><b>未到、棄權、失格</b></td><td>最下面「直接判定勝方」→ 照賽前簡報統一的記法（建議一律 <code>不記比分，直接送出</code>）</td></tr><tr><td><b>送錯成績</b></td><td>右上 <code>我的回報</code> → 改或取消。後面受影響的賽程系統會自己重算</td></tr><tr><td><b>選手說名字顯示錯了</b></td><td>選手名字旁邊的 <code>暱稱</code> → 改</td></tr><tr><td><b>要去顧別桌</b></td><td>右上 <code>換桌</code></td></tr><tr><td><b>開始鈕變灰、寫「賽事暫停中 請稍等」</b></td><td>主辦暫停了開賽，不是你的手機壞掉。手上這場照樣打完、照樣送得出去，等主辦恢復後按鈕會自己亮</td></tr><tr><td><b>手機沒電、當掉</b></td><td>叫場控：他在看板上可以直接幫你判</td></tr><tr><td><b>PIN 一直說錯、被鎖住</b></td><td>先確認 PIN 有沒有打對（多半是打錯）。真的鎖住就找主辦解</td></tr></tbody></table>
+<hr>
+<h2 id="唱名多桌裁判頁-上面切到唱名">唱名（多桌裁判頁 → 上面切到「唱名」）</h2>
+<table><thead><tr><th>狀況</th><th>怎麼按</th></tr></thead><tbody><tr><td><b>叫下一場</b></td><td>由上往下念。<b>左邊橘色大數字是桌號</b>。念完按 <code>已唱名</code>，卡片變灰</td></tr><tr><td><b>選手上桌開打了</b></td><td>不用按，卡片會自己消失</td></tr><tr><td><b>怕漏掉新的</b></td><td>右下打開 <code>提示音</code></td></tr><tr><td><b>一個人顧好幾桌也要回報</b></td><td>上面切到「回報」，每桌一張卡，直接 <code>開始對戰</code> 或點勝方。開始按錯點右邊 <code>↺</code></td></tr></tbody></table>
+<hr>
+<h2 id="場控牌桌調度看板不用-pin">場控（牌桌調度看板，不用 PIN）</h2>
+<table><thead><tr><th>狀況</th><th>怎麼按</th></tr></thead><tbody><tr><td><b>看哪裡還沒打</b></td><td>上面的「空桌／待戰／已完成」三個數字；右邊「待戰隊列」就是唱名順序</td></tr><tr><td><b>選手已就位、裁判還沒按開始</b></td><td>卡片右下 <code>▶ 開始</code> 代按</td></tr><tr><td><b>裁判手機掛了，要代判</b></td><td>點那一桌的選手名字 → <code>▸ 判定勝</code> → 輸入裁判 PIN → 選比分</td></tr><tr><td><b>桌子是灰色的 <code>暫停使用</code></b></td><td>主辦停用了那張桌，不是系統卡住。要恢復找主辦</td></tr><tr><td><b>確認剛剛那場有沒有回報進來</b></td><td>右下「已完成」清單</td></tr><tr><td><b>主辦問「這一區還剩幾場」</b></td><td>看板右上「還剩」那一格（含還沒確定對手的後面幾輪）</td></tr></tbody></table>
+<hr>
+<h2 id="報到櫃台報到櫃台頁用-pin">報到櫃台（報到櫃台頁，用 PIN）</h2>
+<table><thead><tr><th>狀況</th><th>怎麼按</th></tr></thead><tbody><tr><td><b>選手秀 QR</b></td><td>用手機相機掃，會自己開到這一頁並帶出他的資料</td></tr><tr><td><b>選手念 6 碼代碼</b></td><td>打進上面那格 → 查詢</td></tr><tr><td><b>沒帶手機、代碼弄丟</b></td><td>下面「直接搜尋」打姓名或電話末四碼</td></tr><tr><td><b>核對證件</b></td><td>對卡片上的姓名和身分證後四碼 → <code>核對無誤，確認報到</code>。同一支電話的小孩會一起列出來</td></tr><tr><td><b>標籤是橘色或紅色</b></td><td>名單對不上，看證件人工判斷</td></tr><tr><td><b>按錯人</b></td><td>那個人的按鈕會變成 <code>取消報到</code></td></tr><tr><td><b>選手端說「請直接到櫃台」</b></td><td>主辦已經停止收件，照常在櫃台幫他處理</td></tr></tbody></table>
+<hr>
+<h2 id="檢錄台檢錄審核頁用-pin">檢錄台（檢錄審核頁，用 PIN）</h2>
+<table><thead><tr><th>狀況</th><th>怎麼按</th></tr></thead><tbody><tr><td><b>🟢 <code>名單相符</code></b></td><td>直接 <code>通過</code></td></tr><tr><td><b>🟠 <code>名單查無此人</code></b></td><td>看底下列出的相近姓名，對照證件決定。也可以用那一筆底下的搜尋框打姓名、電話或證件末四碼 → <code>查</code> → 點對的那一列就綁好了</td></tr><tr><td><b>🔴 <code>尚未報到</code></b></td><td>請他先去報到台，或當面確認後再通過（系統不會擋，判斷在你）</td></tr><tr><td><b>賽區不對</b></td><td>底下會寫他登記在哪一區，請他去對的檢錄台</td></tr><tr><td><b>資料要先改再通過</b></td><td>左邊鉛筆 → 改完再通過</td></tr><tr><td><b>判錯了</b></td><td>已判過的那筆按 <code>改判</code></td></tr><tr><td><b>找不到某位選手那一筆</b></td><td>掃他的報到 QR，會直接跳到他那一列</td></tr></tbody></table>
+<hr>
+<h2 id="主辦主辦控制台用主辦-pin">主辦（主辦控制台，用主辦 PIN）</h2>
+<table><thead><tr><th>狀況</th><th>怎麼按</th></tr></thead><tbody><tr><td><b>開賽</b></td><td>賽事狀態按 <code>進行中</code>（同時會自動停止收件）</td></tr><tr><td><b>午休、頒獎、等器材</b></td><td>按 <code>暫停中</code>（全場計時一起停）。回來按 <code>進行中</code></td></tr><tr><td><b>不要有人偷跑開下一場</b></td><td>開賽開關 → <code>暫停開賽（裁判不能開新的一場）</code>。打到一半的照樣能送。要恢復按 <code>恢復開賽</code></td></tr><tr><td><b>要讓大家知道幾點恢復</b></td><td>附註訊息打「預計 14:30 恢復比賽」</td></tr><tr><td><b>重新讓選手自己報到／檢錄</b></td><td><code>重新開放收件</code>（關掉是 <code>停止收件（關閉選手端頁面）</code>）</td></tr><tr><td><b>資格賽臨時加一位選手</b></td><td>「現場加入選手（資格賽）」選區、號碼、暱稱 → <code>加入</code>。只能加在輪空位置，抽 16 強之後就不能加了</td></tr><tr><td><b>16 強要一場一場打</b></td><td>決賽牌桌 → <code>1 桌</code>。要恢復正常記得按回 <code>4 桌</code></td></tr><tr><td><b>指定某一場放到某一桌</b></td><td>候補清單裡那一場的「放 N 桌」</td></tr><tr><td><b>小組同分，主辦裁定了名次</b></td><td>決賽名次裁定 → <code>手動排名次</code> → 排好 → <code>送出這組名次</code></td></tr><tr><td><b>某台螢幕卡住</b></td><td><code>強制所有畫面重整</code>（最多 15 秒，按一次就好）</td></tr><tr><td><b>有人被鎖住</b></td><td>PIN 鎖定 → <code>立即解鎖</code>（主辦自己被鎖也能在同一台解）</td></tr><tr><td><b>申訴、改別人的成績</b></td><td>開<b>裁判回報頁</b>用主辦 PIN 登入 → <code>全部回報紀錄</code> → 搜尋場次或名字 → 取消／修改。<b>視窗變紅就停下來想</b>：取消任何一場資格賽，16 強分組會整個退回</td></tr><tr><td><b>查是誰改了什麼</b></td><td>最下面「操作紀錄」</td></tr><tr><td><b>比賽結束</b></td><td>按 <code>已結束</code>。<b>確認備份資料夾裡有最新的 <code>reports.json</code> 才收機器</b></td></tr></tbody></table>
+<p><b>每一階段開始前印一份紙本</b>（紙本列印頁）：資格賽開打前印「資格賽對戰表」，16 強抽完籤印「16 強分組表」和 16 強的「結果單」。放在主辦桌，系統出事就直接拿出來。</p>
+<hr>
+<h2 id="出事的時候">出事的時候</h2>
+<table><thead><tr><th>狀況</th><th>怎麼辦</th></tr></thead><tbody><tr><td><b>主控台最上面「系統健康」出現紅字</b></td><td>照紅字說的處理。「畫面資料超過 30 秒沒更新」＝全場螢幕凍住了；「成績可能沒有存進硬碟」要<b>立刻</b>處理</td></tr><tr><td><b>大腦的黑色視窗被關掉、電腦重開</b></td><td>用<b>一模一樣的指令</b>重開，成績會自己接回來。<b>絕對不要加 <code>--fresh</code></b></td></tr><tr><td><b>網路斷了、系統整個不能用</b></td><td>拿出事先印好的紙本：對戰表照著叫號，<b>每一桌發一張結果單</b>，裁判在得分格記每一招、寫總分、勾勝方</td></tr><tr><td>…系統恢復之後</td><td>系統會把還沒結果的場次照常排上桌。場控在牌桌調度看板找到結果單上那一場 → <code>▸ 判定勝</code> 補登；判完下一場會自己補上桌，照著繼續。<b>補完一張就勾「已輸入系統」</b>，才知道哪幾張還沒補。<b>照輪次順序補</b>（第 1 輪補完才會出現第 2 輪）</td></tr><tr><td>…要補的場次很多</td><td>主辦用 <code>results.csv</code> 一次補（開機要加 <code>--results results.csv</code>），做法見操作手冊「一次補很多場」。<b>補完一定要到看板確認</b>，打錯的那一行會被靜靜跳過</td></tr><tr><td>…要查某一場的紀錄</td><td>結果單上的「系統編號」（例如 <code>A-R0-M05</code>）就是「全部回報紀錄」搜尋框要打的場次代號</td></tr><tr><td>…沒有事先印</td><td>大腦還開得起來就先開紙本列印頁印；連不上大腦的話，頁面會說「連不上大腦」而且不給印 —— 它<b>不會</b>印出假資料</td></tr><tr><td><b>家長說觀眾頁變灰、底下寫「連不上賽務系統」</b></td><td>他的手機連不上，畫面上是舊資料（會寫幾點的）。請他換網路（Wi-Fi／4G 切換）或等一下，連上會自己恢復，不用重整</td></tr><tr><td><b>紙本跟螢幕對不起來</b></td><td>看紙上右上角的「資料時間」，以比較新的那一份為準</td></tr><tr><td><b>不小心開了兩隻大腦</b></td><td>第二隻會自己拒絕並印出說明，照著做。絕不要讓兩隻一起跑</td></tr><tr><td><b>開機時一堆 <code>!!!!</code> 警告</b></td><td>紀錄檔讀不起來，<b>立刻 Ctrl+C</b>，照操作手冊「換一台電腦繼續比賽」第 3 步</td></tr><tr><td><b>筆電整台掛了</b></td><td>照操作手冊「換一台電腦繼續比賽」，有備份十分鐘內做得完</td></tr></tbody></table>
+<hr>
+<h2 id="賽前演練每個崗位-15-分鐘">賽前演練（每個崗位 15 分鐘）</h2>
+<p><b>沒親手按過，現場一定會慌。</b> 2026-08-01 那場 16 強改紙本，就是因為裁判頁在手機上捲不到確認鈕 —— 那種事只有真的拿手機按過才會發現。</p>
+<ol><li><b>另外複製一份資料夾</b>（例如 <code>C:\zanmen-演練</code>），在那一份裡開大腦，<b>不要在正式資料夾裡演練</b>（演練的成績留在正式資料夾，當天就得記得加 <code>--fresh</code>，加錯就清掉整場）。</li><li>在演練資料夾開：<code>python brain.py --participants participants.csv --judges judges.csv --fresh</code>，大家的手機連同一個網路。</li><li>每個人用<b>自己當天要用的那支手機</b>，至少做一次：</li><li>桌邊裁判：開始對戰 → 送一場成績 → 從「我的回報」取消它 → 再送一次；直播桌逐分計分、復原上一分</li><li>唱名：唱一輪、打開提示音</li><li>場控：代按開始、代判一場</li><li>報到／檢錄：掃一張 QR、通過一筆、改判一筆</li><li>主辦：暫停中／進行中、暫停開賽再恢復、強制重整、印一份紙本</li><li>要練 16 強：關掉大腦，改用 <code>python brain.py --participants participants.csv --judges judges.csv --fresh --ff --autodraw</code>（資格賽自動打完、自動抽籤），練小組賽、名次賽和紙本的 16 強分組表。</li><li>演練完把 <code>C:\zanmen-演練</code> 整個刪掉。</li></ol>
+</div></body>
+</html>

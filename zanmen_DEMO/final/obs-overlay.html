@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<!--
+  贊鬥盃 BEYBLADE X — 直播疊圖 (obs-overlay.html)
+  ------------------------------------------------------------------
+  給 OBS 的「瀏覽器來源」用，一張桌子一個來源：
+
+      網址   http://localhost:8080/obs-overlay.html?t=A-1
+      寬 1920   高 1080   （不要勾「關閉來源時關閉」）
+
+  四個直播桌就是四個來源：?t=A-1 / ?t=B-1 / ?t=C-1 / ?t=D-1
+  16 強四桌則是 ?t=F-1 ~ ?t=F-4。
+
+  ★ 為什麼是瀏覽器來源，不是文字檔
+    obs/*.txt 只能換字，換不了動畫。OBS 的瀏覽器來源就是一個完整的
+    Chromium，CSS 動畫照跑 —— 所以加分的彈跳、+N 上浮、勝方橫幅
+    全部在這一頁裡完成，OBS 那邊什麼都不用設。
+
+  ★ 動畫怎麼被觸發
+    這一頁每 350ms 讀一次 /state.json（裁判按下加分時大腦會立刻重寫，
+    所以延遲就是這 350ms）。比對前一次的比分，發現變大就掛上
+    .bump / .pop 兩個 class，動畫播完自己移除。沒有 WebSocket、
+    沒有外掛、沒有 obs-websocket，斷線也只是停在最後一格畫面。
+
+  ★ 外框顏色跟著牌桌調度看板走
+    空桌=墨綠、準備中=琥珀、剛上場=青綠、進行中=洋紅，
+    色票與 table-board.html 同一組 CSS 變數。
+
+  參數：
+    ?t=A-1     哪一桌（必填）
+    &bg=1      給不透明背景，方便在瀏覽器裡預覽（OBS 不要加）
+    &side=1    只顯示外框，不顯示比分條（想自己排版時用）
+-->
+<meta name="viewport" content="width=1920, initial-scale=1" />
+<title>直播疊圖 · 贊鬥盃</title>
+<link rel="stylesheet" href="fonts.css" />
+<style>
+  :root{
+    /* 與 table-board.html 同一組色票 */
+    --surface:#1b1224; --surface2:#22182d; --line:#33223f;
+    --magenta:#e73473; --magenta-dim:#751c3c;
+    --cyan:#28e8b6;    --cyan-dim:#0e5b48;
+    --amber:#ffb020;   --ink:#f5eef2; --muted:#9c8aa8; --muted2:#6f5f7d;
+    --f-disp:"Saira Condensed","Noto Sans TC","Microsoft JhengHei","PingFang TC",sans-serif;
+    --f-body:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;
+    --f-mono:"Chivo Mono",ui-monospace,monospace;
+
+    /* 目前狀態色：JS 會改這兩個，外框、徽章、標籤全部跟著變 */
+    --hue:#33223f;
+    --hue-dim:#33223f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1920px;height:1080px;overflow:hidden}
+  body{background:transparent;color:var(--ink);font-family:var(--f-body);
+       -webkit-font-smoothing:antialiased}
+  body.bg{background:
+      radial-gradient(1200px 700px at 80% -10%,#2a0f2340,transparent 60%),
+      radial-gradient(900px 600px at -10% 110%,#12313040,transparent 55%),#0d0913}
+
+  /* ── 外框 ─────────────────────────────────────────────
+     看板卡片是 1px 邊 + 18px 圓角 + 內側 1px 高光 + 外擴陰影。
+     放到 1920 就等比拉大：4px 邊、34px 圓角，陰影改成向內發光，
+     這樣疊在畫面上時中間的影像不會被壓暗。 */
+  .frame{position:absolute;inset:18px;border-radius:34px;
+    border:4px solid var(--hue-dim);
+    box-shadow:0 0 0 1px #ffffff0d inset, 0 0 90px -30px var(--hue) inset,
+               0 0 40px -12px var(--hue);
+    transition:border-color .45s, box-shadow .45s}
+  /* 四角的 L 形加強角：轉播畫面上比純圓角更「框得住」 */
+  /* 內縮與圓角要跟 .frame 完全一致，才會疊在同一條線上、只是把四個角加亮加粗，
+     差一點點就會變成兩條分岔的線。 */
+  .corner{position:absolute;width:120px;height:120px;pointer-events:none;
+    border:4px solid var(--hue);border-radius:34px;transition:border-color .45s}
+  .corner.tl{top:18px;left:18px;border-right:0;border-bottom:0;border-radius:34px 0 0 0}
+  .corner.tr{top:18px;right:18px;border-left:0;border-bottom:0;border-radius:0 34px 0 0}
+  .corner.bl{bottom:18px;left:18px;border-right:0;border-top:0;border-radius:0 0 0 34px}
+  .corner.br{bottom:18px;right:18px;border-left:0;border-top:0;border-radius:0 0 34px 0}
+
+  /* ── 左上：桌號徽章（照搬看板的 .badge）────────────── */
+  .head{position:absolute;top:46px;left:52px;display:flex;align-items:center;gap:20px;z-index:5}
+  .badge{position:relative;width:118px;height:118px;display:grid;place-items:center;
+    border-radius:26px;background:var(--surface2);border:3px solid var(--hue);
+    box-shadow:0 14px 40px -14px #000c;transition:border-color .45s}
+  .badge b{font-family:var(--f-disp);font-weight:900;font-size:64px;line-height:1;color:var(--hue);
+    transition:color .45s}
+  .badge .lab{position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+    font-size:15px;letter-spacing:.16em;color:var(--muted2);background:var(--surface);padding:0 8px;
+    border-radius:4px}
+  .meta{display:flex;flex-direction:column;gap:9px}
+  .rd{font-family:var(--f-mono);font-size:26px;color:var(--ink);
+    background:#1b1224cc;border:2px solid var(--hue-dim);border-radius:999px;padding:7px 22px;
+    transition:border-color .45s}
+  .state{font-family:var(--f-body);font-weight:700;font-size:22px;letter-spacing:.1em;
+    color:var(--hue);display:flex;align-items:center;gap:10px;padding-left:6px;transition:color .45s}
+  .state .dot{width:13px;height:13px;border-radius:50%;background:var(--hue);
+    animation:blink 1.7s ease-in-out infinite}
+  @keyframes blink{50%{opacity:.25}}
+
+  /* ── 右上：計時 ─────────────────────────────────── */
+  .clock{position:absolute;top:52px;right:56px;z-index:5;
+    font-family:var(--f-mono);font-size:44px;color:#fabed1;
+    background:#1b1224cc;border:2px solid var(--hue-dim);border-radius:16px;padding:8px 24px;
+    transition:border-color .45s}
+  .clock::before{content:"◷ ";color:var(--muted)}
+
+  /* ── 底部：比分條 ───────────────────────────────── */
+  .score{position:absolute;left:52px;right:52px;bottom:46px;z-index:5;
+    background:linear-gradient(180deg,#1b1224f2,#140d1cf2);
+    border:3px solid var(--hue-dim);border-radius:26px;padding:22px 34px;
+    box-shadow:0 22px 60px -24px #000e;transition:border-color .45s}
+  .pl{display:flex;align-items:center;gap:22px;position:relative;padding:7px 0}
+  .pl .code{font-family:var(--f-mono);font-size:30px;color:var(--muted);width:126px;flex:0 0 auto}
+  /* 筆畫很滿的中文字（龘鑫麤爨…）墨水會超出行框，而 ellipsis 需要 overflow:hidden，於是上下被裁掉。
+     用 padding + 等量負 margin 把內容框撐開，排版位置完全不變。 */
+  .pl .nm{font-family:var(--f-disp);font-weight:900;font-size:76px;line-height:1.06;
+    flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-block:.3em;margin-block:-.3em;}
+  .pl .sc{margin-left:auto;flex:0 0 auto;font-family:var(--f-disp);font-weight:900;
+    font-size:96px;line-height:1;color:var(--cyan);min-width:96px;text-align:right}
+  .pl.lead .sc{color:var(--magenta)}
+  .vs{font-family:var(--f-disp);font-weight:900;font-size:24px;color:var(--magenta);
+    letter-spacing:.28em;padding-left:126px;margin:2px 0}
+
+  /* 加分動畫：跟看板同一組 keyframes，數字彈一下 + 旁邊浮出 +N */
+  @keyframes scorePop{0%{transform:scale(1)}25%{transform:scale(1.55);color:#fff}100%{transform:scale(1)}}
+  .pl .sc.bump{animation:scorePop .55s cubic-bezier(.2,.9,.3,1.4);display:inline-block;transform-origin:right center}
+  @keyframes floatUp{0%{opacity:0;transform:translateY(10px) scale(.8)}
+                     18%{opacity:1;transform:translateY(-6px) scale(1.12)}
+                     100%{opacity:0;transform:translateY(-86px) scale(1)}}
+  .pl .pop{position:absolute;right:6px;top:-18px;font-family:var(--f-disp);font-weight:900;
+    font-size:62px;color:var(--magenta);pointer-events:none;
+    text-shadow:0 4px 26px #e73473cc;animation:floatUp 1.4s ease-out forwards}
+
+  /* 勝方橫幅：比賽一結算就蓋上來，3.4 秒後自己淡掉 */
+  .win{position:absolute;inset:0;display:grid;place-items:center;z-index:9;pointer-events:none;
+    opacity:0}
+  .win.on{animation:winIn .5s cubic-bezier(.2,.9,.3,1.3) forwards, winOut .6s 2.8s forwards}
+  @keyframes winIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+  @keyframes winOut{to{opacity:0}}
+  .win .box{background:linear-gradient(180deg,#1b1224f7,#140d1cf7);
+    border:4px solid var(--cyan);border-radius:34px;padding:44px 96px;text-align:center;
+    box-shadow:0 0 70px -14px #28e8b6aa}
+  .win .lab{font-family:var(--f-body);font-weight:700;font-size:26px;letter-spacing:.34em;
+    color:var(--cyan);margin-bottom:14px}
+  .win .who{font-family:var(--f-disp);font-weight:900;font-size:104px;line-height:1}
+  .win .sc{font-family:var(--f-mono);font-size:38px;color:var(--muted);margin-top:14px}
+
+  .hide{display:none!important}
+  body.frameonly .score,body.frameonly .clock{display:none}
+  /* 沒有畫面時整組淡掉，但外框留著 —— 轉播畫面不要突然空一塊 */
+  .dim{opacity:.32;transition:opacity .5s}
+
+  /* ============================================================
+     粉白主題　body.light　（網址加 ?light=1）
+     ------------------------------------------------------------
+     這一張原本用的是看板那組色票（洋紅 #e73473 ／ 青 #28e8b6 ／
+     琥珀 ／ 深紫底），跟活動的粉白主視覺是兩套東西。粉白版把它
+     整組換掉：
+
+       深紫面板  →  白面板
+       洋紅      →  品牌粉 #EE1F7A
+       青（一般分數、勝方框）→ 墨黑 #14141C
+       淺色文字  →  墨黑
+
+     ★ 青色不是換成另一個亮色，而是換成墨黑。粉白體系裡只有兩
+       個角色：粉＝強調、墨＝一般，多加第三個色相只會讓比分條
+       變花。領先方仍然是粉，一眼就分得出來。
+     ★ 狀態色（空桌／準備中／剛上場／進行中）另外在 JS 的 HUES
+       裡有一組淺色版 —— 原本那組亮青、亮琥珀鋪到白底上對比會
+       不足。
+     ============================================================ */
+
+  body.light{
+    --surface:#FFFFFF; --surface2:#FFFFFF; --line:rgba(20,20,28,.14);
+    --magenta:#EE1F7A; --magenta-dim:#F8B7D0;
+    --cyan:#14141C;    --cyan-dim:#C9C4CE;
+    --amber:#C77A00;
+    --ink:#14141C; --muted:rgba(20,20,28,.54); --muted2:rgba(20,20,28,.44);
+  }
+  body.light.bg{background:
+      radial-gradient(1200px 700px at 80% -10%,#EE1F7A14,transparent 60%),
+      radial-gradient(900px 600px at -10% 110%,#14141C0f,transparent 55%),#F2F1F5}
+
+  /* 內側高光在白底要反過來變成細暗線，否則整條邊看起來是斷的 */
+  body.light .frame{box-shadow:0 0 0 1px rgba(20,20,28,.07) inset,
+                               0 0 90px -30px var(--hue) inset,
+                               0 0 40px -12px var(--hue)}
+  body.light .badge{box-shadow:0 14px 40px -16px rgba(20,20,28,.38)}
+
+  body.light .rd    {background:rgba(255,255,255,.9)}
+  body.light .clock {background:rgba(255,255,255,.9);color:#B31459}
+  body.light .score {background:linear-gradient(180deg,#ffffffF2,#F6F5F8F2);
+                     box-shadow:0 22px 60px -26px rgba(20,20,28,.45)}
+
+  /* 勝方橫幅：白牌 + 粉框。深色版用青發光，白底上發光看不見，
+     改成落影把牌子推起來。 */
+  body.light .win .box{background:linear-gradient(180deg,#ffffffF7,#F6F5F8F7);
+                       border-color:var(--magenta);
+                       box-shadow:0 26px 70px -24px rgba(20,20,28,.5)}
+  body.light .win .lab{color:var(--magenta)}
+
+  body.light .pl .pop{text-shadow:0 4px 26px rgba(238,31,122,.55)}
+
+  /* 加分彈跳：深色版在最高點閃白，白底上等於什麼都沒發生，改閃粉 */
+  @keyframes scorePopLight{0%{transform:scale(1)}
+                           25%{transform:scale(1.55);color:#EE1F7A}
+                           100%{transform:scale(1)}}
+  body.light .pl .sc.bump{animation-name:scorePopLight}
+.orgwrap,.orgbar{display:none!important}</style>
+</head>
+<body>
+  <div class="frame"></div>
+  <div class="corner tl"></div><div class="corner tr"></div>
+  <div class="corner bl"></div><div class="corner br"></div>
+
+  <div class="head" id="head">
+    <div class="badge"><span class="lab" id="lab">桌</span><b id="no">—</b></div>
+    <div class="meta">
+      <div class="rd" id="rd">等待中</div>
+      <div class="state"><span class="dot"></span><span id="st">連線中</span></div>
+    </div>
+  </div>
+
+  <div class="clock" id="clk">00:00</div>
+
+  <div class="score" id="score">
+    <div class="pl" id="r1"><span class="code" id="c1">—</span><span class="nm" id="n1">等待選手</span><span class="sc" id="s1">0</span></div>
+    <div class="vs">VS</div>
+    <div class="pl" id="r2"><span class="code" id="c2">—</span><span class="nm" id="n2">等待選手</span><span class="sc" id="s2">0</span></div>
+  </div>
+
+  <div class="win" id="win"><div class="box">
+    <div class="lab">W I N N E R</div>
+    <div class="who" id="winwho">—</div>
+    <div class="sc" id="winsc"></div>
+  </div></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const Q = new URLSearchParams(location.search);
+const READ_BASE=".";                 // 與各頁一致：空字串＝同一台主機
+// state.json 走 READ_BASE（可放 CDN），但即時心跳 /status 是大腦現算的、不發佈到 CDN，
+// 一定要走 WRITE_BASE（通道）。空 = 同源（Method A 不受影響）。Method B 時填成通道網址，
+// 這頁的「大腦重開自動重整」和**時鐘校正**才不會因為打到 CDN 404 而失效 ——
+// 校正掛掉的話直播上的計時會照著本機時鐘悄悄漂移，別台畫面都對、只有這台不對。
+const WRITE_BASE=".";
+
+// ?t=A-1 → 賽區 A、1 號桌。給錯就退回 A-1，畫面上會看得出來。
+// ?t= 可以給多桌，用逗號隔開，例如 ?t=A-1,F-1
+// 理由：資格賽的直播桌是 A-1/B-1/C-1/D-1，抽完籤之後那四張桌子就空了，
+// 比賽全部搬到 F-1~F-4。只寫一桌的話，抽籤結束的瞬間四個直播畫面會一起變空，
+// 現場還要有人去 OBS 改四個來源的網址。寫成 A-1,F-1 就會自動接過去。
+function parseTables(q){
+  return (q || "A-1").toUpperCase().split(",").map(x => x.trim())
+    .map(x => x.match(/^([A-DF])-?(\d+)$/)).filter(Boolean)
+    .map(m => ({div: m[1], no: +m[2]}));
+}
+function pickTable(st, list){
+  for (const t of list) {
+    const d = st.divisions && st.divisions[t.div];
+    const row = d && d.tables && d.tables.find(x => x.no === t.no);
+    if (row && row.match) return {t, row};
+  }
+  const f = list[0];
+  const d = st.divisions && st.divisions[f.div];
+  return {t: f, row: (d && d.tables && d.tables.find(x => x.no === f.no)) || null};
+}
+const TABLES = parseTables(Q.get("t"));
+let DIV = TABLES[0].div, NO = TABLES[0].no;
+if (Q.get("bg") === "1") document.body.classList.add("bg");
+if (Q.get("side") === "1") document.body.classList.add("frameonly");
+// ?light=1 切成粉白主題（狀態色也會跟著換成下面的淺色版 HUES）
+// 粉白是預設，深色版才帶 ?dark=1。這個旗標同時決定下面要用哪一組狀態色。
+const LIGHT = !Q.has("dark");
+if (LIGHT) document.body.classList.add("light");
+$("#no").textContent = DIV + NO;
+$("#lab").textContent = DIV === "F" ? "決賽" : "桌";
+
+// 狀態 → 顏色。跟 table-board.html 的卡片狀態一一對應。
+// 每組是 [主色, 襯色, 標籤]：主色畫角落與徽章，襯色畫外框與各種框線。
+const HUES = {
+  free:   ["#204a41", "#16332d", "空桌"],
+  ready:  ["#ffb020", "#7a5a12", "準備中"],
+  fresh:  ["#28e8b6", "#0e5b48", "剛上場"],
+  live:   ["#e73473", "#751c3c", "進行中"],
+  off:    ["#6f5f7d", "#33223f", "連不到大腦"],
+};
+// 粉白版：襯色改成「淺一階」而不是「暗一階」，主色一律調深到白底讀得出來。
+// 進行中直接用品牌粉；其餘保留原本的色相差，導播才能一眼分辨四種桌況 ——
+// 四個狀態全做成粉的深淺，遠遠看就分不出來了。
+const HUES_LIGHT = {
+  free:   ["#9A93A0", "#D8D3DC", "空桌"],
+  ready:  ["#C77A00", "#F0D9A8", "準備中"],
+  fresh:  ["#0E9E7C", "#A8E2D2", "剛上場"],
+  live:   ["#EE1F7A", "#F8B7D0", "進行中"],
+  off:    ["#7A7580", "#D5D1D8", "連不到大腦"],
+};
+function hue(k){
+  const table = LIGHT ? HUES_LIGHT : HUES;
+  const [c, d, label] = table[k] || table.free;
+  const r = document.documentElement.style;
+  r.setProperty("--hue", c);
+  r.setProperty("--hue-dim", d);
+  $("#st").textContent = label;
+}
+
+let prev = null;            // 上一次看到的這一桌（用來比對比分有沒有變大）
+let lastMatchId = null;     // 目前這一桌在打哪一場
+const celebrated = new Set();  // 已經播過勝方橫幅的場次，不要重播
+let started = 0, paused = false, pausedAt = 0;
+
+function fmt(sec){
+  sec = Math.max(0, Math.floor(sec));
+  return String(Math.floor(sec / 60)).padStart(2, "0") + ":" + String(sec % 60).padStart(2, "0");
+}
+function bump(row, delta){
+  const sc = row.querySelector(".sc");
+  sc.classList.remove("bump"); void sc.offsetWidth;   // 重新觸發動畫
+  sc.classList.add("bump");
+  const p = document.createElement("span");
+  p.className = "pop"; p.textContent = "+" + delta;
+  row.appendChild(p);
+  setTimeout(() => p.remove(), 1500);
+}
+function showWin(name, score){
+  $("#winwho").textContent = name;
+  $("#winsc").textContent = (score || "").replace("-", " － ");
+  const w = $("#win");
+  w.classList.remove("on"); void w.offsetWidth;
+  w.classList.add("on");
+  setTimeout(() => w.classList.remove("on"), 3600);
+}
+
+/* 逾時保護 ──────────────────────────────────────────────────────
+   「連不到大腦」有兩種，只有一種會讓 fetch reject：
+     · 拔網路線／大腦關掉 → 馬上 RST，fetch reject，下面的 catch 接得到
+     · 主機睡著／Wi-Fi 掉訊號／交換器卡住 → TCP 連得上、請求送得出去，
+       就是不回應。fetch 不會 reject，會一路等到瀏覽器放棄（可以好幾分鐘）
+   第二種才是現場最常見的，而它會讓這張疊圖凍在最後一幀、外框還停在
+   「進行中」的粉紅色，導播完全看不出來已經沒資料了。
+   而且每個網域只有 6 條連線，吊住的輪詢會把額度吃光，同一台大腦的其他
+   來源一起卡死。所以自己掐時間，讓它走進既有的 catch。 */
+function grab(url, ms){
+  const c = new AbortController(), t = setTimeout(() => c.abort(), ms);
+  return fetch(url, {cache:"no-store", signal:c.signal}).finally(() => clearTimeout(t));
+}
+/* 上一次還沒回來就不要再發。除了吃連線，堆疊的慢回應還會亂序完成，
+   畫面上會看到比分往回跳。pull() 裡有十幾條 return，所以用一層包裝來
+   保證解鎖，不然漏掉任何一條路輪詢就永久停擺。 */
+let busyPull = false;
+async function pull(){
+  if (busyPull) return;
+  busyPull = true;
+  try { await pullOnce(); } finally { busyPull = false; }
+}
+
+async function pullOnce(){
+  let st;
+  try {
+    const r = await grab(READ_BASE + "/state.json", 1400);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    st = await r.json();
+  } catch (e) { hue("off"); $("#score").classList.add("dim"); return; }
+
+  // state.json 只有 paused_at（暫停中才是非 0），沒有獨立的 event 物件
+  pausedAt = st.paused_at || 0;
+  paused = pausedAt > 0;
+
+  const {t: cur, row} = pickTable(st, TABLES);
+  if (cur.div !== DIV || cur.no !== NO) {          // 換到備援桌，徽章也要跟著改
+    DIV = cur.div; NO = cur.no;
+    $("#no").textContent = DIV + NO;
+    $("#lab").textContent = DIV === "F" ? "決賽" : "桌";
+  }
+  const d = st.divisions && st.divisions[DIV];
+  const m = row && row.match;
+
+  // 勝方橫幅：不能等「桌子空掉」才判斷 —— 回報送出的同時大腦就把下一場排上來了，
+  // 桌子幾乎不會真的空。改成看該賽區「已完成」清單的第一筆是不是我們剛剛在看的
+  // 那一場，而且勝負與比分直接用大腦給的（裁判沒逐分計分時比分本來就是 0:0，
+  // 自己從畫面上的數字猜會猜錯）。
+  // 在整份「已完成」清單裡找我們這張桌剛剛那一場，而不是只看第一筆：決賽四桌
+  // 同屬 F 區，若同一個輪詢間隔內另一桌也結束、又排在我們後面結算，completed[0]
+  // 會是別桌的，這桌的勝方橫幅就整個漏掉了。zanmen-live.js 一直是掃整份清單的。
+  const justDone = d && d.completed && d.completed.find(c => c && c.id === lastMatchId);
+  if (justDone && !celebrated.has(justDone.id)) {
+    celebrated.add(justDone.id);
+    showWin((justDone.w && (justDone.w.name || justDone.w.code)) || "—", justDone.score || "");
+  }
+
+  if (!m) {
+    // 桌上沒人：外框轉成空桌色，比分條淡掉但不消失（版面不要跳動）
+    lastMatchId = null; prev = null;
+    hue("free"); $("#score").classList.add("dim");
+    $("#rd").textContent = "等待下一場"; $("#clk").textContent = "00:00";
+    return;
+  }
+
+  $("#score").classList.remove("dim");
+  const isNew = m.id !== lastMatchId;
+  if (isNew) { lastMatchId = m.id; prev = null; }
+
+  // 狀態色：還沒按開始＝準備中，開始 45 秒內＝剛上場，之後＝進行中
+  const fresh = m.assigned && (nowSecs() * 1000 - m.assigned) < 45000;
+  hue(!m.started ? "ready" : (fresh ? "fresh" : "live"));
+
+  $("#rd").textContent = (m.grp ? m.grp + " 組 · " : "") + (m.round || "");
+  $("#c1").textContent = m.p1.code; $("#n1").textContent = m.p1.name || m.p1.code;
+  $("#c2").textContent = m.p2.code; $("#n2").textContent = m.p2.name || m.p2.code;
+
+  const s1 = m.s1 || 0, s2 = m.s2 || 0;
+  $("#s1").textContent = s1; $("#s2").textContent = s2;
+  $("#r1").classList.toggle("lead", s1 > s2);
+  $("#r2").classList.toggle("lead", s2 > s1);
+
+  // 只有「同一場、分數變大」才播動畫。換場、重新整理、斷線回來都不會誤觸發。
+  if (prev && !isNew) {
+    if (s1 > prev.s1) bump($("#r1"), s1 - prev.s1);
+    if (s2 > prev.s2) bump($("#r2"), s2 - prev.s2);
+  }
+  prev = {s1, s2, p1: m.p1, p2: m.p2};
+  started = m.started ? (m.start || 0) : 0;
+}
+
+/* 時差校正 ──────────────────────────────────────────────────────
+   計時器是「現在 − 開賽時間戳」，時間戳來自大腦，但減法在這台做。
+   這台的時鐘快 3 分鐘畫面就多 3 分鐘；慢 3 分鐘會被 max(0,…) 夾住，
+   計時器直接卡在 00:00 不動 —— 而且別台的畫面都是對的，現場很難查。
+   場地沒有外網時 Windows 不會自動對時，這件事比想像中常見。
+   下面那支每 15 秒問一次 /status 的心跳順便把大腦的時間帶回來。 */
+let SKEW = 0;                       // 大腦時間 − 本機時間（秒）
+const nowSecs = () => Date.now() / 1000 + SKEW;
+
+function tick(){
+  if (!started) { $("#clk").textContent = "00:00"; return; }
+  // 暫停時計時器要停住（跟看板、觀眾頁同樣的處理）
+  const now = paused && pausedAt ? pausedAt : nowSecs();
+  $("#clk").textContent = fmt(now - started);
+}
+
+pull(); setInterval(pull, 350);
+tick(); setInterval(tick, 250);
+
+// 大腦重開就自己重新載入，跟其他頁一致；順便對時。
+// 立刻先跑一次再開始每 15 秒 —— 只掛 setInterval 的話第一次要等到 15 秒後，
+// 那段期間計時器還在用沒校正的本機時鐘，開播前最不該出錯的就是那幾秒。
+let BOOT = null;
+const heartbeat = async () => {
+  try {
+    const s = await (await grab(WRITE_BASE + "/status", 5000)).json();
+    if (BOOT && s.boot !== BOOT) location.reload();
+    BOOT = s.boot;
+    if (typeof s.now === "number") {
+      const d = s.now - Date.now() / 1000;
+      // 只有差距夠大才校正 —— 網路來回本來就有幾百毫秒，
+      // 每次都微調會讓秒數跳來跳去。
+      if (Math.abs(d) >= 2) {
+        if (Math.abs(SKEW - d) >= 2)
+          console.warn(`[疊圖] 這台電腦的時鐘跟大腦差 ${Math.round(d)} 秒，計時器已自動校正。`);
+        SKEW = d;
+      } else SKEW = 0;
+    }
+  } catch (e) {}
+};
+heartbeat(); setInterval(heartbeat, 15000);
+</script>
+</body>
+</html>
