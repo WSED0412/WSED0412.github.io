@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" /><script src="demo-api.js"></script>
+<!--
+  贊鬥盃 BEYBLADE X — 報到櫃台（與檢錄是兩個不同的櫃台）
+  ------------------------------------------------------------------
+  這一台的人要同時核對證件和收費，所以整頁只為一件事設計：
+  把「要核對的東西」用最大的字擺在她眼前，然後一顆按鈕結束。
+
+    輸入代碼（或掃 QR 自動帶入）→ 姓名、身分證後四碼跳出來
+    → 對證件 → 收費 → 按「確認報到」
+
+  沒帶手機的人：下面有搜尋，用姓名或電話末四碼直接找出來確認。
+  同一支電話報名多位選手時會一次列出，可以一起確認（家長帶兩三個小孩很常見）。
+
+  金額固定，所以這頁不碰金額，只記「報到完成」。
+-->
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>贊鬥盃 · 報到櫃台</title>
+<link rel="stylesheet" href="fonts.css" />
+<style>
+  :root{
+    --bg:#0a0710; --bg2:#120b1a; --surface:#181022; --surface2:#1f1530;
+    --line:#2e2140; --ink:#f4eefb; --muted:#a897bd; --muted2:#6d5c85;
+    --magenta:#e73473; --magenta-dim:#751c3c; --cyan:#2ee6a8; --amber:#ffb02e;
+    --f-body:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;
+    --f-mono:"Chivo Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--f-body);
+    -webkit-font-smoothing:antialiased;
+    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+  .hidden{display:none !important}
+  .wrap{max-width:560px;margin:0 auto;padding:14px 16px 40px}
+
+  header{display:flex;align-items:center;gap:9px;padding:4px 0 12px;border-bottom:1px solid var(--line)}
+  header .logo{height:22px;width:auto}
+  header .t{font-size:14px;font-weight:900}
+  header .n{margin-left:auto;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+  header .n b{color:var(--cyan);font-size:15px}
+
+  .codein{display:flex;gap:8px;margin:16px 0 6px}
+  .codein input{flex:1 1 auto;min-width:0;font-family:var(--f-mono);font-size:26px;
+    letter-spacing:.2em;text-align:center;text-transform:uppercase;color:var(--ink);
+    background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:14px 8px}
+  .codein input:focus{outline:0;border-color:var(--magenta)}
+  .codein button{flex:0 0 auto;border:0;border-radius:13px;background:var(--magenta);color:#fff;
+    font-family:var(--f-body);font-weight:900;font-size:16px;padding:0 20px;cursor:pointer}
+  .tip{font-size:11.5px;color:var(--muted2);line-height:1.6}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;
+    padding:15px 16px;margin-top:14px}
+  .card.ok{border-color:#1d5c45}
+  .card.warn{border-color:#7a3a1a;background:#1d1410}
+  .flag{display:inline-block;font-size:11.5px;font-weight:700;border-radius:6px;padding:2px 8px;margin-bottom:10px}
+  .f-ok{background:#123b2d;color:var(--cyan)}
+  .f-warn{background:#4a2410;color:#ffbe7a}
+  .f-bad{background:#4a1020;color:#ff9ab6}
+
+  .person{border-top:1px solid #ffffff10;padding-top:13px;margin-top:13px}
+  .person:first-of-type{border-top:0;padding-top:0;margin-top:0}
+  .nm{font-size:30px;font-weight:900;line-height:1.2;word-break:break-word}
+  .meta{display:flex;align-items:baseline;gap:14px;margin-top:8px;flex-wrap:wrap}
+  .id4{font-family:var(--f-mono);font-size:15px;color:var(--muted)}
+  .id4 b{color:var(--amber);font-size:26px;letter-spacing:.12em;font-weight:600}
+  .div{font-size:13px;color:var(--muted2)}
+  .already{color:var(--cyan);font-size:13px;font-weight:700;margin-top:8px}
+
+  .btn{width:100%;border:0;border-radius:14px;padding:17px 0;font-family:var(--f-body);
+    font-weight:900;font-size:18px;cursor:pointer;margin-top:14px}
+  .b-go{background:var(--cyan);color:#04120e}
+  .b-undo{background:transparent;color:var(--muted);border:1px solid var(--line) !important;font-size:14px;padding:12px 0}
+  .empty{color:var(--muted2);font-size:13.5px;line-height:1.8;padding:18px 2px}
+  /* 現場補登。入口做成安靜的小字：這是例外流程，不該跟「確認報到」搶手。 */
+  .addwrap{border-top:1px solid #ffffff12;margin-top:14px;padding-top:12px}
+  .addlink{background:none;border:0;cursor:pointer;font-family:var(--f-body);
+    font-size:13px;color:var(--cyan);text-decoration:underline;
+    text-underline-offset:4px;padding:6px 0}
+  .addrow{display:flex;align-items:center;gap:10px;margin-top:10px}
+  .addrow label{flex:0 0 84px;font-size:12.5px;color:var(--muted2)}
+  .addrow input,.addrow select{flex:1;min-width:0;padding:11px;border-radius:10px;
+    border:1px solid var(--line);background:var(--bg,#12101a);color:inherit;
+    font-family:var(--f-body);font-size:15px}
+  .addnote{font-size:12.5px;color:var(--muted2);line-height:1.8;margin:12px 0 10px}
+  .addnote b{color:var(--ink,#f5eef2)}
+  .adderr{font-size:13px;color:#ff8a96;margin-top:10px;line-height:1.7}
+  /* 同名警告：把名單上的人攤出來給櫃台對證件，不是問一句「確定嗎」 */
+  .dupbox{color:#ffb020}
+  .dupnote{color:var(--muted2);font-size:12.5px;line-height:1.8;margin:6px 0 10px}
+  .dupone{background:#00000030;border:1px solid #ffffff14;border-radius:10px;
+    padding:9px 11px;margin-bottom:7px;font-size:14px;color:var(--ink,#f5eef2)}
+  .dupone span{font-size:12px;color:var(--muted2);margin-left:9px}
+  /* 補登是例外流程：用外框而不是實心，才不會跟主要動作「確認報到」搶手。
+     真的要越過同名警告的那一顆才用實心橘 —— 那一步值得停一下。 */
+  .b-add{background:transparent;color:var(--cyan);border:1px solid var(--cyan) !important}
+  .b-force{background:#7a3a1a;color:#ffd9c2;margin-top:4px;font-size:15px}
+
+  .sec{font-size:11px;letter-spacing:.16em;color:var(--muted2);text-transform:uppercase;margin:26px 0 8px}
+  .search{display:flex;gap:8px}
+  .search input{flex:1;font-family:var(--f-body);font-size:16px;color:var(--ink);
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 14px}
+  .search input:focus{outline:0;border-color:var(--magenta)}
+  .srow{display:flex;align-items:center;gap:11px;background:var(--surface);border:1px solid var(--line);
+    border-radius:12px;padding:11px 13px;margin-top:7px}
+  .srow.done{opacity:.5}
+  .srow .sn{font-size:17px;font-weight:900;flex:1 1 auto;min-width:0;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .srow .si{font-family:var(--f-mono);font-size:14px;color:var(--amber);flex:0 0 auto}
+  .srow button{flex:0 0 auto;border:0;border-radius:10px;background:var(--cyan);color:#04120e;
+    font-family:var(--f-body);font-weight:900;font-size:13px;padding:9px 13px;cursor:pointer}
+  .srow.done button{background:transparent;color:var(--muted2);border:1px solid var(--line)}
+
+  .gate{position:fixed;inset:0;background:var(--bg);z-index:50;display:flex;
+    flex-direction:column;justify-content:center;padding:26px 22px;gap:13px}
+  .gate h1{font-size:19px;margin:0;font-weight:900}
+  .gate p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+  .gate input{width:100%;font-family:var(--f-mono);font-size:26px;letter-spacing:.28em;
+    text-align:center;color:var(--ink);background:var(--surface);border:1px solid var(--line);
+    border-radius:13px;padding:15px 10px}
+  .gate input:focus{outline:0;border-color:var(--magenta)}
+  .gate .go{width:100%;border:0;border-radius:13px;background:var(--magenta);color:#fff;
+    font-family:var(--f-body);font-weight:900;font-size:16px;padding:15px 0;cursor:pointer}
+  .gate .ge{color:#f57594;font-size:13px;text-align:center;min-height:18px}
+  .foot{display:flex;align-items:center;gap:9px;margin-top:26px;padding-top:12px;border-top:1px solid var(--line)}
+  .foot .s{font-family:var(--f-mono);font-size:10.5px;color:var(--muted2)}
+  .foot button{margin-left:auto;border:1px solid var(--line);background:transparent;
+    color:var(--muted2);border-radius:9px;padding:7px 11px;font-size:12px;cursor:pointer}
+  .ok-msg{color:var(--cyan);font-size:13.5px;min-height:20px;padding-top:8px;font-weight:700}
+  .shutbar{background:#2a1600;border:1px solid #7a5a12;color:#ffb02e;border-radius:11px;
+    padding:10px 14px;margin:10px 0 0;font-size:13px;line-height:1.7}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <div>
+    <h1>報到櫃台</h1>
+    <p>請輸入工作人員 PIN。</p>
+  </div>
+  <input id="pin" inputmode="numeric" maxlength="12" placeholder="••••" autocomplete="off">
+  <div class="ge" id="gerr"></div>
+  <button class="go" id="ggo">進入</button>
+</div>
+
+<div class="wrap hidden" id="app">
+  <div class="shutbar hidden" id="shutbar">已停止收件 —— 選手端的登錄頁已關閉，這裡仍可用姓名／電話搜尋處理</div>
+  <header>
+    <img class="logo" src="logo.svg" alt="贊鬥盃">
+    <span class="t">報到櫃台</span>
+    <span class="n">已報到 <b id="sdone">0</b> / <span id="stotal">0</span>
+      　已檢錄 <b id="ckdone">0</b></span>
+  </header>
+
+  <div class="codein">
+    <input id="code" maxlength="8" placeholder="報到代碼" autocomplete="off" autocapitalize="characters">
+    <button id="find">查詢</button>
+  </div>
+  <div class="tip">選手手機上那組 6 碼。掃 QR 的話會自動帶入。</div>
+
+  <div id="card"></div>
+  <div class="ok-msg" id="msg"></div>
+
+  <div class="sec">沒帶手機？直接搜尋</div>
+  <div class="search">
+    <input id="q" placeholder="姓名 或 電話末四碼" autocomplete="off">
+  </div>
+  <div id="results"></div>
+
+  <div class="foot">
+    <span class="s" id="upd">—</span>
+    <button id="out">登出</button>
+  </div>
+</div>
+
+<script>
+const BASE="";
+const $=s=>document.querySelector(s);
+// 報到與檢錄的進度一起顯示。兩個櫃台在不同位置，工作人員常互相問進度，
+// 光看自己這邊的數字答不出「檢錄那邊過幾個了」。
+function paintStats(st){
+  if(!st) return;
+  if($("#sdone"))  $("#sdone").textContent  = st.done||0;
+  if($("#stotal")) $("#stotal").textContent = st.total||0;
+  if($("#ckdone")) $("#ckdone").textContent = st.checkin_done||0;
+  if($("#shutbar")) $("#shutbar").classList.toggle("hidden", st.intake!=="closed");
+}
+
+// 全形轉半形。中文輸入法沒切回英數時打出來的就是 ＡＢＣ１２３，
+// 看起來只是「比較寬」，但 /\D/、/[^A-D0-9]/ 這類正規式會把它整個濾掉，
+// 使用者只會看到「請填完整的電話號碼」卻不知道哪裡不對。
+const half = s => String(s||"").replace(/[！-～]/g,
+                    c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0)).replace(/　/g," ");
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,
+  c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let PIN=null, CARD=null;
+
+const MATCH={
+  ok:    ["f-ok",  "姓名與電話都對得上名單"],
+  phone: ["f-warn","只有電話對得上（姓名可能打錯，請看證件確認）"],
+  name:  ["f-warn","只有姓名對得上（電話可能換過，請看證件確認）"],
+  none:  ["f-bad", "名單查不到這個人，請人工處理"],
+};
+
+/* ---------- 登入 ---------- */
+// 記住的 PIN 只保留 24 小時：報到台的裝置事後借人或被撿走，隔天自動失效。
+// 舊格式（純字串）一律當成過期，逼重新登入一次。
+const PIN_TTL=24*60*60*1000;
+function pinSave(k,v){ try{ localStorage.setItem(k,JSON.stringify({v,t:Date.now()})); }catch(e){} }
+function pinLoad(k){
+  try{
+    const o=JSON.parse(localStorage.getItem(k)||"null");
+    if(!o||typeof o!=="object"||!o.t||Date.now()-o.t>PIN_TTL){ localStorage.removeItem(k); return null; }
+    return o.v;
+  }catch(e){ try{localStorage.removeItem(k);}catch(_){} return null; }
+}
+const STORED=pinLoad("zanmen_regpin");
+function backToGate(msg){
+  PIN=null; try{localStorage.removeItem("zanmen_regpin");}catch(e){}
+  $("#app").classList.add("hidden"); $("#gate").classList.remove("hidden");
+  $("#gerr").textContent=msg||"PIN 已失效，請重新輸入"; $("#pin").value=""; $("#pin").focus();
+}
+async function login(){
+  const p=$("#pin").value.trim(); $("#gerr").textContent="";
+  if(!p){ $("#gerr").textContent="請輸入 PIN"; return; }
+  PIN=p;
+  const ok=await refreshStats(true);
+  if(ok){ pinSave("zanmen_regpin",p); enter(); }
+  else { PIN=null; $("#gerr").textContent="PIN 不正確"; }
+}
+function enter(){
+  $("#gate").classList.add("hidden"); $("#app").classList.remove("hidden");
+  refreshStats(); setInterval(refreshStats, 10000);
+  /* 報到櫃台的平板息屏再打開時，統計會停在舊的（iOS 凍結 setInterval＋bfcache）。 */
+  document.addEventListener("visibilitychange", () => { if(!document.hidden) refreshStats(); });
+  window.addEventListener("pageshow", () => refreshStats());
+  const c=new URLSearchParams(location.search).get("code");
+  if(c){ $("#code").value=c.toUpperCase(); lookup(); }
+  else $("#code").focus();
+}
+
+/* ---------- 統計 ---------- */
+async function refreshStats(quiet){
+  try{
+    const d=await (await fetch(BASE+"/reg/stats",
+                               {cache:"no-store",headers:{"X-Pin":encodeURIComponent(PIN)}})).json();
+    if(!d.ok) return false;
+    paintStats(d.stats);
+    $("#upd").textContent="更新 "+new Date().toLocaleTimeString("zh-TW",{hour12:false});
+    return true;
+  }catch(e){ if(!quiet) $("#upd").textContent="連線中斷"; return false; }
+}
+
+/* ---------- 代碼查詢 ---------- */
+async function lookup(){
+  const code=half($("#code").value).trim().toUpperCase();
+  $("#msg").textContent="";
+  if(!code){ $("#card").innerHTML=""; return; }
+  try{
+    const d=await (await fetch(BASE+"/reg/card"
+                               +"?code="+encodeURIComponent(code),{cache:"no-store",headers:{"X-Pin":encodeURIComponent(PIN)}})).json();
+    if(!d.ok) return backToGate(d.error);
+    if(d.stats){ paintStats(d.stats); }
+    CARD=d.card;
+    renderCard();
+  }catch(e){ $("#card").innerHTML=`<div class="card warn">連線失敗，請再試一次</div>`; }
+}
+function renderCard(){
+  const box=$("#card");
+  if(!CARD){
+    box.innerHTML=`<div class="card warn"><div class="empty">
+      查不到這組代碼。<br>可能是打錯了，或選手還沒在手機上登錄 —— 用下面的搜尋直接找人。
+      </div></div>`;
+    return;
+  }
+  const [cls,lab]=MATCH[CARD.match]||MATCH.none;
+  const rows=CARD.rows||[];
+  if(!rows.length){
+    box.innerHTML=`<div class="card warn"><span class="flag f-bad">${lab}</span>
+      <div class="empty">選手輸入的是：<b>${esc(CARD.typed.name)}</b> ／ ${esc(CARD.typed.phone)}<br>
+      名單裡找不到對得上的人。請看證件人工確認，或用下面的搜尋找找看。</div>
+      ${addBlock(CARD.typed.name, CARD.typed.phone)}</div>`;
+    wireAdd();
+    return;
+  }
+  const undone=rows.filter(r=>!r.done);
+  box.innerHTML=`<div class="card ${CARD.match==="ok"?"ok":"warn"}">
+    <span class="flag ${cls}">${lab}</span>
+    ${rows.map(r=>`
+      <div class="person">
+        <div class="nm">${esc(r.name)}</div>
+        <div class="meta">
+          <span class="id4">身分證後四碼 <b>${esc(r.id4||"—")}</b></span>
+          ${r.div?`<span class="div">${esc(r.div)} 區</span>`:""}
+        </div>
+        ${r.done?`<div class="already">✓ 已經報到過了（${new Date(r.ts*1000).toLocaleTimeString("zh-TW",{hour12:false})}　${esc(r.by)}）</div>`:""}
+      </div>`).join("")}
+    ${undone.length
+      ? `<button class="btn b-go" id="confirm">核對無誤，確認報到${undone.length>1?`（${undone.length} 人）`:""}</button>`
+      : `<button class="btn b-undo" id="undo">這幾位都已報到 · 取消報到</button>`}
+  </div>`;
+  const c=$("#confirm"); if(c) c.onclick=()=>confirmReg(undone.map(r=>r.rid), true);
+  const u=$("#undo");    if(u) u.onclick=()=>confirmReg(rows.map(r=>r.rid), false);
+}
+/* ---------- 現場補登（釋放沒到的名額之後）----------
+   只把人加進**報名名單**，不碰 participants.csv —— 那一份是檢錄的產出。
+   補完之後這個人還是要去檢錄台領號碼，號碼（seed）在那裡才決定；
+   報到台手上沒有號碼牌，在這裡發號碼等於兩個櫃台各發各的，重號是唯一
+   自動修不掉的錯。所以按鈕的字從頭到尾都在講「補進名單」而不是「報名成功」。 */
+function addBlock(name, phone){
+  return `<div class="addwrap">
+    <button class="addlink" id="addOpen">這個人要現場補登</button>
+    <form class="addform" id="addForm" style="display:none">
+      <div class="addrow"><label>姓名</label>
+        <input id="a_nm" autocomplete="off" value="${esc(name||"")}"></div>
+      <div class="addrow"><label>電話</label>
+        <input id="a_ph" inputmode="tel" autocomplete="off" value="${esc(phone||"")}"></div>
+      <div class="addrow"><label>賽區</label>
+        <select id="a_dv"><option value="">（之後檢錄再決定）</option>
+          <option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+      <div class="addrow"><label>證件後四碼</label>
+        <input id="a_id" autocomplete="off" maxlength="4" placeholder="選填，用來分辨同名"></div>
+      <p class="addnote">補進<b>報名名單</b>，不是完成報到。<br>
+        加完之後請他到<b>檢錄台</b>領號碼，號碼在那裡才決定。</p>
+      <button class="btn b-add" id="addGo">補進報名名單</button>
+      <div class="adderr" id="addErr"></div>
+    </form></div>`;
+}
+function wireAdd(){
+  const open=$("#addOpen"); if(!open) return;
+  open.onclick=e=>{ e.preventDefault(); open.style.display="none";
+                    $("#addForm").style.display="block"; $("#a_nm").focus(); };
+  $("#addForm").onsubmit=e=>{ e.preventDefault(); addWalkin(false); };
+}
+async function addWalkin(force){
+  const body={name:half($("#a_nm").value).trim(), phone:half($("#a_ph").value).trim(),
+              div:$("#a_dv").value, id4:half($("#a_id").value).trim(), pin:PIN, force:!!force};
+  if(!body.name){ $("#addErr").innerHTML="請填姓名"; return; }
+  $("#addErr").innerHTML="處理中…";
+  let d;
+  try{
+    d=await (await fetch(BASE+"/reg/add",{method:"POST",
+      headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})).json();
+  }catch(e){ $("#addErr").innerHTML="連線失敗"; return; }
+  if(d.relogin) return backToGate(d.error);
+  if(d.dupe){
+    // 名單上已經有同名的人。這是最容易出錯的一步：「查不到」多半只是
+    // 姓名打錯或電話換過，直接補一筆會讓檢錄那邊再也分不出是哪一位。
+    // 所以把名單上的人攤出來，讓櫃台看著證件決定，而不是問一句「確定嗎」。
+    $("#addErr").innerHTML=
+      `<div class="dupbox"><b>名單上已經有同名的人</b>
+        <div class="dupnote">先確認證件上的人是不是下面這一位。<br>
+          是的話請直接用下面的<b>搜尋</b>找他報到，不要補登。</div>
+        ${(d.same||[]).map(s=>`<div class="dupone">${esc(s.name)}
+          <span>${esc(s.phone||"沒有電話")}</span>
+          <span>後四碼 ${esc(s.id4||"—")}</span>
+          ${s.div?`<span>${esc(s.div)} 區</span>`:""}</div>`).join("")}
+        <button class="btn b-force" id="addForce">確定是不同人，還是要補登</button></div>`;
+    $("#addForce").onclick=ev=>{ ev.preventDefault(); addWalkin(true); };
+    return;
+  }
+  if(!d.ok){ $("#addErr").innerHTML=esc(d.error||"補登失敗"); return; }
+  paintStats(d.stats);
+  $("#msg").textContent="✓ "+d.msg;
+  $("#addErr").innerHTML="";
+  // 補完之後直接用姓名搜尋把他帶出來，櫃台可以接著按「確認報到」，
+  // 不用再想「那我現在要去哪裡找他」。
+  $("#q").value=body.name; doSearch();
+}
+
+async function confirmReg(rids, on){
+  if(!rids.length) return;
+  try{
+    const d=await (await fetch(BASE+"/reg/confirm",{method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({rids,on,pin:PIN,code:half($("#code").value).trim().toUpperCase()})})).json();
+    if(!d.ok) return backToGate(d.error);
+    paintStats(d.stats);
+    $("#msg").textContent=on?`✓ 已完成報到（${d.changed} 人）`:`已取消報到（${d.changed} 人）`;
+    CARD=d.card||CARD; renderCard();
+    // 卡片留著（上面已經標成已報到），只把代碼欄清空並把游標移回去。
+    // 不要用計時器自動清畫面 —— 版面會在工作人員正要按下一個動作時突然跳掉，容易誤觸。
+    if(on){ $("#code").value=""; $("#code").focus(); }
+    doSearch();
+  }catch(e){ $("#msg").textContent="連線失敗"; }
+}
+
+/* ---------- 搜尋（沒帶手機的人） ---------- */
+let qTimer=null;
+async function doSearch(){
+  const q=half($("#q").value).trim();
+  if(!q){ $("#results").innerHTML=""; return; }
+  try{
+    const d=await (await fetch(BASE+"/reg/search"
+                               +"?q="+encodeURIComponent(q),{cache:"no-store",headers:{"X-Pin":encodeURIComponent(PIN)}})).json();
+    if(!d.ok) return backToGate(d.error);
+    const rows=d.rows||[];
+    $("#results").innerHTML = rows.length
+      ? rows.map(r=>`<div class="srow ${r.done?"done":""}">
+          <span class="sn">${esc(r.name)}</span>
+          <span class="si">${esc(r.id4||"—")}</span>
+          <button data-rid="${esc(r.rid)}" data-on="${r.done?0:1}">${r.done?"取消":"確認報到"}</button>
+        </div>`).join("")
+      : `<div class="empty">找不到符合的人。</div>`;
+    $("#results").querySelectorAll("[data-rid]").forEach(b=>b.onclick=()=>
+      confirmReg([b.dataset.rid], b.dataset.on==="1"));
+  }catch(e){}
+}
+
+$("#ggo").onclick=login;
+$("#pin").addEventListener("keydown",e=>{ if(e.key==="Enter") login(); });
+$("#find").onclick=lookup;
+$("#code").addEventListener("keydown",e=>{ if(e.key==="Enter") lookup(); });
+$("#q").addEventListener("input",()=>{ clearTimeout(qTimer); qTimer=setTimeout(doSearch,250); });
+$("#out").onclick=()=>{ try{localStorage.removeItem("zanmen_regpin");}catch(e){} location.reload(); };
+
+// 自動登入放最後：上面用 const 宣告的 MATCH 等等要先初始化完
+if(STORED){ PIN=STORED; refreshStats(true).then(ok=> ok ? enter() : backToGate("PIN 已失效，請重新輸入")); }
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+/* 贊鬥盃賽務系統 — 自帶字型
+   ------------------------------------------------------------------
+   原本每一頁都去 fonts.googleapis.com 載字型。現場網路一斷、或 OBS 的
+   瀏覽器來源在沒有外網時重開，字型就會退回預設 —— 比分和「XTREME FINISH」
+   那種壓縮斜體會整個變樣。所以把 Latin 的兩套字重直接放進專案。
+
+   中文沒有自帶：Noto Sans TC 一個字重就切成 105 個檔、四個字重好幾 MB。
+   中文字改用系統既有的字型（Windows 微軟正黑體、mac PingFang TC），
+   兩者都是人文主義黑體，跟 Noto Sans TC 觀感接近。
+
+   授權：Saira Condensed 與 Chivo Mono 皆為 SIL Open Font License 1.1，
+   授權全文見 fonts/OFL.txt。 */
+
+@font-face{
+  font-family:"Saira Condensed";
+  font-style:normal;
+  font-weight:500;
+  font-display:swap;
+  src:url("fonts/saira-500-latin-ext.woff2") format("woff2");
+  unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face{
+  font-family:"Saira Condensed";
+  font-style:normal;
+  font-weight:500;
+  font-display:swap;
+  src:url("fonts/saira-500-latin.woff2") format("woff2");
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face{
+  font-family:"Saira Condensed";
+  font-style:normal;
+  font-weight:700;
+  font-display:swap;
+  src:url("fonts/saira-700-latin-ext.woff2") format("woff2");
+  unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face{
+  font-family:"Saira Condensed";
+  font-style:normal;
+  font-weight:700;
+  font-display:swap;
+  src:url("fonts/saira-700-latin.woff2") format("woff2");
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face{
+  font-family:"Saira Condensed";
+  font-style:normal;
+  font-weight:900;
+  font-display:swap;
+  src:url("fonts/saira-900-latin-ext.woff2") format("woff2");
+  unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face{
+  font-family:"Saira Condensed";
+  font-style:normal;
+  font-weight:900;
+  font-display:swap;
+  src:url("fonts/saira-900-latin.woff2") format("woff2");
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face{
+  font-family:"Chivo Mono";
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+  src:url("fonts/chivo-400-latin-ext.woff2") format("woff2");
+  unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face{
+  font-family:"Chivo Mono";
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+  src:url("fonts/chivo-400-latin.woff2") format("woff2");
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face{
+  font-family:"Chivo Mono";
+  font-style:normal;
+  font-weight:600;
+  font-display:swap;
+  src:url("fonts/chivo-600-latin-ext.woff2") format("woff2");
+  unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face{
+  font-family:"Chivo Mono";
+  font-style:normal;
+  font-weight:600;
+  font-display:swap;
+  src:url("fonts/chivo-600-latin.woff2") format("woff2");
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}

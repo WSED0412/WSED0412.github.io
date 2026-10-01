@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>贊鬥盃報到檢錄 示範</title>
+<script src="demo-api.js"></script>
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root{--bg:#0d0913;--surface:#171020;--line:#2c1d38;--magenta:#e73473;--cyan:#28e8b6;
+        --ink:#f5eef2;--muted:#9c8aa8;--f-body:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;
+        --f-mono:"Chivo Mono",ui-monospace,monospace;color-scheme:dark}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);line-height:1.6}
+  .wrap{max-width:860px;margin:0 auto;padding:36px 16px 80px}
+  h1{font-size:clamp(26px,5vw,38px);margin:0;text-wrap:balance}
+  h1 b{color:var(--magenta)}
+  .lead{color:var(--muted);margin:8px 0 0;max-width:62ch}
+  ol{list-style:none;padding:0;margin:28px 0 0;display:grid;gap:12px;counter-reset:s}
+  li{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:16px;border:1px solid var(--line);
+     border-radius:12px;background:var(--surface);counter-increment:s}
+  li::before{content:counter(s);display:grid;place-items:center;width:44px;height:44px;border-radius:50%;
+     background:var(--magenta);color:#fff;font-weight:900;font-size:20px}
+  li div{min-width:0}
+  li b{font-size:17px}
+  li p{margin:4px 0 8px;color:var(--muted);font-size:14px}
+  a.go{display:inline-block;padding:8px 14px;border-radius:9px;background:var(--cyan);color:#06231a;
+       font-weight:700;text-decoration:none;font-size:14px}
+  a.go:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  h2{font-size:18px;margin:36px 0 8px}
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  .tbl{overflow-x:auto}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:500;font-size:13px}
+  td.m{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+  .note{color:var(--muted);font-size:13px;margin-top:10px}
+  button{margin-top:18px;padding:9px 16px;border-radius:9px;border:1px solid var(--line);background:var(--surface);
+         color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+  .ok{color:var(--cyan);font-size:13px;margin-left:10px}
+  footer{margin-top:40px;font-size:13px;color:var(--muted)}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1><b>報到 → 檢錄</b>，實際走一輪</h1>
+  <p class="lead">這四頁可以真的操作：選手在排隊時自己登錄、櫃台核對身分、選手用同一組代碼檢錄、檢錄台審核通過。
+  資料只存在你這台裝置的瀏覽器裡，不會傳到任何地方。</p>
+
+  <ol>
+    <li><div><b>選手：報到登錄</b><p>填下面任一位的姓名和電話，拿到 6 碼代碼與 QR。這一頁通常是選手用手機開。</p>
+      <a class="go" href="reg-self.html">打開報到登錄</a></div></li>
+    <li><div><b>工作人員：報到櫃台</b><p>PIN 輸入任何數字。打剛才的代碼查詢，對照姓名與身分證後四碼，按「核對無誤，確認報到」。</p>
+      <a class="go" href="reg-desk.html">打開報到櫃台</a></div></li>
+    <li><div><b>選手：檢錄</b><p>代碼會自動帶入（同一台裝置）。填號碼牌編號（例如 A-012，要跟他的賽區一致）與顯示名稱。</p>
+      <a class="go" href="checkin.html?d=A">打開 A 區檢錄</a></div></li>
+    <li><div><b>工作人員：檢錄審核</b><p>看到「名單相符」「已報到」兩個綠標籤，按通過。也可以試試直接打錯名字送檢錄，看審核頁怎麼列出相近的姓名。</p>
+      <a class="go" href="checkin-review.html">打開檢錄審核</a></div></li>
+  </ol>
+
+  <h2>可以拿來試的選手（假名單）</h2>
+  <div class="tbl"><table id="samples"><thead><tr><th>姓名</th><th>電話</th><th>身分證後四碼</th><th>賽區</th></tr></thead><tbody></tbody></table></div>
+  <p class="note">名單一共 513 人，全部是隨機組出來的假名字。名單裡故意放了一組同名的人，審核頁會標「同名多人」。</p>
+
+  <button type="button" id="reset">清掉我做過的報到與檢錄，重新開始</button><span class="ok" id="resetok" hidden>已清掉</span>
+
+  <footer><a href="../">回到贊鬥盃示範首頁</a></footer>
+</div>
+<script>
+  (function(){
+    var tb=document.querySelector("#samples tbody");
+    (window.ZANMEN_DEMO_SAMPLES||[]).forEach(function(p){
+      var tr=document.createElement("tr");
+      [p.name, p.phone.replace(/([0-9]{4})([0-9]{3})([0-9]{3})/,"$1-$2-$3"), p.id4, p.div+" 區"].forEach(function(v,i){
+        var td=document.createElement("td"); td.textContent=v; if(i) td.className="m"; tr.appendChild(td); });
+      tb.appendChild(tr);
+    });
+    document.getElementById("reset").addEventListener("click",function(){
+      window.zanmenDemoReset&&window.zanmenDemoReset();
+      try{["zanmen_regcode","zanmen_regpin","zanmen_ckpin","zanmen_ckdiv"].forEach(function(k){localStorage.removeItem(k);});}catch(e){}
+      document.getElementById("resetok").hidden=false;
+    });
+  })();
+</script>
+</body>
+</html>

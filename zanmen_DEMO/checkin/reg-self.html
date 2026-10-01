@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" /><script src="demo-api.js"></script>
+<!--
+  贊鬥盃 BEYBLADE X — 選手／家長自助報到登錄
+  ------------------------------------------------------------------
+  排隊的時候先在自己手機上填姓名+電話，換一組代碼，到櫃台出示即可。
+  報到台的工作人員要同時核對證件和收費，這一頁的目的就是把「找人」那一步
+  從櫃台移到排隊時間，讓她只剩下核對和按確認。
+
+  安全上最重要的一件事：
+  這一頁永遠不會顯示任何名單資料 —— 不論姓名電話有沒有對到，畫面都只出現
+  一組隨機代碼。有沒有找到、找到誰、身分證後四碼是多少，只出現在工作人員
+  已登入的櫃台畫面上。否則這一頁就變成「某某人有沒有報名」的對外查詢工具，
+  而選手姓名本來就有一部分是公開的（賽程樹、觀眾頁）。
+-->
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>贊鬥盃 · 報到登錄</title>
+<link rel="stylesheet" href="fonts.css" />
+<style>
+  :root{
+    --bg:#0a0710; --bg2:#120b1a; --surface:#181022; --surface2:#1f1530;
+    --line:#2e2140; --ink:#f4eefb; --muted:#a897bd; --muted2:#6d5c85;
+    --magenta:#e73473; --cyan:#2ee6a8; --amber:#ffb02e;
+    --f-body:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;
+    --f-mono:"Chivo Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);
+    -webkit-font-smoothing:antialiased;min-height:100vh;
+    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+  .hidden{display:none !important}
+  .shutbox{margin-top:30px;background:#2a1600;border:2px solid #7a5a12;border-radius:18px;
+    padding:28px 22px;text-align:center}
+  .shutbox .ic{font-size:42px;line-height:1}
+  .shutbox h2{margin:12px 0 10px;font-size:21px;font-weight:900;color:#ffb02e}
+  .shutbox p{margin:0;font-size:15px;line-height:1.9;color:#ffe0b0}
+
+  .wrap{max-width:520px;margin:0 auto;padding:18px 18px 40px}
+  header{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .logo{height:26px;width:auto;flex:0 0 auto}
+  header b{font-family:var(--f-mono);font-size:11px;color:var(--muted);font-weight:400;
+    letter-spacing:.06em;margin-left:auto}
+  h1{font-size:21px;margin:18px 0 6px}
+  .lead{color:var(--muted);font-size:13px;line-height:1.7;margin:0 0 22px}
+  label{display:block;font-size:12px;letter-spacing:.1em;color:var(--muted2);
+    text-transform:uppercase;margin:0 0 6px}
+  .fld{margin-bottom:16px}
+  .hint{font-size:11px;color:var(--muted2);margin-top:5px;line-height:1.5}
+  input{width:100%;font-family:var(--f-body);font-size:17px;color:var(--ink);
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+  input:focus{outline:0;border-color:var(--magenta)}
+  input.tel{font-family:var(--f-mono);font-size:20px;letter-spacing:.08em}
+  .go{width:100%;border:0;border-radius:13px;background:var(--magenta);color:#fff;
+    font-family:var(--f-body);font-weight:900;font-size:17px;padding:16px 0;cursor:pointer;margin-top:6px}
+  .go:disabled{opacity:.4}
+  .err{color:#f57594;font-size:13px;min-height:19px;padding:8px 2px 0;line-height:1.5}
+
+  /* 代碼畫面 */
+  .done{text-align:center;padding:14px 0 30px}
+  .done h2{font-size:20px;margin:0 0 6px}
+  .done p{color:var(--muted);font-size:14px;line-height:1.8;margin:0 0 20px}
+  .codebox{background:var(--surface);border:2px solid var(--magenta);border-radius:20px;
+    padding:26px 16px;margin:0 0 18px}
+  .codebox .lab{font-size:11px;letter-spacing:.22em;color:var(--muted2);text-transform:uppercase}
+  .code{font-family:var(--f-mono);font-weight:600;font-size:clamp(38px,13vw,58px);
+    letter-spacing:.14em;line-height:1.15;margin-top:8px;word-break:break-all}
+  .qrwrap{background:#fff;border-radius:16px;padding:14px;margin:0 0 18px;display:none}
+  .qrwrap img{width:100%;height:auto;display:block;image-rendering:pixelated}
+  .note{background:#2a1a10;border:1px solid #6b4a1a;color:#ffd9a0;border-radius:12px;
+    padding:13px 14px;font-size:13px;line-height:1.7;text-align:left}
+  .again{display:block;width:100%;border:1px solid var(--line);background:transparent;
+    color:var(--muted);border-radius:12px;padding:14px 0;font-family:var(--f-body);
+    font-weight:700;font-size:14px;cursor:pointer;margin-top:14px}
+  /* 主辦單位標誌：用深色底專用的白字版（主辦單位-深色底.svg），
+     直接放在深色底上。紅與黃維持原標準色，只有灰字換成白色。
+     白底的文件／印刷品請用原檔 主辦單位.svg。 */
+  .orgwrap{margin:34px auto 20px;padding:0 16px;text-align:center}
+  .orgwrap .lab{display:block;font-size:10.5px;letter-spacing:.22em;
+    color:#6f5f7d;margin-bottom:9px}
+  .orgwrap .lg{display:inline-block;line-height:0}
+  .orgwrap img{width:224px;max-width:66vw;height:auto;display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img class="logo" src="logo.svg" alt="贊鬥盃">
+    <b>報到登錄</b>
+  </header>
+
+  <!-- 比賽開始後主辦會停止收件，這一塊就會蓋掉表單 -->
+  <div id="shut" class="hidden">
+    <div class="shutbox">
+      <div class="ic">⏰</div>
+      <h2>報到登錄已截止</h2>
+      <p>比賽已經開始，這裡不再受理登錄。<br>還沒完成報到的話，請直接到<b>報到台</b>，工作人員可以幫你處理。</p>
+    </div>
+  </div>
+
+  <div id="form">
+    <h1>先在這裡登錄，到櫃台更快</h1>
+    <p class="lead">填好之後會給你一組代碼，到<b>報到台</b>出示給工作人員即可。<br>
+      記得帶<b>證件</b>（身分證、健保卡或護照）給工作人員核對。</p>
+
+    <div class="fld">
+      <label>選手姓名</label>
+      <input id="nm" autocomplete="off" placeholder="報名時填的姓名">
+      <div class="hint">要和報名時一樣，工作人員才對得到名單。</div>
+    </div>
+
+    <div class="fld">
+      <label>報名時留的電話</label>
+      <input id="ph" class="tel" inputmode="tel" autocomplete="off" placeholder="09xxxxxxxx">
+      <div class="hint">同一支電話報名多位選手的話，會一次全部帶出來。</div>
+    </div>
+
+    <button class="go" id="go">產生報到代碼</button>
+    <div class="err" id="err"></div>
+  </div>
+
+  <div id="out" class="hidden">
+    <div class="done">
+      <h2>請到報到台出示這組代碼</h2>
+      <p>還沒完成報到 —— 要工作人員核對證件後才算數。</p>
+      <div class="codebox">
+        <div class="lab">報到代碼</div>
+        <div class="code" id="code">——</div>
+      </div>
+      <div class="qrwrap" id="qrwrap"><img id="qr" alt="報到 QR"></div>
+      <div class="note">代碼只是用來叫出你的資料，<b>本身不代表已完成報到</b>。<br>
+        畫面關掉也沒關係，重新填一次就會拿到新的代碼。</div>
+      <button class="again" id="again">重新填寫</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const WRITE_BASE="";
+const $=s=>document.querySelector(s);
+
+// 全形轉半形。中文輸入法沒切回英數時打出來的就是 ＡＢＣ１２３，
+// 看起來只是「比較寬」，但 /\D/、/[^A-D0-9]/ 這類正規式會把它整個濾掉，
+// 使用者只會看到「請填完整的電話號碼」卻不知道哪裡不對。
+const half = s => String(s||"").replace(/[！-～]/g,
+                    c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0)).replace(/　/g," ");
+
+// 一邊打一邊轉，使用者當場就看得到號碼變半形，不會送出後才被擋
+$("#ph").addEventListener("input", e => {
+  const v = half(e.target.value);
+  if (v !== e.target.value) { const p = e.target.selectionStart; e.target.value = v;
+                              try{ e.target.setSelectionRange(p,p); }catch(_){} }
+});
+
+async function submit(){
+  const err=$("#err"); err.textContent="";
+  const name=$("#nm").value.trim(), phone=half($("#ph").value).trim();
+  if(!name){ err.textContent="請填姓名"; return; }
+  if(phone.replace(/\D/g,"").length<8){ err.textContent="請填完整的電話號碼"; return; }
+  $("#go").disabled=true; $("#go").textContent="產生中…";
+  try{
+    const r=await (await fetch(WRITE_BASE+"/reg/claim",{method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({name,phone})})).json();
+    if(!r.ok){ err.textContent=r.error||"送出失敗"; }
+    else{
+      $("#code").textContent=r.code;
+      // 存在這支手機上：一來重新整理不會把代碼弄丟（現場最常見的求救就是
+      // 「我剛剛那組碼不見了」），二來等一下檢錄頁會自動帶入這組碼 ——
+      // 同一張報到憑證用兩次，選手在檢錄就一個中文字都不用打。
+      try{ localStorage.setItem("zanmen_regcode",JSON.stringify({v:r.code,t:Date.now()})); }catch(e){}
+      // QR 指向固定的公開落地頁，內容只有代碼。
+      // 工作人員掃到會自動跳進櫃台頁；選手自己掃只會看到自己的代碼。
+      showQR(new URL("reg-scan.html?c=",location.href).href+encodeURIComponent(r.code));
+      $("#form").classList.add("hidden"); $("#out").classList.remove("hidden");
+      window.scrollTo(0,0);
+    }
+  }catch(e){ err.textContent="連線失敗，請告訴現場工作人員"; }
+  $("#go").disabled=false; $("#go").textContent="產生報到代碼";
+}
+function clearQR(){                          // 先清乾淨再畫
+  $("#qrwrap").style.display="none";
+  $("#qr").removeAttribute("src");
+}
+function showQR(url){
+  window.__regURL=url;
+  // 一定要先清掉舊的：產不出來時（網址太長）如果沿用上一次的顯示狀態，
+  // 下一個人會看到「上一個人的 QR」，掃下去就報到到別人身上了。
+  clearQR();
+  try{
+    const src=makeQR(url);
+    if(src){ $("#qr").src=src; $("#qrwrap").style.display="block"; }
+  }catch(e){}                                // 產不出來就只顯示代碼，不影響報到
+}
+
+/* ================= 迷你 QR 產生器 =================
+   為什麼自己寫：這個專案不引第三方套件，頁面也不外連 CDN。
+
+   只做到版本 6 是刻意的 —— 版本 7 以上才需要額外的「版本資訊」區塊，
+   而版本 6（錯誤更正等級 M）已經能放 106 位元組，我們的網址頂多 70 幾。
+   放不下就回傳 null，畫面自動退回只顯示代碼，不會壞掉。
+
+   等級選 M（可容錯 15%）而不是 L：QR 是顯示在手機螢幕上被另一支手機掃，
+   反光、指紋、螢幕保護貼都會吃掉一些辨識率，多一點餘裕比較保險。
+   ================================================= */
+const QR = (function(){
+  // GF(256) 的指數/對數表，本原多項式 0x11d
+  const EXP=new Uint8Array(512), LOG=new Uint8Array(256);
+  (function(){ let x=1;
+    for(let i=0;i<255;i++){ EXP[i]=x; LOG[x]=i; x<<=1; if(x&0x100) x^=0x11d; }
+    for(let i=255;i<512;i++) EXP[i]=EXP[i-255]; })();
+  const mul=(a,b)=> (a&&b) ? EXP[LOG[a]+LOG[b]] : 0;
+
+  function genPoly(n){                        // 產生 n 個更正碼用的生成多項式
+    let p=[1];
+    for(let i=0;i<n;i++){
+      const q=new Array(p.length+1).fill(0);
+      for(let j=0;j<p.length;j++){ q[j]^=p[j]; q[j+1]^=mul(p[j],EXP[i]); }
+      p=q;
+    }
+    return p;
+  }
+  function ecc(data,n){                        // Reed-Solomon 更正碼
+    const g=genPoly(n), r=data.concat(new Array(n).fill(0));
+    for(let i=0;i<data.length;i++){
+      const f=r[i]; if(!f) continue;
+      for(let j=0;j<g.length;j++) r[i+j]^=mul(g[j],f);
+    }
+    return r.slice(data.length);
+  }
+
+  // 版本 → 總碼數 / 每塊更正碼數 / 區塊數（等級 M）。這幾個版本每塊大小都一樣，
+  // 不用處理長短塊混合，交錯就單純很多。
+  const VER=[null,
+    {total:26,  ec:10, blocks:1},
+    {total:44,  ec:16, blocks:1},
+    {total:70,  ec:26, blocks:1},
+    {total:100, ec:18, blocks:2},
+    {total:134, ec:24, blocks:2},
+    {total:172, ec:16, blocks:4}];
+  const ALIGN=[null,null,18,22,26,30,34];     // 版本 2~6 各有一個定位圖樣
+
+  const MASK=[
+    (i,j)=>(i+j)%2===0,
+    (i,j)=>i%2===0,
+    (i,j)=>j%3===0,
+    (i,j)=>(i+j)%3===0,
+    (i,j)=>((i/2|0)+(j/3|0))%2===0,
+    (i,j)=>(i*j)%2+(i*j)%3===0,
+    (i,j)=>((i*j)%2+(i*j)%3)%2===0,
+    (i,j)=>((i+j)%2+(i*j)%3)%2===0];
+
+  function penalty(m,size){
+    let p=0;
+    // 規則 1：同色連續 5 格以上
+    for(let k=0;k<2;k++){
+      for(let a=0;a<size;a++){
+        let run=1;
+        for(let b=1;b<size;b++){
+          const cur=k?m[b][a]:m[a][b], prev=k?m[b-1][a]:m[a][b-1];
+          if(cur===prev){ run++; if(run===5) p+=3; else if(run>5) p++; }
+          else run=1;
+        }
+      }
+    }
+    // 規則 2：2x2 同色
+    for(let i=0;i<size-1;i++) for(let j=0;j<size-1;j++)
+      if(m[i][j]===m[i][j+1] && m[i][j]===m[i+1][j] && m[i][j]===m[i+1][j+1]) p+=3;
+    // 規則 3：類似定位圖樣的排列
+    const P1=[1,0,1,1,1,0,1,0,0,0,0], P2=[0,0,0,0,1,0,1,1,1,0,1];
+    for(let k=0;k<2;k++){
+      for(let a=0;a<size;a++){
+        for(let b=0;b+10<size;b++){
+          let h1=true,h2=true;
+          for(let c=0;c<11;c++){
+            const v=k?m[b+c][a]:m[a][b+c];
+            if(v!==P1[c]) h1=false;
+            if(v!==P2[c]) h2=false;
+          }
+          if(h1) p+=40; if(h2) p+=40;
+        }
+      }
+    }
+    // 規則 4：黑白比例偏離 50%
+    let dark=0; for(let i=0;i<size;i++) for(let j=0;j<size;j++) dark+=m[i][j];
+    p += 10*Math.floor(Math.abs(dark*100/(size*size)-50)/5);
+    return p;
+  }
+
+  function fmtBits(mask){                      // 格式資訊：等級 M(00) + 遮罩，BCH(15,5)
+    const d=(0<<3)|mask;
+    let r=d<<10;
+    for(let i=4;i>=0;i--) if(r&(1<<(i+10))) r^=0x537<<i;
+    return ((d<<10)|r)^0x5412;
+  }
+
+  function make(text){
+    const bytes=new TextEncoder().encode(text);
+    let v=0, info=null;
+    for(let i=1;i<=6;i++){
+      const d=VER[i].total-VER[i].ec*VER[i].blocks;
+      if(bytes.length<=d-2){ v=i; info=VER[i]; break; }   // -2 = 模式(4bit)+長度(8bit)
+    }
+    if(!v) return null;                        // 太長 → 交給呼叫端退回只顯示代碼
+
+    // --- 位元流 ---
+    const dataCw=info.total-info.ec*info.blocks, cap=dataCw*8, bits=[];
+    const push=(val,len)=>{ for(let i=len-1;i>=0;i--) bits.push((val>>i)&1); };
+    push(4,4); push(bytes.length,8);
+    for(const b of bytes) push(b,8);
+    for(let i=0;i<4&&bits.length<cap;i++) bits.push(0);    // 終止符
+    while(bits.length%8) bits.push(0);
+    const PAD=[0xEC,0x11]; let pi=0;
+    while(bits.length<cap) push(PAD[pi++%2],8);
+    const cw=[];
+    for(let i=0;i<bits.length;i+=8){ let b=0; for(let j=0;j<8;j++) b=(b<<1)|bits[i+j]; cw.push(b); }
+
+    // --- 分塊、算更正碼、交錯 ---
+    const per=dataCw/info.blocks, dbs=[], ebs=[];
+    for(let i=0;i<info.blocks;i++){
+      const d=cw.slice(i*per,(i+1)*per);
+      dbs.push(d); ebs.push(ecc(d,info.ec));
+    }
+    const fin=[];
+    for(let i=0;i<per;i++)      for(const d of dbs) fin.push(d[i]);
+    for(let i=0;i<info.ec;i++)  for(const e of ebs) fin.push(e[i]);
+
+    // --- 排版 ---
+    const size=v*4+17;
+    const m=Array.from({length:size},()=>new Array(size).fill(0));
+    const res=Array.from({length:size},()=>new Array(size).fill(false));
+    const mark=(r,c)=>{ if(r>=0&&c>=0&&r<size&&c<size) res[r][c]=true; };
+
+    function finder(r,c){
+      for(let i=-1;i<=7;i++) for(let j=-1;j<=7;j++){
+        const rr=r+i, cc=c+j;
+        if(rr<0||cc<0||rr>=size||cc>=size) continue;
+        const on=(i>=0&&i<=6&&(j===0||j===6))||(j>=0&&j<=6&&(i===0||i===6))||
+                 (i>=2&&i<=4&&j>=2&&j<=4);
+        m[rr][cc]=on?1:0;
+      }
+    }
+    finder(0,0); finder(0,size-7); finder(size-7,0);
+    for(let i=8;i<size-8;i++){ m[6][i]=(i%2===0)?1:0; m[i][6]=(i%2===0)?1:0; }
+    if(v>=2){ const a=ALIGN[v];
+      for(let i=-2;i<=2;i++) for(let j=-2;j<=2;j++)
+        m[a+i][a+j]=(Math.max(Math.abs(i),Math.abs(j))!==1)?1:0; }
+    m[size-8][8]=1;                            // 固定的黑點
+
+    // 保留區：三個角落 9x9（含格式資訊）、時序圖樣、定位圖樣
+    for(let i=0;i<9;i++) for(let j=0;j<9;j++) mark(i,j);
+    for(let i=0;i<9;i++) for(let j=0;j<8;j++) mark(i,size-1-j);
+    for(let i=0;i<8;i++) for(let j=0;j<9;j++) mark(size-1-i,j);
+    for(let i=0;i<size;i++){ mark(6,i); mark(i,6); }
+    if(v>=2){ const a=ALIGN[v]; for(let i=-2;i<=2;i++) for(let j=-2;j<=2;j++) mark(a+i,a+j); }
+
+    // 資料以之字形由右下往上填
+    const db=[]; for(const b of fin) for(let i=7;i>=0;i--) db.push((b>>i)&1);
+    let bi=0, dir=-1, col=size-1;
+    while(col>0){
+      if(col===6) col--;                       // 跳過時序直行
+      for(let r=(dir<0?size-1:0); r>=0&&r<size; r+=dir){
+        for(let k=0;k<2;k++){
+          const c=col-k;
+          if(res[r][c]) continue;
+          m[r][c]= bi<db.length ? db[bi++] : 0;
+        }
+      }
+      dir=-dir; col-=2;
+    }
+
+    // --- 選遮罩：八種都試，取罰分最低的 ---
+    let best=null, bestP=Infinity;
+    for(let k=0;k<8;k++){
+      const t=m.map(r=>r.slice());
+      for(let i=0;i<size;i++) for(let j=0;j<size;j++)
+        if(!res[i][j] && MASK[k](i,j)) t[i][j]^=1;
+      const f=fmtBits(k), get=i=>(f>>i)&1;
+      for(let i=0;i<=5;i++) t[i][8]=get(i);
+      t[7][8]=get(6); t[8][8]=get(7); t[8][7]=get(8);
+      for(let i=9;i<15;i++) t[8][14-i]=get(i);
+      for(let i=0;i<8;i++)  t[8][size-1-i]=get(i);
+      for(let i=8;i<15;i++) t[size-15+i][8]=get(i);
+      t[size-8][8]=1;
+      const p=penalty(t,size);
+      if(p<bestP){ bestP=p; best=t; }
+    }
+    return {m:best, size};
+  }
+
+  function toDataURL(text, scale, quiet){
+    const q=make(text); if(!q) return null;
+    scale=scale||8; quiet=quiet==null?4:quiet;   // 靜區至少 4 格，掃描器才抓得到邊界
+    const px=(q.size+quiet*2)*scale;
+    const cv=document.createElement("canvas"); cv.width=cv.height=px;
+    const g=cv.getContext("2d");
+    g.fillStyle="#fff"; g.fillRect(0,0,px,px);
+    g.fillStyle="#000";
+    for(let i=0;i<q.size;i++) for(let j=0;j<q.size;j++)
+      if(q.m[i][j]) g.fillRect((j+quiet)*scale,(i+quiet)*scale,scale,scale);
+    return cv.toDataURL("image/png");
+  }
+  return {make, toDataURL};
+})();
+function makeQR(text){ return QR.toDataURL(text, 8, 4); }
+
+$("#go").onclick=submit;
+$("#again").onclick=()=>{ $("#out").classList.add("hidden"); $("#form").classList.remove("hidden");
+                          $("#nm").value=""; $("#ph").value=""; $("#code").textContent="——";
+                          clearQR(); $("#nm").focus(); };
+[$("#nm"),$("#ph")].forEach(el=>el.addEventListener("keydown",e=>{
+  if(e.key==="Enter"){ e.preventDefault(); submit(); }}));
+
+/* 收件開關：主辦在控制台按下「進行中」就會自動停止收件。
+   每 15 秒再確認一次 —— 頁面開著沒關的人也要跟著關掉，
+   不然他填完送出才被退，比一開始就講清楚更糟。 */
+async function intakeCheck(){
+  try{
+    const s = await (await fetch(WRITE_BASE + "/status", {cache:"no-store"})).json();
+    const closed = s.intake === "closed";
+    document.getElementById("shut").classList.toggle("hidden", !closed);
+    for(const id of ["form","done"]) { const el=document.getElementById(id);
+      if(el) el.classList.toggle("hidden", closed || el.dataset.off==="1"); }
+  }catch(e){}
+}
+intakeCheck(); setInterval(intakeCheck, 15000);
+/* 選手自己的手機上開著這一頁：鎖屏／切去 LINE 回來後 iOS 會凍住輪詢，
+   收件已經關了卻還看得到表單，填完送出才被退。回前景就補問一次。 */
+document.addEventListener("visibilitychange", () => { if(!document.hidden) intakeCheck(); });
+window.addEventListener("pageshow", () => intakeCheck());
+</script>
+<div class="orgwrap">
+  <span class="lab">主辦單位</span>
+  <span class="lg"><img src="/org.svg" alt="南科贊美酒店 L'ARC HOTEL"></span>
+</div>
+</body>
+</html>

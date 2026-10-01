@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" /><script src="demo-api.js"></script>
+<!--
+  贊鬥盃 BEYBLADE X — 選手自助檢錄
+  一頁四用，賽區由網址決定，各印一張 QR：
+     ?d=A   ?d=B   ?d=C   ?d=D
+  網址已經指定賽區，選手不必自己選，也就不會掃錯或選錯。
+  送出後不算完成，要檢錄台的裁判在審核頁按「通過」才算數。
+-->
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>贊鬥盃 · 選手檢錄</title>
+<link rel="stylesheet" href="fonts.css" />
+<style>
+  :root{
+    --bg:#0a0710; --bg2:#120b1a; --surface:#181022; --surface2:#1f1530;
+    --line:#2e2140; --ink:#f4eefb; --muted:#a897bd; --muted2:#6d5c85;
+    --magenta:#e73473; --magenta-dim:#751c3c; --cyan:#2ee6a8; --amber:#ffb02e;
+    --f-body:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;
+    --f-mono:"Chivo Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);
+    -webkit-font-smoothing:antialiased;min-height:100vh;
+    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+  .hidden{display:none !important}
+  .shutbox{margin-top:30px;background:#2a1600;border:2px solid #7a5a12;border-radius:18px;
+    padding:28px 22px;text-align:center}
+  .shutbox .ic{font-size:42px;line-height:1}
+  .shutbox h2{margin:12px 0 10px;font-size:21px;font-weight:900;color:#ffb02e}
+  .shutbox p{margin:0;font-size:15px;line-height:1.9;color:#ffe0b0}
+
+  .wrap{max-width:520px;margin:0 auto;padding:18px 18px 40px}
+
+  header{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .logo{height:26px;width:auto;flex:0 0 auto}
+  header b{font-family:var(--f-mono);font-size:11px;color:var(--muted);font-weight:400;
+    letter-spacing:.06em;margin-left:auto}
+
+  .divbadge{display:inline-flex;align-items:baseline;gap:8px;margin:16px 0 6px}
+  .divbadge i{font-style:normal;font-family:var(--f-mono);font-size:44px;font-weight:600;
+    line-height:1;color:var(--magenta)}
+  .divbadge span{font-size:15px;font-weight:900}
+  .lead{color:var(--muted);font-size:13px;line-height:1.65;margin:0 0 20px}
+
+  label{display:block;font-size:12px;letter-spacing:.1em;color:var(--muted2);
+    text-transform:uppercase;margin:0 0 6px}
+  .fld{margin-bottom:16px}
+  .hint{font-size:11px;color:var(--muted2);margin-top:5px;line-height:1.5}
+  input{width:100%;font-family:var(--f-body);font-size:17px;color:var(--ink);
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 14px}
+  input:focus{outline:0;border-color:var(--magenta)}
+  input.code{font-family:var(--f-mono);font-size:24px;letter-spacing:.12em;text-align:center}
+  .count{float:right;font-family:var(--f-mono);font-size:11px;color:var(--muted2)}
+
+  .go{width:100%;border:0;border-radius:13px;background:var(--magenta);color:#fff;
+    font-family:var(--f-body);font-weight:900;font-size:17px;padding:16px 0;cursor:pointer;
+    margin-top:6px}
+  .go:disabled{opacity:.4}
+  .err{color:#f57594;font-size:13px;min-height:19px;padding:8px 2px 0;line-height:1.5}
+
+  .done{text-align:center;padding:40px 10px}
+  .done .tick{width:76px;height:76px;margin:0 auto 16px;display:grid;place-items:center}
+  .done .tick svg{width:76px;height:76px;display:block}
+  .done h2{font-size:21px;margin:0 0 10px;transition:color .2s}
+  /* 審核結果出來時整塊換色，讓在吵雜檢錄處的人一眼就分得出來 */
+  .done.ok h2{color:var(--cyan)}
+  .done.no h2{color:#ff5a6a}
+  .done .tick svg{animation:pop .45s cubic-bezier(.2,.9,.3,1.35)}
+  @keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:none;opacity:1}}
+  .waitdot{display:inline-block;width:7px;height:7px;border-radius:50%;
+    background:var(--amber);margin-right:7px;animation:bl 1.4s infinite;vertical-align:middle}
+  @keyframes bl{50%{opacity:.25}}
+  .done p{color:var(--muted);font-size:14px;line-height:1.7;margin:0 0 6px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    padding:16px;margin:22px 0;text-align:left}
+  .card .r{display:flex;justify-content:space-between;gap:12px;padding:7px 0;font-size:14px}
+  .card .r span{color:var(--muted2)}
+  .card .r b{font-family:var(--f-mono);font-weight:600}
+  .again{display:block;width:100%;border:1px solid var(--line);background:transparent;
+    color:var(--muted);border-radius:12px;padding:14px 0;font-family:var(--f-body);
+    font-weight:700;font-size:14px;cursor:pointer;text-decoration:none;text-align:center}
+  .again:active{border-color:var(--magenta);color:var(--ink)}
+  .warn{background:#2a1a10;border:1px solid #6b4a1a;color:#ffd9a0;border-radius:12px;
+    padding:13px 14px;font-size:13px;line-height:1.6;margin-bottom:18px}
+  /* 主辦單位標誌：用深色底專用的白字版（主辦單位-深色底.svg），
+     直接放在深色底上。紅與黃維持原標準色，只有灰字換成白色。
+     白底的文件／印刷品請用原檔 主辦單位.svg。 */
+  .orgwrap{margin:34px auto 20px;padding:0 16px;text-align:center}
+  .orgwrap .lab{display:block;font-size:10.5px;letter-spacing:.22em;
+    color:#6f5f7d;margin-bottom:9px}
+  .orgwrap .lg{display:inline-block;line-height:0}
+  .orgwrap img{width:224px;max-width:66vw;height:auto;display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img class="logo" src="logo.svg" alt="贊鬥盃">
+    <b>選手檢錄</b>
+  </header>
+
+  <!-- 沒帶 ?d= 的話擋下來，不讓選手自己亂選賽區 -->
+  <div id="bad" class="hidden">
+    <div class="warn" style="margin-top:22px">
+      這個網址沒有指定賽區。<br>請掃描你所屬賽區的 QR Code，不要手動輸入網址。
+    </div>
+  </div>
+
+  <!-- 比賽開始後主辦會停止收件，這一塊就會蓋掉表單 -->
+  <div id="shut" class="hidden">
+    <div class="shutbox">
+      <div class="ic">⏰</div>
+      <h2>檢錄已截止</h2>
+      <p>比賽已經開始，這裡不再受理檢錄。<br>還沒完成檢錄的話，請直接到<b>檢錄台</b>找裁判。</p>
+    </div>
+  </div>
+
+  <div id="form" class="hidden">
+    <div class="divbadge"><i id="dv">A</i><span>賽區 檢錄</span></div>
+    <p class="lead">請照著你抽到的號碼牌填寫。送出後到檢錄台請裁判確認，通過才算完成檢錄。</p>
+
+    <!-- 這裡本來是「姓名」。改成報到代碼的原因：名字是選手自己打的，
+         而報到時工作人員已經當面確認過他是名單上的哪一位 —— 讓他再打一次中文
+         姓名，只是多給一次打錯的機會（現場真的發生過：報到過了，檢錄說查無此人）。
+         代碼是報到時就拿到的那一組，同一支手機會自動帶入。 -->
+    <div class="fld">
+      <label>報到代碼</label>
+      <input id="rg" class="code" autocomplete="off" inputmode="text" maxlength="8"
+             autocapitalize="characters" placeholder="報到時拿到的 6 碼">
+      <div class="hint" id="rghint">報到時手機上那組 6 碼（也在你的報到 QR 上）。<br>
+        <b>還沒報到的話請先去報到台</b>；代碼不見了就直接找檢錄台的工作人員。</div>
+    </div>
+
+    <div class="fld">
+      <label>抽到的編號</label>
+      <input id="cd" class="code" autocomplete="off" inputmode="text" placeholder="A-001">
+      <div class="hint" id="cdhint">號碼牌上的編號，例如 <b>A-001</b>。這個號碼決定你的賽程位置。</div>
+    </div>
+
+    <div class="fld">
+      <label>顯示名稱（必填）<span class="count" id="nkc">0/8</span></label>
+      <input id="nk" autocomplete="off" maxlength="8" placeholder="賽程表和轉播畫面會顯示這個名字">
+      <div class="hint"><b>最多 <span id="nkmax1">8</span> 個字</b>，中文、英文、數字都算一個字。<br>
+        這是賽程表、大螢幕、轉播畫面上會出現的名字，<b>由你自己決定要填什麼</b>——
+        想匿名就填暱稱，不介意公開的話也可以直接填本名。</div>
+    </div>
+
+    <button class="go" id="go">送出檢錄</button>
+    <div class="err" id="err"></div>
+  </div>
+
+  <div id="done" class="hidden">
+    <div class="done">
+      <!-- 三種狀態共用同一塊；審核結果一出來就換圖示、換標題、換說明 -->
+      <div class="tick" id="d-ic">
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+          <path d="M24 5 L46 43 H2 Z" fill="#ffb02e"/>
+          <rect x="21.6" y="17" width="4.8" height="14" rx="2.4" fill="#2a1600"/>
+          <circle cx="24" cy="36" r="2.9" fill="#2a1600"/>
+        </svg>
+      </div>
+      <h2 id="d-h2">尚未完成，請等待檢錄處檢查您的手環和暱稱</h2>
+      <p id="d-p">你的資料已送出，<b>還沒完成檢錄</b>。<br>
+         請在<b>檢錄處</b>等候，工作人員確認後這個畫面會自己更新。</p>
+      <div class="card">
+        <div class="r"><span>賽區</span><b id="d-dv">—</b></div>
+        <div class="r"><span>編號</span><b id="d-cd">—</b></div>
+        <div class="r"><span>暱稱</span><b id="d-nk">—</b></div>
+      </div>
+      <a class="again" href="/spectator-lookup.html">即時戰績查詢 ›</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const WRITE_BASE="";
+const $=s=>document.querySelector(s);
+
+// 全形轉半形。中文輸入法沒切回英數時打出來的就是 ＡＢＣ１２３，
+// 看起來只是「比較寬」，但 /\D/、/[^A-D0-9]/ 這類正規式會把它整個濾掉，
+// 使用者只會看到「請填完整的電話號碼」卻不知道哪裡不對。
+const half = s => String(s||"").replace(/[！-～]/g,
+                    c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0)).replace(/　/g," ");
+const DIV=(new URLSearchParams(location.search).get("d")||"").toUpperCase();
+// 號碼牌的上限。預設跟 brain.py 的 CHECKIN_MAX_NO 一樣是 128，
+// 開頁時再跟伺服器要一次（/whoami 的 codeMax），以伺服器為準。
+let CODE_MAX = 128;
+
+if(!/^[A-D]$/.test(DIV)){ $("#bad").classList.remove("hidden"); }
+else{
+  $("#form").classList.remove("hidden");
+  $("#dv").textContent=DIV;
+  $("#cd").placeholder=DIV+"-001";
+  fetch(WRITE_BASE+"/whoami").then(r=>r.json()).then(d=>{
+    if(d && d.codeMax) CODE_MAX=d.codeMax;
+    $("#cdhint").textContent="號碼牌上的編號，1 ~ "+CODE_MAX+" 號。這個號碼決定你的賽程位置。";
+  }).catch(()=>{});
+  $("#nk").addEventListener("input",()=>$("#nkc").textContent=$("#nk").value.length+"/"+NICK_MAX);
+
+/* 顯示名稱的字數上限一律以後端為準（/status 的 nickMax）。
+   頁面自己寫死的話，主辦改了 brain.py 的 NICK_MAX 就會不一致 ——
+   畫面讓人填 10 個字，送出後被無聲截成 8 個，選手完全不會知道，
+   要到大螢幕上看到自己的名字少了兩個字才發現。
+   後端沒回這個欄位（舊版大腦）就沿用預設值 8，不會壞。 */
+let NICK_MAX = 8;
+function setNickMax(n){
+  n = parseInt(n, 10);
+  if (!n || n === NICK_MAX) return;
+  NICK_MAX = n;
+  const nk = $("#nk"); if (nk) nk.setAttribute("maxlength", n);
+  const m1 = $("#nkmax1"); if (m1) m1.textContent = n;
+  const c = $("#nkc"); if (c) c.textContent = (nk ? nk.value.length : 0) + "/" + n;
+}
+  // 編號欄自動補格式：打 1 或 a1 都會變成 A-001，減少現場打錯
+  $("#cd").addEventListener("blur",()=>{
+    const v=half($("#cd").value).trim().toUpperCase().replace(/[^A-D0-9]/g,"");
+    const m=v.match(/^([A-D])?(\d{1,3})$/);
+    if(m) $("#cd").value=`${m[1]||DIV}-${String(+m[2]).padStart(3,"0")}`;
+  });
+  $("#go").onclick=submit;
+  [$("#rg"),$("#cd"),$("#nk")].forEach(el=>el.addEventListener("keydown",e=>{
+    if(e.key==="Enter"){ e.preventDefault(); submit(); }}));
+  // 代碼一律轉大寫：CODE_CHARS 只有大寫，手機鍵盤常常自作主張切小寫
+  $("#rg").addEventListener("input",()=>{
+    $("#rg").value=half($("#rg").value).toUpperCase().replace(/[^A-Z0-9]/g,"");
+  });
+  autofillRegCode();
+}
+
+/* 同一支手機在報到時已經拿過代碼，直接帶進來 —— 選手一個字都不用打。
+   換手機、清過瀏覽器、或本來就是櫃台幫他報到的人，就自己輸入那 6 碼。 */
+function autofillRegCode(){
+  try{
+    const o=JSON.parse(localStorage.getItem("zanmen_regcode")||"null");
+    if(o&&o.v&&(Date.now()-(o.t||0))<24*3600*1000){
+      $("#rg").value=o.v;
+      $("#rghint").innerHTML="已自動帶入你報到時拿到的代碼 <b>"+o.v.replace(/[<>&]/g,"")+"</b>。"
+                            +"<br>如果這不是你的代碼，請直接改掉。";
+    }
+  }catch(e){}
+}
+
+async function submit(){
+  const err=$("#err"); err.textContent="";
+  const reg=$("#rg").value.trim().toUpperCase(), code=half($("#cd").value).trim().toUpperCase(), nick=$("#nk").value.trim();
+  if(!reg){ err.textContent="請填報到代碼（報到時手機上那組 6 碼）。還沒報到請先到報到台"; return; }
+  if(!/^[A-D]-?\d{1,3}$/.test(code)){ err.textContent="編號格式應該像 "+DIV+"-001"; return; }
+  // 號碼牌只發到 128 號。伺服器那邊也擋（真正的把關在那裡），這裡先擋是為了
+  // 讓選手當下就知道打錯，不用等送出、也不會佔掉檢錄台一次人工處理。
+  const no = +code.replace(/^[A-D]-?/,"");
+  if(!(no>=1 && no<=CODE_MAX)){
+    err.textContent="編號只到 "+CODE_MAX+" 號，你打的是 "+no+" 號 —— 請再看一次號碼牌";
+    return; }
+  if(!nick){ err.textContent="請填顯示名稱（想公開本名也可以直接填本名）"; return; }
+  $("#go").disabled=true; $("#go").textContent="送出中…";
+  try{
+    const r=await (await fetch(WRITE_BASE+"/checkin",{method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({div:DIV,code,reg,nick})})).json();
+    if(!r.ok){ err.textContent=r.error||"送出失敗"; }
+    else{
+      $("#d-dv").textContent=DIV+" 區";
+      $("#d-cd").textContent=code;
+      $("#d-nk").textContent=nick;
+      $("#form").classList.add("hidden"); $("#done").classList.remove("hidden");
+      window.scrollTo(0,0);
+      MYCODE=code; watchResult();
+    }
+  }catch(e){ err.textContent="連線失敗，請告訴檢錄台的工作人員"; }
+  $("#go").disabled=false; $("#go").textContent="送出檢錄";
+}
+
+/* ---------- 等審核結果 ----------
+   裁判在審核頁按下通過或退回之後，選手手上這一頁要自己變 —— 不然他會一直
+   站在檢錄處問「好了沒」。每 3 秒問一次自己那一筆的狀態；只問狀態，
+   拿不到姓名也拿不到名單比對結果（那些是裁判才看得到的）。            */
+let MYCODE=null, WATCH=null;
+const ICON_OK = '<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="none" stroke="#28e8b6" stroke-width="4"/>'
+              + '<path d="M14 25 l7 7 l13 -15" fill="none" stroke="#28e8b6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const ICON_NO = '<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="none" stroke="#ff5a6a" stroke-width="4"/>'
+              + '<path d="M16 16 L32 32 M32 16 L16 32" fill="none" stroke="#ff5a6a" stroke-width="5" stroke-linecap="round"/></svg>';
+
+function showResult(state){
+  const box=document.querySelector("#done .done");
+  if(state==="approved"){
+    box.classList.add("ok"); box.classList.remove("no");
+    $("#d-ic").innerHTML=ICON_OK;
+    $("#d-h2").textContent="檢錄完成！";
+    $("#d-p").innerHTML="工作人員已經確認你的手環和暱稱。<br>可以到自己的賽區準備比賽了。";
+  }else{
+    box.classList.add("no"); box.classList.remove("ok");
+    $("#d-ic").innerHTML=ICON_NO;
+    $("#d-h2").textContent="被退回了，請找檢錄處";
+    $("#d-p").innerHTML="資料需要修正。<br>請直接找<b>檢錄處</b>的工作人員，他們會告訴你要改什麼。";
+  }
+  if(WATCH){ clearInterval(WATCH); WATCH=null; }
+  try{ if(navigator.vibrate) navigator.vibrate(state==="approved"?[60,50,60]:[220]); }catch(e){}
+  window.scrollTo(0,0);
+}
+
+async function pollResult(){
+  if(!MYCODE) return;
+  try{
+    const r=await (await fetch(WRITE_BASE+"/checkin/mine",{method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({code:MYCODE})})).json();
+    if(r && (r.state==="approved" || r.state==="rejected")) showResult(r.state);
+  }catch(e){}          // 網路不穩就下一輪再問，畫面不用跳錯誤
+}
+function watchResult(){
+  if(WATCH) clearInterval(WATCH);
+  $("#d-h2").innerHTML='<span class="waitdot"></span>尚未完成，請等待檢錄處檢查您的手環和暱稱';
+  pollResult();
+  WATCH=setInterval(pollResult,3000);
+}
+
+/* 收件開關：主辦在控制台按下「進行中」就會自動停止收件。
+   每 15 秒再確認一次 —— 頁面開著沒關的人也要跟著關掉，
+   不然他填完送出才被退，比一開始就講清楚更糟。 */
+async function intakeCheck(){
+  try{
+    const s = await (await fetch(WRITE_BASE + "/status", {cache:"no-store"})).json();
+    if (s.nickMax) setNickMax(s.nickMax);
+    const closed = s.intake === "closed";
+    document.getElementById("shut").classList.toggle("hidden", !closed);
+    if(closed){ const f=document.getElementById("form"); if(f) f.classList.add("hidden");
+                const b=document.getElementById("bad"); if(b) b.classList.add("hidden"); }
+  }catch(e){}
+}
+intakeCheck(); setInterval(intakeCheck, 15000);
+
+/* iOS Safari：手機一鎖屏、或切去看 LINE，這一頁的 setInterval 就被凍住；
+   回來時還可能是從 bfcache（上一頁快照）還原的，程式碼不會重跑。
+   選手正盯著「等待檢錄處檢查」這一頁 —— 凍住的話他已經被核准了卻還是看到
+   等待中，只好跑去問工作人員。其他輪詢頁（裁判、桌況板、觀眾查詢）早就有這
+   兩個事件，這頁是唯一漏的：回到前景就立刻補問一次，不等下一個輪詢週期。 */
+function resumePolls(){
+  intakeCheck();
+  if (WATCH) pollResult();          // 只有正在等待結果時才需要補問
+}
+document.addEventListener("visibilitychange", () => { if(!document.hidden) resumePolls(); });
+window.addEventListener("pageshow", () => resumePolls());
+</script>
+<div class="orgwrap">
+  <span class="lab">主辦單位</span>
+  <span class="lg"><img src="/org.svg" alt="南科贊美酒店 L'ARC HOTEL"></span>
+</div>
+</body>
+</html>

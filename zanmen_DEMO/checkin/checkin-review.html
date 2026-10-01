@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" /><script src="demo-api.js"></script>
+<!--
+  贊鬥盃 BEYBLADE X — 檢錄審核（裁判用）
+  選手送出後停在「待審」，裁判在這裡按通過才算完成檢錄。
+  比對狀態由伺服器對 roster.csv 算好：
+     ok       名單上找得到，直接通過
+     none     找不到（多半是打錯字）→ 會列出近似姓名讓裁判判斷
+     dupe     名單上有同名的人 → 要人工確認是哪一位
+     wrongdiv 名單登記的賽區和他掃的 QR 不同
+     noroster 沒有提供名單 → 全部人工判斷
+-->
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>贊鬥盃 · 檢錄審核</title>
+<link rel="stylesheet" href="fonts.css" />
+<style>
+  :root{
+    --bg:#0a0710; --bg2:#120b1a; --surface:#181022; --surface2:#1f1530;
+    --line:#2e2140; --ink:#f4eefb; --muted:#a897bd; --muted2:#6d5c85;
+    --magenta:#e73473; --magenta-dim:#751c3c; --cyan:#2ee6a8; --amber:#ffb02e;
+    --f-body:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;
+    --f-mono:"Chivo Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--f-body);
+    -webkit-font-smoothing:antialiased;overflow:hidden;
+    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+  .hidden{display:none !important}
+  .app{height:100%;display:flex;flex-direction:column}
+
+  header{flex:0 0 auto;display:flex;align-items:center;gap:9px;padding:9px 13px;
+    border-bottom:1px solid var(--line);background:var(--bg2)}
+  header .logo{height:19px;width:auto}
+  header .t{font-size:13px;font-weight:900}
+  header .who{margin-left:auto;font-size:11px;color:var(--muted);text-align:right;line-height:1.35}
+  header .who b{display:block;color:var(--ink);font-size:12px}
+
+  .stats{flex:0 0 auto;display:flex;gap:7px;padding:9px 13px;border-bottom:1px solid var(--line)}
+  /* 賽區切換：四個檢錄處各站一區，只看自己那一區才不會誤按到別區的人 */
+  .divbar{flex:0 0 auto;display:flex;gap:6px;padding:8px 13px;border-bottom:1px solid var(--line)}
+  .divbar button{flex:1;border:1px solid var(--line);background:var(--surface);color:var(--muted);
+    border-radius:10px;padding:9px 0;font-family:var(--f-body);font-weight:900;font-size:14px;
+    cursor:pointer;position:relative}
+  .divbar button.on{background:var(--magenta);border-color:var(--magenta);color:#fff}
+  .divbar button .n{display:block;font-family:var(--f-mono);font-weight:400;font-size:10px;
+    color:var(--muted2);margin-top:1px}
+  .divbar button.on .n{color:#ffd7e6}
+  .st{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:11px;
+    padding:8px 4px;text-align:center}
+  .st i{display:block;font-style:normal;font-family:var(--f-mono);font-size:21px;font-weight:600;line-height:1.1}
+  .st span{display:block;font-size:10px;color:var(--muted2);margin-top:2px}
+  .st.p i{color:var(--amber)} .st.a i{color:var(--cyan)} .st.r i{color:#f57594}
+
+  .warnbar{flex:0 0 auto;background:#2a1a10;border-bottom:1px solid #6b4a1a;color:#ffd9a0;
+    padding:9px 13px;font-size:12px;line-height:1.55}
+
+  /* 掃到報到 QR 時的提示條 */
+  .scanbar{flex:0 0 auto;background:#10222a;border-bottom:1px solid #1d4b5a;color:#9fe8ff;
+    padding:9px 13px;font-size:13px;line-height:1.5}
+  .scanbar b{color:#fff}
+  /* 掃到的那一位，在清單裡標出來 —— 128 人用眼睛找太慢，找錯就是通過錯的人 */
+  .row.scanhit{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan) inset}
+
+  /* 從名單找人並綁定（沒有報到代碼時的退路） */
+  .bindbox{margin:9px 0 0;padding:9px 10px;border:1px dashed var(--line2);border-radius:11px}
+  .bindhint{font-size:11px;color:var(--muted2);line-height:1.5;margin-bottom:7px}
+  .bindrow{display:flex;gap:7px}
+  .bindq{flex:1;min-width:0;background:var(--bg2);border:1px solid var(--line);border-radius:9px;
+    color:var(--ink);font-family:var(--f-body);font-size:15px;padding:9px 10px;outline:none}
+  .b-find{flex:0 0 auto;background:var(--surface2);border:1px solid var(--line2);color:var(--ink);
+    border-radius:9px;padding:9px 15px;font-family:var(--f-body);font-weight:900;font-size:14px;cursor:pointer}
+  .bindres{margin-top:7px;display:flex;flex-direction:column;gap:6px}
+  .bindmsg{font-size:12px;color:var(--muted)}
+  .b-bind{text-align:left;background:var(--surface2);border:1px solid var(--line2);color:var(--ink);
+    border-radius:9px;padding:10px 11px;font-family:var(--f-body);font-weight:900;font-size:16px;cursor:pointer}
+  .b-bind small{display:block;font-weight:400;font-size:11px;color:var(--muted2);margin-top:2px}
+
+  .list{flex:1 1 auto;overflow-y:auto;padding:10px 13px 30px;-webkit-overflow-scrolling:touch}
+  .row{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    padding:12px 13px;margin-bottom:9px}
+  .row.ok{border-color:#1d5c45}
+  .row.bad{border-color:#7a3a1a;background:#1d1410}
+  .row.done{opacity:.45}
+  .r1{display:flex;align-items:baseline;gap:9px;margin-bottom:3px}
+  .r1 .cd{font-family:var(--f-mono);font-weight:600;font-size:19px;color:var(--magenta);flex:0 0 auto}
+  .r1 .nm{font-size:19px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .r1 .ts{margin-left:auto;font-family:var(--f-mono);font-size:10px;color:var(--muted2);flex:0 0 auto}
+  .r2{font-size:12px;color:var(--muted);margin-bottom:9px;line-height:1.6}
+  .r2 b{color:var(--ink)}
+  .flag{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;
+    padding:2px 7px;margin-right:6px}
+  .f-ok{background:#123b2d;color:var(--cyan)}
+  .f-none{background:#4a2410;color:#ffbe7a}
+  .f-dupe{background:#4a2410;color:#ffbe7a}
+  .f-wrongdiv{background:#4a1020;color:#ff9ab6}
+  .f-noroster{background:var(--surface2);color:var(--muted)}
+  .cand{font-size:12px;color:#ffd9a0;margin:-4px 0 9px;line-height:1.6}
+  .acts{display:flex;gap:7px}
+  .acts button{flex:1;border:0;border-radius:11px;padding:11px 0;font-family:var(--f-body);
+    font-weight:900;font-size:14px;cursor:pointer}
+  .b-pass{background:var(--cyan);color:#04120e}
+  .b-no{flex:0 0 32% !important;background:transparent;color:var(--muted);
+    border:1px solid var(--line) !important}
+  .b-nick{flex:0 0 44px !important;background:transparent;color:var(--muted2);
+    border:1px solid var(--line) !important;font-size:15px}
+  .state{font-size:12px;font-weight:700}
+  .state.a{color:var(--cyan)} .state.r{color:#f57594}
+  /* 審完的列也要留一條退路：「通過檢錄」是佔了大半列寬的大鈕，手機上很容易誤按，
+     以前按下去就沒有任何辦法改回來，那個人會一直留在 participants.csv 裡 */
+  .decided{display:flex;align-items:center;gap:9px}
+  .decided .state{flex:1 1 auto;min-width:0}
+  .b-undo{flex:0 0 auto;border:1px solid var(--line);background:transparent;color:var(--muted2);
+    border-radius:9px;padding:8px 11px;font-family:var(--f-body);font-size:12px;
+    font-weight:700;cursor:pointer}
+  .b-undo:active{border-color:var(--magenta);color:var(--ink)}
+  .empty{text-align:center;color:var(--muted2);font-size:13px;padding:50px 10px;line-height:1.7}
+
+  .gate{position:fixed;inset:0;background:var(--bg);z-index:50;display:flex;
+    flex-direction:column;justify-content:center;padding:26px 22px;gap:13px}
+  .gate h1{font-size:19px;margin:0;font-weight:900}
+  .gate p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+  .gate input{width:100%;font-family:var(--f-mono);font-size:26px;letter-spacing:.28em;
+    text-align:center;color:var(--ink);background:var(--surface);border:1px solid var(--line);
+    border-radius:13px;padding:15px 10px}
+  .gate input:focus{outline:0;border-color:var(--magenta)}
+  .gate .go{width:100%;border:0;border-radius:13px;background:var(--magenta);color:#fff;
+    font-family:var(--f-body);font-weight:900;font-size:16px;padding:15px 0;cursor:pointer}
+  .gate .ge{color:#f57594;font-size:13px;text-align:center;min-height:18px}
+  .foot{flex:0 0 auto;display:flex;align-items:center;gap:9px;padding:7px 13px;
+    border-top:1px solid var(--line)}
+  .foot .s{font-family:var(--f-mono);font-size:10px;color:var(--muted2)}
+  .foot button{margin-left:auto;border:1px solid var(--line);background:transparent;
+    color:var(--muted2);border-radius:9px;padding:6px 10px;font-size:12px;cursor:pointer}
+  .st.g i{color:#2ee6a8}
+  .shutbar{background:#2a1600;border:1px solid #7a5a12;color:#ffb02e;border-radius:11px;
+    padding:10px 14px;margin:0 0 10px;font-size:13px;line-height:1.7}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <div>
+    <h1>檢錄審核</h1>
+    <p>請輸入裁判 PIN。通過檢錄後選手才會進入名單。</p>
+  </div>
+  <input id="pin" inputmode="numeric" maxlength="8" placeholder="••••" autocomplete="off">
+  <div class="ge" id="gerr"></div>
+  <button class="go" id="ggo">進入審核</button>
+</div>
+
+<div class="app hidden" id="app">
+  <header>
+    <img class="logo" src="logo.svg" alt="贊鬥盃">
+    <span class="t">檢錄審核</span>
+    <span class="who"><b id="who">—</b><span>裁判</span></span>
+  </header>
+  <div class="stats">
+    <div class="st p"><i id="s-p">0</i><span>待審</span></div>
+    <div class="st a"><i id="s-a">0</i><span>已通過</span></div>
+    <div class="st r"><i id="s-r">0</i><span>已退回</span></div>
+    <div class="st"><i id="s-t">0</i><span>名單人數</span></div>
+    <div class="st g"><i id="s-reg">0</i><span>已完成報到</span></div>
+  </div>
+  <div class="divbar" id="divbar"></div>
+  <div class="shutbar hidden" id="shutbar">已停止收件 —— 選手端的檢錄頁已關閉，這裡仍可處理排隊中的人</div>
+  <div class="scanbar hidden" id="scanbar"></div>
+  <div class="warnbar hidden" id="warn"></div>
+  <div class="list" id="list"></div>
+  <div class="foot">
+    <span class="s" id="upd">連線中…</span>
+    <button id="out">登出</button>
+  </div>
+</div>
+
+<script>
+const BASE="";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let PIN=null, WHO="—", SIG="";
+let LAST=null;      // 最後一次拿到的資料：切換賽區時就地重畫，不用等下一次輪詢
+
+// 報到台和檢錄台是兩個不同的櫃台，這裡把報到狀態一起顯示出來，
+// 裁判才不用去問「這個人繳費了沒」。只提示不擋人 —— 判斷權留給現場。
+const REGF={
+  done:    ["f-ok",  "✓ 已報到"],
+  none:    ["f-wrongdiv","✕ 尚未報到"],
+  dupe:    ["f-dupe","同名多筆，報到狀態不明"],
+  unknown: ["f-none","報名名單查無此人"],
+  noroster:["f-noroster","未載入名單"],
+};
+const FLAG={
+  ok:      ["f-ok","名單相符"],
+  none:    ["f-none","名單查無此人"],
+  dupe:    ["f-dupe","名單有同名者"],
+  wrongdiv:["f-wrongdiv","賽區與名單不符"],
+  noroster:["f-noroster","名單未載入"],
+};
+
+// 記住的 PIN 只保留 24 小時：活動結束後裝置借人或被撿走，隔天自動失效。
+// 舊格式（純字串）一律當成過期，逼重新登入一次。
+const PIN_TTL=24*60*60*1000;
+function pinSave(k,v){ try{ localStorage.setItem(k,JSON.stringify({v,t:Date.now()})); }catch(e){} }
+function pinLoad(k){
+  try{
+    const o=JSON.parse(localStorage.getItem(k)||"null");
+    if(!o||typeof o!=="object"||!o.t||Date.now()-o.t>PIN_TTL){ localStorage.removeItem(k); return null; }
+    return o.v;
+  }catch(e){ try{localStorage.removeItem(k);}catch(_){} return null; }
+}
+{ const s=pinLoad("zanmen_ckpin"); if(s){ PIN=s; enter(); } }
+$("#ggo").onclick=login;
+$("#pin").addEventListener("keydown",e=>{ if(e.key==="Enter") login(); });
+
+async function login(){
+  const p=$("#pin").value.trim(); const ge=$("#gerr"); ge.textContent="";
+  if(!p){ ge.textContent="請輸入 PIN"; return; }
+  PIN=p;
+  const ok=await load(true);
+  if(ok){ pinSave("zanmen_ckpin",p); enter(); }
+  else{ PIN=null; ge.textContent="PIN 不正確"; }
+}
+/* 掃到的報到代碼（同一張 QR 的第二次使用）。
+   reg-scan 判斷「這位已經報到」之後就會把人帶到這一頁，並把代碼掛在網址上。
+   這裡負責讓工作人員一眼看到掃到的是誰、以及他送出檢錄了沒 ——
+   128 人的清單裡用眼睛找人太慢，而且找錯就是通過錯的人。 */
+let SCAN=null;
+async function resolveScan(){
+  const code=new URLSearchParams(location.search).get("code");
+  if(!code||!PIN) return;
+  try{
+    const d=await (await fetch(BASE+"/reg/card"
+                               +"?code="+encodeURIComponent(code),{cache:"no-store",headers:{"X-Pin":encodeURIComponent(PIN)}})).json();
+    const rows=(d&&d.card&&d.card.rows)||[];
+    SCAN = rows.length===1 ? {rid:rows[0].rid, name:rows[0].name, code} : {code, none:true};
+  }catch(e){}
+  paintScan();
+}
+function paintScan(){
+  const bar=$("#scanbar"); if(!bar) return;
+  if(!SCAN){ bar.classList.add("hidden"); return; }
+  bar.classList.remove("hidden");
+  if(SCAN.none){ bar.innerHTML=`掃到的代碼 <b>${esc(SCAN.code)}</b> 對不到單一一位選手 —— 請改用下面的搜尋。`; return; }
+  const mine=(LAST&&LAST.rows||[]).filter(r=>r.rid===SCAN.rid);
+  const pend=mine.find(r=>r.state==="pending");
+  bar.innerHTML = pend
+    ? `掃到 <b>${esc(SCAN.name)}</b> —— 他的檢錄在下面，號碼牌 <b>${esc(pend.code)}</b>。`
+    : (mine.length ? `掃到 <b>${esc(SCAN.name)}</b> —— 他已經審核過了（${mine[0].state==="approved"?"已通過":"已退回"}）。`
+                   : `掃到 <b>${esc(SCAN.name)}</b> —— <b>他還沒送出檢錄</b>，請他先在手機上送出。`);
+}
+
+function enter(){
+  $("#gate").classList.add("hidden"); $("#app").classList.remove("hidden");
+  load(); setInterval(load,3000); resolveScan();
+  /* 檢錄審核多半在平板上開著。iOS 息屏會凍住輪詢、bfcache 還原也不重跑程式碼，
+     回來看到的是幾分鐘前的待審名單 —— 工作人員會以為沒人在排隊。 */
+  document.addEventListener("visibilitychange", () => { if(!document.hidden) load(); });
+  window.addEventListener("pageshow", () => load());
+  $("#out").onclick=()=>{ try{localStorage.removeItem("zanmen_ckpin");}catch(e){} location.reload(); };
+}
+
+async function load(quiet){
+  try{
+    const r=await fetch(BASE+"/checkin/list",{cache:"no-store",headers:{"X-Pin":encodeURIComponent(PIN)}});
+    if(r.status===403) return false;
+    const d=await r.json();
+    if(!d.ok) return false;
+    $("#upd").textContent="更新 "+new Date().toLocaleTimeString("zh-TW",{hour12:false});
+    render(d);
+    return true;
+  }catch(e){ if(!quiet) $("#upd").textContent="連線中斷，重試中…"; return false; }
+}
+
+function render(d){
+  LAST=d;
+  const st=d.stats||{};
+  $("#s-p").textContent=st.pending||0; $("#s-a").textContent=st.approved||0;
+  $("#s-r").textContent=st.rejected||0; $("#s-t").textContent=st.roster||0;
+  // 報到台的進度也一起顯示：兩個櫃台在不同位置，不然要用喊的
+  $("#s-reg").textContent=(st.reg_done||0)+" / "+(st.reg_total||0);
+  $("#shutbar").classList.toggle("hidden", st.intake!=="closed");
+
+  // 名單一筆都沒載入時，問題不在個別選手，要直接講怎麼修
+  if(!st.roster){
+    $("#warn").classList.remove("hidden");
+    $("#warn").innerHTML="⚠ <b>報名名單未載入</b>，所以每個人都標成「未提供名單」，需要人工核對。<br>"
+      +"請確認 roster.csv 和 brain.py 在同一個資料夾、標題列有 <b>name</b> 欄、編碼是 UTF-8，"
+      +"然後重開 brain（啟動訊息會印出讀到幾筆）。";
+  }else if(st.dupes && st.dupes.length){
+    $("#warn").classList.remove("hidden");
+    $("#warn").innerHTML="⚠ 報名名單本身有重複姓名："+esc(st.dupes.slice(0,8).join("、"))
+      +(st.dupes.length>8?` 等 ${st.dupes.length} 筆`:"")+"。這些人光靠姓名無法確認身分，請另外核對。";
+  }
+/* ---------- 賽區切換 ----------
+   四個檢錄處各站一區，看到別區的人只會誤按。預設看「全部」，
+   各處開場時自己點一次就好；選擇記在這台裝置上，重新整理不會跑掉。
+   每個按鈕上直接標「待審幾人」，站在檢錄處一眼就知道哪一區塞住了。      */
+let DIVF="ALL";
+try{ const v=localStorage.getItem("zanmen_ckdiv"); if(v) DIVF=v; }catch(e){}
+let DIVSIG="";
+function paintDivBar(all){
+  const pend={};
+  (all||[]).forEach(r=>{ if(r.state==="pending") pend[r.div||"?"]=(pend[r.div||"?"]||0)+1; });
+  const keys=["ALL","A","B","C","D"];
+  const sig=DIVF+"|"+keys.map(k=>k==="ALL"?(all||[]).filter(r=>r.state==="pending").length:(pend[k]||0)).join(",");
+  if(sig===DIVSIG) return;          // 沒變就不重畫，免得裁判正要按的時候按鈕被抽掉
+  DIVSIG=sig;
+  $("#divbar").innerHTML=keys.map(k=>{
+    const n = k==="ALL" ? (all||[]).filter(r=>r.state==="pending").length : (pend[k]||0);
+    return `<button data-k="${k}" class="${k===DIVF?"on":""}">${k==="ALL"?"全部":k+" 區"}`
+         + `<span class="n">${n?"待審 "+n:"—"}</span></button>`;
+  }).join("");
+  $("#divbar").querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
+    DIVF=b.dataset.k;
+    try{ localStorage.setItem("zanmen_ckdiv",DIVF); }catch(e){}
+    DIVSIG=""; SIG="";                // 兩個快取都要清，否則畫面不會跟著換
+    if(LAST) render(LAST);
+  });
+}
+
+  // 內容沒變就不重畫，避免裁判正要按的時候按鈕被抽掉
+  const sig=JSON.stringify((d.rows||[]).map(r=>[r.code,r.state,r.nick,r.match,r.reg]));
+  if(sig===SIG) return;
+  SIG=sig;
+
+  const all=d.rows||[];
+  paintDivBar(all);
+  // 只顯示目前選的賽區。四個檢錄處各站一區，看到別區的人只會誤按。
+  const rows = DIVF==="ALL" ? all : all.filter(r=>(r.div||"")===DIVF);
+  if(!rows.length){
+    $("#list").innerHTML=`<div class="empty">${all.length
+      ? DIVF+" 區還沒有人送出檢錄。<br>切到「全部」可以看其他區。"
+      : "還沒有人送出檢錄。<br>選手掃 QR 填完就會出現在這裡。"}</div>`;
+    return;
+  }
+
+  const keep=$("#list").scrollTop;
+  $("#list").innerHTML=rows.map(r=>{
+    const [cls,lab]=FLAG[r.match]||FLAG.noroster;
+    const good=r.match==="ok";
+    const pend=r.state==="pending";
+    const t=new Date(r.ts*1000).toLocaleTimeString("zh-TW",{hour12:false,hour:"2-digit",minute:"2-digit"});
+    let cand="";
+    if(pend && r.match==="none" && r.cand && r.cand.length)
+      cand=`<div class="cand">名單裡相近的姓名：${esc(r.cand.join("、"))} —— 可能是打錯字，請當面確認。</div>`;
+    if(pend && r.match==="dupe")
+      cand=`<div class="cand">名單裡有 ${r.cand.length} 位同名，請當面確認是哪一位再通過。</div>`;
+    if(pend && r.match==="wrongdiv")
+      cand=`<div class="cand">名單登記在 ${esc(r.cand[0]||"?")} 區，但他掃的是 ${esc(r.div)} 區的 QR。</div>`;
+    const hit = SCAN && !SCAN.none && r.rid && r.rid===SCAN.rid;
+    return `<div class="row ${pend?(good?"ok":"bad"):"done"}${hit?" scanhit":""}">
+      <div class="r1"><span class="cd">${esc(r.code)}</span>
+        <span class="nm">${esc(r.name)}</span><span class="ts">${t}</span></div>
+      <div class="r2"><span class="flag ${cls}">${lab}</span>
+        <span class="flag ${REGF[r.reg]?REGF[r.reg][0]:"f-noroster"}">${REGF[r.reg]?REGF[r.reg][1]:"報到狀態未知"}</span>
+        暱稱 <b>${esc(r.nick||"（未填，將顯示編號）")}</b></div>
+      ${pend && r.reg==="none" ? `<div class="cand" style="color:#ff9ab6">
+        這個人還沒在報到台完成報到。請先請他去報到，或當面確認後再通過。</div>` : ""}
+      ${cand}
+      ${pend && !r.rid ? `<div class="bindbox">
+          <div class="bindhint">對不到人？直接從名單找出來綁定 —— 姓名、電話、證件末四碼都可以查。</div>
+          <div class="bindrow">
+            <input class="bindq" data-c="${esc(r.code)}" placeholder="查名單：姓名／電話／末四碼"
+                   autocomplete="off" inputmode="search">
+            <button class="b-find" data-a="find" data-c="${esc(r.code)}">查</button>
+          </div>
+          <div class="bindres" id="bres-${esc(r.code)}"></div>
+        </div>` : ""}
+      ${pend ? `<div class="acts">
+          <button class="b-nick" data-a="nick" data-c="${esc(r.code)}" title="代填暱稱">✎</button>
+          <button class="b-no"   data-a="no"   data-c="${esc(r.code)}">退回</button>
+          <button class="b-pass" data-a="yes"  data-c="${esc(r.code)}">通過檢錄</button>
+        </div>`
+        : `<div class="decided">
+             <span class="state ${r.state==="approved"?"a":"r"}">
+               ${r.state==="approved"?"✓ 已通過":"✕ 已退回"}${r.by?" · "+esc(r.by):""}</span>
+             <button class="b-undo" data-a="${r.state==="approved"?"no":"yes"}"
+                     data-c="${esc(r.code)}">改判為${r.state==="approved"?"退回":"通過"}</button>
+           </div>`}
+    </div>`;
+  }).join("");
+  $("#list").scrollTop=keep;
+  $("#list").querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>act(b.dataset.a,b.dataset.c));
+  // 在搜尋框按 Enter 等同按「查」—— 檢錄台是站著單手操作，少按一次是一次
+  $("#list").querySelectorAll(".bindq").forEach(i=>i.addEventListener("keydown",e=>{
+    if(e.key==="Enter"){ e.preventDefault(); act("find", i.dataset.c); }}));
+  paintScan();          // 名單重畫之後，掃到誰的那一條提示要跟著更新
+}
+
+async function act(a,code,extra){   // extra：綁定時用來帶名單那一列的 rid
+  let nick=null;
+  if(a==="nick"){
+    nick=prompt("代填暱稱（最多 8 字，留白表示不設）","");
+    if(nick===null) return;
+    try{ const r=await (await fetch(BASE+"/checkin/decide",{method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({code,nick,nick_only:true,pin:PIN})})).json();
+      if(!r.ok) alert(r.error||"操作失敗");
+    }catch(e){ alert("連線失敗"); }
+    SIG=""; load(); return;                       // 只改暱稱，不動審核狀態
+  }
+  /* ---------- 從名單找人並綁定 ----------
+     沒帶手機、換手機、代碼掉了的人走這條。裁判是當面看著證件的人，
+     他點下去的那一列就是答案 —— 比任何字串比對都準，所以綁定之後
+     這一筆直接算「名單相符」。                                     */
+  if(a==="find"){
+    const box=$("#bres-"+CSS.escape(code));
+    const q=($("#list").querySelector(`.bindq[data-c="${CSS.escape(code)}"]`)||{}).value||"";
+    if(!q.trim()){ box.innerHTML=`<div class="bindmsg">請先輸入姓名、電話或證件末四碼</div>`; return; }
+    box.innerHTML=`<div class="bindmsg">查詢中…</div>`;
+    try{
+      const d=await (await fetch(BASE+"/reg/search"
+                                 +"?q="+encodeURIComponent(q.trim()),{cache:"no-store",headers:{"X-Pin":encodeURIComponent(PIN)}})).json();
+      const rows=(d.rows||[]).slice(0,8);
+      box.innerHTML = rows.length
+        ? rows.map(x=>`<button class="b-bind" data-a="bind" data-c="${esc(code)}"
+              data-rid="${esc(x.rid)}">${esc(x.name)}
+              <small>${x.div?esc(x.div)+" 區 · ":""}${x.done?"已報到":"尚未報到"}</small></button>`).join("")
+        : `<div class="bindmsg">名單裡查不到「${esc(q)}」。換個查法：電話後幾碼、證件末四碼都可以。</div>`;
+      box.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>act("bind",b.dataset.c,b.dataset.rid));
+    }catch(e){ box.innerHTML=`<div class="bindmsg">連線失敗，請再試一次</div>`; }
+    return;
+  }
+  if(a==="bind"){
+    try{
+      const r=await (await fetch(BASE+"/checkin/bind",{method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({code,rid:extra,pin:PIN})})).json();
+      if(!r.ok) alert(r.error||"綁定失敗");
+    }catch(e){ alert("連線失敗，請再試一次"); }
+    SIG=""; load(); return;                       // 只綁人，通過與否仍由裁判按
+  }
+  if(a==="no" && !confirm(`確定退回 ${code}？\n他會從參賽名單中移除，要重新送出檢錄才算數。`)) return;
+  try{
+    const r=await (await fetch(BASE+"/checkin/decide",{method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({code,ok:a!=="no",pin:PIN,nick})})).json();
+    if(!r.ok) alert(r.error||"操作失敗");
+  }catch(e){ alert("連線失敗，請再試一次"); }
+  SIG=""; load();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" /><script src="demo-api.js"></script>
+<!--
+  贊鬥盃 BEYBLADE X — QR 掃描落地頁
+  ------------------------------------------------------------------
+  這一頁的網址是固定且公開的，因為 QR 的內容必須寫得死（iPhone 原生相機只認 URL）。
+
+  所以它本身不能有任何資料：
+    選手自己掃自己的 QR → 沒有 PIN → 只看到自己的代碼，沒別的
+    工作人員掃      → 瀏覽器裡存有 PIN → 用 PIN 去 /whoami 換報到櫃台的網址
+                       → 自動帶著代碼跳過去
+
+  重點：報到櫃台的網址（帶隨機字尾的那個）只會發給 PIN 正確的人。
+  這樣原生相機掃得動，私密網址也不會跟著每一張 QR 流出去。
+-->
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>贊鬥盃 · 報到代碼</title>
+<link rel="stylesheet" href="fonts.css" />
+<style>
+  :root{
+    --bg:#0a0710; --surface:#181022; --line:#2e2140; --ink:#f4eefb;
+    --muted:#a897bd; --muted2:#6d5c85; --magenta:#e73473; --cyan:#2ee6a8;
+    --f-body:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;
+    --f-mono:"Chivo Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);
+    min-height:100vh;display:grid;place-items:center;padding:24px;-webkit-font-smoothing:antialiased}
+  .card{width:100%;max-width:420px;text-align:center}
+  .logo{height:28px;width:auto;margin-bottom:22px}
+  .lab{font-size:11px;letter-spacing:.22em;color:var(--muted2);text-transform:uppercase}
+  .code{font-family:var(--f-mono);font-weight:600;font-size:clamp(40px,14vw,62px);
+    letter-spacing:.14em;margin:10px 0 4px;word-break:break-all}
+  .box{background:var(--surface);border:2px solid var(--magenta);border-radius:20px;padding:26px 16px}
+  p{color:var(--muted);font-size:14px;line-height:1.85;margin:20px 0 0}
+  .go{display:inline-block;margin-top:20px;border:0;border-radius:13px;background:var(--cyan);
+    color:#04120e;font-family:var(--f-body);font-weight:900;font-size:16px;
+    padding:14px 26px;cursor:pointer;text-decoration:none}
+  .muted{color:var(--muted2);font-size:12px;margin-top:16px}
+  /* 工作人員入口：故意做得很安靜。這一頁絕大多數是選手在看，
+     那顆按鈕不是給他們按的 —— 做得跟主要按鈕一樣顯眼只會被亂點。 */
+  .staff{margin-top:22px;background:none;border:0;cursor:pointer;
+    font-family:var(--f-body);font-size:12px;color:var(--muted2);
+    text-decoration:underline;text-underline-offset:4px;padding:8px}
+  .staff:hover{color:var(--muted)}
+  /* 主辦單位標誌：用深色底專用的白字版（主辦單位-深色底.svg），
+     直接放在深色底上。紅與黃維持原標準色，只有灰字換成白色。
+     白底的文件／印刷品請用原檔 主辦單位.svg。 */
+  .orgwrap{margin:34px auto 20px;padding:0 16px;text-align:center}
+  .orgwrap .lab{display:block;font-size:10.5px;letter-spacing:.22em;
+    color:#6f5f7d;margin-bottom:9px}
+  .orgwrap .lg{display:inline-block;line-height:0}
+  .orgwrap img{width:224px;max-width:66vw;height:auto;display:block}
+</style>
+</head>
+<body>
+<div class="card">
+  <img class="logo" src="logo.svg" alt="贊鬥盃">
+  <div class="box">
+    <div class="lab">報到代碼</div>
+    <div class="code" id="code">——</div>
+  </div>
+  <p id="msg">請把這個畫面出示給<b>報到台</b>的工作人員。<br>記得準備好證件。</p>
+  <div id="staff"></div>
+  <div class="muted" id="foot"></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const CODE=(new URLSearchParams(location.search).get("c")||"").toUpperCase().slice(0,12);
+$("#code").textContent=CODE||"——";
+if(!CODE){ $("#msg").innerHTML="這個網址沒有帶代碼。<br>請重新掃描報到 QR。"; }
+
+// 有存 PIN 的裝置（＝工作人員的手機）才拿得到櫃台頁網址，並自動跳過去。
+// 選手自己掃的話這一段什麼都不會發生，畫面就只是一組代碼。
+(async ()=>{
+  if(!CODE) return;
+  // 存的 PIN 一樣只認 24 小時內的（格式與其他頁一致）
+  const PIN_TTL=24*60*60*1000;
+  const pinLoad=k=>{ try{
+      const o=JSON.parse(localStorage.getItem(k)||"null");
+      if(!o||typeof o!=="object"||!o.t||Date.now()-o.t>PIN_TTL){ localStorage.removeItem(k); return null; }
+      return o.v;
+    }catch(e){ return null; } };
+  const pinSave=(k,v)=>{ try{ localStorage.setItem(k,JSON.stringify({v,t:Date.now()})); }catch(e){} };
+
+  /* 同一張 QR 會被掃兩次：報到台掃一次、檢錄台再掃一次。
+     所以這裡不能固定跳報到櫃台 —— 要看這個人走到哪一關了：
+       還沒報到 → 報到櫃台（帶著代碼，櫃台直接跳出他的資料）
+       已經報到 → 檢錄審核（帶著代碼，這一筆直接被挑出來）
+     判斷用 /reg/card：它本來就是櫃台在用的查詢，回傳裡有 done。 */
+  async function whereTo(pin){
+    try{
+      const d=await (await fetch("/reg/card"
+                                 +"?code="+encodeURIComponent(CODE),{cache:"no-store",headers:{"X-Pin":encodeURIComponent(pin)}})).json();
+      const rows=(d && d.card && d.card.rows) || [];
+      // 只有「就是這一位、而且已經報到」才往檢錄送。對到多人代表櫃台還沒挑，
+      // 那還是報到台的工作。
+      if(rows.length===1 && rows[0].done) return "review";
+    }catch(e){}
+    return "desk";
+  }
+
+  async function toDesk(pin, remember){
+    try{
+      const w=await (await fetch("/whoami",{cache:"no-store",headers:{"X-Pin":encodeURIComponent(pin)}})).json();
+      if(!w.ok) return false;
+      const want=await whereTo(pin);
+      const page=(want==="review" && w.review) ? w.review : w.desk;
+      if(!page) return false;
+      if(remember) pinSave("zanmen_regpin", pin);
+      $("#msg").textContent = (page===w.review)
+        ? "這位已經完成報到，正在開啟檢錄審核…" : "已辨識為工作人員，正在開啟報到櫃台…";
+      location.replace(page+"?code="+encodeURIComponent(CODE));
+      return true;
+    }catch(e){}
+    return false;
+  }
+
+  const pin=pinLoad("zanmen_regpin")||pinLoad("zanmen_op");
+  if(pin && await toDesk(pin,false)) return;
+
+  /* 這台裝置上沒有可用的 PIN，就給工作人員一個當場輸入的入口。
+     自動跳轉是「同一個瀏覽器、同一個網址來源登入過」才會發生的，
+     現場很容易不成立：
+       · 用相機掃會開 Safari，但櫃台是在 LINE 內建瀏覽器裡登入的
+       · QR 內容帶的是**選手手機**當下的網址來源 —— 選手走 cloudflared 網址、
+         工作人員走區網 IP 的話，那是兩個不同的來源，localStorage 不共用
+     沒有這個退路的話，工作人員只會看到一組代碼、不知道下一步該做什麼，
+     只好回頭手動打櫃台的網址（那串隨機字尾根本記不起來）。 */
+  $("#staff").innerHTML =
+    '<button id="sbtn" class="staff">我是工作人員</button>'
+    + '<form id="sform" style="display:none;margin-top:14px">'
+    + '<input id="spin" type="password" inputmode="numeric" autocomplete="off"'
+    + ' placeholder="工作人員 PIN" aria-label="工作人員 PIN"'
+    + ' style="width:100%;padding:14px;border-radius:12px;border:1px solid #33223f;'
+    + 'background:#1b1224;color:#f5eef2;font-size:18px;text-align:center;letter-spacing:.28em">'
+    + '<button class="go" style="margin-top:12px;width:100%">開啟報到櫃台</button>'
+    + '<div id="serr" style="color:#ff8a96;font-size:13px;margin-top:10px;min-height:1.2em"></div>'
+    + '</form>';
+  $("#sbtn").onclick=()=>{ $("#sbtn").style.display="none";
+                           $("#sform").style.display="block"; $("#spin").focus(); };
+  $("#sform").onsubmit=async ev=>{
+    ev.preventDefault();
+    const v=$("#spin").value.trim();
+    if(!v) return;
+    $("#serr").textContent="確認中…";
+    // 記住它：櫃台整天要掃很多張，不該每一張都重打一次
+    if(!await toDesk(v,true)) $("#serr").textContent="PIN 不正確，或連不到系統";
+  };
+})();
+</script>
+<div class="orgwrap">
+  <span class="lab">主辦單位</span>
+  <span class="lg"><img src="/org.svg" alt="南科贊美酒店 L'ARC HOTEL"></span>
+</div>
+</body>
+</html>
