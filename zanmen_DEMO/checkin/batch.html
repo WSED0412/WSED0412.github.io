@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><script src="demo-api.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>報到梯次查詢 · 贊鬥盃</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root{
+    --bg:#0a0710; --surface:#181022; --surface2:#1f1530; --line:#2e2140;
+    --ink:#f4eefb; --muted:#a897bd; --muted2:#6d5c85;
+    --magenta:#e73473; --cyan:#2ee6a8; --amber:#ffb02e;
+    --f-disp:"Saira Condensed","Noto Sans TC","Microsoft JhengHei","PingFang TC",sans-serif;
+    --f-body:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;
+    --f-mono:"Chivo Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);
+    -webkit-font-smoothing:antialiased;min-height:100vh;
+    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+  .wrap{max-width:440px;margin:0 auto;padding:26px 18px 60px}
+  h1{font-size:21px;font-weight:900;margin:0 0 6px;line-height:1.3}
+  /* 頁首：有 logo.svg 就用標準字，沒有就退回純文字（檔案不在也不能壞） */
+  .ev .logo{height:30px;width:auto;display:block;margin:0 auto 6px}
+  .ev .sub{display:block;font-family:var(--f-mono);font-size:10.5px;
+    letter-spacing:.2em;color:var(--muted2);font-weight:400}
+  .ev{font-family:var(--f-disp);font-weight:700;font-size:13px;letter-spacing:.14em;
+    color:var(--magenta);margin-bottom:14px}
+  .lede{color:var(--muted);font-size:14px;line-height:1.8;margin:0 0 22px}
+
+  label{display:block;font-size:12px;color:var(--muted2);margin:0 0 6px;letter-spacing:.04em}
+  input{width:100%;font-family:var(--f-body);font-size:17px;color:var(--ink);
+    background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:15px 16px}
+  input:focus{outline:0;border-color:var(--magenta)}
+  .fld{margin-bottom:15px}
+  .fld .hint{font-size:11.5px;color:var(--muted2);margin-top:6px;line-height:1.6}
+  button.go{width:100%;border:0;border-radius:14px;background:var(--magenta);color:#fff;
+    font-family:var(--f-body);font-weight:900;font-size:17px;padding:17px 0;cursor:pointer;
+    margin-top:4px}
+  button.go:disabled{opacity:.5}
+
+  .out{margin-top:22px}
+  .card{background:var(--surface);border:2px solid var(--magenta);border-radius:18px;
+    padding:20px;margin-bottom:11px}
+  .card .nm{font-family:var(--f-disp);font-weight:900;font-size:27px;line-height:1.15}
+  .card .bt{font-family:var(--f-disp);font-weight:900;font-size:44px;line-height:1.05;
+    color:var(--magenta);margin:10px 0 2px}
+  .card .kv{display:flex;gap:9px;font-size:15px;color:var(--muted);margin-top:7px}
+  .card .kv b{color:var(--ink);font-weight:700;font-family:var(--f-mono);letter-spacing:.03em}
+  .card .note{margin-top:12px;padding:10px 12px;background:#ffb02e14;border:1px solid #7a5a12;
+    border-radius:10px;color:var(--amber);font-size:13.5px;line-height:1.65}
+  .miss{background:#2a121a;border:1px solid #7a2036;border-radius:14px;padding:17px;
+    color:#ffb0c4;font-size:14px;line-height:1.8}
+  .miss b{color:#fff}
+
+  /* 主辦單位標誌：用深色底專用的白字版（主辦單位-深色底.svg）。
+     紅與黃維持原標準色，只有灰字換成白色；白底文件請用原檔 主辦單位.svg。 */
+  .orgwrap{margin:34px auto 6px;text-align:center}
+  .orgwrap .lab{display:block;font-size:10.5px;letter-spacing:.22em;color:var(--muted2);margin-bottom:9px}
+  .orgwrap .lg{display:inline-block;line-height:0}
+  .orgwrap img{width:224px;max-width:66vw;height:auto;display:block}
+  /* 當天注意事項：查到梯次之後跳出來。
+     背後的梯次卡片故意不遮死（只壓半透明），家長關掉之前也看得到自己第幾梯。 */
+  .ntcmask{position:fixed;inset:0;background:#0a0710d9;backdrop-filter:blur(3px);
+    display:none;align-items:flex-end;justify-content:center;z-index:60;padding:0}
+  .ntcmask.on{display:flex}
+  .ntc{background:var(--surface);border:1px solid var(--line);border-top-left-radius:20px;
+    border-top-right-radius:20px;width:100%;max-width:520px;max-height:88vh;
+    display:flex;flex-direction:column;animation:ntcup .22s ease-out}
+  @keyframes ntcup{from{transform:translateY(26px);opacity:.4}to{transform:none;opacity:1}}
+  .ntc h2{margin:0;padding:18px 20px 12px;font-size:17px;font-weight:900;
+    border-bottom:1px solid var(--line);flex:0 0 auto}
+  .ntc h2 span{display:block;font-size:11px;font-weight:400;color:var(--muted2);
+    letter-spacing:.14em;margin-top:5px}
+  .ntcbody{padding:16px 20px 4px;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    font-size:14.5px;line-height:1.85;color:var(--ink)}
+  .ntcbody h3{margin:18px 0 7px;font-size:14px;color:var(--cyan);letter-spacing:.04em}
+  /* 交通圖放在注意事項裡。圖是白底的，深色底上要墊一層白才不會像貼歪的貼紙。 */
+  .traf.in{margin:18px 0 4px}
+  .traf.in h3{margin:0 0 9px;font-size:14px;color:var(--cyan);letter-spacing:.04em}
+  .traf.in a{display:block;background:#fff;border-radius:12px;overflow:hidden;line-height:0}
+  .traf.in img{width:100%;height:auto;display:block}
+  .traf.in .tip{font-size:12px;color:var(--muted2);margin-top:8px;line-height:1.7}
+  .ntcbody h3:first-child{margin-top:0}
+  .ntcbody p{margin:0 0 11px}
+  .ntcbody ul{margin:0 0 13px;padding-left:20px}
+  .ntcbody li{margin-bottom:6px}
+  .ntcfoot{padding:12px 20px calc(16px + env(safe-area-inset-bottom));flex:0 0 auto;
+    border-top:1px solid var(--line)}
+  .ntcfoot button{width:100%;border:0;background:var(--magenta);color:#fff;border-radius:13px;
+    padding:15px 0;font-family:inherit;font-weight:900;font-size:16px;cursor:pointer}
+  /* 這顆按鈕本來是淡灰色的次要樣式，但它是查到梯次之後唯一能把注意事項
+     叫回來的入口 —— 太低調就等於沒有。改成白字。 */
+  .ntcopen{display:block;width:100%;margin-top:12px;border:1px solid var(--line);
+    background:transparent;color:#fff;border-radius:12px;padding:13px 0;
+    font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
+  /* 交通指引：家長查完梯次，下一個問題一定是「怎麼去、車停哪」。
+     圖是主辦給的懶人包，白底，所以外面包一層白框，深色背景下才不會像貼歪的貼紙。 */
+  .traf{margin-top:34px;border-top:1px solid var(--line);padding-top:18px}
+  .traf h2{font-size:11px;letter-spacing:.16em;color:var(--muted2);margin:0 0 11px;font-weight:700}
+  .traf a{display:block;background:#fff;border-radius:14px;overflow:hidden;line-height:0}
+  .traf img{width:100%;height:auto;display:block}
+  .traf .tip{font-size:12px;color:var(--muted2);margin-top:9px;line-height:1.7}
+  .foot{margin-top:26px;color:var(--muted2);font-size:12px;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="ev"><img class="logo" src="logo.svg" alt="2026 贊鬥盃 BEYBLADE X"><span class="sub">L’ARC HOTEL / BEYBLADE X</span></div>
+  <h1>報到梯次查詢</h1>
+  <p class="lede">輸入<b>報名時填的姓名</b>和<b>報名時留的電話</b>，
+    就會告訴你是第幾梯次報到。</p>
+
+  <div class="fld">
+    <label for="n">選手姓名</label>
+    <input id="n" autocomplete="off" placeholder="報名時填的姓名">
+    <div class="hint">要和報名時一樣，才對得到名單。</div>
+  </div>
+  <div class="fld">
+    <label for="p">報名時留的電話</label>
+    <input id="p" inputmode="numeric" autocomplete="off" placeholder="09xxxxxxxx">
+    <div class="hint">家長的手機也可以。同一支電話報名多位選手會一起列出來。</div>
+  </div>
+  <button class="go" id="go">查詢我的梯次</button>
+
+  <div class="out" id="out"></div>
+
+  <div class="ntcmask" id="ntcmask">
+    <div class="ntc">
+      <h2>當天注意事項<span>報到前請先看過</span></h2>
+      <div class="ntcbody"><h3>報到時請帶</h3><ul><li>可以核對身分的證件（健保卡、學生證都可以）</li><li>三顆比賽用陀螺與發射器</li></ul><h3>報到流程</h3><ul><li>到報到台出示這一頁的梯次</li><li>工作人員核對身分，領取選手手環與號碼牌</li><li>到檢錄台抽號碼、決定賽程位置</li></ul><p>這是示範站的範例文案。正式活動時，主辦把當天的公告存成「注意事項.txt」放進資料夾，查到梯次後就會跳出來。</p></div>
+      <div class="ntcfoot"><button id="ntcok">我知道了</button></div>
+    </div>
+  </div>
+
+
+
+
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+// 全形轉半形：中文輸入法沒切回英數時打出來的是 ０９１２…，看起來只是比較寬，
+// 但比對時會完全對不上。一邊打一邊轉，使用者當場就看得到。
+const half = s => String(s||"").replace(/[！-～]/g,
+                    c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0)).replace(/　/g," ");
+addEventListener("DOMContentLoaded", () => {
+  $("#p").addEventListener("input", e => {
+    const v = half(e.target.value);
+    if (v !== e.target.value) { const c = e.target.selectionStart; e.target.value = v;
+                                try { e.target.setSelectionRange(c, c); } catch (_) {} }
+  });
+});
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g,
+  c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+async function go(){
+  const name = $("#n").value.trim(), phone = half($("#p").value).trim();
+  if(!name || !phone){ $("#out").innerHTML =
+      '<div class="miss">姓名和電話都要填喔。</div>'; return; }
+  $("#go").disabled = true;
+  try{
+    const r = await (await fetch("/find", {method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({name, phone})})).json();
+    if(r.locked){ $("#out").innerHTML =
+        '<div class="miss">查太多次了，請等 ' + r.retry_min + ' 分鐘後再試，' +
+        '或直接到<b>報到台</b>詢問。</div>'; return; }
+    // 沒送完整跟「查不到」要分開講：講成查不到的話，家長會一直改自己的
+    // 姓名電話，其實只是網路斷了一下。
+    if(r.resend){ $("#out").innerHTML =
+        '<div class="miss">' + esc(r.error || "請再按一次查詢") + '</div>'; return; }
+    if(!r.rows || !r.rows.length){ $("#out").innerHTML =
+        '<div class="miss">名單裡查不到這組姓名和電話。<br>' +
+        '請確認是否和<b>報名時填的一樣</b>。</div>'; return; }
+    showNotice();                    // 查到了才跳 —— 查不到的人要先解決查不到
+    $("#out").innerHTML = r.rows.map(x => `
+      <div class="card">
+        <div class="nm">${esc(x.name)}</div>
+        <div class="bt">${esc(x.batch)}</div>
+        ${x.time  ? `<div class="kv">報到時間 <b>${esc(x.time)}</b></div>` : ""}
+        ${x.place ? `<div class="kv">報到地點 <b>${esc(x.place)}</b></div>` : ""}
+        ${x.note  ? `<div class="note">${esc(x.note)}</div>` : ""}
+      </div>`).join("")
+      + (document.getElementById("ntcmask")
+          ? '<button class="ntcopen" onclick="showNotice()">再看一次當天注意事項</button>' : "");
+  }catch(e){
+    $("#out").innerHTML = '<div class="miss">連線失敗，請再試一次。</div>';
+  }finally{ $("#go").disabled = false; }
+}
+// 注意事項：查到梯次之後自動跳出來一次；關掉之後結果卡片下面會留一顆
+// 「再看一次注意事項」，家長想回頭確認不用重查。
+function showNotice(){
+  const m = document.getElementById("ntcmask");
+  if(m) m.classList.add("on");
+}
+function hideNotice(){
+  const m = document.getElementById("ntcmask");
+  if(m) m.classList.remove("on");
+}
+(function(){
+  const m = document.getElementById("ntcmask");
+  if(!m) return;
+  m.querySelector("#ntcok").onclick = hideNotice;
+  // 點卡片外面也關得掉（手機上大拇指構不到按鈕時的退路）
+  m.addEventListener("click", e => { if(e.target === m) hideNotice(); });
+  document.addEventListener("keydown", e => { if(e.key === "Escape") hideNotice(); });
+})();
+
+$("#go").onclick = go;
+document.addEventListener("keydown", e => { if(e.key === "Enter") go(); });
+
+</script>
+</body>
+</html>

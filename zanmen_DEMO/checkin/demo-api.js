@@ -43,6 +43,16 @@
   BASE_ROSTER.push({ name: BASE_ROSTER[5].name, div: "B", phone: "0955123456", id4: "7788" });
   window.ZANMEN_DEMO_SAMPLES = BASE_ROSTER.slice(0, 3);
 
+  /* ---------- 報到梯次（batch.py 的 batches.csv） ----------
+     跟報到名單同一批人：同一位假選手可以先查梯次、再走報到檢錄。
+     16 梯、每梯 32 人，13:00 起每 15 分鐘一梯。 */
+  function batchOf(i) {
+    var b = Math.floor(i / 32), m = 13 * 60 + b * 15;
+    return { batch: "第 " + (b + 1) + " 梯", time: ("0" + Math.floor(m / 60)).slice(-2) + ":" + ("0" + m % 60).slice(-2),
+             place: "一樓宴會廳 報到台", note: "" };
+  }
+  var BATCH_FAIL = { n: 0, until: 0 };     // batch.py：連續查錯 20 次鎖 10 分鐘
+
   /* ---------- 正規化（brain.py norm_name / norm_phone / digits_only） ---------- */
   var VARIANT = {"臺":"台","峯":"峰","珏":"玨","裇":"恤","叶":"葉","託":"托","黄":"黃","呉":"吳","吴":"吳",
     "曽":"曾","张":"張","陈":"陳","刘":"劉","杨":"楊","郑":"鄭","谢":"謝","罗":"羅","苏":"蘇","卢":"盧",
@@ -210,7 +220,26 @@
     return { ok: true, msg: "已補進名單（目前 " + (BASE_ROSTER.length + s.added.length) + " 人）。請他到檢錄台領號碼。" };
   }
 
+  // batch.py find()：姓名＋電話兩個都對才算，對到了才把同一支電話的其他人一起列出來
+  function findBatch(body) {
+    if (BATCH_FAIL.until > Date.now())
+      return { locked: true, retry_min: Math.max(1, Math.floor((BATCH_FAIL.until - Date.now()) / 60000) + 1) };
+    var n = normName(body.name), p = normPhone(body.phone), rows = [];
+    if (n && p && BASE_ROSTER.some(function (r) { return normName(r.name) === n && r.phone === p; })) {
+      BASE_ROSTER.forEach(function (r, i) { if (r.phone === p) {
+        var b = batchOf(i); rows.push({ name: r.name, batch: b.batch, time: b.time, place: b.place, note: b.note, self: normName(r.name) === n });
+      } });
+      rows.sort(function (a, b) { return (b.self - a.self) || (a.name < b.name ? -1 : 1); });
+      rows.forEach(function (r) { delete r.self; });
+      BATCH_FAIL.n = 0;
+    } else if (String(body.name || "").trim() && String(body.phone || "").trim()) {
+      if (++BATCH_FAIL.n >= 20) { BATCH_FAIL.until = Date.now() + 600000; BATCH_FAIL.n = 0; }
+    }
+    return { rows: rows };
+  }
+
   function route(method, path, q, body, pin) {
+    if (path === "/find") return [200, findBatch(body)];
     var s = load(), D = build(s), staff = !!String(pin || "").trim();
     var needPin = { ok: false, relogin: true, error: "這台裝置的登入已失效（PIN 可能被改過），請重新輸入 PIN" };
     if (path === "/status")
@@ -293,7 +322,7 @@
   }
 
   /* ---------- 接住 fetch ---------- */
-  var API = /^\/(status|whoami|reg\/(claim|stats|search|card|confirm|add)|checkin(\/(mine|list|bind|decide))?)$/;
+  var API = /^\/(find|status|whoami|reg\/(claim|stats|search|card|confirm|add)|checkin(\/(mine|list|bind|decide))?)$/;
   var realFetch = window.fetch ? window.fetch.bind(window) : null;
   window.fetch = function (input, init) {
     var url;
@@ -315,10 +344,19 @@
   /* ---------- 角落的提示：這是示範、資料在哪、怎麼重來 ---------- */
   document.addEventListener("DOMContentLoaded", function () {
     var b = document.createElement("div");
+    b.id = "zanmen-demo-ribbon";
+    // 頁面自己的彈出視窗（梯次查詢的「當天注意事項」）打開時先藏起來，
+    // 不然會蓋住視窗底部的「我知道了」。登入畫面那種整頁的遮罩不藏 ——
+    // 「PIN 輸入任何數字都可以」正是在那裡最需要看到。
+    var st = document.createElement("style");
+    st.textContent = "body:has(.ntcmask.on) #zanmen-demo-ribbon{display:none}";
+    document.head.appendChild(st);
     b.setAttribute("style", "position:fixed;left:8px;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:99999;" +
       "background:#2ee6a8;color:#04120e;font:600 12px/1.4 'Noto Sans TC','Microsoft JhengHei',sans-serif;" +
       "padding:6px 10px;border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,.35);max-width:calc(100% - 16px)");
-    b.innerHTML = '示範站：資料只存在你的瀏覽器，工作人員 PIN 輸入任何數字都可以。 ' +
+    var staffPage = /reg-desk|checkin-review/.test(location.pathname);
+    b.innerHTML = '示範站：名單是假的，資料只存在你的瀏覽器' +
+      (staffPage ? '，工作人員 PIN 輸入任何數字都可以' : '') + '。 ' +
       '<a href="./" style="color:inherit">回流程說明</a>';
     document.body.appendChild(b);
     // 頁面底部留出提示條的高度：捲到最下面時，最後一顆按鈕不能被它蓋住
