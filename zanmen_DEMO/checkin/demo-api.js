@@ -245,6 +245,9 @@
     if (path === "/status")
       return [200, { boot: "demo", ver: "demo", now: now(), mode: "checkin", label: "檢錄中", msg: "",
                      paused_at: 0, intake: "open", report: "open", nickMax: NICK_MAX, n: 1 }];
+    // 帳號登入（裁判自己申請的帳號）示範站沒有：各頁的「改用帳號密碼登入」按下去照實說
+    if (path === "/account/login" || path === "/account/register")
+      return [200, { ok: false, error: "示範站不能用帳號登入，請用畫面角落寫的示範 PIN" }];
     if (path === "/whoami") {
       if (!staff) return [200, { required: true, nickMax: NICK_MAX, codeMax: CHECKIN_MAX_NO }];
       return [200, { required: true, ok: true, name: STAFF, admin: false,
@@ -322,7 +325,7 @@
   }
 
   /* ---------- 接住 fetch ---------- */
-  var API = /^\/(find|status|whoami|reg\/(claim|stats|search|card|confirm|add)|checkin(\/(mine|list|bind|decide))?)$/;
+  var API = /^\/(find|status|whoami|account\/(login|register)|reg\/(claim|stats|search|card|confirm|add)|checkin(\/(mine|list|bind|decide))?)$/;
   var realFetch = window.fetch ? window.fetch.bind(window) : null;
   window.fetch = function (input, init) {
     var url;

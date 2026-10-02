@@ -417,6 +417,68 @@ $("#out").onclick=()=>{ try{localStorage.removeItem("zanmen_regpin");}catch(e){}
 
 // 自動登入放最後：上面用 const 宣告的 MATCH 等等要先初始化完
 if(STORED){ PIN=STORED; refreshStats(true).then(ok=> ok ? enter() : backToGate("PIN 已失效，請重新輸入")); }
+
+// ---------- 帳號密碼登入（裁判自己申請、主辦通過的帳號） ----------
+// 登入成功拿到一組「登入憑證」，交給這頁原本的 PIN 流程當 PIN 用 —— 之後送資料、記住登入、
+// 重新驗證都跟 PIN 一模一樣，這頁其餘的程式不用改。這段在各頁必須完全一致（tests/t_drift.py 盯著）。
+function acctWidget(host, onToken){
+  if(!host || host.querySelector(".acctw")) return null;
+  const WB=(typeof WRITE_BASE==="string")?WRITE_BASE:"";
+  const box=document.createElement("div"); box.className="acctw";
+  box.style.cssText="width:100%;text-align:center;margin-top:4px";
+  const inp="width:100%;font-family:var(--f-body);font-size:17px;letter-spacing:normal;text-align:left;"+
+    "color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px";
+  box.innerHTML=
+    '<button type="button" data-a="t" style="background:none;border:0;color:var(--muted);font-family:var(--f-body);'+
+      'font-size:14px;text-decoration:underline;cursor:pointer;padding:8px">改用帳號密碼登入</button>'+
+    '<div data-a="f" style="display:none;flex-direction:column;gap:9px;margin-top:4px">'+
+      '<input data-a="n" maxlength="12" autocomplete="username" placeholder="名字或暱稱" style="'+inp+'">'+
+      '<input data-a="p" type="password" maxlength="128" autocomplete="current-password" placeholder="密碼" style="'+inp+'">'+
+      '<button type="button" data-a="go" style="width:100%;border:1px solid var(--magenta);border-radius:13px;'+
+        'background:transparent;color:var(--ink);font-family:var(--f-body);font-weight:900;font-size:15px;'+
+        'padding:13px 0;cursor:pointer">帳號登入</button>'+
+      '<div data-a="e" style="color:#f57594;font-size:13px;min-height:18px"></div>'+
+      '<a data-a="r" href="#" style="color:var(--cyan);font-size:13px;display:none">還沒有帳號？點這裡申請</a>'+
+    '</div>';
+  host.appendChild(box);
+  const q=a=>box.querySelector('[data-a="'+a+'"]');
+  q("t").onclick=()=>{
+    q("f").style.display="flex"; q("t").style.display="none";
+    // 表單展開後變高：讓外框可以捲動、從頂端排起，鍵盤打開時「帳號登入」鈕才滑得到
+    host.style.overflowY="auto"; host.style.justifyContent="flex-start";
+    q("n").focus();
+  };
+  const go=async()=>{
+    const name=q("n").value.trim(), password=q("p").value;
+    if(!name||!password){ q("e").textContent="請填名字和密碼"; return; }
+    q("go").disabled=true; q("e").textContent="";
+    try{
+      const r=await fetch(WB+"/account/login",{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({name,password})});
+      const j=await r.json().catch(()=>({}));
+      if(j.ok&&j.token){ q("p").value=""; box.style.display="none"; onToken(j.token, j); }
+      else q("e").textContent=j.error||("登入失敗（"+r.status+"）");
+    }catch(e){ q("e").textContent="連線失敗，請確認連的是會場 Wi-Fi"; }
+    q("go").disabled=false;
+  };
+  q("go").onclick=go;
+  q("p").addEventListener("keydown",e=>{ if(e.key==="Enter") go(); });
+  fetch(WB+"/whoami",{cache:"no-store"}).then(r=>r.json()).then(w=>{
+    if(w&&w.acct){
+      const back=location.pathname.split("/").pop()+location.search;
+      q("r").href=w.acct+"?back="+encodeURIComponent(back); q("r").style.display="inline";
+    }
+  }).catch(()=>{});
+  return box;
+}
+(function(){
+  const aw=acctWidget($("#gate"), tok=>{
+    // 憑證放進 PIN 欄、按原本的登入鈕；登入函式一開頭就同步讀走欄位值，讀完立刻清掉，不留在畫面上
+    const el=$("#pin"); el.value=tok; $("#ggo").click(); el.value="";
+    setTimeout(()=>{ const g=$("#gate"), ge=$("#gerr");
+      if(aw && g && getComputedStyle(g).display!=="none" && ge && (ge.textContent||"").trim()) aw.style.display=""; },2000);
+  });
+})();
 </script>
 </body>
 </html>
