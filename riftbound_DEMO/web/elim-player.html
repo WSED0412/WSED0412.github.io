@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>符文戰場 — 淘汰賽選手端</title>
+  <style>
+    :root {
+      --bg: #01222F;
+      --card-bg: #013951;
+      --card-border: #0A5570;
+      --text-primary: #F9F9F9;
+      --text-secondary: #9FB8C4;
+      --accent: #EF7D00;
+      --accent-hover: #C86800;
+      --accent-text: #FF941E;
+      --warning-bg: #3E3312;
+      --warning-border: #8A6D1F;
+      --warning-text: #F2C94C;
+      --success-bg: #0A3F33;
+      --success-border: #1F7A55;
+      --success-text: #2FB574;
+      --danger-bg: #4A1F1C;
+      --danger-border: #A8443C;
+      --danger-text: #ED807A;
+      --chip-bg: #0A4A63;
+      --input-bg: #011A24;
+      --info-bg: #1B2F4A;
+      --info-border: #2F5A80;
+      --info-text: #4FA8D8;
+      --judge-bg: #2E2140;
+      --judge-border: #553C77;
+      --judge-text: #B38FE0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      -webkit-text-size-adjust: 100%;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      min-height: 100svh;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    input, select, textarea {
+      font-size: 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 12px 14px 40px;
+      overflow-x: hidden;
+    }
+    @media (max-width: 480px) {
+      .container {
+        padding: 10px 8px 30px;
+      }
+      .card {
+        padding: 12px 10px;
+      }
+    }
+
+    /* 頂部導覽列 */
+    header {
+      margin-bottom: 12px;
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .event-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .badge {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-weight: 600;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-secondary);
+    }
+    .badge.live {
+      background: var(--success-bg);
+      border-color: var(--success-border);
+      color: var(--success-text);
+    }
+    .nav-links {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      color: var(--accent-text);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(239, 125, 0, 0.1);
+      border: 1px solid rgba(239, 125, 0, 0.25);
+    }
+    .nav-link:active {
+      background: rgba(239, 125, 0, 0.2);
+    }
+
+    /* 橫幅警示 */
+    .banner {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .stale-warning {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+    .contract-warning {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+    }
+
+    /* 卡片共通 */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* 搜尋區塊 */
+    .search-row {
+      display: flex;
+      gap: 8px;
+    }
+    .input-text {
+      flex: 1;
+      min-width: 0;
+      height: 44px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0 12px;
+      color: var(--text-primary);
+      outline: none;
+    }
+    .input-text:focus {
+      border-color: var(--accent);
+    }
+    .btn {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 0 16px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, opacity 0.15s;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #141212;
+    }
+    .btn-primary:active {
+      background: var(--accent-hover);
+    }
+    .btn-secondary {
+      background: var(--chip-bg);
+      color: var(--text-primary);
+      border: 1px solid var(--card-border);
+    }
+    .btn-secondary:active {
+      background: var(--card-border);
+    }
+    .btn-danger {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+    .btn-danger:active {
+      background: rgba(168, 68, 60, 0.4);
+    }
+    .btn-success {
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: var(--success-text);
+    }
+    .btn-success:active {
+      background: rgba(31, 122, 85, 0.4);
+    }
+
+    .search-result {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      font-size: 0.95rem;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* 登入區塊 */
+    .form-group {
+      margin-bottom: 10px;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+    .login-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .msg-text {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 6px;
+      min-height: 1.2rem;
+    }
+    .msg-danger {
+      color: var(--danger-text);
+    }
+    .msg-success {
+      color: var(--success-text);
+    }
+
+    /* 登入後選手列 */
+    .logged-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .logged-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent-text);
+    }
+
+    /* 比賽資訊卡片 */
+    .match-box {
+      background: var(--input-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .match-main-text {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+
+    /* 報分區塊 */
+    .report-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .report-sub-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    .winner-btns-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .score-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .score-select-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .score-select {
+      width: 100%;
+      height: 44px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      padding: 0 10px;
+      outline: none;
+    }
+    .score-select:focus {
+      border-color: var(--accent);
+    }
+
+    /* 狀態提示 */
+    .report-status-box {
+      background: var(--input-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.5;
+    }
+    .report-status-box.conflict {
+      background: var(--danger-bg);
+      border-color: var(--danger-border);
+      color: var(--danger-text);
+    }
+    .report-status-box.notice {
+      background: var(--warning-bg);
+      border-color: var(--warning-border);
+      color: var(--warning-text);
+    }
+    .report-status-box.success {
+      background: var(--success-bg);
+      border-color: var(--success-border);
+      color: var(--success-text);
+    }
+
+    /* 頁面內確認彈窗 (360×640 需不捲動可點擊) */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      -webkit-backdrop-filter: blur(2px);
+      backdrop-filter: blur(2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      z-index: 1000;
+    }
+    .modal-box {
+      background: var(--card-bg);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      max-width: 330px;
+      width: 100%;
+      padding: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      text-align: center;
+    }
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .modal-msg {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent-text);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .modal-btns {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .modal-btns .btn {
+      flex: 1;
+    }
+
+    /* 尚未連上主機覆蓋層 */
+    .disconnected-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      z-index: 2000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-top">
+        <div class="event-title" id="elimEventName">淘汰賽模式</div>
+        <div class="badge live" id="elimEventBadge">進行中</div>
+      </div>
+      <div class="nav-links">
+        <a href="elim-board.html" class="nav-link">📺 大螢幕看板</a>
+        <a href="elim-bracket.html" class="nav-link">🏆 賽程樹</a>
+      </div>
+    </header>
+
+    <!-- 警示橫幅 -->
+    <div id="elimStaleWarning" class="banner stale-warning" style="display: none;">
+      已超過 90 秒未收到新賽況，可能連線中斷或主機暫停
+    </div>
+    <div id="elimContractWarning" class="banner contract-warning" style="display: none;">
+      系統版本已有更新，請重新整理頁面
+    </div>
+
+    <!-- 1. 不用 PIN 查桌次與對手 -->
+    <section class="card">
+      <div class="card-title">
+        <span>🔍 查詢下一場比賽</span>
+        <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: normal;">免輸入 PIN</span>
+      </div>
+      <div class="search-row">
+        <input type="text" id="elimSearch" class="input-text" placeholder="輸入選手編號或姓名，例如 A-01 或 阿翔" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <button type="button" id="elimSearchBtn" class="btn btn-primary">查詢</button>
+      </div>
+      <div id="elimSearchResult" class="search-result">請輸入編號或姓名查詢比賽狀態</div>
+    </section>
+
+    <!-- 2. 選手登入（回報專用） -->
+    <section class="card" id="elimLoginCard">
+      <div class="card-title">
+        <span>📱 選手報分登入</span>
+        <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: normal;">自報成績專用</span>
+      </div>
+      <div class="login-row">
+        <div class="form-group">
+          <label for="elimId" class="form-label">選手編號</label>
+          <input type="text" id="elimId" class="input-text" placeholder="例如 A-01" autocomplete="off" autocapitalize="characters" spellcheck="false" style="width: 100%;">
+        </div>
+        <div class="form-group">
+          <label for="elimPin" class="form-label">個人 PIN 碼</label>
+          <input type="password" id="elimPin" class="input-text" inputmode="numeric" placeholder="6 位數 PIN" autocomplete="off" style="width: 100%;">
+        </div>
+        <button type="button" id="elimLogin" class="btn btn-primary" style="width: 100%;">登入</button>
+        <div id="elimLoginMsg" class="msg-text msg-danger"></div>
+      </div>
+    </section>
+
+    <!-- 3. 已登入操作區 -->
+    <section class="card" id="elimActiveCard" style="display: none;">
+      <div class="logged-bar">
+        <span id="elimPlayerInfo" class="logged-name">--</span>
+        <button type="button" id="elimLogout" class="btn btn-secondary" style="min-height: 44px; min-width: 44px; padding: 0 14px; font-size: 0.85rem;">登出</button>
+      </div>
+
+      <!-- 目前場次卡片 -->
+      <div class="match-box">
+        <div id="elimMatch" class="match-main-text">正在載入比賽資訊...</div>
+      </div>
+
+      <!-- 報分控制區 -->
+      <div class="report-panel" id="elimReportPanel">
+        <!-- 方式 A: 只按誰贏 -->
+        <div id="elimWinnerSection" style="display: none;">
+          <div class="report-sub-title">快速勝負判定：</div>
+          <div class="winner-btns-row">
+            <button type="button" id="elimIWon" class="btn btn-success">我贏了</button>
+            <button type="button" id="elimILost" class="btn btn-danger">我輸了</button>
+          </div>
+        </div>
+
+        <!-- 方式 B: 比分 -->
+        <div id="elimScoreSection" style="display: none;">
+          <div class="report-sub-title">比分回報（先拿 4 分者勝）：</div>
+          <div class="score-row">
+            <div class="score-select-wrap">
+              <label for="elimMyScore" class="form-label">你的得分</label>
+              <select id="elimMyScore" class="score-select">
+                <option value="0">0 分</option>
+                <option value="1">1 分</option>
+                <option value="2">2 分</option>
+                <option value="3">3 分</option>
+                <option value="4" selected>4 分</option>
+                <option value="5">5 分</option>
+                <option value="6">6 分</option>
+              </select>
+            </div>
+            <div style="font-size: 1.4rem; font-weight: 800; padding-top: 18px;">:</div>
+            <div class="score-select-wrap">
+              <label for="elimOppScore" class="form-label">對手得分</label>
+              <select id="elimOppScore" class="score-select">
+                <option value="0">0 分</option>
+                <option value="1">1 分</option>
+                <option value="2">2 分</option>
+                <option value="3">3 分</option>
+                <option value="4">4 分</option>
+                <option value="5">5 分</option>
+                <option value="6">6 分</option>
+              </select>
+            </div>
+          </div>
+          <button type="button" id="elimScoreSubmit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">送出比分</button>
+        </div>
+
+        <!-- 報分狀態與提示 -->
+        <div id="elimReportStatus" class="report-status-box">準備就緒</div>
+        <div id="elimReportMsg" class="msg-text msg-danger"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 頁面內確認彈窗 -->
+  <div id="elimConfirmModal" class="modal-overlay" style="display: none;">
+    <div class="modal-box">
+      <div class="modal-title">確認送出成績</div>
+      <div id="elimConfirmMsg" class="modal-msg">--</div>
+      <div class="modal-btns">
+        <button type="button" id="elimConfirm" class="btn btn-primary">確認送出</button>
+        <button type="button" id="elimCancel" class="btn btn-secondary">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 尚未連上賽務主機畫面 -->
+  <div class="disconnected-overlay" id="elimDisconnectedScreen">
+    <div style="font-size: 3rem; margin-bottom: 12px;">⚠️</div>
+    <div style="font-size: 1.4rem; font-weight: 800; color: var(--danger-text); margin-bottom: 8px;">尚未連上賽務主機</div>
+    <div style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px;">請確認主機是否已啟動，或稍候自動重連。</div>
+    <button type="button" class="btn btn-primary" onclick="window.poller && window.poller.fetchOnce()">重新連線</button>
+  </div>
+
+  <script src="elim-common.js"></script>
+  <script>
+    const AUTH_STORAGE_KEY = 'elim_player_auth';
+
+    let loggedPlayerId = null;
+    let loggedPin = null;
+    let pendingReportAction = null;
+    let activePlayerData = null;
+    let isSubmitting = false;
+
+    // 初始化輪詢
+    const poller = new ElimPoller({
+      onData: (snapshot) => {
+        renderHeader(snapshot);
+        if (loggedPlayerId && loggedPin) {
+          fetchPlayerMe(loggedPlayerId, loggedPin, false);
+        }
+      },
+      onError: (err) => {
+        // 輪詢錯誤不彈窗
+      },
+      interval: 5000
+    });
+    window.poller = poller;
+
+    function renderHeader(snapshot) {
+      if (!snapshot) return;
+      const titleEl = document.getElementById('elimEventName');
+      if (titleEl && snapshot.event && snapshot.event.name) {
+        titleEl.textContent = snapshot.event.name;
+      }
+      const badgeEl = document.getElementById('elimEventBadge');
+      if (badgeEl && snapshot.event) {
+        const st = snapshot.event.status;
+        badgeEl.textContent = st === 'done' ? '已結束' : (st === 'before' ? '未開賽' : '進行中');
+        badgeEl.className = 'badge ' + (st === 'done' ? '' : 'live');
+      }
+    }
+
+    // 1. 不用 PIN 查詢功能
+    document.getElementById('elimSearchBtn').addEventListener('click', performSearch);
+    document.getElementById('elimSearch').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') performSearch();
+    });
+
+    function performSearch() {
+      const query = document.getElementById('elimSearch').value.trim();
+      const resultEl = document.getElementById('elimSearchResult');
+      if (!query) {
+        resultEl.textContent = '請輸入選手編號或姓名';
+        return;
+      }
+      const snap = window.elimSnapshot;
+      if (!snap || !snap.divisions) {
+        resultEl.textContent = '尚未取得賽事資料，請稍候再試';
+        return;
+      }
+
+      // 在所有分區與場次中比對選手
+      let foundId = null;
+      let foundName = null;
+      const qUpper = query.toUpperCase();
+
+      for (const d of snap.divisions) {
+        if (!d.matches) continue;
+        for (const m of d.matches) {
+          if (m.p1) {
+            if (m.p1.id.toUpperCase() === qUpper || m.p1.name === query) {
+              foundId = m.p1.id;
+              foundName = m.p1.name;
+              break;
+            }
+          }
+          if (m.p2) {
+            if (m.p2.id.toUpperCase() === qUpper || m.p2.name === query) {
+              foundId = m.p2.id;
+              foundName = m.p2.name;
+              break;
+            }
+          }
+        }
+        if (foundId) break;
+      }
+
+      if (!foundId && snap.checkin && snap.checkin.players) {
+        for (const p of snap.checkin.players) {
+          if (p.id.toUpperCase() === qUpper || p.name === query) {
+            foundId = p.id;
+            foundName = p.name;
+            break;
+          }
+        }
+      }
+
+      if (!foundId) {
+        resultEl.textContent = `查無選手「${query}」的比賽紀錄`;
+        return;
+      }
+
+      // 尋找選手當前或下一場比賽
+      let bestMatch = null;
+      for (const d of snap.divisions) {
+        if (!d.matches) continue;
+        for (const m of d.matches) {
+          const isP1 = m.p1 && m.p1.id === foundId;
+          const isP2 = m.p2 && m.p2.id === foundId;
+          if (!isP1 && !isP2) continue;
+
+          if (m.state === 'open') {
+            bestMatch = m;
+            break;
+          }
+          if (m.state === 'pending' && (!bestMatch || bestMatch.state !== 'open')) {
+            bestMatch = m;
+          }
+        }
+        if (bestMatch && bestMatch.state === 'open') break;
+      }
+
+      if (bestMatch) {
+        const isP1 = bestMatch.p1 && bestMatch.p1.id === foundId;
+        const opp = isP1 ? bestMatch.p2 : bestMatch.p1;
+        const matchLabel = bestMatch.label || '比賽';
+
+        if (bestMatch.state === 'open') {
+          if (bestMatch.table !== null) {
+            const oppName = opp ? opp.name : '待定';
+            resultEl.textContent = `【${matchLabel}】第 ${bestMatch.table} 桌 · 對手 ${oppName}`;
+          } else {
+            const oppName = opp ? opp.name : '待定';
+            resultEl.textContent = `【${matchLabel}】等桌中 · 對手 ${oppName}`;
+          }
+        } else if (bestMatch.state === 'pending') {
+          if (!opp) {
+            resultEl.textContent = `【${matchLabel}】等對手中（對手尚未確定）`;
+          } else {
+            resultEl.textContent = `【${matchLabel}】等對手結束前場 · 對手 ${opp.name}`;
+          }
+        }
+      } else {
+        resultEl.textContent = `選手 ${foundName} (${foundId}) 目前無待打場次（已淘汰出局或賽程結束）`;
+      }
+    }
+
+    // 2. 登入功能
+    document.getElementById('elimLogin').addEventListener('click', () => {
+      const pid = document.getElementById('elimId').value.trim();
+      const pin = document.getElementById('elimPin').value.trim();
+      if (!pid || !pin) {
+        showLoginMsg('請輸入選手編號與 PIN 碼');
+        return;
+      }
+      showLoginMsg('');
+      fetchPlayerMe(pid, pin, true);
+    });
+
+    document.getElementById('elimLogout').addEventListener('click', () => {
+      logoutPlayer();
+    });
+
+    function showLoginMsg(msg) {
+      document.getElementById('elimLoginMsg').textContent = msg;
+    }
+
+    function showReportMsg(msg) {
+      document.getElementById('elimReportMsg').textContent = msg;
+    }
+
+    async function fetchPlayerMe(pid, pin, isManualLogin = false) {
+      try {
+        const res = await callApi('/api/player/me', { player_id: pid, pin: pin });
+        loggedPlayerId = pid;
+        loggedPin = pin;
+        activePlayerData = res;
+
+        // 登入成功才儲存至 localStorage（示範模式不儲存）
+        if (!window.location.search.includes('demo=')) {
+          try {
+            localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ player_id: pid, pin: pin }));
+          } catch (e) {}
+        }
+
+        renderPlayerView(res);
+        showLoginMsg('');
+      } catch (err) {
+        if (err.status === 401) {
+          try { localStorage.removeItem(AUTH_STORAGE_KEY); } catch (e) {}
+        }
+        if (isManualLogin) {
+          showLoginMsg(err.message || '登入失敗');
+        }
+      }
+    }
+
+    function logoutPlayer() {
+      loggedPlayerId = null;
+      loggedPin = null;
+      activePlayerData = null;
+      try { localStorage.removeItem(AUTH_STORAGE_KEY); } catch (e) {}
+      document.getElementById('elimActiveCard').style.display = 'none';
+      document.getElementById('elimLoginCard').style.display = 'block';
+      document.getElementById('elimPin').value = '';
+      showLoginMsg('');
+      showReportMsg('');
+    }
+
+    // 3. 渲染登入後的選手視野
+    function renderPlayerView(data) {
+      if (!data) return;
+      document.getElementById('elimLoginCard').style.display = 'none';
+      document.getElementById('elimActiveCard').style.display = 'block';
+
+      // 選手身分列
+      const player = data.player;
+      document.getElementById('elimPlayerInfo').textContent = `${player.name} (${player.id}) · ${player.div} 區`;
+
+      // 目前場次
+      const match = data.match;
+      const matchEl = document.getElementById('elimMatch');
+      if (match) {
+        const tableText = (match.table !== null) ? `第 ${match.table} 桌` : '等桌中';
+        const oppName = match.opponent ? match.opponent.name : '待定';
+        matchEl.textContent = `${match.label} · ${tableText} · 對手：${oppName}`;
+      } else if (data.place !== null) {
+        matchEl.textContent = `完賽名次：第 ${data.place} 名`;
+      } else if (data.eliminated) {
+        matchEl.textContent = '已淘汰出局';
+      } else {
+        matchEl.textContent = '目前無進行中場次';
+      }
+
+      // 報分控制區
+      const report = data.report;
+      const winnerSec = document.getElementById('elimWinnerSection');
+      const scoreSec = document.getElementById('elimScoreSection');
+      const statusEl = document.getElementById('elimReportStatus');
+
+      if (report && report.can_submit) {
+        const canWinner = Array.isArray(report.how) && report.how.includes('winner');
+        const canScore = Array.isArray(report.how) && report.how.includes('score');
+
+        winnerSec.style.display = canWinner ? 'block' : 'none';
+        scoreSec.style.display = canScore ? 'block' : 'none';
+
+        // 狀態文字顯示
+        if (report.state === 'conflict') {
+          statusEl.textContent = '雙方回報不一致，請核對後重新送出';
+          statusEl.className = 'report-status-box conflict';
+        } else if (report.theirs) {
+          if (report.theirs.how === 'score') {
+            statusEl.textContent = `對手已回報：你 ${report.theirs.my_score}、對手 ${report.theirs.opp_score}，請核對後回報`;
+          } else {
+            const oppSaid = report.theirs.winner === loggedPlayerId ? '你勝' : '對手勝';
+            statusEl.textContent = `對手已回報：${oppSaid}，請核對後回報`;
+          }
+          statusEl.className = 'report-status-box notice';
+        } else if (report.mine) {
+          statusEl.textContent = '已送出回報，等對手回報中...';
+          statusEl.className = 'report-status-box notice';
+        } else {
+          statusEl.textContent = '請選擇勝負或送出比分';
+          statusEl.className = 'report-status-box';
+        }
+      } else {
+        // 不能報分，隱藏按鈕並說明原因
+        winnerSec.style.display = 'none';
+        scoreSec.style.display = 'none';
+
+        if (match && match.state === 'complete') {
+          statusEl.textContent = '比賽結果已生效！';
+          statusEl.className = 'report-status-box success';
+        } else if (report && report.why_not) {
+          statusEl.textContent = report.why_not;
+          statusEl.className = 'report-status-box notice';
+        } else {
+          statusEl.textContent = '目前未開放選手報分';
+          statusEl.className = 'report-status-box';
+        }
+      }
+    }
+
+    // 4. 報分動作與確認視窗
+    document.getElementById('elimIWon').addEventListener('click', () => {
+      openConfirmModal({
+        action: 'winner',
+        i_won: true,
+        text: '確定回報「我贏了」？（你勝）'
+      });
+    });
+
+    document.getElementById('elimILost').addEventListener('click', () => {
+      openConfirmModal({
+        action: 'winner',
+        i_won: false,
+        text: '確定回報「我輸了」？（對手勝）'
+      });
+    });
+
+    document.getElementById('elimScoreSubmit').addEventListener('click', () => {
+      const myScore = parseInt(document.getElementById('elimMyScore').value, 10);
+      const oppScore = parseInt(document.getElementById('elimOppScore').value, 10);
+      const outcome = (myScore > oppScore) ? '你勝' : ((myScore < oppScore) ? '對手勝' : '平手');
+
+      openConfirmModal({
+        action: 'score',
+        my_score: myScore,
+        opp_score: oppScore,
+        text: `你 ${myScore}、對手 ${oppScore} → ${outcome}`
+      });
+    });
+
+    function openConfirmModal(config) {
+      pendingReportAction = config;
+      document.getElementById('elimConfirmMsg').textContent = config.text;
+      document.getElementById('elimConfirmModal').style.display = 'flex';
+      showReportMsg('');
+    }
+
+    function closeConfirmModal() {
+      pendingReportAction = null;
+      document.getElementById('elimConfirmModal').style.display = 'none';
+    }
+
+    document.getElementById('elimCancel').addEventListener('click', () => {
+      closeConfirmModal();
+    });
+
+    document.getElementById('elimConfirm').addEventListener('click', async () => {
+      if (!pendingReportAction || isSubmitting) return;
+      if (!activePlayerData || !activePlayerData.match) return;
+
+      const action = pendingReportAction;
+      const matchId = activePlayerData.match.id;
+      const submitBtn = document.getElementById('elimConfirm');
+
+      isSubmitting = true;
+      submitBtn.disabled = true;
+
+      const payload = {
+        player_id: loggedPlayerId,
+        pin: loggedPin,
+        match: matchId
+      };
+
+      if (action.action === 'winner') {
+        payload.i_won = action.i_won;
+      } else {
+        payload.my_score = action.my_score;
+        payload.opp_score = action.opp_score;
+      }
+
+      try {
+        const res = await callApi('/api/player/report', payload);
+        closeConfirmModal();
+        activePlayerData = res;
+        renderPlayerView(res);
+        showReportMsg('');
+      } catch (err) {
+        showReportMsg(err.message || '回報失敗，請確認網路後再試');
+        closeConfirmModal();
+      } finally {
+        isSubmitting = false;
+        submitBtn.disabled = false;
+      }
+    });
+
+    // 頁面載入時檢查是否有暫存登入資訊
+    window.addEventListener('DOMContentLoaded', () => {
+      poller.fetchOnce();
+      poller.start();
+
+      if (!window.location.search.includes('demo=')) {
+        try {
+          const saved = localStorage.getItem(AUTH_STORAGE_KEY);
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            if (parsed && parsed.player_id && parsed.pin) {
+              document.getElementById('elimId').value = parsed.player_id;
+              document.getElementById('elimPin').value = parsed.pin;
+              fetchPlayerMe(parsed.player_id, parsed.pin, false);
+            }
+          }
+        } catch (e) {}
+      }
+    });
+  </script>
+</body>
+</html>

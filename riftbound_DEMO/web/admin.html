@@ -506,6 +506,55 @@
       padding: 8px 0;
     }
 
+    /* 系統健康面板 (DATA-CONTRACT 3.9) */
+    .health-problem {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+    .health-problem[data-level="bad"] {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+    .health-problem[data-level="warn"] {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+    }
+
+    /* 工作人員管理清單 (DATA-CONTRACT 3.8) */
+    .staff-row {
+      background: var(--input-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .staff-row.staff-disabled {
+      opacity: 0.65;
+      background: rgba(1, 26, 36, 0.4);
+      border-color: rgba(10, 85, 112, 0.4);
+    }
+    .staff-row-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    #staffList button, #staffAddBtn, #staffPinDone, #staffRefresh {
+      min-height: 44px;
+      min-width: 44px;
+      box-sizing: border-box;
+    }
+
     /* 彈窗（Modal） */
     .modal-overlay {
       position: fixed;
@@ -656,6 +705,63 @@
 
     <!-- 主辦操作面板（已登入主辦時顯示） -->
     <main id="adminSection" style="display: none;">
+
+      <!-- 區塊: 系統健康 (DATA-CONTRACT 3.9, PROJECT.md 第三十四輪) -->
+      <section id="healthPanel" class="admin-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <h2 class="card-title" style="margin-bottom: 0;">🏥 系統健康</h2>
+            <span id="healthStatusBadge" style="font-size: 0.85rem; padding: 4px 10px; border-radius: 6px; font-weight: 700; background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border);">正常</span>
+          </div>
+          <div style="font-size: 0.85rem; color: var(--text-sub);">
+            版本指紋：<code id="healthVersion" style="color: var(--accent-text); font-weight: 700;"></code>
+          </div>
+        </div>
+        <div id="healthExtraInfo" style="margin-top: 8px; font-size: 0.82rem; color: var(--text-secondary); display: none;"></div>
+        <div id="healthProblemsList" style="margin-top: 10px; display: none;"></div>
+      </section>
+
+      <!-- 區塊: 工作人員管理 (DATA-CONTRACT 3.8, PROJECT.md 第三十四輪) -->
+      <section class="admin-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+          <h2 class="card-title" style="margin-bottom: 0;">👥 工作人員管理</h2>
+          <button type="button" id="staffRefresh" class="btn btn-secondary">重新整理清單</button>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px;">
+          管理賽事工作人員身分與權限。可新增主辦或裁判、變更角色、停用／恢復帳號，或重設 PIN 碼。
+        </p>
+
+        <!-- 新增工作人員 -->
+        <div class="form-group">
+          <label for="staffAddName" class="form-label">新增工作人員（主機運作中可直接新增）</label>
+          <div class="form-row">
+            <input type="text" id="staffAddName" class="input-text" maxlength="20" placeholder="姓名（例如 測試裁判）">
+            <select id="staffAddRole" class="input-text" style="width: 110px; flex: none; min-height: 44px;">
+              <option value="judge">裁判</option>
+              <option value="admin">主辦</option>
+            </select>
+            <button type="button" id="staffAddBtn" class="btn btn-primary">新增工作人員</button>
+          </div>
+        </div>
+
+        <!-- 新 PIN 顯示區塊 (只顯示一次) -->
+        <div id="staffPinBox" class="msg-box success" style="display: none; margin-bottom: 12px; padding: 14px 16px;">
+          <div style="font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; color: var(--text-primary);">
+            新發行工作人員 PIN 碼（離開畫面後即無法再次查看，請立即抄下交給該人員）：
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+            <div id="staffPinShow" style="font-size: 1.6rem; font-weight: 800; color: #34d399; letter-spacing: 3px; font-family: monospace;"></div>
+            <button type="button" id="staffPinDone" class="btn btn-primary">已抄下</button>
+          </div>
+        </div>
+
+        <div id="staffMsg" class="msg-box" style="display: none;"></div>
+
+        <!-- 工作人員清單 -->
+        <div id="staffList" style="margin-top: 12px; display: flex; flex-direction: column; gap: 10px;">
+          <div class="empty-state-sm">請點擊「重新整理清單」載入工作人員</div>
+        </div>
+      </section>
 
       <!-- 區塊 0: 現場報到與選手登錄 (PROJECT.md 10 第八輪任務) -->
       <section class="admin-card">
@@ -1005,6 +1111,12 @@
     let checkinAutoTimer = null;
     let lastProposalCheckTime = 0;
 
+    // 系統健康與工作人員管理狀態 (DATA-CONTRACT 3.8, 3.9, PROJECT.md 第三十四輪)
+    let healthAutoTimer = null;
+    let currentStaffMe = '';
+    let isAddingStaff = false;
+    let isFetchingStaff = false;
+
     // 更新「公布配對」按鈕可用狀態 (PROJECT.md 第二十七輪：未產生提案時停用)
     function updatePublishBtnState() {
       const pubBtn = document.getElementById('publishBtn');
@@ -1211,7 +1323,7 @@
       const data = await res.json().catch(() => null);
 
       if (!res.ok || !data || !data.ok) {
-        const errorMsg = (data && data.message) ? data.message : `操作失敗 (HTTP ${res.status})`;
+        const errorMsg = (data && (data.message || data.detail || data.error)) ? (data.message || data.detail || data.error) : `操作失敗 (HTTP ${res.status})`;
         const err = new Error(errorMsg);
         err.status = res.status;
         err.code = data ? data.error : null;
@@ -1637,6 +1749,7 @@
         // 登入成功：僅存記憶體與 sessionStorage，禁止存 localStorage (硬性規定第 2 條)
         staffPin = pinVal;
         adminName = res.name || '示範主辦';
+        if (res.id) currentStaffMe = res.id;
         try {
           sessionStorage.setItem(SESSION_STORAGE_KEY_STAFF_PIN, pinVal);
         } catch (e) {}
@@ -1645,11 +1758,15 @@
         renderAuthUI();
         startCheckinAutoRefresh();
         populateZonesInput(true);
+        await fetchHealth();
+        startHealthTimer();
         await loadExistingProposal();
         await fetchCheckinList();
+        await fetchStaffList();
       } catch (err) {
         staffPin = null;
         stopCheckinAutoRefresh();
+        stopHealthTimer();
         try { sessionStorage.removeItem(SESSION_STORAGE_KEY_STAFF_PIN); } catch (e) {}
         showMsg('loginError', err.message);
         renderAuthUI();
@@ -1665,8 +1782,10 @@
     // 登出處理
     function handleLogout() {
       stopCheckinAutoRefresh();
+      stopHealthTimer();
       staffPin = null;
       adminName = '';
+      currentStaffMe = '';
       currentProposal = null;
       renderProposalTable(null);
       updatePublishBtnState();
@@ -1701,6 +1820,29 @@
       const problemsEl = document.getElementById('importProblems');
       if (problemsEl) { problemsEl.innerHTML = ''; problemsEl.style.display = 'none'; }
       hideMsg('importMsg');
+
+      // 系統健康與工作人員管理清理
+      const healthVerEl = document.getElementById('healthVersion');
+      if (healthVerEl) healthVerEl.textContent = '';
+      const healthBadge = document.getElementById('healthStatusBadge');
+      if (healthBadge) {
+        healthBadge.textContent = '正常';
+        healthBadge.style.background = 'var(--success-bg)';
+        healthBadge.style.color = 'var(--success-text)';
+        healthBadge.style.borderColor = 'var(--success-border)';
+      }
+      const healthProblemsEl = document.getElementById('healthProblemsList');
+      if (healthProblemsEl) { healthProblemsEl.innerHTML = ''; healthProblemsEl.style.display = 'none'; }
+      const healthExtraEl = document.getElementById('healthExtraInfo');
+      if (healthExtraEl) { healthExtraEl.textContent = ''; healthExtraEl.style.display = 'none'; }
+
+      handleStaffPinDone();
+      const staffListEl = document.getElementById('staffList');
+      if (staffListEl) staffListEl.innerHTML = '<div class="empty-state-sm">請點擊「重新整理清單」載入工作人員</div>';
+      const staffAddNameEl = document.getElementById('staffAddName');
+      if (staffAddNameEl) staffAddNameEl.value = '';
+      hideMsg('staffMsg');
+
       try {
         sessionStorage.removeItem(SESSION_STORAGE_KEY_STAFF_PIN);
       } catch (e) {}
@@ -1721,11 +1863,15 @@
         if (res.role === 'admin') {
           staffPin = savedPin;
           adminName = res.name || '示範主辦';
+          if (res.id) currentStaffMe = res.id;
           renderAuthUI();
           startCheckinAutoRefresh();
           populateZonesInput(true);
+          await fetchHealth();
+          startHealthTimer();
           await loadExistingProposal();
           await fetchCheckinList();
+          await fetchStaffList();
           return;
         }
       } catch (e) {}
@@ -1818,6 +1964,327 @@
         await fetchData();
       } catch (err) {
         showMsg('scheduleMsg', err.message);
+      }
+    }
+
+    // ------------------------------------------------ 系統健康 (DATA-CONTRACT 3.9, PROJECT.md 第三十四輪)
+    async function fetchHealth() {
+      if (!staffPin || document.visibilityState === 'hidden') return;
+      try {
+        const res = await callApi('/api/admin/health', {});
+        renderHealth(res);
+      } catch (err) {
+        // 暫態或網路錯誤不中斷輪詢
+      }
+    }
+
+    function renderHealth(data) {
+      if (!data) return;
+      const verEl = document.getElementById('healthVersion');
+      if (verEl) {
+        verEl.textContent = data.version || '未知';
+      }
+      const statusBadge = document.getElementById('healthStatusBadge');
+      const problemsList = document.getElementById('healthProblemsList');
+      const extraInfo = document.getElementById('healthExtraInfo');
+
+      if (extraInfo) {
+        const parts = [];
+        if (data.snapshot && typeof data.snapshot.age_sec === 'number') {
+          parts.push(`畫面資料 ${data.snapshot.age_sec} 秒前更新`);
+        }
+        if (data.log && typeof data.log.ops === 'number') {
+          parts.push(`操作紀錄 ${data.log.ops} 筆`);
+        }
+        if (parts.length > 0) {
+          extraInfo.textContent = parts.join(' · ');
+          extraInfo.style.display = 'block';
+        } else {
+          extraInfo.style.display = 'none';
+        }
+      }
+
+      const problems = Array.isArray(data.problems) ? data.problems : [];
+      if (problems.length === 0) {
+        if (statusBadge) {
+          statusBadge.textContent = '正常';
+          statusBadge.style.background = 'var(--success-bg)';
+          statusBadge.style.color = 'var(--success-text)';
+          statusBadge.style.borderColor = 'var(--success-border)';
+          statusBadge.style.display = 'inline-block';
+        }
+        if (problemsList) {
+          problemsList.innerHTML = '';
+          problemsList.style.display = 'none';
+        }
+      } else {
+        if (statusBadge) {
+          statusBadge.textContent = '注意';
+          statusBadge.style.background = 'var(--danger-bg)';
+          statusBadge.style.color = 'var(--danger-text)';
+          statusBadge.style.borderColor = 'var(--danger-border)';
+          statusBadge.style.display = 'inline-block';
+        }
+        if (problemsList) {
+          problemsList.innerHTML = '';
+          for (const p of problems) {
+            const itemEl = document.createElement('div');
+            itemEl.className = 'health-problem';
+            itemEl.setAttribute('data-level', p.level || 'warn');
+            itemEl.textContent = p.msg;
+            problemsList.appendChild(itemEl);
+          }
+          problemsList.style.display = 'block';
+        }
+      }
+    }
+
+    function startHealthTimer() {
+      stopHealthTimer();
+      healthAutoTimer = setInterval(fetchHealth, 3000);
+    }
+
+    function stopHealthTimer() {
+      if (healthAutoTimer) {
+        clearInterval(healthAutoTimer);
+        healthAutoTimer = null;
+      }
+    }
+
+    // ------------------------------------------------ 工作人員管理 (DATA-CONTRACT 3.8, PROJECT.md 第三十四輪)
+    async function fetchStaffList() {
+      if (!staffPin) return;
+      hideMsg('staffMsg');
+      const btn = document.getElementById('staffRefresh');
+      if (isFetchingStaff) return;
+      isFetchingStaff = true;
+      if (btn) btn.disabled = true;
+      try {
+        const res = await callApi('/api/admin/staff_list', {});
+        if (res.me) {
+          currentStaffMe = res.me;
+        }
+        renderStaffList(res.staff);
+      } catch (err) {
+        showMsg('staffMsg', err.message);
+      } finally {
+        isFetchingStaff = false;
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    function renderStaffList(staff) {
+      const container = document.getElementById('staffList');
+      if (!container) return;
+      if (!Array.isArray(staff) || staff.length === 0) {
+        container.innerHTML = '<div class="empty-state-sm">目前無工作人員名單</div>';
+        return;
+      }
+
+      container.innerHTML = '';
+      for (const item of staff) {
+        const rowEl = document.createElement('div');
+        rowEl.className = `staff-row${item.active ? '' : ' staff-disabled'}`;
+        rowEl.setAttribute('data-id', item.id);
+
+        const isMe = (item.id === currentStaffMe);
+        const roleText = (item.role === 'admin' ? '主辦' : '裁判');
+
+        // 左側資訊區
+        const infoDiv = document.createElement('div');
+        infoDiv.style.display = 'flex';
+        infoDiv.style.alignItems = 'center';
+        infoDiv.style.flexWrap = 'wrap';
+        infoDiv.style.gap = '8px';
+
+        const idSpan = document.createElement('strong');
+        idSpan.style.color = 'var(--text-primary)';
+        idSpan.style.fontSize = '1rem';
+        idSpan.textContent = item.id;
+        infoDiv.appendChild(idSpan);
+
+        const nameSpan = document.createElement('span');
+        nameSpan.style.fontWeight = '700';
+        nameSpan.style.color = 'var(--text-main)';
+        nameSpan.textContent = item.name;
+        infoDiv.appendChild(nameSpan);
+
+        if (isMe) {
+          const meBadge = document.createElement('span');
+          meBadge.className = 'badge';
+          meBadge.style.cssText = 'background: rgba(239, 125, 0, 0.2); color: var(--accent-text); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(239, 125, 0, 0.4);';
+          meBadge.textContent = '你';
+          infoDiv.appendChild(meBadge);
+        }
+
+        const roleBadge = document.createElement('span');
+        roleBadge.className = 'badge';
+        roleBadge.style.cssText = 'background: var(--card-bg); color: var(--text-secondary); border: 1px solid var(--card-border); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600;';
+        roleBadge.textContent = roleText;
+        infoDiv.appendChild(roleBadge);
+
+        if (!item.active) {
+          const disabledBadge = document.createElement('span');
+          disabledBadge.className = 'badge';
+          disabledBadge.style.cssText = 'background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;';
+          disabledBadge.textContent = '停用';
+          infoDiv.appendChild(disabledBadge);
+        }
+
+        rowEl.appendChild(infoDiv);
+
+        // 右側操作區
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'staff-row-actions';
+
+        // 停用 / 恢復按鈕
+        const toggleBtn = document.createElement('button');
+        toggleBtn.type = 'button';
+        toggleBtn.className = `btn ${item.active ? 'btn-warning staff-disable' : 'btn-success staff-enable'}`;
+        toggleBtn.textContent = item.active ? '停用' : '恢復';
+        toggleBtn.addEventListener('click', () => {
+          if (item.active) {
+            showConfirm('停用工作人員確認', `確定要停用「${item.name}」嗎？停用後該 PIN 碼將無法登入。`, async () => {
+              hideMsg('staffMsg');
+              try {
+                const res = await callApi('/api/admin/staff_set', { id: item.id, action: 'disable' });
+                renderStaffList(res.staff);
+              } catch (err) {
+                showMsg('staffMsg', err.message);
+              }
+            });
+          } else {
+            showConfirm('恢復工作人員確認', `確定要恢復「${item.name}」的權限嗎？`, async () => {
+              hideMsg('staffMsg');
+              try {
+                const res = await callApi('/api/admin/staff_set', { id: item.id, action: 'enable' });
+                renderStaffList(res.staff);
+              } catch (err) {
+                showMsg('staffMsg', err.message);
+              }
+            });
+          }
+        });
+        actionsDiv.appendChild(toggleBtn);
+
+        // 改角色按鈕
+        const roleBtn = document.createElement('button');
+        roleBtn.type = 'button';
+        roleBtn.className = 'btn btn-secondary staff-role';
+        const nextRole = (item.role === 'admin' ? 'judge' : 'admin');
+        const nextRoleLabel = (nextRole === 'admin' ? '主辦' : '裁判');
+        roleBtn.textContent = `改為${nextRoleLabel}`;
+        roleBtn.addEventListener('click', () => {
+          showConfirm('變更角色確認', `確定要將「${item.name}」的角色變更為${nextRoleLabel}嗎？`, async () => {
+            hideMsg('staffMsg');
+            try {
+              const res = await callApi('/api/admin/staff_set', { id: item.id, action: 'set_role', role: nextRole });
+              renderStaffList(res.staff);
+            } catch (err) {
+              showMsg('staffMsg', err.message);
+            }
+          });
+        });
+        actionsDiv.appendChild(roleBtn);
+
+        // 重設 PIN 按鈕
+        const pinResetBtn = document.createElement('button');
+        pinResetBtn.type = 'button';
+        pinResetBtn.className = 'btn btn-secondary staff-pinreset';
+        pinResetBtn.textContent = '重設 PIN';
+        pinResetBtn.addEventListener('click', () => {
+          showConfirm('重設 PIN 碼確認', `確定要重設「${item.name}」的 PIN 碼嗎？舊 PIN 將立即失效。`, async () => {
+            hideMsg('staffMsg');
+            try {
+              const res = await callApi('/api/admin/staff_pin_reset', { id: item.id });
+              showNewPin(res.pin);
+              await fetchStaffList();
+            } catch (err) {
+              showMsg('staffMsg', err.message);
+            }
+          });
+        });
+        actionsDiv.appendChild(pinResetBtn);
+
+        // 移除按鈕
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'btn btn-danger staff-remove';
+        removeBtn.textContent = '移除';
+        removeBtn.addEventListener('click', () => {
+          showConfirm('移除工作人員確認', `確定要移除「${item.name}」嗎？移除後將刪除此工作人員紀錄。`, async () => {
+            hideMsg('staffMsg');
+            try {
+              const res = await callApi('/api/admin/staff_set', { id: item.id, action: 'remove' });
+              renderStaffList(res.staff);
+            } catch (err) {
+              showMsg('staffMsg', err.message);
+            }
+          });
+        });
+        actionsDiv.appendChild(removeBtn);
+
+        rowEl.appendChild(actionsDiv);
+        container.appendChild(rowEl);
+      }
+    }
+
+    function showNewPin(pin) {
+      const pinEl = document.getElementById('staffPinShow');
+      const boxEl = document.getElementById('staffPinBox');
+      if (pinEl) {
+        pinEl.textContent = pin;
+      }
+      if (boxEl) {
+        boxEl.style.display = 'block';
+      }
+    }
+
+    function handleStaffPinDone() {
+      const pinEl = document.getElementById('staffPinShow');
+      if (pinEl) pinEl.textContent = '';
+      const boxEl = document.getElementById('staffPinBox');
+      if (boxEl) boxEl.style.display = 'none';
+    }
+
+    async function handleAddStaff() {
+      const btn = document.getElementById('staffAddBtn');
+      if (isAddingStaff || (btn && btn.disabled)) return;
+      hideMsg('staffMsg');
+      const nameInput = document.getElementById('staffAddName');
+      const roleSelect = document.getElementById('staffAddRole');
+      const name = (nameInput ? nameInput.value : '').trim();
+      const role = (roleSelect ? roleSelect.value : 'judge');
+
+      if (!name) {
+        showMsg('staffMsg', '請輸入工作人員姓名');
+        return;
+      }
+
+      isAddingStaff = true;
+      const origText = btn ? btn.textContent : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '新增中…';
+      }
+
+      try {
+        const res = await callApi('/api/admin/staff_add', { name, role });
+        if (nameInput) nameInput.value = '';
+        showNewPin(res.pin);
+        if (res.staff) {
+          renderStaffList(res.staff);
+        } else {
+          await fetchStaffList();
+        }
+      } catch (err) {
+        showMsg('staffMsg', err.message);
+      } finally {
+        isAddingStaff = false;
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = origText;
+        }
       }
     }
 
@@ -2584,6 +3051,26 @@
         if (e.key === 'Enter') handleLogin();
       });
 
+      // 工作人員管理 (PROJECT.md 第三十四輪)
+      const staffRefreshBtn = document.getElementById('staffRefresh');
+      if (staffRefreshBtn) {
+        staffRefreshBtn.addEventListener('click', fetchStaffList);
+      }
+      const staffAddBtn = document.getElementById('staffAddBtn');
+      if (staffAddBtn) {
+        staffAddBtn.addEventListener('click', handleAddStaff);
+      }
+      const staffAddNameInput = document.getElementById('staffAddName');
+      if (staffAddNameInput) {
+        staffAddNameInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') handleAddStaff();
+        });
+      }
+      const staffPinDoneBtn = document.getElementById('staffPinDone');
+      if (staffPinDoneBtn) {
+        staffPinDoneBtn.addEventListener('click', handleStaffPinDone);
+      }
+
       // 現場報到管理 (PROJECT.md 10 第八輪任務)
       document.getElementById('checkinRefresh').addEventListener('click', fetchCheckinList);
       const noShowCopyBtn = document.getElementById('noShowCopy');
@@ -2686,11 +3173,15 @@
             pollTimer = null;
           }
           stopCheckinAutoRefresh();
+          stopHealthTimer();
         } else {
           fetchData();
           if (staffPin) {
             startCheckinAutoRefresh();
             fetchCheckinList();
+            fetchHealth();
+            startHealthTimer();
+            fetchStaffList();
           }
           if (!pollTimer) {
             pollTimer = setInterval(fetchData, 5000);

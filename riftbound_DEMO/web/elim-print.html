@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>符文戰場 — 淘汰賽紙本列印備援</title>
+  <style>
+    :root {
+      --bg: #01222F;
+      --card-bg: #013951;
+      --card-border: #0A5570;
+      --text-primary: #F9F9F9;
+      --text-secondary: #9FB8C4;
+      --accent: #EF7D00;
+      --accent-hover: #C86800;
+      --accent-text: #FF941E;
+      --warning-bg: #3E3312;
+      --warning-border: #8A6D1F;
+      --warning-text: #F2C94C;
+      --success-bg: #0A3F33;
+      --success-border: #1F7A55;
+      --success-text: #2FB574;
+      --danger-bg: #4A1F1C;
+      --danger-border: #A8443C;
+      --danger-text: #ED807A;
+      --chip-bg: #0A4A63;
+      --input-bg: #011A24;
+      --table-border: #0A5570;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      -webkit-text-size-adjust: 100%;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      min-height: 100svh;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 10px 40px;
+      overflow-x: hidden;
+    }
+
+    /* 列印控制列（螢幕顯示、列印時隱藏） */
+    .print-controls {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .view-toggles {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      min-width: 44px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--card-border);
+      background: var(--chip-bg);
+      color: var(--text-primary);
+      transition: background-color 0.15s;
+    }
+
+    .btn[aria-pressed="true"] {
+      background: var(--accent);
+      color: #141212;
+      border-color: var(--accent);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #141212;
+      border-color: var(--accent);
+    }
+
+    select {
+      min-height: 44px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 16px;
+      padding: 6px 12px;
+      max-width: 100%;
+    }
+
+    label {
+      font-size: 0.92rem;
+      color: var(--text-primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      min-height: 44px;
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    /* 紙本頁首 */
+    .print-header {
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .print-title {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: var(--text-primary);
+    }
+
+    .print-time {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    /* 表格滾動容器（防止小螢幕撐出全頁滾動條） */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 16px;
+    }
+
+    /* 表格樣式 */
+    .sheet-table {
+      width: 100%;
+      min-width: 500px;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      background: var(--card-bg);
+      border: 1px solid var(--table-border);
+    }
+
+    .sheet-table th, .sheet-table td {
+      border: 1px solid var(--table-border);
+      padding: 8px 10px;
+      text-align: left;
+    }
+
+    .sheet-table th {
+      background: var(--chip-bg);
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .sheet-table tr:nth-child(even) {
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .score-cell {
+      text-align: center;
+      font-weight: 800;
+      min-width: 80px;
+      white-space: nowrap;
+    }
+
+    .ep-sheet, .ep-group {
+      margin-bottom: 20px;
+      width: 100%;
+    }
+
+    .sheet-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--accent-text);
+      margin-bottom: 8px;
+    }
+
+    /* 結果單（Slips）樣式 */
+    .slips-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      width: 100%;
+    }
+    @media (min-width: 680px) {
+      .slips-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .ep-slip {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      break-inside: avoid;
+      page-break-inside: avoid;
+      width: 100%;
+    }
+
+    .slip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 6px;
+    }
+
+    .slip-table {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: var(--accent-text);
+    }
+
+    .slip-match {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 700;
+    }
+
+    .slip-players {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .slip-player-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 8px;
+      background: var(--input-bg);
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+
+    .slip-score-boxes {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin: 4px 0;
+      font-weight: 800;
+    }
+
+    .box-blank {
+      display: inline-block;
+      width: 44px;
+      height: 32px;
+      border: 1.5px solid var(--card-border);
+      border-radius: 4px;
+      text-align: center;
+      line-height: 30px;
+    }
+
+    .slip-winner-row {
+      display: flex;
+      justify-content: space-around;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      padding: 4px 0;
+    }
+
+    .slip-signatures {
+      border-top: 1px dashed var(--card-border);
+      padding-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+
+    .empty-state {
+      padding: 24px 16px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      background: var(--card-bg);
+      border: 1px dashed var(--card-border);
+      border-radius: 8px;
+    }
+
+    /* 列印樣式 */
+    @media print {
+      html, body {
+        background-color: #ffffff !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .container {
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+      .print-controls, #epQual, #epFinal, #epSlips, #epDiv, #epHideDone, #epSlipScope, #epSlipTbd, #epPrintNow {
+        display: none !important;
+      }
+      .print-header {
+        border-bottom: 2px solid #000000 !important;
+      }
+      .print-title {
+        color: #000000 !important;
+      }
+      .print-time {
+        color: #444444 !important;
+      }
+      .sheet-title {
+        color: #000000 !important;
+      }
+      .sheet-table {
+        background: #ffffff !important;
+        border: 1px solid #000000 !important;
+        min-width: 100% !important;
+      }
+      .sheet-table th, .sheet-table td {
+        border: 1px solid #000000 !important;
+        color: #000000 !important;
+      }
+      .sheet-table th {
+        background: #eeeeee !important;
+      }
+      .sheet-table tr:nth-child(even) {
+        background: #fcfcfc !important;
+      }
+      .ep-sheet {
+        page-break-after: always;
+        break-after: page;
+      }
+      .ep-group {
+        page-break-inside: avoid;
+        break-inside: avoid;
+        margin-bottom: 16px;
+      }
+      .slips-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
+      }
+      .ep-slip {
+        background: #ffffff !important;
+        border: 1.5px solid #000000 !important;
+        color: #000000 !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+      }
+      .slip-header, .slip-signatures {
+        border-color: #000000 !important;
+      }
+      .slip-table, .slip-match, .slip-signatures {
+        color: #000000 !important;
+      }
+      .slip-player-row {
+        background: #f7f7f7 !important;
+        color: #000000 !important;
+      }
+      .box-blank {
+        border-color: #000000 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 列印控制選單（列印時隱藏） -->
+    <div class="print-controls">
+      <div class="view-toggles">
+        <button type="button" id="epQual" class="btn" aria-pressed="true">資格賽對戰表</button>
+        <button type="button" id="epFinal" class="btn" aria-pressed="false">16 強決賽</button>
+        <button type="button" id="epSlips" class="btn" aria-pressed="false">比賽結果單</button>
+        <button type="button" id="epPrintNow" class="btn btn-primary" onclick="window.print()">列印此頁</button>
+      </div>
+
+      <div class="filter-row">
+        <!-- 分區選擇（不含 F） -->
+        <div id="epDivContainer" style="display: flex; align-items: center; gap: 6px;">
+          <label for="epDiv" style="font-weight: 700;">分區：</label>
+          <select id="epDiv">
+            <option value="ALL">全部各區</option>
+          </select>
+        </div>
+
+        <!-- 資格賽過濾：只印還沒打完的 -->
+        <label id="epHideDoneLabel">
+          <input type="checkbox" id="epHideDone">
+          <span>只印還沒打完的</span>
+        </label>
+
+        <!-- 結果單過濾設定 -->
+        <div id="epSlipsControls" style="display: none; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <label for="epSlipScope" style="font-weight: 700;">範圍：</label>
+            <select id="epSlipScope">
+              <option value="qual">資格賽</option>
+              <option value="final">16 強決賽</option>
+            </select>
+          </div>
+          <label>
+            <input type="checkbox" id="epSlipTbd">
+            <span>也印還沒確定對手的場次</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 紙本標頭 -->
+    <header class="print-header">
+      <h1 class="print-title" id="epEventTitle">淘汰賽對戰表</h1>
+      <div class="print-time" id="epPrintTime">資料時間 --:--</div>
+    </header>
+
+    <!-- 檢視 1: 資格賽對戰表 -->
+    <main id="epViewQual" style="display: block;">
+      <div class="empty-state">載入資料中...</div>
+    </main>
+
+    <!-- 檢視 2: 16 強決賽 -->
+    <section id="epViewFinal" style="display: none;">
+      <div class="empty-state">16 強決賽尚未抽籤（或本賽制沒有 16 強決賽），目前尚無對戰表。</div>
+    </section>
+
+    <!-- 檢視 3: 結果單 -->
+    <section id="epViewSlips" style="display: none;">
+      <div class="empty-state">載入資料中...</div>
+    </section>
+  </div>
+
+  <script src="elim-common.js"></script>
+  <script>
+    let currentSnapshot = null;
+    let currentView = 'qual'; // 'qual' | 'final' | 'slips'
+
+    // 切換檢視
+    function switchView(viewName) {
+      currentView = viewName;
+      document.getElementById('epQual').setAttribute('aria-pressed', viewName === 'qual' ? 'true' : 'false');
+      document.getElementById('epFinal').setAttribute('aria-pressed', viewName === 'final' ? 'true' : 'false');
+      document.getElementById('epSlips').setAttribute('aria-pressed', viewName === 'slips' ? 'true' : 'false');
+
+      document.getElementById('epViewQual').style.display = viewName === 'qual' ? 'block' : 'none';
+      document.getElementById('epViewFinal').style.display = viewName === 'final' ? 'block' : 'none';
+      document.getElementById('epViewSlips').style.display = viewName === 'slips' ? 'block' : 'none';
+
+      // 篩選控制項顯示切換
+      document.getElementById('epDivContainer').style.display = (viewName === 'qual' || (viewName === 'slips' && document.getElementById('epSlipScope').value === 'qual')) ? 'flex' : 'none';
+      document.getElementById('epHideDoneLabel').style.display = viewName === 'qual' ? 'inline-flex' : 'none';
+      document.getElementById('epSlipsControls').style.display = viewName === 'slips' ? 'flex' : 'none';
+
+      if (currentSnapshot) {
+        renderCurrentView();
+      }
+    }
+
+    document.getElementById('epQual').addEventListener('click', () => switchView('qual'));
+    document.getElementById('epFinal').addEventListener('click', () => switchView('final'));
+    document.getElementById('epSlips').addEventListener('click', () => switchView('slips'));
+
+    document.getElementById('epDiv').addEventListener('change', () => renderCurrentView());
+    document.getElementById('epHideDone').addEventListener('change', () => renderCurrentView());
+    document.getElementById('epSlipScope').addEventListener('change', () => {
+      document.getElementById('epDivContainer').style.display = (document.getElementById('epSlipScope').value === 'qual') ? 'flex' : 'none';
+      renderCurrentView();
+    });
+    document.getElementById('epSlipTbd').addEventListener('change', () => renderCurrentView());
+
+    // 輪詢讀取資料（只讀取 snapshot）
+    const poller = new ElimPoller({
+      onData: (snapshot) => {
+        currentSnapshot = snapshot;
+        updateHeader(snapshot);
+        updateDivSelect(snapshot);
+        renderCurrentView();
+      },
+      onError: (err) => {
+        // 讀取錯誤
+      },
+      interval: 10000
+    });
+
+    function updateHeader(snapshot) {
+      const titleEl = document.getElementById('epEventTitle');
+      const timeEl = document.getElementById('epPrintTime');
+
+      if (snapshot.event && snapshot.event.name) {
+        titleEl.textContent = `${snapshot.event.name} — 紙本備援對戰表`;
+      }
+
+      const nowMs = snapshot.server_now || Date.now();
+      timeEl.textContent = `資料時間 ${formatTimeHHMM(nowMs)}`;
+    }
+
+    // 更新分區選單（排除 F 區）
+    function updateDivSelect(snapshot) {
+      const divSelect = document.getElementById('epDiv');
+      const divs = (snapshot.divisions || []).filter(d => d.div !== 'F');
+
+      const existingValues = Array.from(divSelect.options).map(o => o.value);
+      const newValues = ['ALL', ...divs.map(d => d.div)];
+
+      if (existingValues.join(',') !== newValues.join(',')) {
+        const prevValue = divSelect.value;
+        divSelect.innerHTML = '<option value="ALL">全部各區</option>';
+        for (const dv of divs) {
+          const opt = document.createElement('option');
+          opt.value = dv.div;
+          opt.textContent = `${dv.div} 區`;
+          divSelect.appendChild(opt);
+        }
+        if (newValues.includes(prevValue)) {
+          divSelect.value = prevValue;
+        } else {
+          divSelect.value = 'ALL';
+        }
+      }
+    }
+
+    // 反查還沒確定對手的來源場次（...勝者 / ...敗者）
+    function getPendingSourceLabel(match, slot, allMatches) {
+      for (const x of allMatches) {
+        if (x.next_win && x.next_win[0] === match.id && x.next_win[1] === slot) {
+          return `${x.id} 勝者`;
+        }
+        if (x.next_lose && x.next_lose[0] === match.id && x.next_lose[1] === slot) {
+          return `${x.id} 敗者`;
+        }
+      }
+      for (const x of allMatches) {
+        if (x.next_win && x.next_win[0] === match.id) {
+          return `${x.id} 勝者`;
+        }
+        if (x.next_lose && x.next_lose[0] === match.id) {
+          return `${x.id} 敗者`;
+        }
+      }
+      return '待定';
+    }
+
+    function renderCurrentView() {
+      if (!currentSnapshot) return;
+      if (currentView === 'qual') {
+        renderQualView(currentSnapshot);
+      } else if (currentView === 'final') {
+        renderFinalView(currentSnapshot);
+      } else if (currentView === 'slips') {
+        renderSlipsView(currentSnapshot);
+      }
+    }
+
+    // 1. 渲染資格賽對戰表
+    function renderQualView(snapshot) {
+      const container = document.getElementById('epViewQual');
+      const selectedDiv = document.getElementById('epDiv').value;
+      const hideDone = document.getElementById('epHideDone').checked;
+
+      const divs = (snapshot.divisions || []).filter(d => d.div !== 'F');
+
+      let targetDivs = divs;
+      if (selectedDiv !== 'ALL') {
+        targetDivs = divs.filter(d => d.div === selectedDiv);
+      }
+
+      if (targetDivs.length === 0) {
+        container.innerHTML = '<div class="empty-state">尚無資格賽分區資料</div>';
+        return;
+      }
+
+      container.innerHTML = '';
+
+      for (const dv of targetDivs) {
+        const sheet = document.createElement('div');
+        sheet.className = 'ep-sheet';
+        sheet.dataset.div = dv.div;
+
+        const allMatches = dv.matches || [];
+        // 排除輪空 (bye) 與跳過不用打的場次 (skipped)
+        let realMatches = allMatches.filter(m => m.state !== 'bye' && m.state !== 'skipped');
+
+        if (hideDone) {
+          realMatches = realMatches.filter(m => m.state !== 'complete');
+        }
+
+        sheet.innerHTML = `
+          <h2 class="sheet-title">${escapeHtml(dv.div)} 區 資格賽對戰表</h2>
+          <div class="table-container">
+            <table class="sheet-table">
+              <thead>
+                <tr>
+                  <th style="width: 100px;">場次編號</th>
+                  <th style="width: 140px;">階段</th>
+                  <th>選手 1</th>
+                  <th style="width: 90px; text-align: center;">比分</th>
+                  <th>選手 2</th>
+                  <th style="width: 120px;">勝方</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${realMatches.map(m => {
+                  const isComplete = m.state === 'complete';
+                  const p1Text = m.p1
+                    ? `${escapeHtml(m.p1.name)} (${m.p1.seed}號)`
+                    : getPendingSourceLabel(m, 'p1', allMatches);
+                  const p2Text = m.p2
+                    ? `${escapeHtml(m.p2.name)} (${m.p2.seed}號)`
+                    : getPendingSourceLabel(m, 'p2', allMatches);
+
+                  let scoreText = '[  ] - [  ]';
+                  let winnerText = '—';
+                  if (isComplete && m.score) {
+                    scoreText = `${m.score[0]} - ${m.score[1]}`;
+                    if (m.winner) {
+                      const winnerPlayer = (m.p1 && m.p1.id === m.winner) ? m.p1 : m.p2;
+                      winnerText = winnerPlayer ? escapeHtml(winnerPlayer.name) : m.winner;
+                    }
+                  }
+
+                  return `
+                    <tr data-match="${escapeHtml(m.id)}">
+                      <td style="font-weight: 700;">${escapeHtml(m.id)}</td>
+                      <td>${escapeHtml(m.label || '')}</td>
+                      <td>${p1Text}</td>
+                      <td class="score-cell">${scoreText}</td>
+                      <td>${p2Text}</td>
+                      <td style="font-weight: 700;">${winnerText}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+        container.appendChild(sheet);
+      }
+    }
+
+    // 2. 渲染 16 強決賽
+    function renderFinalView(snapshot) {
+      const container = document.getElementById('epViewFinal');
+      const finals = snapshot.finals;
+
+      // 若尚未抽籤或沒有決賽資料
+      if (!finals || !finals.drawn || !finals.groups) {
+        container.innerHTML = '<div class="empty-state">16 強決賽尚未抽籤（或本賽制沒有 16 強決賽），目前尚無對戰表。</div>';
+        return;
+      }
+
+      container.innerHTML = '';
+
+      const fDiv = (snapshot.divisions || []).find(d => d.div === 'F') || { matches: [] };
+      const fMatches = fDiv.matches || [];
+
+      // 四組循環賽
+      for (const g of ['A', 'B', 'C', 'D']) {
+        const grp = finals.groups[g];
+        if (!grp) continue;
+
+        const members = grp.members || [];
+        const groupMatches = fMatches.filter(m => m.bracket === 'G' && m.group === g);
+
+        const groupEl = document.createElement('div');
+        groupEl.className = 'ep-group';
+        groupEl.dataset.group = g;
+
+        groupEl.innerHTML = `
+          <h2 class="sheet-title">${g} 組循環賽</h2>
+          
+          <!-- 組員名單與積分空格表 -->
+          <div class="table-container">
+            <table class="sheet-table" style="margin-bottom: 14px;">
+              <thead>
+                <tr>
+                  <th style="width: 80px;">抽籤號</th>
+                  <th>選手姓名</th>
+                  <th style="width: 80px; text-align: center;">勝</th>
+                  <th style="width: 80px; text-align: center;">敗</th>
+                  <th style="width: 80px; text-align: center;">分差</th>
+                  <th style="width: 90px; text-align: center;">名次</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${members.map((p, idx) => `
+                  <tr>
+                    <td style="text-align: center; font-weight: 700;">${idx + 1} 號</td>
+                    <td style="font-weight: 700;">${escapeHtml(p.name)} (${p.id})</td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 6 場對戰 -->
+          <div class="table-container">
+            <table class="sheet-table">
+              <thead>
+                <tr>
+                  <th style="width: 100px;">場次</th>
+                  <th style="width: 140px;">輪次</th>
+                  <th>選手 1</th>
+                  <th style="width: 90px; text-align: center;">比分</th>
+                  <th>選手 2</th>
+                  <th style="width: 120px;">勝方</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${groupMatches.map(m => {
+                  const p1Text = m.p1 ? escapeHtml(m.p1.name) : '待定';
+                  const p2Text = m.p2 ? escapeHtml(m.p2.name) : '待定';
+                  let scoreText = '[  ] - [  ]';
+                  let winnerText = '—';
+                  if (m.state === 'complete' && m.score) {
+                    scoreText = `${m.score[0]} - ${m.score[1]}`;
+                    if (m.winner) {
+                      const winnerPlayer = (m.p1 && m.p1.id === m.winner) ? m.p1 : m.p2;
+                      winnerText = winnerPlayer ? escapeHtml(winnerPlayer.name) : m.winner;
+                    }
+                  }
+                  return `
+                    <tr data-match="${escapeHtml(m.id)}">
+                      <td style="font-weight: 700;">${escapeHtml(m.id)}</td>
+                      <td>${escapeHtml(m.label || '')}</td>
+                      <td>${p1Text}</td>
+                      <td class="score-cell">${scoreText}</td>
+                      <td>${p2Text}</td>
+                      <td style="font-weight: 700;">${winnerText}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+        container.appendChild(groupEl);
+      }
+
+      // 8 場名次賽 (PAB-1..4, PCD-1..4)
+      const placementMatches = fMatches.filter(m => m.bracket === 'P');
+      if (placementMatches.length > 0) {
+        const placeSection = document.createElement('div');
+        placeSection.className = 'ep-placements';
+
+        placeSection.innerHTML = `
+          <h2 class="sheet-title">16 強決賽名次賽</h2>
+          <div class="table-container">
+            <table class="sheet-table">
+              <thead>
+                <tr>
+                  <th style="width: 100px;">場次</th>
+                  <th style="width: 180px;">名次對決</th>
+                  <th>選手 1</th>
+                  <th style="width: 90px; text-align: center;">比分</th>
+                  <th>選手 2</th>
+                  <th style="width: 120px;">勝方</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${placementMatches.map(m => {
+                  // 決定還沒確定對手時的 X 組第 N 名
+                  let p1Text = m.p1 ? escapeHtml(m.p1.name) : '';
+                  let p2Text = m.p2 ? escapeHtml(m.p2.name) : '';
+
+                  if (!m.p1 || !m.p2) {
+                    const parts = m.id.split('-');
+                    const grpPair = parts[0].replace('P', ''); // 'AB' or 'CD'
+                    const rankNum = parts[1] || '1';
+                    const g1 = grpPair[0] || 'A';
+                    const g2 = grpPair[1] || 'B';
+
+                    if (!m.p1) p1Text = `${g1} 組第 ${rankNum} 名`;
+                    if (!m.p2) p2Text = `${g2} 組第 ${rankNum} 名`;
+                  }
+
+                  let scoreText = '[  ] - [  ]';
+                  let winnerText = '—';
+                  if (m.state === 'complete' && m.score) {
+                    scoreText = `${m.score[0]} - ${m.score[1]}`;
+                    if (m.winner) {
+                      const winnerPlayer = (m.p1 && m.p1.id === m.winner) ? m.p1 : m.p2;
+                      winnerText = winnerPlayer ? escapeHtml(winnerPlayer.name) : m.winner;
+                    }
+                  }
+
+                  return `
+                    <tr data-match="${escapeHtml(m.id)}">
+                      <td style="font-weight: 700;">${escapeHtml(m.id)}</td>
+                      <td>${escapeHtml(m.label || '')}</td>
+                      <td>${p1Text}</td>
+                      <td class="score-cell">${scoreText}</td>
+                      <td>${p2Text}</td>
+                      <td style="font-weight: 700;">${winnerText}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+        container.appendChild(placeSection);
+      }
+    }
+
+    // 3. 渲染結果單（Slips）
+    function renderSlipsView(snapshot) {
+      const container = document.getElementById('epViewSlips');
+      const scope = document.getElementById('epSlipScope').value;
+      const includePending = document.getElementById('epSlipTbd').checked;
+      const selectedDiv = document.getElementById('epDiv').value;
+
+      let allMatches = [];
+      if (scope === 'final') {
+        const fDiv = (snapshot.divisions || []).find(d => d.div === 'F');
+        if (fDiv && fDiv.matches) {
+          allMatches = fDiv.matches;
+        }
+      } else {
+        const divs = (snapshot.divisions || []).filter(d => d.div !== 'F');
+        for (const dv of divs) {
+          if (selectedDiv === 'ALL' || dv.div === selectedDiv) {
+            allMatches.push(...(dv.matches || []));
+          }
+        }
+      }
+
+      // 排除輪空與跳過的場次
+      let validMatches = allMatches.filter(m => m.state !== 'bye' && m.state !== 'skipped');
+
+      // 篩選：預設只印 open（已確定對手），勾選 epSlipTbd 連 pending 也印
+      if (includePending) {
+        validMatches = validMatches.filter(m => m.state === 'open' || m.state === 'pending');
+      } else {
+        validMatches = validMatches.filter(m => m.state === 'open');
+      }
+
+      if (validMatches.length === 0) {
+        container.innerHTML = '<div class="empty-state">目前無符合條件的比賽結果單</div>';
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="slips-grid">
+          ${validMatches.map(m => {
+            const tableText = m.table ? `第 ${m.table} 桌` : '未排桌';
+            const p1Text = m.p1
+              ? `${escapeHtml(m.p1.name)} ${(m.p1.seed != null) ? `(${m.p1.seed}號)` : ''}`
+              : getPendingSourceLabel(m, 'p1', allMatches);
+            const p2Text = m.p2
+              ? `${escapeHtml(m.p2.name)} ${(m.p2.seed != null) ? `(${m.p2.seed}號)` : ''}`
+              : getPendingSourceLabel(m, 'p2', allMatches);
+
+            return `
+              <div class="ep-slip" data-match="${escapeHtml(m.id)}">
+                <div class="slip-header">
+                  <span class="slip-table">${tableText}</span>
+                  <span class="slip-match">${escapeHtml(m.label || '')} · ${escapeHtml(m.id)}</span>
+                </div>
+                <div class="slip-players">
+                  <div class="slip-player-row">
+                    <span>${p1Text}</span>
+                    <span style="font-size: 0.8rem; color: var(--text-secondary);">選手 1</span>
+                  </div>
+                  <div class="slip-score-boxes">
+                    <span class="box-blank"></span>
+                    <span>:</span>
+                    <span class="box-blank"></span>
+                  </div>
+                  <div class="slip-player-row">
+                    <span>${p2Text}</span>
+                    <span style="font-size: 0.8rem; color: var(--text-secondary);">選手 2</span>
+                  </div>
+                </div>
+                <div class="slip-winner-row">
+                  <span>勝方圈選：</span>
+                  <span>○ 選手 1 勝</span>
+                  <span>○ 選手 2 勝</span>
+                </div>
+                <div class="slip-signatures">
+                  <span>裁判簽名：__________</span>
+                  <span>選手簽名：__________</span>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    // 頁面載入
+    window.addEventListener('DOMContentLoaded', () => {
+      poller.fetchOnce();
+      poller.start();
+    });
+  </script>
+</body>
+</html>

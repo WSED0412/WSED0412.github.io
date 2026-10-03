@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>符文戰場 — 淘汰賽賽程樹</title>
+  <style>
+    :root {
+      --bg: #01222F;
+      --card-bg: #013951;
+      --card-border: #0A5570;
+      --text-primary: #F9F9F9;
+      --text-secondary: #9FB8C4;
+      --accent: #EF7D00;
+      --accent-hover: #C86800;
+      --accent-text: #FF941E;
+      --warning-bg: #3E3312;
+      --warning-border: #8A6D1F;
+      --warning-text: #F2C94C;
+      --success-bg: #0A3F33;
+      --success-border: #1F7A55;
+      --success-text: #2FB574;
+      --danger-bg: #4A1F1C;
+      --danger-border: #A8443C;
+      --danger-text: #ED807A;
+      --chip-bg: #0A4A63;
+      --input-bg: #011A24;
+      --info-bg: #1B2F4A;
+      --info-border: #2F5A80;
+      --info-text: #4FA8D8;
+      --judge-bg: #2E2140;
+      --judge-border: #553C77;
+      --judge-text: #B38FE0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      -webkit-text-size-adjust: 100%;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      min-height: 100svh;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    select {
+      font-size: 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 14px 16px 40px;
+      overflow-x: hidden;
+      box-sizing: border-box;
+    }
+    @media (max-width: 480px) {
+      .container {
+        padding: 10px 8px 30px;
+      }
+    }
+
+    /* 頂部 Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .page-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    .nav-links {
+      display: flex;
+      gap: 8px;
+    }
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      color: var(--accent-text);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: rgba(239, 125, 0, 0.1);
+      border: 1px solid rgba(239, 125, 0, 0.25);
+    }
+
+    /* 控制列 */
+    .controls-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 14px;
+    }
+    .control-label {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    .select-div {
+      min-height: 44px;
+      min-width: 120px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      padding: 0 12px;
+      outline: none;
+      cursor: pointer;
+    }
+    .select-div:focus {
+      border-color: var(--accent);
+    }
+
+    /* 警示橫幅 */
+    .banner {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .stale-warning {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+    .contract-warning {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+    }
+
+    /* 樹狀結構滑動外框（手機 390 寬在此框內橫向滑動，全頁不滾動） */
+    .tree-scroll-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+    }
+    .tree-sections-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      min-width: min-content;
+    }
+
+    /* 淘汰賽各大區塊（勝部、敗部、總決賽） */
+    .elim-section {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      min-width: 320px;
+    }
+    .section-header {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--accent-text);
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* 輪次與場次排列 */
+    .rounds-flex {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .round-column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 250px;
+    }
+    .round-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-align: center;
+      padding: 4px;
+      background: rgba(1, 26, 36, 0.4);
+      border-radius: 4px;
+    }
+
+    /* 單一比賽卡片 */
+    .elim-match {
+      background: var(--input-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      transition: border-color 0.15s;
+    }
+    .elim-match.live {
+      border-color: var(--accent);
+    }
+    .elim-match.conflict {
+      border-color: var(--danger-border);
+    }
+    .match-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(10, 85, 112, 0.4);
+    }
+    .match-label-txt {
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .match-table-tag {
+      color: var(--accent-text);
+      font-weight: 700;
+    }
+
+    /* 選手列 */
+    .player-slot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      background: rgba(1, 57, 81, 0.3);
+      border: 1px solid transparent;
+      color: var(--text-primary);
+    }
+    .player-slot[data-winner="true"] {
+      background: rgba(31, 122, 85, 0.25);
+      border-color: var(--success-border);
+      color: var(--success-text);
+      font-weight: 800;
+    }
+    .player-name-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .player-seed {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+    .player-score {
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin-left: 8px;
+    }
+
+    /* 勝利方式標籤 */
+    .match-how-badge {
+      font-size: 0.75rem;
+      color: var(--warning-text);
+      background: rgba(242, 201, 76, 0.12);
+      border: 1px solid rgba(242, 201, 76, 0.3);
+      border-radius: 4px;
+      padding: 2px 6px;
+      align-self: flex-start;
+      margin-top: 2px;
+      font-weight: 700;
+    }
+
+    /* 名次表 (Placements) */
+    .placements-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 10px;
+    }
+    .placements-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #elimPlacements {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .placement-row {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .placement-row[data-place="1"] {
+      border-color: var(--accent);
+      background: linear-gradient(90deg, rgba(239, 125, 0, 0.15), rgba(1, 26, 36, 0.8));
+      color: var(--accent-text);
+    }
+
+    /* 16 強決賽專區 */
+    #elimFinals {
+      width: 100%;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+    .finals-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+      overflow-x: hidden;
+      width: 100%;
+    }
+    .finals-card-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--accent-text);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .finals-groups-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .placement-matches-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    @media (max-width: 600px) {
+      .finals-groups-grid, .placement-matches-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .group-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(10, 85, 112, 0.4);
+    }
+    .group-name-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--accent-text);
+    }
+    .group-lot-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--warning-text);
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* 斷網覆蓋畫面 */
+    .disconnected-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      z-index: 2000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-left">
+        <h1 class="page-title" id="bracketPageTitle">淘汰賽賽程樹</h1>
+      </div>
+      <div class="nav-links">
+        <a href="elim-player.html" class="nav-link">📱 選手查桌</a>
+        <a href="elim-board.html" class="nav-link">📺 大螢幕看板</a>
+      </div>
+    </header>
+
+    <div id="elimStaleWarning" class="banner stale-warning" style="display: none;">
+      已超過 90 秒未收到新賽況，可能連線中斷或主機暫停
+    </div>
+    <div id="elimContractWarning" class="banner contract-warning" style="display: none;">
+      系統版本已有更新，請重新整理頁面
+    </div>
+
+    <!-- 選擇分區 -->
+    <div class="controls-bar">
+      <label for="elimDivSelect" class="control-label">選擇分區：</label>
+      <select id="elimDivSelect" class="select-div">
+        <option value="A">A 區</option>
+      </select>
+    </div>
+
+    <!-- 賽程樹水平滑動外框 -->
+    <div class="tree-scroll-container">
+      <div id="bracketSectionsWrap" class="tree-sections-wrap">
+        <div style="text-align: center; color: var(--text-secondary); padding: 30px;">正在載入賽程樹...</div>
+      </div>
+    </div>
+
+    <!-- 名次表區塊 -->
+    <div class="placements-card" id="placementsContainer" style="display: none;">
+      <div class="placements-title">
+        <span>🏆 最終排名名次榜</span>
+      </div>
+      <div id="elimPlacements"></div>
+    </div>
+
+    <!-- 16 強決賽專區 (#elimFinals) -->
+    <div id="elimFinals" style="display: none; width: 100%; margin-top: 24px; box-sizing: border-box; overflow-x: hidden;"></div>
+  </div>
+
+  <!-- 尚未連上賽務主機畫面 -->
+  <div class="disconnected-overlay" id="elimDisconnectedScreen">
+    <div style="font-size: 3rem; margin-bottom: 12px;">⚠️</div>
+    <div style="font-size: 1.4rem; font-weight: 800; color: var(--danger-text); margin-bottom: 8px;">尚未連上賽務系統</div>
+    <div style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px;">請確認主機是否已啟動，或稍候自動重連。</div>
+    <button type="button" class="nav-link" onclick="window.poller && window.poller.fetchOnce()">重新連線</button>
+  </div>
+
+  <script src="elim-common.js"></script>
+  <script>
+    let currentData = null;
+    let selectedDiv = 'A';
+
+    const poller = new ElimPoller({
+      onData: (snapshot) => {
+        currentData = snapshot;
+        updateDivOptions(snapshot);
+        renderBracket(snapshot);
+      },
+      onError: (err) => {
+        if (!currentData) {
+          const dis = document.getElementById('elimDisconnectedScreen');
+          if (dis) dis.style.display = 'flex';
+        }
+      },
+      interval: 5000
+    });
+    window.poller = poller;
+
+    document.getElementById('elimDivSelect').addEventListener('change', (e) => {
+      selectedDiv = e.target.value;
+      if (currentData) {
+        renderBracket(currentData);
+      }
+    });
+
+    function updateDivOptions(snapshot) {
+      if (!snapshot || !snapshot.divisions) return;
+      const select = document.getElementById('elimDivSelect');
+      const curVal = select.value || selectedDiv;
+      const divs = snapshot.divisions.map(d => d.div);
+
+      // 若目前選單內容不同才重新建立
+      const existingOpts = Array.from(select.options).map(o => o.value);
+      const isSame = existingOpts.length === divs.length && existingOpts.every((v, i) => v === divs[i]);
+
+      if (!isSame) {
+        select.innerHTML = '';
+        divs.forEach(divName => {
+          const opt = document.createElement('option');
+          opt.value = divName;
+          opt.textContent = `${divName} 區`;
+          select.appendChild(opt);
+        });
+
+        if (divs.includes(curVal)) {
+          select.value = curVal;
+          selectedDiv = curVal;
+        } else if (divs.length > 0) {
+          select.value = divs[0];
+          selectedDiv = divs[0];
+        }
+      }
+    }
+
+    function renderBracket(snapshot) {
+      if (!snapshot || !snapshot.divisions) return;
+
+      const pageTitle = document.getElementById('bracketPageTitle');
+      if (pageTitle && snapshot.event && snapshot.event.name) {
+        pageTitle.textContent = `${snapshot.event.name} — 賽程樹`;
+      }
+
+      const divData = snapshot.divisions.find(d => d.div === selectedDiv);
+      const container = document.getElementById('bracketSectionsWrap');
+      if (!container) return;
+
+      if (!divData) {
+        container.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 30px;">查無該分區賽程資料</div>';
+        return;
+      }
+
+      // 建立選手資料庫以便名次表查名
+      const playerMap = {};
+      if (divData.matches) {
+        divData.matches.forEach(m => {
+          if (m.p1) playerMap[m.p1.id] = m.p1;
+          if (m.p2) playerMap[m.p2.id] = m.p2;
+        });
+      }
+
+      const isDoubleElim = (snapshot.event && snapshot.event.format && snapshot.event.format.elim_type === 'double')
+        || (divData.matches && divData.matches.some(m => m.bracket === 'L' || m.bracket === 'F'));
+
+      // 決定需要渲染的區塊 (W 勝部, L 敗部, F 總決賽)
+      const sectionConfigs = [];
+      if (isDoubleElim) {
+        sectionConfigs.push({ bracket: 'W', title: '勝部賽程 (Winner\'s Bracket)' });
+        sectionConfigs.push({ bracket: 'L', title: '敗部賽程 (Loser\'s Bracket)' });
+        sectionConfigs.push({ bracket: 'F', title: '總決賽 (Grand Finals)' });
+      } else {
+        sectionConfigs.push({ bracket: 'W', title: '淘汰賽賽程 (Bracket)' });
+      }
+
+      let html = '';
+
+      for (const sc of sectionConfigs) {
+        html += `<section class="elim-section" data-bracket="${sc.bracket}">`;
+        html += `  <div class="section-header">${sc.title}</div>`;
+
+        // 依 round 分組場次
+        const secMatches = (divData.matches || []).filter(m => m.bracket === sc.bracket && m.state !== 'bye');
+        const roundMap = {};
+
+        for (const m of secMatches) {
+          const rNum = m.round != null ? m.round : 0;
+          if (!roundMap[rNum]) roundMap[rNum] = [];
+          roundMap[rNum].push(m);
+        }
+
+        const roundKeys = Object.keys(roundMap).map(Number).sort((a, b) => a - b);
+
+        if (roundKeys.length > 0) {
+          html += `  <div class="rounds-flex">`;
+          for (const rKey of roundKeys) {
+            const matchesInRound = roundMap[rKey];
+            const roundLabel = matchesInRound[0].label || `第 ${rKey + 1} 輪`;
+
+            html += `    <div class="round-column">`;
+            html += `      <div class="round-title">${escapeHtml(roundLabel)}</div>`;
+
+            for (const m of matchesInRound) {
+              const isComplete = m.state === 'complete';
+              const isLive = m.state === 'open' && m.table !== null;
+              const isConflict = m.report_state === 'conflict';
+
+              let matchCardClass = 'elim-match';
+              if (isConflict) matchCardClass += ' conflict';
+              else if (isLive) matchCardClass += ' live';
+
+              html += `      <div class="${matchCardClass}" data-match="${escapeHtml(m.id)}">`;
+              html += `        <div class="match-top">`;
+              html += `          <span class="match-label-txt">${escapeHtml(m.label || m.id)}</span>`;
+              if (m.table !== null) {
+                html += `          <span class="match-table-tag">第 ${m.table} 桌</span>`;
+              } else if (m.state === 'open') {
+                html += `          <span style="color:var(--text-secondary);">等桌中</span>`;
+              }
+              html += `        </div>`;
+
+              // P1 選手
+              const p1Id = m.p1 ? m.p1.id : '';
+              const p1Name = m.p1 ? escapeHtml(m.p1.name) : '待定';
+              const p1Seed = m.p1 && m.p1.seed != null ? `(${escapeHtml(m.p1.seed)})` : '';
+              const isP1Winner = isComplete && m.winner === p1Id;
+              const p1Score = (m.score && m.score[0] != null) ? m.score[0] : '';
+
+              html += `        <div class="player-slot" data-player="${escapeHtml(p1Id)}"${isP1Winner ? ' data-winner="true"' : ''}>`;
+              html += `          <div class="player-name-wrap">`;
+              html += `            <span>${p1Name}</span>`;
+              if (p1Seed) html += `            <span class="player-seed">${p1Seed}</span>`;
+              html += `          </div>`;
+              if (p1Score !== '') html += `          <span class="player-score">${p1Score}</span>`;
+              html += `        </div>`;
+
+              // P2 選手
+              const p2Id = m.p2 ? m.p2.id : '';
+              const p2Name = m.p2 ? escapeHtml(m.p2.name) : '待定';
+              const p2Seed = m.p2 && m.p2.seed != null ? `(${escapeHtml(m.p2.seed)})` : '';
+              const isP2Winner = isComplete && m.winner === p2Id;
+              const p2Score = (m.score && m.score[1] != null) ? m.score[1] : '';
+
+              html += `        <div class="player-slot" data-player="${escapeHtml(p2Id)}"${isP2Winner ? ' data-winner="true"' : ''}>`;
+              html += `          <div class="player-name-wrap">`;
+              html += `            <span>${p2Name}</span>`;
+              if (p2Seed) html += `            <span class="player-seed">${p2Seed}</span>`;
+              html += `          </div>`;
+              if (p2Score !== '') html += `          <span class="player-score">${p2Score}</span>`;
+              html += `        </div>`;
+
+              // 逐分勝利方式 (爆裂、極限、擊飛、迴轉)
+              if (isComplete && m.how === 'points') {
+                let winTypeText = '爆裂';
+                if (m.points && m.points.length > 0) {
+                  const lastPt = m.points[m.points.length - 1];
+                  winTypeText = getPointTypeName(lastPt.type);
+                }
+                html += `        <div class="match-how-badge">勝利方式：${escapeHtml(winTypeText)}</div>`;
+              }
+
+              html += `      </div>`;
+            }
+            html += `    </div>`;
+          }
+          html += `  </div>`;
+        } else {
+          html += `  <div style="font-size:0.85rem; color:var(--text-secondary); padding:10px 0;">此階段目前尚無場次</div>`;
+        }
+
+        html += `</section>`;
+      }
+
+      container.innerHTML = html;
+
+      // 渲染名次榜 (Placements)
+      const placementsCard = document.getElementById('placementsContainer');
+      const placementsList = document.getElementById('elimPlacements');
+
+      if (divData.placements && Array.isArray(divData.placements) && divData.placements.length > 0) {
+        let phtml = '';
+        for (const item of divData.placements) {
+          const pObj = playerMap[item.id] || { id: item.id, name: item.id };
+          const pName = escapeHtml(pObj.name);
+          const pId = escapeHtml(item.id);
+
+          phtml += `<div class="placement-row" data-place="${escapeHtml(item.place)}">`;
+          phtml += `  <span>第 ${escapeHtml(item.place)} 名 · ${pName} (${pId})</span>`;
+          phtml += `</div>`;
+        }
+        placementsList.innerHTML = phtml;
+        placementsCard.style.display = 'block';
+      } else {
+        placementsList.innerHTML = '';
+        placementsCard.style.display = 'none';
+      }
+
+      // 渲染 16 強決賽專區 (#elimFinals)
+      const finalsContainer = document.getElementById('elimFinals');
+      if (finalsContainer) {
+        if (!snapshot.finals) {
+          finalsContainer.style.display = 'none';
+          finalsContainer.innerHTML = '';
+        } else {
+          finalsContainer.style.display = 'block';
+
+          let fhtml = '';
+
+          // 1. 四組積分表
+          fhtml += `
+            <div class="finals-card">
+              <div class="finals-card-title">16 強循環賽分組積分表</div>
+              <div class="finals-groups-grid">
+          `;
+
+          const groupsObj = snapshot.finals.groups || {};
+          for (const g of ['A', 'B', 'C', 'D']) {
+            const grp = groupsObj[g] || {};
+            const standings = grp.standings || [];
+            const needsLot = !!grp.needs_lot;
+
+            fhtml += `
+              <div class="elim-group" data-group="${g}">
+                <div class="group-top-bar">
+                  <span class="group-name-title">${g} 組</span>
+                  ${needsLot ? '<span class="group-lot-badge">同分，待現場抽籤</span>' : ''}
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+            `;
+
+            if (standings.length > 0) {
+              for (const st of standings) {
+                const pid = escapeHtml(st.id);
+                const pName = escapeHtml(st.name || st.id);
+                const rank = st.rank;
+                const w = st.w != null ? st.w : 0;
+                const l = st.l != null ? st.l : 0;
+                const diff = st.diff != null ? st.diff : 0;
+                const diffStr = diff > 0 ? `+${diff}` : `${diff}`;
+
+                fhtml += `
+                  <div class="player-slot" data-player="${pid}">
+                    <div class="player-name-wrap">
+                      <span>第 ${rank} 名 · ${pName}</span>
+                    </div>
+                    <span style="font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap;">${w}勝${l}敗 · 分差 ${diffStr}</span>
+                  </div>
+                `;
+              }
+            } else {
+              fhtml += `<div style="font-size: 0.82rem; color: var(--text-secondary);">尚未分組</div>`;
+            }
+
+            fhtml += `
+                </div>
+              </div>
+            `;
+          }
+
+          fhtml += `
+              </div>
+            </div>
+          `;
+
+          // 2. 名次賽 (八場全部畫出來)
+          const fDiv = (snapshot.divisions || []).find(d => d.div === 'F');
+          const fMatches = (fDiv && fDiv.matches) ? fDiv.matches : [];
+          const matchMapF = {};
+          for (const m of fMatches) {
+            matchMapF[m.id] = m;
+          }
+
+          const placementMatchDefs = [
+            { id: 'PAB-1', defaultLabel: '名次賽（第 1、2 名）' },
+            { id: 'PAB-2', defaultLabel: '名次賽（第 3、4 名）' },
+            { id: 'PAB-3', defaultLabel: '名次賽（第 5、6 名）' },
+            { id: 'PAB-4', defaultLabel: '名次賽（第 7、8 名）' },
+            { id: 'PCD-1', defaultLabel: '名次賽（第 9、10 名）' },
+            { id: 'PCD-2', defaultLabel: '名次賽（第 11、12 名）' },
+            { id: 'PCD-3', defaultLabel: '名次賽（第 13、14 名）' },
+            { id: 'PCD-4', defaultLabel: '名次賽（第 15、16 名）' }
+          ];
+
+          fhtml += `
+            <div class="finals-card">
+              <div class="finals-card-title">16 強名次賽（排名排定）</div>
+              <div class="placement-matches-grid">
+          `;
+
+          for (const def of placementMatchDefs) {
+            const m = matchMapF[def.id];
+            const mid = def.id;
+            const label = (m && m.label) ? m.label : def.defaultLabel;
+            const isComplete = m && m.state === 'complete';
+            const isLive = m && m.state === 'open' && m.table !== null;
+            const isConflict = m && m.report_state === 'conflict';
+
+            let matchCardClass = 'elim-match';
+            if (isConflict) matchCardClass += ' conflict';
+            else if (isLive) matchCardClass += ' live';
+
+            const p1 = m ? m.p1 : null;
+            const p2 = m ? m.p2 : null;
+            const p1Name = p1 ? escapeHtml(p1.name) : '待定';
+            const p1Seed = p1 && p1.seed != null ? `(${escapeHtml(p1.seed)})` : '';
+            const p1Id = p1 ? p1.id : '';
+            const isP1Winner = isComplete && m.winner === p1Id;
+            const p1Score = (m && m.score && m.score[0] != null) ? m.score[0] : '';
+
+            const p2Name = p2 ? escapeHtml(p2.name) : '待定';
+            const p2Seed = p2 && p2.seed != null ? `(${escapeHtml(p2.seed)})` : '';
+            const p2Id = p2 ? p2.id : '';
+            const isP2Winner = isComplete && m.winner === p2Id;
+            const p2Score = (m && m.score && m.score[1] != null) ? m.score[1] : '';
+
+            fhtml += `
+              <div class="${matchCardClass}" data-match="${escapeHtml(mid)}">
+                <div class="match-top">
+                  <span class="match-label-txt">${escapeHtml(label)}</span>
+                  ${m && m.table !== null ? `<span class="match-table-tag">第 ${m.table} 桌</span>` : ''}
+                </div>
+                <div class="player-slot" data-player="${escapeHtml(p1Id)}"${isP1Winner ? ' data-winner="true"' : ''}>
+                  <div class="player-name-wrap">
+                    <span>${p1Name}</span>
+                    ${p1Seed ? `<span class="player-seed">${p1Seed}</span>` : ''}
+                  </div>
+                  ${p1Score !== '' ? `<span class="player-score">${p1Score}</span>` : ''}
+                </div>
+                <div class="player-slot" data-player="${escapeHtml(p2Id)}"${isP2Winner ? ' data-winner="true"' : ''}>
+                  <div class="player-name-wrap">
+                    <span>${p2Name}</span>
+                    ${p2Seed ? `<span class="player-seed">${p2Seed}</span>` : ''}
+                  </div>
+                  ${p2Score !== '' ? `<span class="player-score">${p2Score}</span>` : ''}
+                </div>
+                ${isComplete && m && m.how === 'points' ? `
+                  <div class="match-how-badge">勝利方式：${escapeHtml(getPointTypeName(m.points && m.points.length ? m.points[m.points.length - 1].type : ''))}</div>
+                ` : ''}
+              </div>
+            `;
+          }
+
+          fhtml += `
+              </div>
+            </div>
+          `;
+
+          // 3. 16 強名次表 (#elimFinalPlacements)
+          fhtml += `
+            <div class="finals-card">
+              <div class="finals-card-title">🏆 16 強最終名次榜</div>
+              <div id="elimFinalPlacements" style="display: flex; flex-direction: column; gap: 8px;">
+          `;
+
+          const placements = (snapshot.finals && Array.isArray(snapshot.finals.placements)) ? snapshot.finals.placements : [];
+          if (placements.length > 0) {
+            for (const item of placements) {
+              const place = item.place;
+              const pName = escapeHtml(item.name || item.id);
+              const pId = escapeHtml(item.id);
+              fhtml += `
+                <div class="placement-row" data-place="${escapeHtml(place)}">
+                  <span>第 ${escapeHtml(place)} 名 · ${pName} (${pId})</span>
+                </div>
+              `;
+            }
+          } else {
+            fhtml += `<div style="color: var(--text-secondary); font-size: 0.88rem; padding: 8px 0;">名次賽進行中，最終名次將依比賽結果即時揭曉</div>`;
+          }
+
+          fhtml += `
+              </div>
+            </div>
+          `;
+
+          finalsContainer.innerHTML = fhtml;
+        }
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      poller.fetchOnce();
+      poller.start();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>符文戰場 — 淘汰賽選手報到</title>
+  <style>
+    :root {
+      --bg: #01222F;
+      --card-bg: #013951;
+      --card-border: #0A5570;
+      --text-primary: #F9F9F9;
+      --text-secondary: #9FB8C4;
+      --accent: #EF7D00;
+      --accent-hover: #C86800;
+      --accent-text: #FF941E;
+      --warning-bg: #3E3312;
+      --warning-border: #8A6D1F;
+      --warning-text: #F2C94C;
+      --success-bg: #0A3F33;
+      --success-border: #1F7A55;
+      --success-text: #2FB574;
+      --danger-bg: #4A1F1C;
+      --danger-border: #A8443C;
+      --danger-text: #ED807A;
+      --chip-bg: #0A4A63;
+      --input-bg: #011A24;
+      --info-bg: #1B2F4A;
+      --info-border: #2F5A80;
+      --info-text: #4FA8D8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      -webkit-text-size-adjust: 100%;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      min-height: 100svh;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+      overflow-x: hidden;
+    }
+
+    header {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .page-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px 16px;
+      margin-bottom: 16px;
+      overflow-x: hidden;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text-primary);
+    }
+
+    .hint-text {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin-top: 5px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      min-height: 44px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 16px;
+      padding: 10px 14px;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      min-width: 44px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      text-decoration: none;
+      transition: background-color 0.15s, opacity 0.15s;
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #141212;
+    }
+    .btn-primary:not(:disabled):hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--chip-bg);
+      border-color: var(--card-border);
+      color: var(--text-primary);
+    }
+
+    .msg-box {
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 14px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .msg-box.error {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+
+    /* 報到狀態顯示區 */
+    .status-card {
+      background: var(--input-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 10px;
+      padding: 20px 16px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .status-card-no {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--accent-text);
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .status-card-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      word-break: break-word;
+    }
+
+    .status-card-msg {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 6px;
+      padding: 10px;
+    }
+
+    /* PIN 顯示區塊 */
+    .pin-container {
+      background: var(--success-bg);
+      border: 1.5px solid var(--success-border);
+      border-radius: 10px;
+      padding: 18px 14px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .pin-display {
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      color: #ffffff;
+      margin: 10px 0 14px;
+      user-select: all;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1 class="page-title">選手現場報到</h1>
+      <p class="page-subtitle">請領取號碼牌後送出報到資料</p>
+    </header>
+
+    <!-- 報到表單區塊 -->
+    <main id="ckFormSection" class="card">
+      <div class="form-group">
+        <label for="ckCard">號碼牌卡號</label>
+        <input type="text" id="ckCard" placeholder="例如：A-017 或 a17" autocomplete="off" autocapitalize="characters">
+        <p class="hint-text">請輸入您抽取到的號碼牌編號（英文字母加數字）</p>
+      </div>
+
+      <div class="form-group">
+        <label for="ckName">選手顯示名稱</label>
+        <input type="text" id="ckName" maxlength="20" placeholder="例如：王小明" autocomplete="off">
+        <p class="hint-text">這個名字會出現在大螢幕上</p>
+      </div>
+
+      <div id="ckMsg" class="msg-box error" style="display: none;"></div>
+
+      <button type="button" id="ckSubmit" class="btn btn-primary btn-block">送出報到</button>
+    </main>
+
+    <!-- 報到狀態區塊（送出後顯示） -->
+    <section id="ckStatusSection" class="card" style="display: none;">
+      <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--accent-text); margin-bottom: 12px; text-align: center;">報到狀態</h2>
+      
+      <div id="ckStatus" class="status-card"></div>
+
+      <!-- PIN 碼顯示區塊（審核通過時出現） -->
+      <div id="ckPinSection" class="pin-container" style="display: none;">
+        <div style="font-size: 0.9rem; color: var(--text-primary); font-weight: 700;">個人選手 PIN 碼（重要）：</div>
+        <div id="ckPin" class="pin-display"></div>
+        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 12px;">此 PIN 碼僅顯示一次，請立即抄下以便後續回報成績</p>
+        <button type="button" id="ckPinDone" class="btn btn-primary" style="min-width: 140px;">已抄下</button>
+      </div>
+
+      <div style="margin-top: 14px;">
+        <button type="button" id="ckReset" class="btn btn-secondary btn-block">重新填</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="elim-common.js"></script>
+  <script>
+    const TOKEN_KEY = 'riftbound_elim_checkin_token';
+    let pollTimer = null;
+    let currentCheckin = null;
+    let pinAcknowledged = false;
+
+    function renderStatus(c) {
+      currentCheckin = c;
+      const statusEl = document.getElementById('ckStatus');
+      const formSec = document.getElementById('ckFormSection');
+      const statusSec = document.getElementById('ckStatusSection');
+
+      formSec.style.display = 'none';
+      statusSec.style.display = 'block';
+
+      const cardStr = escapeHtml(c.card || '');
+      const nameStr = escapeHtml(c.name || '');
+      const msgStr = escapeHtml(c.message || '');
+
+      statusEl.innerHTML = `
+        <div class="status-card-no">${cardStr}</div>
+        <div class="status-card-name">${nameStr}</div>
+        <div class="status-card-msg">${msgStr}</div>
+      `;
+
+      // PIN 碼大字顯示（若未按過「已抄下」）
+      const pinSec = document.getElementById('ckPinSection');
+      const pinEl = document.getElementById('ckPin');
+      if (c.pin && !pinAcknowledged) {
+        pinEl.textContent = String(c.pin);
+        pinSec.style.display = 'block';
+      }
+
+      // 如果不是 pending，停止定時輪詢
+      if (c.state && c.state !== 'pending') {
+        stopPolling();
+      }
+    }
+
+    async function queryStatus(token) {
+      try {
+        const res = await callApi('/api/checkin/status', { token });
+        if (res && res.checkin) {
+          renderStatus(res.checkin);
+        }
+      } catch (err) {
+        // 若找不到此筆報到或出錯
+        if (err.status === 404) {
+          stopPolling();
+          localStorage.removeItem(TOKEN_KEY);
+          document.getElementById('ckFormSection').style.display = 'block';
+          document.getElementById('ckStatusSection').style.display = 'none';
+        }
+      }
+    }
+
+    function startPolling(token) {
+      stopPolling();
+      pollTimer = setInterval(() => {
+        if (document.visibilityState !== 'hidden') {
+          queryStatus(token);
+        }
+      }, 5000);
+    }
+
+    function stopPolling() {
+      if (pollTimer) {
+        clearInterval(pollTimer);
+        pollTimer = null;
+      }
+    }
+
+    // 送出報到
+    document.getElementById('ckSubmit').addEventListener('click', async () => {
+      const cardInput = document.getElementById('ckCard');
+      const nameInput = document.getElementById('ckName');
+      const submitBtn = document.getElementById('ckSubmit');
+      const msgEl = document.getElementById('ckMsg');
+
+      const card = cardInput.value.trim();
+      const name = nameInput.value.trim();
+
+      msgEl.style.display = 'none';
+      msgEl.textContent = '';
+
+      if (!card) {
+        msgEl.textContent = '請輸入號碼牌卡號';
+        msgEl.style.display = 'block';
+        return;
+      }
+
+      if (!name) {
+        msgEl.textContent = '請輸入選手顯示名稱';
+        msgEl.style.display = 'block';
+        return;
+      }
+
+      submitBtn.disabled = true;
+
+      try {
+        const res = await callApi('/api/checkin/submit', { card, name });
+        if (res.token) {
+          localStorage.setItem(TOKEN_KEY, res.token);
+        }
+        if (res.checkin) {
+          renderStatus(res.checkin);
+        }
+        if (res.token && res.checkin && res.checkin.state === 'pending') {
+          startPolling(res.token);
+        }
+      } catch (err) {
+        msgEl.textContent = err.message || '送出失敗，請確認後再試';
+        msgEl.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    // 已抄下 PIN 按鈕：PIN 碼從畫面消失，任何地方都不存
+    document.getElementById('ckPinDone').addEventListener('click', () => {
+      pinAcknowledged = true;
+      const pinSec = document.getElementById('ckPinSection');
+      const pinEl = document.getElementById('ckPin');
+      pinSec.style.display = 'none';
+      pinEl.textContent = '';
+      if (currentCheckin) {
+        currentCheckin.pin = null;
+      }
+    });
+
+    // 重新填：清掉狀態與記住的 token，回到空白表單
+    document.getElementById('ckReset').addEventListener('click', () => {
+      stopPolling();
+      pinAcknowledged = false;
+      localStorage.removeItem(TOKEN_KEY);
+      currentCheckin = null;
+
+      document.getElementById('ckCard').value = '';
+      document.getElementById('ckName').value = '';
+      document.getElementById('ckMsg').textContent = '';
+      document.getElementById('ckMsg').style.display = 'none';
+
+      const statusEl = document.getElementById('ckStatus');
+      statusEl.innerHTML = '';
+
+      const pinSec = document.getElementById('ckPinSection');
+      const pinEl = document.getElementById('ckPin');
+      pinSec.style.display = 'none';
+      pinEl.textContent = '';
+
+      document.getElementById('ckStatusSection').style.display = 'none';
+      document.getElementById('ckFormSection').style.display = 'block';
+    });
+
+    // 頁面載入時檢查是否有暫存的 token
+    window.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem(TOKEN_KEY);
+      if (token) {
+        queryStatus(token);
+        startPolling(token);
+      }
+    });
+  </script>
+</body>
+</html>

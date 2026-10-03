@@ -1,0 +1,89 @@
+{
+  "contract_version": 1,
+  "kind": "bracket",
+  "server_now": 1790402700000,
+  "event": {
+    "name": "示範報到（假資料）",
+    "status": "before",
+    "note": "",
+    "api_base": "",
+    "viewers": 0,
+    "format": {
+      "elim_type": "single",
+      "third_place": false,
+      "final_size": 2,
+      "scoring": "beyblade_x",
+      "win_point": 4,
+      "tables_per_div": 4
+    }
+  },
+  "policy": {
+    "all": {
+      "who": [
+        "judge",
+        "player"
+      ],
+      "how": [
+        "winner",
+        "score",
+        "points"
+      ]
+    },
+    "div": {},
+    "table": {}
+  },
+  "divisions": [],
+  "finals": null,
+  "checkin": {
+    "open": true,
+    "card_max": 32,
+    "divs": [
+      {
+        "div": "A",
+        "approved": 3
+      },
+      {
+        "div": "B",
+        "approved": 3
+      }
+    ],
+    "players": [
+      {
+        "id": "A-001",
+        "name": "阿翔",
+        "div": "A",
+        "seed": 1
+      },
+      {
+        "id": "A-002",
+        "name": "小楓",
+        "div": "A",
+        "seed": 2
+      },
+      {
+        "id": "A-009",
+        "name": "Kuro",
+        "div": "A",
+        "seed": 9
+      },
+      {
+        "id": "B-003",
+        "name": "旋風",
+        "div": "B",
+        "seed": 3
+      },
+      {
+        "id": "B-004",
+        "name": "老王",
+        "div": "B",
+        "seed": 4
+      },
+      {
+        "id": "B-011",
+        "name": "Miya",
+        "div": "B",
+        "seed": 11
+      }
+    ]
+  }
+}

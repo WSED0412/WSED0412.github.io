@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>符文戰場 — 淘汰賽全場看板</title>
+  <style>
+    :root {
+      --bg: #01222F;
+      --card-bg: #013951;
+      --card-border: #0A5570;
+      --text-primary: #F9F9F9;
+      --text-secondary: #9FB8C4;
+      --accent: #EF7D00;
+      --accent-hover: #C86800;
+      --accent-text: #FF941E;
+      --warning-bg: #3E3312;
+      --warning-border: #8A6D1F;
+      --warning-text: #F2C94C;
+      --success-bg: #0A3F33;
+      --success-border: #1F7A55;
+      --success-text: #2FB574;
+      --danger-bg: #4A1F1C;
+      --danger-border: #A8443C;
+      --danger-text: #ED807A;
+      --chip-bg: #0A4A63;
+      --input-bg: #011A24;
+      --info-bg: #1B2F4A;
+      --info-border: #2F5A80;
+      --info-text: #4FA8D8;
+      --judge-bg: #2E2140;
+      --judge-border: #553C77;
+      --judge-text: #B38FE0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      -webkit-text-size-adjust: 100%;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      min-height: 100svh;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 16px 20px 40px;
+      overflow-x: hidden;
+    }
+
+    /* 頂部看板標題 */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--card-border);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .board-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    .status-pill {
+      font-size: 0.8rem;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-weight: 700;
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: var(--success-text);
+    }
+    .nav-links {
+      display: flex;
+      gap: 8px;
+    }
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      color: var(--accent-text);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: rgba(239, 125, 0, 0.1);
+      border: 1px solid rgba(239, 125, 0, 0.25);
+    }
+
+    /* 警示橫幅 */
+    .banner {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .stale-warning {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+    .contract-warning {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+    }
+
+    /* 分區清單容器 */
+    .divisions-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* 每一區塊 */
+    .elim-div {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 14px;
+      padding: 16px;
+      overflow-x: hidden;
+      min-width: 0;
+    }
+    .div-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .div-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--accent-text);
+    }
+    .div-meta {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    /* 桌次格線 */
+    .tables-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 480px) {
+      .container {
+        padding: 10px 8px 30px;
+      }
+      .elim-div {
+        padding: 12px 8px;
+      }
+      .tables-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .elim-table {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 110px;
+      min-width: 0;
+      word-break: break-word;
+      transition: border-color 0.2s;
+    }
+    .elim-table.is-conflict {
+      border-color: var(--danger-border);
+      background: rgba(74, 31, 28, 0.4);
+    }
+    .elim-table.is-hold {
+      opacity: 0.65;
+      background: rgba(1, 26, 36, 0.5);
+    }
+    .table-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .table-num {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    .match-label-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--chip-bg);
+      color: var(--text-secondary);
+    }
+    .players-info {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 4px 0 8px;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+    .table-status {
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      text-align: center;
+    }
+    .table-status.hold {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      border: 1px solid var(--danger-border);
+    }
+    .table-status.empty {
+      background: rgba(10, 85, 112, 0.3);
+      color: var(--text-secondary);
+    }
+    .table-status.conflict {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      border: 1px solid var(--danger-border);
+    }
+    .table-status.live {
+      background: var(--info-bg);
+      color: var(--info-text);
+      border: 1px solid var(--info-border);
+    }
+
+    /* 等桌中區塊 */
+    .finals-groups-section {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 24px;
+      overflow-x: hidden;
+      min-width: 0;
+    }
+    .finals-groups-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    @media (max-width: 600px) {
+      .finals-groups-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .elim-group {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px;
+      overflow-x: hidden;
+      box-sizing: border-box;
+    }
+    .group-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(10, 85, 112, 0.4);
+    }
+    .group-name-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--accent-text);
+    }
+    .group-lot-badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--warning-text);
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .group-player-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      background: rgba(1, 57, 81, 0.35);
+      border-radius: 6px;
+      font-size: 0.88rem;
+      color: var(--text-primary);
+    }
+
+    .elim-waiting {
+      background: rgba(1, 26, 36, 0.7);
+      border: 1px dashed var(--card-border);
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .waiting-header {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .waiting-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .waiting-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .waiting-tag {
+      font-size: 0.75rem;
+      color: var(--accent-text);
+      font-weight: 700;
+    }
+
+    /* 斷網覆蓋畫面 */
+    .disconnected-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      z-index: 2000;
+    }
+    .disconnected-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--danger-text);
+      margin-bottom: 10px;
+    }
+    .disconnected-desc {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      max-width: 400px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .btn-retry {
+      min-height: 44px;
+      padding: 0 20px;
+      background: var(--accent);
+      color: #141212;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-left">
+        <h1 class="board-title" id="boardTitle">淘汰賽即時桌況看板</h1>
+        <span class="status-pill" id="boardStatusBadge">即時更新中</span>
+      </div>
+      <div class="nav-links">
+        <a href="elim-player.html" class="nav-link">📱 選手查桌</a>
+        <a href="elim-bracket.html" class="nav-link">🏆 賽程樹</a>
+      </div>
+    </header>
+
+    <div id="elimStaleWarning" class="banner stale-warning" style="display: none;">
+      已超過 90 秒未收到新賽況，可能連線中斷或主機暫停
+    </div>
+    <div id="elimContractWarning" class="banner contract-warning" style="display: none;">
+      系統版本已有更新，請重新整理頁面
+    </div>
+
+    <!-- 各分區桌況與等桌清單 -->
+    <main id="divisionsContainer" class="divisions-grid">
+      <div style="text-align: center; color: var(--text-secondary); padding: 40px;">正在讀取賽事桌況...</div>
+    </main>
+  </div>
+
+  <!-- 尚未連上賽務主機畫面 -->
+  <div class="disconnected-overlay" id="elimDisconnectedScreen">
+    <div style="font-size: 3.5rem; margin-bottom: 12px;">⚠️</div>
+    <div class="disconnected-title">尚未連上賽務系統</div>
+    <div class="disconnected-desc">目前無法讀取賽事即時資料。<br>請確認賽事主機是否已啟動，或網路連線是否正常。</div>
+    <button type="button" class="btn-retry" onclick="triggerRetry()">重新連線</button>
+  </div>
+
+  <script src="elim-common.js"></script>
+  <script>
+    let currentData = null;
+
+    const poller = new ElimPoller({
+      onData: (snapshot) => {
+        currentData = snapshot;
+        renderBoard(snapshot);
+      },
+      onError: (err) => {
+        if (!currentData) {
+          const dis = document.getElementById('elimDisconnectedScreen');
+          if (dis) dis.style.display = 'flex';
+        }
+      },
+      interval: 5000
+    });
+    window.poller = poller;
+
+    function triggerRetry() {
+      poller.fetchOnce();
+    }
+
+    function renderBoard(snapshot) {
+      if (!snapshot) return;
+
+      const titleEl = document.getElementById('boardTitle');
+      if (titleEl && snapshot.event && snapshot.event.name) {
+        titleEl.textContent = `${snapshot.event.name} — 桌況看板`;
+      }
+
+      const container = document.getElementById('divisionsContainer');
+      if (!container) return;
+
+      const divs = snapshot.divisions || [];
+
+      // 報到抽號碼牌看板（當 checkin.open 為 true 時）
+      let checkinHtml = '';
+      if (snapshot.checkin && snapshot.checkin.open) {
+        const ck = snapshot.checkin;
+        const ckDivs = ck.divs || [];
+        checkinHtml += `<section class="elim-checkin-section card" style="margin-bottom: 24px; padding: 16px; background: var(--card-bg); border: 1.5px solid var(--card-border); border-radius: 14px;">`;
+        checkinHtml += `  <div class="div-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--card-border);">`;
+        checkinHtml += `    <div class="div-title" style="font-size: 1.25rem; font-weight: 800; color: var(--accent-text);">選手現場報到進度</div>`;
+        checkinHtml += `    <div class="div-meta" style="font-size: 0.85rem; color: var(--text-secondary);">請抽取號碼牌後以手機送出報到</div>`;
+        checkinHtml += `  </div>`;
+        checkinHtml += `  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px;">`;
+        for (const cd of ckDivs) {
+          const divName = escapeHtml(cd.div);
+          const approved = cd.approved != null ? cd.approved : 0;
+          checkinHtml += `    <div class="elim-ck" data-div="${divName}" style="background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 16px; text-align: center;">`;
+          checkinHtml += `      <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">${divName} 區</div>`;
+          checkinHtml += `      <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-text);">${approved} <span style="font-size: 0.95rem; font-weight: 600; color: var(--text-secondary);">人已報到</span></div>`;
+          checkinHtml += `    </div>`;
+        }
+        checkinHtml += `  </div>`;
+        checkinHtml += `</section>`;
+      }
+
+      if (divs.length === 0) {
+        if (checkinHtml) {
+          container.innerHTML = checkinHtml;
+        } else {
+          container.innerHTML = '<div style="text-align:center; color: var(--text-secondary); padding: 40px;">目前尚無分區資料</div>';
+        }
+        return;
+      }
+
+      // 16 強分組循環賽積分榜 (當 finals.drawn 為 true 且有 groups 資料時)
+      let finalsGroupsHtml = '';
+      if (snapshot.finals && snapshot.finals.drawn && snapshot.finals.groups) {
+        finalsGroupsHtml += `<section class="finals-groups-section">`;
+        finalsGroupsHtml += `  <div class="div-header">`;
+        finalsGroupsHtml += `    <div class="div-title">16 強循環賽分組積分表</div>`;
+        finalsGroupsHtml += `    <div class="div-meta">四組循環賽即時戰績與名次</div>`;
+        finalsGroupsHtml += `  </div>`;
+        finalsGroupsHtml += `  <div class="finals-groups-grid">`;
+
+        for (const g of ['A', 'B', 'C', 'D']) {
+          const grp = snapshot.finals.groups[g];
+          if (!grp) continue;
+          const standings = grp.standings || [];
+          const needsLot = !!grp.needs_lot;
+
+          finalsGroupsHtml += `    <div class="elim-group" data-group="${g}">`;
+          finalsGroupsHtml += `      <div class="group-top-bar">`;
+          finalsGroupsHtml += `        <span class="group-name-title">${g} 組</span>`;
+          if (needsLot) {
+            finalsGroupsHtml += `        <span class="group-lot-badge">同分，待現場抽籤</span>`;
+          }
+          finalsGroupsHtml += `      </div>`;
+          finalsGroupsHtml += `      <div style="display: flex; flex-direction: column; gap: 6px;">`;
+
+          for (const st of standings) {
+            const pid = escapeHtml(st.id);
+            const pName = escapeHtml(st.name || st.id);
+            const rank = st.rank;
+            const w = st.w != null ? st.w : 0;
+            const l = st.l != null ? st.l : 0;
+            const diff = st.diff != null ? st.diff : 0;
+            const diffStr = diff > 0 ? `+${diff}` : `${diff}`;
+
+            finalsGroupsHtml += `        <div class="group-player-row" data-player="${pid}">`;
+            finalsGroupsHtml += `          <span style="font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 8px;">第 ${rank} 名 · ${pName}</span>`;
+            finalsGroupsHtml += `          <span style="color: var(--text-secondary); font-size: 0.82rem; white-space: nowrap;">${w}勝${l}敗 · 分差 ${diffStr}</span>`;
+            finalsGroupsHtml += `        </div>`;
+          }
+
+          finalsGroupsHtml += `      </div>`;
+          finalsGroupsHtml += `    </div>`;
+        }
+
+        finalsGroupsHtml += `  </div>`;
+        finalsGroupsHtml += `</section>`;
+      }
+
+      let finalsGroupsInserted = false;
+      let html = checkinHtml;
+      for (const dv of divs) {
+        if (dv.div === 'F' && finalsGroupsHtml && !finalsGroupsInserted) {
+          html += finalsGroupsHtml;
+          finalsGroupsInserted = true;
+        }
+        // 建立 matches map
+        const matchMap = {};
+        if (dv.matches) {
+          for (const m of dv.matches) {
+            matchMap[m.id] = m;
+          }
+        }
+
+        const divName = escapeHtml(dv.div);
+        const playerCount = dv.players || 0;
+        const tables = dv.tables || [];
+
+        html += `<section class="elim-div" data-div="${divName}">`;
+        html += `  <div class="div-header">`;
+        html += `    <div class="div-title">${divName} 區</div>`;
+        html += `    <div class="div-meta">共 ${playerCount} 位選手 · ${tables.length} 張比賽桌</div>`;
+        html += `  </div>`;
+
+        // 桌次列表
+        html += `  <div class="tables-grid">`;
+        for (const tb of tables) {
+          const tNum = tb.table;
+          const matchId = tb.match;
+          const isHold = !!tb.hold;
+          const m = matchId ? matchMap[matchId] : null;
+          const isConflict = m && m.report_state === 'conflict';
+
+          let tableCardClass = 'elim-table';
+          if (isHold) tableCardClass += ' is-hold';
+          if (isConflict) tableCardClass += ' is-conflict';
+
+          html += `    <div class="${tableCardClass}" data-table="${tNum}">`;
+          html += `      <div class="table-top-bar">`;
+          html += `        <span class="table-num">第 ${tNum} 桌</span>`;
+          if (m && m.label) {
+            html += `        <span class="match-label-tag">${escapeHtml(m.label)}</span>`;
+          }
+          html += `      </div>`;
+
+          if (isHold) {
+            html += `      <div class="table-status hold">暫停使用</div>`;
+          } else if (m) {
+            const p1Name = m.p1 ? escapeHtml(m.p1.name) : '待定';
+            const p1Seed = m.p1 ? `(${escapeHtml(m.p1.seed)})` : '';
+            const p2Name = m.p2 ? escapeHtml(m.p2.name) : '待定';
+            const p2Seed = m.p2 ? `(${escapeHtml(m.p2.seed)})` : '';
+
+            html += `      <div class="players-info">${p1Name} ${p1Seed} <span style="color:var(--text-secondary);font-size:0.85rem;">vs</span> ${p2Name} ${p2Seed}</div>`;
+            if (isConflict) {
+              html += `      <div class="table-status conflict">裁判處理中</div>`;
+            } else {
+              html += `      <div class="table-status live">進行中</div>`;
+            }
+          } else {
+            html += `      <div class="players-info" style="color:var(--text-secondary);font-weight:normal;">無選手進行對戰</div>`;
+            html += `      <div class="table-status empty">空桌</div>`;
+          }
+
+          html += `    </div>`;
+        }
+        html += `  </div>`;
+
+        // 等桌清單 (state === 'open' 且 table === null)
+        const waitingMatches = (dv.matches || []).filter(m => m.state === 'open' && m.table === null);
+        html += `  <div class="elim-waiting">`;
+        html += `    <div class="waiting-header">`;
+        html += `      <span>⏳ 等桌中（快輪到了）：${waitingMatches.length} 場</span>`;
+        html += `    </div>`;
+
+        if (waitingMatches.length > 0) {
+          html += `    <div class="waiting-list">`;
+          for (const wm of waitingMatches) {
+            const p1Text = wm.p1 ? `${escapeHtml(wm.p1.name)} (${escapeHtml(wm.p1.seed)})` : '待定';
+            const p2Text = wm.p2 ? `${escapeHtml(wm.p2.name)} (${escapeHtml(wm.p2.seed)})` : '待定';
+            const matchLabel = wm.label ? `[${escapeHtml(wm.label)}] ` : '';
+
+            html += `      <div class="waiting-item" data-match="${escapeHtml(wm.id)}">`;
+            html += `        <span class="waiting-tag">${matchLabel}</span>`;
+            html += `        <span>${p1Text} vs ${p2Text}</span>`;
+            html += `      </div>`;
+          }
+          html += `    </div>`;
+        } else {
+          html += `    <div style="font-size:0.85rem; color:var(--text-secondary);">目前沒有等待中的場次</div>`;
+        }
+        html += `  </div>`;
+
+        html += `</section>`;
+      }
+
+      if (finalsGroupsHtml && !finalsGroupsInserted) {
+        html += finalsGroupsHtml;
+      }
+
+      container.innerHTML = html;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      poller.fetchOnce();
+      poller.start();
+    });
+  </script>
+</body>
+</html>

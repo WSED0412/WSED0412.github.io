@@ -1,0 +1,2230 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>符文戰場 — 淘汰賽主辦控制台</title>
+  <style>
+    :root {
+      --bg: #01222F;
+      --card-bg: #013951;
+      --card-border: #0A5570;
+      --text-primary: #F9F9F9;
+      --text-secondary: #9FB8C4;
+      --accent: #EF7D00;
+      --accent-hover: #C86800;
+      --accent-text: #FF941E;
+      --warning-bg: #3E3312;
+      --warning-border: #8A6D1F;
+      --warning-text: #F2C94C;
+      --danger-bg: #4A1F1C;
+      --danger-border: #A8443C;
+      --danger-text: #ED807A;
+      --success-bg: #0A3F33;
+      --success-border: #1F7A55;
+      --success-text: #2FB574;
+      --chip-bg: #0A4A63;
+      --input-bg: #011A24;
+      --info-bg: #1B2F4A;
+      --info-border: #2F5A80;
+      --info-text: #4FA8D8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      -webkit-text-size-adjust: 100%;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      min-height: 100svh;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    input, select, textarea {
+      font-size: 1rem;
+      color: var(--text-primary);
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      min-height: 44px;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 12px 14px 40px;
+      overflow-x: hidden;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 10px 10px 30px;
+      }
+    }
+
+    /* 頂部導覽列 */
+    header {
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .page-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .admin-badge {
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      font-weight: 700;
+      background: rgba(239, 125, 0, 0.2);
+      border: 1px solid var(--accent);
+      color: var(--accent-text);
+    }
+
+    .user-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+    }
+
+    /* 卡片共通 */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 12px;
+      overflow-x: hidden;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent-text);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* 按鈕 */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      min-width: 44px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      text-decoration: none;
+      transition: background-color 0.15s, opacity 0.15s;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:not(:disabled):hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--chip-bg);
+      border-color: var(--card-border);
+      color: var(--text-primary);
+    }
+
+    .btn-danger {
+      background: var(--danger-bg);
+      border-color: var(--danger-border);
+      color: var(--danger-text);
+    }
+
+    .btn-warning {
+      background: var(--warning-bg);
+      border-color: var(--warning-border);
+      color: var(--warning-text);
+    }
+
+    .btn-success {
+      background: var(--success-bg);
+      border-color: var(--success-border);
+      color: var(--success-text);
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    /* 訊息提示框 */
+    .msg-box {
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      margin-bottom: 10px;
+      word-break: break-word;
+    }
+
+    .msg-box.error {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+
+    .msg-box.success {
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: var(--success-text);
+    }
+
+    .msg-box.warning {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+    }
+
+    /* 桌次清單 */
+    .table-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .ea-table {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    /* 核取方塊樣式 */
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 6px;
+      margin-bottom: 12px;
+    }
+
+    .checkbox-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 44px;
+      cursor: pointer;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      min-height: 20px;
+      cursor: pointer;
+    }
+
+    /* 確認彈窗 */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+
+    .modal-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 18px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--accent-text);
+    }
+
+    .modal-msg {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+
+    .modal-btns {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    /* 系統健康面板 (DATA-CONTRACT 3.9) */
+    .health-problem {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+    .health-problem[data-level="bad"] {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+    .health-problem[data-level="warn"] {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+    }
+
+    /* 工作人員管理清單 (DATA-CONTRACT 3.8) */
+    .staff-row {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .staff-row.staff-disabled {
+      opacity: 0.65;
+      background: rgba(1, 26, 36, 0.4);
+      border-color: rgba(10, 85, 112, 0.4);
+    }
+    .staff-row-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    #staffList button, #staffAddBtn, #staffPinDone, #staffRefresh, #eaFinish, #eaLogout {
+      min-height: 44px;
+      min-width: 44px;
+      box-sizing: border-box;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-weight: 600;
+      background: var(--chip-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-top">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <h1 class="page-title">淘汰賽主辦控制台</h1>
+          <span class="admin-badge">主辦端</span>
+        </div>
+        <div id="eaUserBar" class="user-bar" style="display: none;">
+          <span>主辦：<strong id="eaStaffName"></strong></span>
+          <button type="button" id="eaLogout" class="btn btn-secondary" style="min-height: 44px; min-width: 44px; padding: 4px 10px; font-size: 0.85rem;">登出</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 登入區塊 -->
+    <section id="eaLoginSection" class="card">
+      <h2 class="card-title">主辦人員登入</h2>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 12px;">
+        請輸入主辦 PIN 碼以進入賽事控制台。非主辦人員（如裁判）無法使用此頁面。
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px;">
+        <label for="eaPin" style="font-size: 0.88rem; font-weight: 600;">主辦 PIN 碼</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="password" id="eaPin" placeholder="例如 admin-demo" autocomplete="off">
+          <button type="button" id="eaLogin" class="btn btn-primary" style="min-width: 80px;">登入</button>
+        </div>
+      </div>
+      <div id="eaLoginMsg" class="msg-box error" style="display: none;"></div>
+    </section>
+
+    <!-- 主要控制面板（登入後顯示） -->
+    <main id="eaMainPanel" style="display: none;">
+      <!-- 區塊: 系統健康 (DATA-CONTRACT 3.9, PROJECT.md 第三十四/四十二輪) -->
+      <section id="healthPanel" class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <h2 class="card-title" style="margin-bottom: 0;">🏥 系統健康</h2>
+            <span id="healthStatusBadge" style="font-size: 0.85rem; padding: 4px 10px; border-radius: 6px; font-weight: 700; background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border);">正常</span>
+          </div>
+          <div style="font-size: 0.85rem; color: var(--text-secondary);">
+            版本指紋：<code id="healthVersion" style="color: var(--accent-text); font-weight: 700;"></code>
+          </div>
+        </div>
+        <div id="healthExtraInfo" style="margin-top: 8px; font-size: 0.82rem; color: var(--text-secondary); display: none;"></div>
+        <div id="healthProblemsList" style="margin-top: 10px; display: none;"></div>
+      </section>
+
+      <!-- 區塊: 工作人員管理 (DATA-CONTRACT 3.8, PROJECT.md 第三十四/四十二輪) -->
+      <section class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+          <h2 class="card-title" style="margin-bottom: 0;">👥 工作人員管理</h2>
+          <button type="button" id="staffRefresh" class="btn btn-secondary">重新整理清單</button>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">
+          管理賽事工作人員身分與權限。可新增主辦或裁判、變更角色、停用／恢復帳號，或重設 PIN 碼。
+        </p>
+
+        <!-- 新增工作人員 -->
+        <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px;">
+          <label for="staffAddName" style="font-size: 0.85rem; font-weight: 700;">新增工作人員（主機運作中可直接新增）</label>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <input type="text" id="staffAddName" maxlength="20" placeholder="姓名（例如 陀螺裁判）" style="flex: 2; min-width: 140px;">
+            <select id="staffAddRole" style="flex: 1; min-width: 100px; max-width: 120px;">
+              <option value="judge">裁判</option>
+              <option value="admin">主辦</option>
+            </select>
+            <button type="button" id="staffAddBtn" class="btn btn-primary" style="white-space: nowrap;">新增工作人員</button>
+          </div>
+        </div>
+
+        <!-- 新 PIN 顯示區塊 (只顯示一次) -->
+        <div id="staffPinBox" class="msg-box success" style="display: none; margin-bottom: 12px; padding: 14px 16px;">
+          <div style="font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; color: var(--text-primary);">
+            新發行工作人員 PIN 碼（離開畫面後即無法再次查看，請立即抄下交給該人員）：
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+            <div id="staffPinShow" style="font-size: 1.6rem; font-weight: 800; color: #34d399; letter-spacing: 3px; font-family: monospace;"></div>
+            <button type="button" id="staffPinDone" class="btn btn-primary">已抄下</button>
+          </div>
+        </div>
+
+        <div id="staffMsg" class="msg-box error" style="display: none;"></div>
+
+        <!-- 工作人員清單 -->
+        <div id="staffList" style="margin-top: 12px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="color: var(--text-secondary); font-size: 0.85rem;">載入工作人員中...</div>
+        </div>
+      </section>
+
+      <!-- 通用訊息提示 -->
+      <div id="eaGlobalMsg" class="msg-box" style="display: none;"></div>
+
+      <!-- 區塊 1: 桌次管理與控制 -->
+      <section class="card">
+        <h2 class="card-title">桌次管理與即時控制</h2>
+        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px;">
+          <label for="eaDiv" style="font-size: 0.88rem; font-weight: 700; white-space: nowrap;">選擇分區：</label>
+          <select id="eaDiv">
+            <option value="A">A 區</option>
+            <option value="B">B 區</option>
+          </select>
+        </div>
+
+        <!-- 批次與指定桌次操作 -->
+        <div style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: 6px; padding: 12px; margin-bottom: 12px;">
+          <div style="font-size: 0.88rem; font-weight: 700; margin-bottom: 8px; color: var(--accent-text);">桌次快速控制：</div>
+          <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+            <!-- 只開前 N 桌 -->
+            <div>
+              <label for="eaOnly" style="font-size: 0.82rem; color: var(--text-secondary); display: block; margin-bottom: 2px;">只開前 N 桌（其餘桌次自動停用）：</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="number" id="eaOnly" min="1" placeholder="桌數，例如 2" style="max-width: 140px;">
+                <button type="button" id="eaOnlyBtn" class="btn btn-secondary">設定只開 N 桌</button>
+              </div>
+            </div>
+            <!-- 指定場次上桌 -->
+            <div style="margin-top: 4px;">
+              <label style="font-size: 0.82rem; color: var(--text-secondary); display: block; margin-bottom: 2px;">指定某一場上某一桌：</label>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <input type="text" id="eaAssignMatch" placeholder="場次編號，例如 B-R0-M00" style="flex: 2; min-width: 150px;">
+                <input type="number" id="eaAssignTable" min="1" placeholder="桌號" style="flex: 1; min-width: 70px; max-width: 100px;">
+                <button type="button" id="eaAssignBtn" class="btn btn-primary">指定上桌</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 桌次列表 -->
+        <div id="eaTables" class="table-list">
+          <div style="color: var(--text-secondary); font-size: 0.88rem;">讀取桌況中...</div>
+        </div>
+      </section>
+
+      <!-- 區塊 2: 報分設定（誰可以報／可以怎樣報） -->
+      <section class="card">
+        <h2 class="card-title">報分規則設定</h2>
+        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px;">
+          設定誰可以回報與允許的計分方式。分層套用：全場 → 分區 → 單一桌次（越細越優先）。
+        </p>
+
+        <!-- 設定層級選單 -->
+        <div style="display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 12px;">
+          <div>
+            <label for="eaScope" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 2px; display: block;">設定層級 (Scope)：</label>
+            <select id="eaScope">
+              <option value="all">全場（所有分區與桌次預設）</option>
+              <option value="div">某一區（覆蓋指定分區）</option>
+              <option value="table">某一桌（覆蓋實體桌次，如直播桌）</option>
+            </select>
+          </div>
+          <div id="eaPolicyDivRow" style="display: none;">
+            <label for="eaPolicyDiv" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 2px; display: block;">指定分區：</label>
+            <select id="eaPolicyDiv">
+              <option value="A">A 區</option>
+              <option value="B">B 區</option>
+            </select>
+          </div>
+          <div id="eaPolicyTableRow" style="display: none;">
+            <label for="eaPolicyTable" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 2px; display: block;">指定桌號：</label>
+            <input type="number" id="eaPolicyTable" min="1" value="1" placeholder="桌號，例如 1">
+          </div>
+        </div>
+
+        <!-- 誰可以報 (who) -->
+        <div style="margin-top: 10px;">
+          <div style="font-size: 0.9rem; font-weight: 700; color: var(--accent-text);">誰可以報分 (Who)：</div>
+          <div class="checkbox-group">
+            <label class="checkbox-item">
+              <input type="checkbox" id="eaWhoJudge" checked>
+              <span>裁判 (judge)</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" id="eaWhoPlayer" checked>
+              <span>選手 (player)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 可以怎樣報 (how) -->
+        <div style="margin-top: 6px;">
+          <div style="font-size: 0.9rem; font-weight: 700; color: var(--accent-text);">可以怎樣報分 (How)：</div>
+          <div class="checkbox-group">
+            <label class="checkbox-item">
+              <input type="checkbox" id="eaHowWinner" checked>
+              <span>只按誰贏 (winner)</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" id="eaHowScore" checked>
+              <span>最後比分 (score)</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" id="eaHowPoints" checked>
+              <span>逐分計分 (points)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 訊息提示 -->
+        <div id="eaPolicyMsg" class="msg-box" style="display: none;"></div>
+
+        <!-- 操作按鈕 -->
+        <div style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
+          <button type="button" id="eaPolicySave" class="btn btn-primary" style="flex: 2; min-width: 140px;">儲存此層設定</button>
+          <button type="button" id="eaPolicyClear" class="btn btn-warning" style="flex: 1; min-width: 120px;">清除並跟回上一層</button>
+        </div>
+      </section>
+
+      <!-- 區塊 3: 每一區每一桌實際套用的報分設定總覽 (.ea-eff[data-div][data-table]) -->
+      <section class="card" id="eaEffectiveSection">
+        <h2 class="card-title">各區各桌實際套用設定總覽</h2>
+        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 8px;">
+          即時顯示主機解析後的最終報分設定與其來源層級（全場／區／桌）。
+        </p>
+        <div id="eaEffectiveList" style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="color: var(--text-secondary); font-size: 0.88rem;">讀取設定中...</div>
+        </div>
+      </section>
+
+      <!-- 區塊: 比賽中現場加人 -->
+      <section class="card" id="eaAddPlayerSection">
+        <h2 class="card-title">比賽中現場加人</h2>
+        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 12px;">
+          比賽進行中若有現場選手補報名，系統會將新人安排在最後一個輪空位置。加入前必須先預覽確認對手與桌次影響。
+        </p>
+
+        <!-- 加人表單 -->
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px;">
+          <div>
+            <label for="eaAddDiv" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 2px; display: block;">選擇加入分區：</label>
+            <select id="eaAddDiv"></select>
+          </div>
+
+          <div>
+            <label for="eaAddName" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 2px; display: block;">選手姓名（必填，1～20 字）：</label>
+            <input type="text" id="eaAddName" maxlength="20" placeholder="例如：王小明">
+          </div>
+
+          <div>
+            <label for="eaAddId" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 2px; display: block;">選手編號（選填，留空由系統自動指派）：</label>
+            <input type="text" id="eaAddId" maxlength="20" placeholder="例如：A-07（留空則自動遞增）">
+          </div>
+
+          <div>
+            <button type="button" id="eaAddPreview" class="btn btn-secondary btn-block">預覽加人排程</button>
+          </div>
+        </div>
+
+        <!-- 錯誤或退回訊息提示 -->
+        <div id="eaAddMsg" class="msg-box error" style="display: none; margin-bottom: 10px;"></div>
+
+        <!-- 預覽結果顯示區（名字用 textContent 設定以確保安全跳脫） -->
+        <div id="eaAddPreviewBox" style="display: none; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--info-border); border-radius: 6px; padding: 12px; margin-bottom: 10px; font-size: 0.9rem; white-space: pre-wrap; line-height: 1.6;"></div>
+
+        <!-- 請下桌後加入勾選（僅在對手下一場已上桌時出現） -->
+        <div id="eaAddBumpContainer" style="display: none; background: rgba(138, 109, 31, 0.15); border: 1px solid var(--warning-border); border-radius: 6px; padding: 10px; margin-bottom: 12px;">
+          <label class="checkbox-item" style="color: var(--warning-text); font-weight: 600;">
+            <input type="checkbox" id="eaAddBump">
+            <span>請下桌後加入</span>
+          </label>
+        </div>
+
+        <!-- 加入選手確認送出按鈕 -->
+        <div style="margin-bottom: 12px;">
+          <button type="button" id="eaAddConfirm" class="btn btn-primary btn-block" disabled>加入選手</button>
+        </div>
+
+        <!-- 加人完成結果顯示（大字 PIN 碼，不存入任何瀏覽器儲存區） -->
+        <div id="eaAddResultContainer" style="display: none; background: var(--success-bg); border: 1px solid var(--success-border); border-radius: 6px; padding: 14px; text-align: center;">
+          <div id="eaAddResult" style="font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 10px; white-space: pre-wrap; line-height: 1.7;"></div>
+          <button type="button" id="eaAddPinDone" class="btn btn-secondary" style="min-width: 120px;">已抄下</button>
+        </div>
+      </section>
+
+      <!-- 區塊 4: 16 強決賽管理（抽籤、取消抽籤、名次裁定） -->
+      <section class="card" id="eaFinalsSection" style="display: none;">
+        <h2 class="card-title">16 強決賽管理</h2>
+        <div id="eaFinalsGlobalMsg" class="msg-box" style="display: none;"></div>
+        <p id="eaFinalsStatus" style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;"></p>
+
+        <!-- 取消抽籤區塊 (#eaUndraw) -->
+        <div id="eaUndrawContainer" style="display: none; margin-bottom: 14px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: 6px; padding: 12px;">
+          <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-text); margin-bottom: 6px;">抽籤狀態：已完成抽籤</div>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px;">
+            若需重新抽籤或調整，可取消抽籤回到資格賽結束狀態（若小組賽已有對戰結果則無法取消）。
+          </p>
+          <button type="button" id="eaUndraw" class="btn btn-danger">取消抽籤</button>
+        </div>
+
+        <!-- 抽籤控制面板 (#eaDrawPanel) -->
+        <div id="eaDrawPanel" style="display: none; margin-bottom: 14px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: 6px; padding: 12px;">
+          <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-text); margin-bottom: 6px;">16 強小組賽抽籤</div>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 12px;">
+            勝部 8 人抽 1～8 號（1～4 號為 A 組、5～8 號為 B 組）；敗部 8 人抽 1～8 號（1～4 號為 C 組、5～8 號為 D 組）。兩池 1～8 號皆不得重複。
+          </p>
+          <div id="eaDrawMsg" class="msg-box error" style="display: none;"></div>
+
+          <!-- 勝部池 8 人 -->
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; border-bottom: 1px solid var(--card-border); padding-bottom: 4px;">
+              勝部池 (Winners) 8 位選手：
+            </div>
+            <div id="eaWinnersPool" style="display: flex; flex-direction: column; gap: 8px;"></div>
+          </div>
+
+          <!-- 敗部池 8 人 -->
+          <div style="margin-bottom: 14px;">
+            <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; border-bottom: 1px solid var(--card-border); padding-bottom: 4px;">
+              敗部池 (Losers) 8 位選手：
+            </div>
+            <div id="eaLosersPool" style="display: flex; flex-direction: column; gap: 8px;"></div>
+          </div>
+
+          <!-- 抽籤操作按鈕 -->
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" id="eaDrawSubmit" class="btn btn-primary" style="flex: 2; min-width: 140px;" disabled>送出抽籤結果</button>
+            <button type="button" id="eaDrawRandom" class="btn btn-secondary" style="flex: 1; min-width: 120px;">由系統抽</button>
+          </div>
+        </div>
+
+        <!-- 名次裁定區塊（.ea-lot[data-group] 動態插入於此） -->
+        <div id="eaLotSection" style="display: flex; flex-direction: column; gap: 12px;"></div>
+      </section>
+
+      <!-- 區塊: 結束賽事 (PROJECT.md 第四十二輪, review.py [46]) -->
+      <section class="card" style="margin-top: 20px; border-color: rgba(168, 68, 60, 0.4);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <div style="font-weight: 700; color: var(--danger-text); font-size: 0.95rem;">結束賽事</div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary);">賽事結束後將鎖定為已結束狀態，不可再修改或回報成績。</div>
+          </div>
+          <button type="button" id="eaFinish" class="btn btn-secondary" style="border-color: var(--danger-border); color: var(--danger-text);">結束賽事</button>
+        </div>
+        <div id="eaFinishMsg" class="msg-box" style="display: none; margin-top: 10px;"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- 操作確認彈窗（包含 confirmYes 與 confirmNo） -->
+  <div id="confirmModal" class="modal-overlay" style="display: none;">
+    <div class="modal-box">
+      <div id="confirmTitle" class="modal-title">操作確認</div>
+      <div id="confirmMessage" class="modal-msg"></div>
+      <div class="modal-btns">
+        <button type="button" id="confirmNo" class="btn btn-secondary">取消</button>
+        <button type="button" id="confirmYes" class="btn btn-danger">確認執行</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="elim-common.js"></script>
+  <script>
+    // 嚴格遵守：PIN 僅存放在記憶體或 sessionStorage，絕不存進 localStorage
+    const SESSION_KEY_PIN = 'riftbound_elim_admin_pin';
+    let staffPin = '';
+    let staffRole = '';
+    let staffName = '';
+
+    let poller = null;
+    let pendingConfirmAction = null;
+    let currentEffectiveData = null;
+
+    let healthAutoTimer = null;
+    let isFetchingHealth = false;
+    let currentStaffMe = '';
+    let isFetchingStaff = false;
+    let isAddingStaff = false;
+
+    // 確認彈窗輔助函式
+    function showConfirm(title, message, onConfirmed) {
+      document.getElementById('confirmTitle').textContent = title;
+      document.getElementById('confirmMessage').textContent = message;
+      document.getElementById('confirmModal').style.display = 'flex';
+      pendingConfirmAction = onConfirmed;
+    }
+
+    document.getElementById('confirmYes').addEventListener('click', async () => {
+      document.getElementById('confirmModal').style.display = 'none';
+      if (pendingConfirmAction) {
+        const action = pendingConfirmAction;
+        pendingConfirmAction = null;
+        await action();
+      }
+    });
+
+    document.getElementById('confirmNo').addEventListener('click', () => {
+      document.getElementById('confirmModal').style.display = 'none';
+      pendingConfirmAction = null;
+    });
+
+    // 登入邏輯（非 admin 角色嚴格擋下）
+    async function doLogin(pin) {
+      const loginBtn = document.getElementById('eaLogin');
+      const loginMsg = document.getElementById('eaLoginMsg');
+      loginBtn.disabled = true;
+      loginMsg.style.display = 'none';
+
+      try {
+        const res = await callApi('/api/staff/whoami', { staff_pin: pin });
+        if (res.role !== 'admin') {
+          loginMsg.textContent = '只有主辦可以使用此頁面（裁判請使用裁判頁）';
+          loginMsg.style.display = 'block';
+          return;
+        }
+
+        staffPin = pin;
+        staffRole = res.role;
+        staffName = res.name || '示範主辦';
+        sessionStorage.setItem(SESSION_KEY_PIN, pin);
+
+        document.getElementById('eaStaffName').textContent = staffName;
+        document.getElementById('eaUserBar').style.display = 'flex';
+        document.getElementById('eaLoginSection').style.display = 'none';
+        document.getElementById('eaMainPanel').style.display = 'block';
+
+        // 登入成功後開始輪詢與載入資料
+        if (!poller) {
+          poller = new ElimPoller({
+            onData: (data) => {
+              onSnapshotUpdate(data);
+            },
+            interval: 5000
+          });
+          poller.start();
+        }
+        await poller.fetchOnce();
+        await refreshPolicyView();
+        await fetchHealth();
+        startHealthTimer();
+        await fetchStaffList();
+      } catch (err) {
+        loginMsg.textContent = err.message || '登入失敗，請確認 PIN 碼';
+        loginMsg.style.display = 'block';
+      } finally {
+        loginBtn.disabled = false;
+      }
+    }
+
+    document.getElementById('eaLogin').addEventListener('click', () => {
+      const pin = (document.getElementById('eaPin').value || '').trim();
+      if (!pin) {
+        const msg = document.getElementById('eaLoginMsg');
+        msg.textContent = '請輸入主辦 PIN 碼';
+        msg.style.display = 'block';
+        return;
+      }
+      doLogin(pin);
+    });
+
+    document.getElementById('eaLogout').addEventListener('click', () => {
+      staffPin = '';
+      staffRole = '';
+      staffName = '';
+      sessionStorage.removeItem(SESSION_KEY_PIN);
+      if (poller) poller.stop();
+      stopHealthTimer();
+
+      document.getElementById('eaUserBar').style.display = 'none';
+      document.getElementById('eaMainPanel').style.display = 'none';
+      document.getElementById('eaLoginSection').style.display = 'block';
+      document.getElementById('eaPin').value = '';
+
+      const hpVer = document.getElementById('healthVersion');
+      if (hpVer) hpVer.textContent = '';
+      const hpProb = document.getElementById('healthProblemsList');
+      if (hpProb) { hpProb.innerHTML = ''; hpProb.style.display = 'none'; }
+      const stList = document.getElementById('staffList');
+      if (stList) stList.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.85rem;">載入工作人員中...</div>';
+      handleStaffPinDone();
+      const stMsg = document.getElementById('staffMsg');
+      if (stMsg) { stMsg.textContent = ''; stMsg.style.display = 'none'; }
+      const fnMsg = document.getElementById('eaFinishMsg');
+      if (fnMsg) { fnMsg.textContent = ''; fnMsg.style.display = 'none'; }
+
+      const addName = document.getElementById('eaAddName');
+      const addId = document.getElementById('eaAddId');
+      const addRes = document.getElementById('eaAddResult');
+      const addResBox = document.getElementById('eaAddResultContainer');
+      if (addName) addName.value = '';
+      if (addId) addId.value = '';
+      if (addRes) addRes.textContent = '';
+      if (addResBox) addResBox.style.display = 'none';
+      resetAddPreviewState();
+    });
+
+    // 輪詢更新 snapshot
+    function onSnapshotUpdate(snap) {
+      if (!snap) return;
+      updateDivDropdowns(snap.divisions || []);
+      renderTables();
+      renderFinals(snap);
+    }
+
+    function updateDivDropdowns(divs) {
+      if (!divs.length) return;
+      const eaDiv = document.getElementById('eaDiv');
+      const eaPolicyDiv = document.getElementById('eaPolicyDiv');
+      const eaAddDiv = document.getElementById('eaAddDiv');
+      const curDiv = eaDiv.value;
+      const curPolDiv = eaPolicyDiv.value;
+      const curAddDiv = eaAddDiv ? eaAddDiv.value : '';
+
+      const opts = divs.map(d => `<option value="${escapeHtml(d.div)}">${escapeHtml(d.div)} 區</option>`).join('');
+      if (eaDiv.innerHTML !== opts) {
+        eaDiv.innerHTML = opts;
+        if (divs.some(d => d.div === curDiv)) {
+          eaDiv.value = curDiv;
+        }
+      }
+
+      if (eaPolicyDiv.innerHTML !== opts) {
+        eaPolicyDiv.innerHTML = opts;
+        if (divs.some(d => d.div === curPolDiv)) {
+          eaPolicyDiv.value = curPolDiv;
+        }
+      }
+
+      if (eaAddDiv) {
+        const nonFDivs = divs.filter(d => d.div !== 'F');
+        const addOpts = nonFDivs.map(d => `<option value="${escapeHtml(d.div)}">${escapeHtml(d.div)} 區</option>`).join('');
+        if (eaAddDiv.innerHTML !== addOpts) {
+          eaAddDiv.innerHTML = addOpts;
+          if (nonFDivs.some(d => d.div === curAddDiv)) {
+            eaAddDiv.value = curAddDiv;
+          }
+        }
+      }
+    }
+
+    document.getElementById('eaDiv').addEventListener('change', () => {
+      renderTables();
+    });
+
+    // 渲染桌次與控制按鈕
+    function renderTables() {
+      const snap = window.elimSnapshot;
+      if (!snap || !snap.divisions) return;
+      const currentDiv = document.getElementById('eaDiv').value;
+      const divData = snap.divisions.find(d => d.div === currentDiv);
+      const container = document.getElementById('eaTables');
+
+      if (!divData || !divData.tables || !divData.tables.length) {
+        container.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.88rem;">此分區目前沒有配置桌次。</div>';
+        return;
+      }
+
+      let html = '';
+      for (const t of divData.tables) {
+        const tableNo = t.table;
+        const isHold = !!t.hold;
+        let matchLabel = '空桌';
+        let matchSub = '';
+
+        if (t.match) {
+          const matchObj = (divData.matches || []).find(m => m.id === t.match);
+          const p1Name = (matchObj && matchObj.p1 && matchObj.p1.name) ? matchObj.p1.name : '';
+          const p2Name = (matchObj && matchObj.p2 && matchObj.p2.name) ? matchObj.p2.name : '';
+          matchLabel = `對戰中：${t.match}`;
+          if (p1Name && p2Name) {
+            matchSub = `${p1Name} VS ${p2Name}`;
+          }
+        }
+
+        html += `
+          <div class="ea-table" data-table="${tableNo}">
+            <div class="table-header">
+              <span style="font-weight: 700; color: var(--accent-text);">第 ${tableNo} 桌</span>
+              <span class="badge ${isHold ? 'badge' : (t.match ? 'live' : '')}" style="${isHold ? 'background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text);' : ''}">
+                ${isHold ? '暫停使用' : (t.match ? '比賽中' : '空桌')}
+              </span>
+            </div>
+            <div style="font-size: 0.9rem; margin-bottom: 2px;">
+              ${escapeHtml(matchLabel)}
+            </div>
+            ${matchSub ? `<div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 4px;">${escapeHtml(matchSub)}</div>` : ''}
+            <div class="table-actions">
+              <button type="button" class="btn btn-warning ea-hold" data-table="${tableNo}" style="flex: 1;">停用</button>
+              <button type="button" class="btn btn-success ea-open" data-table="${tableNo}" style="flex: 1;">恢復</button>
+              <button type="button" class="btn btn-danger ea-clear" data-table="${tableNo}" style="flex: 1;">請下桌</button>
+            </div>
+          </div>
+        `;
+      }
+      container.innerHTML = html;
+
+      // 綁定桌次操作按鈕事件
+      container.querySelectorAll('.ea-hold').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const t = parseInt(btn.getAttribute('data-table'), 10);
+          await tableAction('hold', t);
+        });
+      });
+
+      container.querySelectorAll('.ea-open').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const t = parseInt(btn.getAttribute('data-table'), 10);
+          await tableAction('open', t);
+        });
+      });
+
+      container.querySelectorAll('.ea-clear').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const t = parseInt(btn.getAttribute('data-table'), 10);
+          showConfirm('請下桌確認', `確定要將第 ${t} 桌的比賽請下桌嗎？該場次將回到等桌名單，且該桌會同時停用。`, async () => {
+            await tableAction('clear', t);
+          });
+        });
+      });
+    }
+
+    async function tableAction(act, table, match = null) {
+      if (!staffPin) return;
+      const currentDiv = document.getElementById('eaDiv').value;
+      const body = {
+        staff_pin: staffPin,
+        div: currentDiv,
+        act: act
+      };
+      if (table != null) body.table = table;
+      if (match != null) body.match = match;
+
+      try {
+        await callApi('/api/admin/table', body);
+        if (poller) await poller.fetchOnce();
+      } catch (err) {
+        showGlobalError(err.message || '桌次控制失敗');
+      }
+    }
+
+    function showGlobalError(msg) {
+      const el = document.getElementById('eaGlobalMsg');
+      el.className = 'msg-box error';
+      el.textContent = msg;
+      el.style.display = 'block';
+      setTimeout(() => {
+        el.style.display = 'none';
+      }, 5000);
+    }
+
+    // 只開前 N 桌
+    document.getElementById('eaOnlyBtn').addEventListener('click', async () => {
+      const n = parseInt(document.getElementById('eaOnly').value, 10);
+      if (!n || n < 1) {
+        showGlobalError('請輸入有效的桌數（正整數）');
+        return;
+      }
+      const btn = document.getElementById('eaOnlyBtn');
+      btn.disabled = true;
+      try {
+        await tableAction('only', n);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    // 指定場次上桌
+    document.getElementById('eaAssignBtn').addEventListener('click', async () => {
+      const match = (document.getElementById('eaAssignMatch').value || '').trim();
+      const table = parseInt(document.getElementById('eaAssignTable').value, 10);
+      if (!match) {
+        showGlobalError('請輸入場次編號');
+        return;
+      }
+      if (!table || table < 1) {
+        showGlobalError('請輸入有效桌號');
+        return;
+      }
+      const btn = document.getElementById('eaAssignBtn');
+      btn.disabled = true;
+      try {
+        await tableAction('assign', table, match);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    // 報分層級切換
+    document.getElementById('eaScope').addEventListener('change', (e) => {
+      const scope = e.target.value;
+      const divRow = document.getElementById('eaPolicyDivRow');
+      const tableRow = document.getElementById('eaPolicyTableRow');
+      if (scope === 'all') {
+        divRow.style.display = 'none';
+        tableRow.style.display = 'none';
+      } else if (scope === 'div') {
+        divRow.style.display = 'block';
+        tableRow.style.display = 'none';
+      } else if (scope === 'table') {
+        divRow.style.display = 'block';
+        tableRow.style.display = 'block';
+      }
+    });
+
+    // 報分設定儲存
+    document.getElementById('eaPolicySave').addEventListener('click', async () => {
+      const msgEl = document.getElementById('eaPolicyMsg');
+      msgEl.style.display = 'none';
+
+      // 檢查「怎樣報」是否全部取消
+      const howWinner = document.getElementById('eaHowWinner').checked;
+      const howScore = document.getElementById('eaHowScore').checked;
+      const howPoints = document.getElementById('eaHowPoints').checked;
+
+      const how = [];
+      if (howWinner) how.push('winner');
+      if (howScore) how.push('score');
+      if (howPoints) how.push('points');
+
+      if (how.length === 0) {
+        msgEl.className = 'msg-box error';
+        msgEl.textContent = '「怎樣報」不能全部取消，至少要保留一種報分方式';
+        msgEl.style.display = 'block';
+        return;
+      }
+
+      const whoJudge = document.getElementById('eaWhoJudge').checked;
+      const whoPlayer = document.getElementById('eaWhoPlayer').checked;
+      const who = [];
+      if (whoJudge) who.push('judge');
+      if (whoPlayer) who.push('player');
+
+      const scope = document.getElementById('eaScope').value;
+      const req = {
+        staff_pin: staffPin,
+        scope: scope,
+        who: who,
+        how: how
+      };
+
+      if (scope !== 'all') {
+        req.div = document.getElementById('eaPolicyDiv').value;
+      }
+      if (scope === 'table') {
+        req.table = parseInt(document.getElementById('eaPolicyTable').value, 10) || 1;
+      }
+
+      const saveBtn = document.getElementById('eaPolicySave');
+      saveBtn.disabled = true;
+
+      try {
+        const res = await callApi('/api/admin/policy', req);
+        msgEl.className = 'msg-box success';
+        msgEl.textContent = '報分設定已成功更新';
+        msgEl.style.display = 'block';
+
+        if (res.effective) {
+          renderAllEffective(res.effective);
+        } else {
+          await refreshPolicyView();
+        }
+      } catch (err) {
+        msgEl.className = 'msg-box error';
+        msgEl.textContent = err.message || '更新報分設定失敗';
+        msgEl.style.display = 'block';
+      } finally {
+        saveBtn.disabled = false;
+      }
+    });
+
+    // 報分設定清除（跟回上一層，需確認）
+    document.getElementById('eaPolicyClear').addEventListener('click', () => {
+      const scope = document.getElementById('eaScope').value;
+      if (scope === 'all') {
+        const msgEl = document.getElementById('eaPolicyMsg');
+        msgEl.className = 'msg-box warning';
+        msgEl.textContent = '全場層級為基礎預設設定，無法清除';
+        msgEl.style.display = 'block';
+        return;
+      }
+
+      const scopeLabel = scope === 'div' ? '分區' : '桌次';
+      showConfirm('清除報分設定', `確定要清除此${scopeLabel}層級的自訂設定，並跟回上一層嗎？`, async () => {
+        const msgEl = document.getElementById('eaPolicyMsg');
+        msgEl.style.display = 'none';
+
+        const req = {
+          staff_pin: staffPin,
+          scope: scope,
+          clear: true
+        };
+        if (scope !== 'all') {
+          req.div = document.getElementById('eaPolicyDiv').value;
+        }
+        if (scope === 'table') {
+          req.table = parseInt(document.getElementById('eaPolicyTable').value, 10) || 1;
+        }
+
+        const clearBtn = document.getElementById('eaPolicyClear');
+        clearBtn.disabled = true;
+
+        try {
+          const res = await callApi('/api/admin/policy', req);
+          msgEl.className = 'msg-box success';
+          msgEl.textContent = '已清除該層設定，已跟回上一層';
+          msgEl.style.display = 'block';
+
+          if (res.effective) {
+            renderAllEffective(res.effective);
+          } else {
+            await refreshPolicyView();
+          }
+        } catch (err) {
+          msgEl.className = 'msg-box error';
+          msgEl.textContent = err.message || '清除設定失敗';
+          msgEl.style.display = 'block';
+        } finally {
+          clearBtn.disabled = false;
+        }
+      });
+    });
+
+    // 載入與更新各區各桌實際套用設定總覽 (/api/admin/policy_view)
+    async function refreshPolicyView() {
+      if (!staffPin) return;
+      try {
+        const res = await callApi('/api/admin/policy_view', { staff_pin: staffPin });
+        if (res.effective) {
+          currentEffectiveData = res.effective;
+          renderAllEffective(res.effective);
+        }
+      } catch (err) {
+        // 忽略更新時的暫時錯誤
+      }
+    }
+
+    // 渲染所有分區與桌次的實際套用結果 (.ea-eff[data-div][data-table])
+    function renderAllEffective(effectiveData) {
+      const container = document.getElementById('eaEffectiveList');
+      if (!container || !effectiveData) return;
+
+      const whoMap = { judge: '裁判', player: '選手' };
+      const howMap = { winner: '只按誰贏', score: '最後比分', points: '逐分計分' };
+      const fromMap = { all: '全場', div: '區', table: '桌' };
+
+      const divKeys = Object.keys(effectiveData).sort();
+      let html = '';
+
+      for (const d of divKeys) {
+        const divInfo = effectiveData[d];
+        html += `
+          <div style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: 6px; padding: 10px; margin-bottom: 6px;">
+            <div style="font-weight: 700; color: var(--accent-text); margin-bottom: 6px;">${escapeHtml(d)} 區：</div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+        `;
+
+        const tables = divInfo.tables || [];
+        for (const t of tables) {
+          const whoStr = (t.who || []).map(w => whoMap[w] || w).join('、') || '無';
+          const howStr = (t.how || []).map(h => howMap[h] || h).join('、') || '無';
+          const whoFrom = fromMap[t.who_from] || t.who_from || '全場';
+          const howFrom = fromMap[t.how_from] || t.how_from || '全場';
+
+          // 規格驗收精準格式：
+          // A 區第 1 桌：裁判、選手（全場）；逐分計分（桌）
+          // A 區第 2 桌：裁判、選手（全場）；只按誰贏、最後比分、逐分計分（全場）
+          // B 區第 2 桌：裁判、選手（區）；只按誰贏、最後比分（區）
+          const effText = `${whoStr}（${whoFrom}）；${howStr}（${howFrom}）`;
+
+          html += `
+            <div style="padding: 6px 8px; background: var(--input-bg); border-radius: 4px; font-size: 0.88rem;">
+              <span style="font-weight: 600; color: var(--text-secondary); margin-right: 6px;">第 ${t.table} 桌：</span>
+              <span class="ea-eff" data-div="${escapeHtml(d)}" data-table="${t.table}">${escapeHtml(effText)}</span>
+            </div>
+          `;
+        }
+        html += `
+            </div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ----------------------------------------------------
+    // 16 強決賽控制邏輯（抽籤、取消抽籤、名次裁定）
+    // ----------------------------------------------------
+    let lastRenderedPoolKey = '';
+
+    function renderFinals(snap) {
+      const finalsSection = document.getElementById('eaFinalsSection');
+      if (!finalsSection) return;
+
+      const finals = snap ? snap.finals : null;
+      if (!finals) {
+        finalsSection.style.display = 'none';
+        return;
+      }
+
+      finalsSection.style.display = 'block';
+
+      const drawPanel = document.getElementById('eaDrawPanel');
+      const undrawContainer = document.getElementById('eaUndrawContainer');
+      const finalsStatus = document.getElementById('eaFinalsStatus');
+
+      if (finals.drawn) {
+        if (drawPanel) drawPanel.style.display = 'none';
+        if (undrawContainer) undrawContainer.style.display = 'block';
+        if (finalsStatus) finalsStatus.textContent = '16 強決賽進行中：已完成抽籤，進行小組循環賽與名次賽。';
+      } else if (finals.ready) {
+        if (drawPanel) drawPanel.style.display = 'block';
+        if (undrawContainer) undrawContainer.style.display = 'none';
+        if (finalsStatus) finalsStatus.textContent = '資格賽已完成：勝部 8 人、敗部 8 人已產生，請進行 16 強抽籤。';
+        renderDrawPools(finals.pools);
+      } else {
+        if (drawPanel) drawPanel.style.display = 'none';
+        if (undrawContainer) undrawContainer.style.display = 'none';
+        if (finalsStatus) finalsStatus.textContent = '資格賽進行中：各區尚未全部完賽，待產生勝部 8 人與敗部 8 人後開放抽籤。';
+      }
+
+      renderLotOverrides(finals.groups);
+    }
+
+    function renderDrawPools(pools) {
+      const winnersPoolEl = document.getElementById('eaWinnersPool');
+      const losersPoolEl = document.getElementById('eaLosersPool');
+      if (!winnersPoolEl || !losersPoolEl) return;
+
+      const winners = (pools && pools.winners) || [];
+      const losers = (pools && pools.losers) || [];
+
+      const currentPoolKey = winners.map(p => p.id).join(',') + '|' + losers.map(p => p.id).join(',');
+
+      // 若目前選手名單相同且已渲染 16 個下拉選單，則保留 DOM 避免覆蓋使用者的選擇
+      if (lastRenderedPoolKey === currentPoolKey && document.querySelectorAll('#eaDrawPanel select.ea-draw-num').length === 16) {
+        return;
+      }
+
+      lastRenderedPoolKey = currentPoolKey;
+
+      function renderPoolList(players) {
+        return players.map(p => `
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 6px; padding: 6px 10px;">
+            <span style="font-size: 0.9rem; font-weight: 600;">
+              ${escapeHtml(p.name)} <span style="font-size: 0.75rem; color: var(--text-secondary);">(${escapeHtml(p.id)})</span>
+            </span>
+            <select class="ea-draw-num" data-player="${escapeHtml(p.id)}" style="max-width: 120px; min-height: 44px;">
+              <option value="">選擇號碼</option>
+              <option value="1">1 號</option>
+              <option value="2">2 號</option>
+              <option value="3">3 號</option>
+              <option value="4">4 號</option>
+              <option value="5">5 號</option>
+              <option value="6">6 號</option>
+              <option value="7">7 號</option>
+              <option value="8">8 號</option>
+            </select>
+          </div>
+        `).join('');
+      }
+
+      winnersPoolEl.innerHTML = renderPoolList(winners);
+      losersPoolEl.innerHTML = renderPoolList(losers);
+
+      validateDrawSelections();
+    }
+
+    function validateDrawSelections() {
+      const drawSubmitBtn = document.getElementById('eaDrawSubmit');
+      const winnersSelects = document.querySelectorAll('#eaWinnersPool select.ea-draw-num');
+      const losersSelects = document.querySelectorAll('#eaLosersPool select.ea-draw-num');
+
+      function checkPool(selects) {
+        if (selects.length !== 8) return false;
+        const seen = new Set();
+        for (const sel of selects) {
+          const val = sel.value;
+          if (!val) return false;
+          const num = parseInt(val, 10);
+          if (num < 1 || num > 8 || seen.has(num)) return false;
+          seen.add(num);
+        }
+        return seen.size === 8;
+      }
+
+      const winnersOk = checkPool(winnersSelects);
+      const losersOk = checkPool(losersSelects);
+      const allOk = winnersOk && losersOk;
+
+      if (drawSubmitBtn) {
+        drawSubmitBtn.disabled = !allOk;
+      }
+      return allOk;
+    }
+
+    // 綁定抽籤面板事件
+    const drawPanelEl = document.getElementById('eaDrawPanel');
+    if (drawPanelEl) {
+      ['change', 'input'].forEach(evt => {
+        drawPanelEl.addEventListener(evt, (e) => {
+          if (e.target && e.target.classList.contains('ea-draw-num')) {
+            validateDrawSelections();
+          }
+        });
+      });
+    }
+
+    document.getElementById('eaDrawSubmit').addEventListener('click', () => {
+      const drawMsg = document.getElementById('eaDrawMsg');
+      drawMsg.style.display = 'none';
+
+      if (!validateDrawSelections()) {
+        drawMsg.textContent = '號碼有重複或尚未選齊，勝部與敗部兩池之 1～8 號必須各自各有一人';
+        drawMsg.style.display = 'block';
+        return;
+      }
+
+      const nums = {};
+      document.querySelectorAll('#eaDrawPanel select.ea-draw-num').forEach(sel => {
+        const pid = sel.getAttribute('data-player');
+        nums[pid] = parseInt(sel.value, 10);
+      });
+
+      showConfirm('送出抽籤確認', '確定要將 16 位選手依指定號碼分配至 A～D 組並開始小組賽嗎？', async () => {
+        const submitBtn = document.getElementById('eaDrawSubmit');
+        submitBtn.disabled = true;
+        try {
+          await callApi('/api/admin/draw', {
+            staff_pin: staffPin,
+            numbers: nums
+          });
+          if (poller) await poller.fetchOnce();
+        } catch (err) {
+          drawMsg.textContent = err.message || '送出抽籤失敗';
+          drawMsg.style.display = 'block';
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+    });
+
+    document.getElementById('eaDrawRandom').addEventListener('click', () => {
+      showConfirm('系統隨機抽籤', '確定要由系統自動隨機為 16 位選手分配 1～8 號並完成抽籤嗎？', async () => {
+        const randomBtn = document.getElementById('eaDrawRandom');
+        randomBtn.disabled = true;
+        try {
+          await callApi('/api/admin/draw', {
+            staff_pin: staffPin,
+            random: true
+          });
+          if (poller) await poller.fetchOnce();
+        } catch (err) {
+          showGlobalError(err.message || '系統隨機抽籤失敗');
+        } finally {
+          randomBtn.disabled = false;
+        }
+      });
+    });
+
+    document.getElementById('eaUndraw').addEventListener('click', () => {
+      showConfirm('取消抽籤確認', '確定要取消決賽抽籤嗎？所有小組賽程將會被重設回未抽籤狀態。', async () => {
+        const undrawBtn = document.getElementById('eaUndraw');
+        undrawBtn.disabled = true;
+        try {
+          await callApi('/api/admin/undraw', {
+            staff_pin: staffPin
+          });
+          if (poller) await poller.fetchOnce();
+        } catch (err) {
+          showGlobalError(err.message || '取消抽籤失敗');
+        } finally {
+          undrawBtn.disabled = false;
+        }
+      });
+    });
+
+    function renderLotOverrides(groups) {
+      const lotSection = document.getElementById('eaLotSection');
+      if (!lotSection) return;
+
+      const currentGroups = ['A', 'B', 'C', 'D'];
+      const neededGroups = new Set();
+
+      for (const g of currentGroups) {
+        const grp = groups ? groups[g] : null;
+        if (grp && grp.needs_lot) {
+          neededGroups.add(g);
+        }
+      }
+
+      // 移除不再需要抽籤裁定的組別
+      lotSection.querySelectorAll('.ea-lot').forEach(el => {
+        const g = el.getAttribute('data-group');
+        if (!neededGroups.has(g)) {
+          el.remove();
+        }
+      });
+
+      // 為需要抽籤裁定的組別建立卡片
+      for (const g of neededGroups) {
+        const lotCard = lotSection.querySelector(`.ea-lot[data-group="${g}"]`);
+        const grp = groups[g];
+        const standings = grp.standings || grp.members || [];
+        const playerKey = standings.map(p => p.id).join(',');
+
+        if (lotCard && lotCard.dataset.playerKey === playerKey) {
+          continue;
+        }
+
+        const newCard = createLotCard(g, grp, playerKey);
+        if (lotCard) {
+          lotCard.replaceWith(newCard);
+        } else {
+          lotSection.appendChild(newCard);
+        }
+      }
+    }
+
+    function createLotCard(g, grp, playerKey) {
+      const standings = grp.standings || grp.members || [];
+      const card = document.createElement('div');
+      card.className = 'ea-lot card';
+      card.setAttribute('data-group', g);
+      card.dataset.playerKey = playerKey;
+      card.style.background = 'rgba(0, 0, 0, 0.25)';
+      card.style.border = '1.5px solid var(--warning-border)';
+      card.style.marginBottom = '0';
+
+      let playerRowsHtml = '';
+      standings.forEach((p, idx) => {
+        const initRank = p.rank || (idx + 1);
+        playerRowsHtml += `
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 6px; padding: 8px 10px;">
+            <span style="font-size: 0.9rem; font-weight: 600;">
+              ${escapeHtml(p.name)} <span style="font-size: 0.75rem; color: var(--text-secondary);">(${escapeHtml(p.id)})</span>
+            </span>
+            <select class="ea-lot-rank" data-player="${escapeHtml(p.id)}" style="max-width: 120px; min-height: 44px;">
+              <option value="1" ${initRank === 1 ? 'selected' : ''}>第 1 名</option>
+              <option value="2" ${initRank === 2 ? 'selected' : ''}>第 2 名</option>
+              <option value="3" ${initRank === 3 ? 'selected' : ''}>第 3 名</option>
+              <option value="4" ${initRank === 4 ? 'selected' : ''}>第 4 名</option>
+            </select>
+          </div>
+        `;
+      });
+
+      card.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
+          <div style="font-weight: 700; color: var(--warning-text); font-size: 0.95rem;">
+            ${escapeHtml(g)} 組 名次抽籤裁定
+          </div>
+          <span class="badge" style="background: var(--warning-bg); border-color: var(--warning-border); color: var(--warning-text); font-size: 0.75rem;">
+            四項全同，待裁定
+          </span>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px;">
+          該組選手成績全同，請依現場抽籤結果分配第 1～4 名（名次不能重複），並送出裁定。
+        </p>
+        <div class="ea-lot-msg msg-box error" style="display: none; margin-bottom: 8px;"></div>
+        <div class="ea-lot-players" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+          ${playerRowsHtml}
+        </div>
+        <button type="button" class="btn btn-warning ea-lot-submit btn-block">送出 ${escapeHtml(g)} 組裁定名次</button>
+      `;
+
+      const submitBtn = card.querySelector('.ea-lot-submit');
+      const msgEl = card.querySelector('.ea-lot-msg');
+
+      submitBtn.addEventListener('click', async () => {
+        msgEl.style.display = 'none';
+        const selects = card.querySelectorAll('select.ea-lot-rank');
+        const rankMap = {};
+        let hasDuplicate = false;
+
+        selects.forEach(sel => {
+          const pid = sel.getAttribute('data-player');
+          const r = parseInt(sel.value, 10);
+          if (rankMap[r]) {
+            hasDuplicate = true;
+          }
+          rankMap[r] = pid;
+        });
+
+        if (hasDuplicate || selects.length !== 4 || !rankMap[1] || !rankMap[2] || !rankMap[3] || !rankMap[4]) {
+          msgEl.textContent = '名次有重複或未選齊，四位選手名次 1～4 必須各自不同';
+          msgEl.style.display = 'block';
+          return;
+        }
+
+        const order = [rankMap[1], rankMap[2], rankMap[3], rankMap[4]];
+        const firstPid = order[0];
+        const firstP = standings.find(p => p.id === firstPid);
+        const firstPName = firstP ? firstP.name : firstPid;
+
+        showConfirm('名次裁定確認', `確定要將 ${g} 組名次裁定為：第 1 名「${firstPName}」，並依序更新名次嗎？`, async () => {
+          submitBtn.disabled = true;
+          try {
+            await callApi('/api/admin/rank_override', {
+              staff_pin: staffPin,
+              group: g,
+              order: order
+            });
+            if (poller) await poller.fetchOnce();
+          } catch (err) {
+            msgEl.textContent = err.message || '裁定名次送出失敗';
+            msgEl.style.display = 'block';
+          } finally {
+            submitBtn.disabled = false;
+          }
+        });
+      });
+
+      return card;
+    }
+
+    // ----------------------------------------------------
+    // 比賽中現場加人邏輯 (DATA-CONTRACT 7.5)
+    // ----------------------------------------------------
+    let currentAddPreview = null;
+
+    function resetAddPreviewState() {
+      currentAddPreview = null;
+      const previewBox = document.getElementById('eaAddPreviewBox');
+      const msgEl = document.getElementById('eaAddMsg');
+      const bumpContainer = document.getElementById('eaAddBumpContainer');
+      const bumpCheck = document.getElementById('eaAddBump');
+      const confirmBtn = document.getElementById('eaAddConfirm');
+
+      if (previewBox) {
+        previewBox.textContent = '';
+        previewBox.style.display = 'none';
+      }
+      if (msgEl) {
+        msgEl.textContent = '';
+        msgEl.style.display = 'none';
+      }
+      if (bumpContainer) bumpContainer.style.display = 'none';
+      if (bumpCheck) bumpCheck.checked = false;
+      if (confirmBtn) confirmBtn.disabled = true;
+    }
+
+    async function doAddPlayerPreview() {
+      if (!staffPin) return;
+      const divEl = document.getElementById('eaAddDiv');
+      const div = divEl ? divEl.value : '';
+      const name = (document.getElementById('eaAddName').value || '').trim();
+      const pid = (document.getElementById('eaAddId').value || '').trim();
+
+      const previewBtn = document.getElementById('eaAddPreview');
+      const previewBox = document.getElementById('eaAddPreviewBox');
+      const msgEl = document.getElementById('eaAddMsg');
+      const bumpContainer = document.getElementById('eaAddBumpContainer');
+      const bumpCheck = document.getElementById('eaAddBump');
+      const confirmBtn = document.getElementById('eaAddConfirm');
+
+      msgEl.textContent = '';
+      msgEl.style.display = 'none';
+      previewBox.textContent = '';
+      previewBox.style.display = 'none';
+      bumpContainer.style.display = 'none';
+      bumpCheck.checked = false;
+      confirmBtn.disabled = true;
+      currentAddPreview = null;
+
+      const resultContainer = document.getElementById('eaAddResultContainer');
+      const resultEl = document.getElementById('eaAddResult');
+      if (resultEl) resultEl.textContent = '';
+      if (resultContainer) resultContainer.style.display = 'none';
+
+      if (!name) {
+        msgEl.textContent = '請輸入選手姓名';
+        msgEl.style.display = 'block';
+        return;
+      }
+
+      previewBtn.disabled = true;
+      try {
+        const req = {
+          staff_pin: staffPin,
+          div: div,
+          name: name,
+          bump: false,
+          dry_run: true
+        };
+        if (pid) req.player_id = pid;
+
+        try {
+          const res = await callApi('/api/admin/add_player', req);
+          currentAddPreview = res.preview;
+          const oppName = (res.preview && res.preview.opponent && res.preview.opponent.name) || '';
+          const matchId = (res.preview && res.preview.match) || '';
+          previewBox.textContent = `新人「${res.preview.name}」對上「${oppName}」（第一場：${matchId}）`;
+          previewBox.style.display = 'block';
+          bumpContainer.style.display = 'none';
+          bumpCheck.checked = false;
+          confirmBtn.disabled = false;
+        } catch (firstErr) {
+          if (firstErr.message && firstErr.message.includes('請下桌')) {
+            // 對手的下一場已經上桌：再用 bump: true 預覽一次
+            const bumpReq = {
+              staff_pin: staffPin,
+              div: div,
+              name: name,
+              bump: true,
+              dry_run: true
+            };
+            if (pid) bumpReq.player_id = pid;
+
+            const bumpRes = await callApi('/api/admin/add_player', bumpReq);
+            currentAddPreview = bumpRes.preview;
+            const oppName = (bumpRes.preview && bumpRes.preview.opponent && bumpRes.preview.opponent.name) || '';
+            const matchId = (bumpRes.preview && bumpRes.preview.match) || '';
+            const b = bumpRes.preview && bumpRes.preview.bump;
+            const bTable = b ? b.table : '';
+            const bLabel = (b && b.label) ? b.label : '';
+            const p1Name = (b && b.p1 && b.p1.name) ? b.p1.name : '';
+            const p2Name = (b && b.p2 && b.p2.name) ? b.p2.name : '';
+            const matchStr = (p1Name && p2Name) ? `（${p1Name} VS ${p2Name}）` : '';
+
+            let txt = `新人「${bumpRes.preview.name}」對上「${oppName}」（第一場：${matchId}）\n` +
+                      `注意：對手的下一場已在第 ${bTable} 桌開打${bLabel ? '（' + bLabel + '）' : ''}${matchStr}，加入將會請下桌！`;
+            previewBox.textContent = txt;
+            previewBox.style.display = 'block';
+            bumpContainer.style.display = 'block';
+            bumpCheck.checked = false;
+            confirmBtn.disabled = true;
+          } else {
+            throw firstErr;
+          }
+        }
+      } catch (err) {
+        currentAddPreview = null;
+        msgEl.textContent = err.message || '預覽加人失敗';
+        msgEl.style.display = 'block';
+        previewBox.textContent = '';
+        previewBox.style.display = 'none';
+        bumpContainer.style.display = 'none';
+        confirmBtn.disabled = true;
+      } finally {
+        previewBtn.disabled = false;
+      }
+    }
+
+    document.getElementById('eaAddPreview').addEventListener('click', () => {
+      doAddPlayerPreview();
+    });
+
+    document.getElementById('eaAddBump').addEventListener('change', () => {
+      const confirmBtn = document.getElementById('eaAddConfirm');
+      if (!currentAddPreview) {
+        confirmBtn.disabled = true;
+        return;
+      }
+      if (currentAddPreview.bump) {
+        confirmBtn.disabled = !document.getElementById('eaAddBump').checked;
+      } else {
+        confirmBtn.disabled = false;
+      }
+    });
+
+    document.getElementById('eaAddConfirm').addEventListener('click', () => {
+      if (!currentAddPreview) return;
+      const isBump = !!currentAddPreview.bump;
+      const bumpChecked = document.getElementById('eaAddBump').checked;
+      if (isBump && !bumpChecked) return;
+
+      const preview = currentAddPreview;
+      const oppName = (preview.opponent && preview.opponent.name) || '';
+      let msg = `確定要將選手「${preview.name}」加入 ${preview.div} 區嗎？第一場對手為「${oppName}」。`;
+      if (isBump && preview.bump) {
+        msg += `\n注意：第 ${preview.bump.table} 桌的比賽將會被請下桌！`;
+      }
+
+      showConfirm('現場加人確認', msg, async () => {
+        const confirmBtn = document.getElementById('eaAddConfirm');
+        const msgEl = document.getElementById('eaAddMsg');
+        const resultContainer = document.getElementById('eaAddResultContainer');
+        const resultEl = document.getElementById('eaAddResult');
+
+        confirmBtn.disabled = true;
+        msgEl.textContent = '';
+        msgEl.style.display = 'none';
+
+        try {
+          const req = {
+            staff_pin: staffPin,
+            div: preview.div,
+            name: preview.name,
+            bump: isBump && bumpChecked,
+            dry_run: false
+          };
+          if (preview.player_id) {
+            req.player_id = preview.player_id;
+          }
+
+          const res = await callApi('/api/admin/add_player', req);
+
+          // 成功後顯示結果（大字 PIN 碼，不存入任何瀏覽器儲存區）
+          resultEl.textContent = `選手編號：${res.player_id}　PIN 碼：${res.pin}\n（請抄在報到單上交給選手）`;
+          resultContainer.style.display = 'block';
+
+          // 清空輸入欄位與預覽狀態
+          document.getElementById('eaAddName').value = '';
+          document.getElementById('eaAddId').value = '';
+          resetAddPreviewState();
+
+          if (poller) await poller.fetchOnce();
+        } catch (err) {
+          msgEl.textContent = err.message || '加入選手失敗';
+          msgEl.style.display = 'block';
+          confirmBtn.disabled = false;
+        }
+      });
+    });
+
+    document.getElementById('eaAddPinDone').addEventListener('click', () => {
+      document.getElementById('eaAddResult').textContent = '';
+      document.getElementById('eaAddResultContainer').style.display = 'none';
+    });
+
+    ['input', 'change'].forEach(evt => {
+      document.getElementById('eaAddName').addEventListener(evt, () => {
+        if (currentAddPreview) resetAddPreviewState();
+      });
+      document.getElementById('eaAddId').addEventListener(evt, () => {
+        if (currentAddPreview) resetAddPreviewState();
+      });
+    });
+    document.getElementById('eaAddDiv').addEventListener('change', () => {
+      if (currentAddPreview) resetAddPreviewState();
+    });
+
+    // ------------------------------------------------ 系統健康 (DATA-CONTRACT 3.9, PROJECT.md 第三十四/四十二輪)
+    async function fetchHealth() {
+      if (!staffPin || document.visibilityState === 'hidden') return;
+      if (isFetchingHealth) return;
+      isFetchingHealth = true;
+      try {
+        const res = await callApi('/api/admin/health', { staff_pin: staffPin });
+        renderHealth(res);
+      } catch (err) {
+        // 暫態或網路錯誤不中斷輪詢
+      } finally {
+        isFetchingHealth = false;
+      }
+    }
+
+    function renderHealth(data) {
+      if (!data) return;
+      const verEl = document.getElementById('healthVersion');
+      if (verEl) {
+        verEl.textContent = data.version || '未知';
+      }
+      const statusBadge = document.getElementById('healthStatusBadge');
+      const problemsList = document.getElementById('healthProblemsList');
+      const extraInfo = document.getElementById('healthExtraInfo');
+
+      if (extraInfo) {
+        const parts = [];
+        if (data.snapshot && typeof data.snapshot.age_sec === 'number') {
+          parts.push(`畫面資料 ${data.snapshot.age_sec} 秒前更新`);
+        }
+        if (data.log && typeof data.log.ops === 'number') {
+          parts.push(`操作紀錄 ${data.log.ops} 筆`);
+        }
+        if (parts.length > 0) {
+          extraInfo.textContent = parts.join(' · ');
+          extraInfo.style.display = 'block';
+        } else {
+          extraInfo.style.display = 'none';
+        }
+      }
+
+      const problems = Array.isArray(data.problems) ? data.problems : [];
+      if (problems.length === 0) {
+        if (statusBadge) {
+          statusBadge.textContent = '正常';
+          statusBadge.style.background = 'var(--success-bg)';
+          statusBadge.style.color = 'var(--success-text)';
+          statusBadge.style.borderColor = 'var(--success-border)';
+          statusBadge.style.display = 'inline-block';
+        }
+        if (problemsList) {
+          problemsList.innerHTML = '';
+          problemsList.style.display = 'none';
+        }
+      } else {
+        if (statusBadge) {
+          statusBadge.textContent = '注意';
+          statusBadge.style.background = 'var(--danger-bg)';
+          statusBadge.style.color = 'var(--danger-text)';
+          statusBadge.style.borderColor = 'var(--danger-border)';
+          statusBadge.style.display = 'inline-block';
+        }
+        if (problemsList) {
+          problemsList.innerHTML = '';
+          for (const p of problems) {
+            const itemEl = document.createElement('div');
+            itemEl.className = 'health-problem';
+            itemEl.setAttribute('data-level', p.level || 'warn');
+            itemEl.textContent = p.msg;
+            problemsList.appendChild(itemEl);
+          }
+          problemsList.style.display = 'block';
+        }
+      }
+    }
+
+    function startHealthTimer() {
+      stopHealthTimer();
+      healthAutoTimer = setInterval(fetchHealth, 3000);
+    }
+
+    function stopHealthTimer() {
+      if (healthAutoTimer) {
+        clearInterval(healthAutoTimer);
+        healthAutoTimer = null;
+      }
+    }
+
+    // ------------------------------------------------ 工作人員管理 (DATA-CONTRACT 3.8, PROJECT.md 第三十四/四十二輪)
+    async function fetchStaffList() {
+      if (!staffPin) return;
+      const staffMsgEl = document.getElementById('staffMsg');
+      if (staffMsgEl) { staffMsgEl.textContent = ''; staffMsgEl.style.display = 'none'; }
+      const btn = document.getElementById('staffRefresh');
+      if (isFetchingStaff) return;
+      isFetchingStaff = true;
+      if (btn) btn.disabled = true;
+      try {
+        const res = await callApi('/api/admin/staff_list', { staff_pin: staffPin });
+        if (res.me) {
+          currentStaffMe = res.me;
+        }
+        renderStaffList(res.staff);
+      } catch (err) {
+        if (staffMsgEl) {
+          staffMsgEl.textContent = err.message || '讀取工作人員清單失敗';
+          staffMsgEl.style.display = 'block';
+        }
+      } finally {
+        isFetchingStaff = false;
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    function renderStaffList(staff) {
+      const container = document.getElementById('staffList');
+      if (!container) return;
+      if (!Array.isArray(staff) || staff.length === 0) {
+        container.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.85rem;">目前無工作人員名單</div>';
+        return;
+      }
+
+      container.innerHTML = '';
+      for (const item of staff) {
+        const rowEl = document.createElement('div');
+        rowEl.className = `staff-row${item.active ? '' : ' staff-disabled'}`;
+        rowEl.setAttribute('data-id', item.id);
+
+        const isMe = (item.id === currentStaffMe);
+        const roleText = (item.role === 'admin' ? '主辦' : '裁判');
+
+        // 左側資訊區
+        const infoDiv = document.createElement('div');
+        infoDiv.style.display = 'flex';
+        infoDiv.style.alignItems = 'center';
+        infoDiv.style.flexWrap = 'wrap';
+        infoDiv.style.gap = '8px';
+
+        const idSpan = document.createElement('strong');
+        idSpan.style.color = 'var(--text-primary)';
+        idSpan.style.fontSize = '1rem';
+        idSpan.textContent = item.id;
+        infoDiv.appendChild(idSpan);
+
+        const nameSpan = document.createElement('span');
+        nameSpan.style.fontWeight = '700';
+        nameSpan.style.color = 'var(--text-primary)';
+        nameSpan.textContent = item.name;
+        infoDiv.appendChild(nameSpan);
+
+        if (isMe) {
+          const meBadge = document.createElement('span');
+          meBadge.className = 'badge';
+          meBadge.style.cssText = 'background: rgba(239, 125, 0, 0.2); color: var(--accent-text); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(239, 125, 0, 0.4);';
+          meBadge.textContent = '你';
+          infoDiv.appendChild(meBadge);
+        }
+
+        const roleBadge = document.createElement('span');
+        roleBadge.className = 'badge';
+        roleBadge.style.cssText = 'background: var(--card-bg); color: var(--text-secondary); border: 1px solid var(--card-border); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600;';
+        roleBadge.textContent = roleText;
+        infoDiv.appendChild(roleBadge);
+
+        if (!item.active) {
+          const disabledBadge = document.createElement('span');
+          disabledBadge.className = 'badge';
+          disabledBadge.style.cssText = 'background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;';
+          disabledBadge.textContent = '停用';
+          infoDiv.appendChild(disabledBadge);
+        }
+
+        rowEl.appendChild(infoDiv);
+
+        // 右側操作區
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'staff-row-actions';
+
+        // 停用 / 恢復按鈕
+        const toggleBtn = document.createElement('button');
+        toggleBtn.type = 'button';
+        toggleBtn.className = `btn ${item.active ? 'btn-warning staff-disable' : 'btn-success staff-enable'}`;
+        toggleBtn.textContent = item.active ? '停用' : '恢復';
+        toggleBtn.addEventListener('click', () => {
+          const staffMsgEl = document.getElementById('staffMsg');
+          if (item.active) {
+            showConfirm('停用工作人員確認', `確定要停用「${item.name}」嗎？停用後該 PIN 碼將無法登入。`, async () => {
+              if (staffMsgEl) { staffMsgEl.textContent = ''; staffMsgEl.style.display = 'none'; }
+              try {
+                const res = await callApi('/api/admin/staff_set', { staff_pin: staffPin, id: item.id, action: 'disable' });
+                renderStaffList(res.staff);
+              } catch (err) {
+                if (staffMsgEl) {
+                  staffMsgEl.textContent = err.message || '停用失敗';
+                  staffMsgEl.style.display = 'block';
+                }
+              }
+            });
+          } else {
+            showConfirm('恢復工作人員確認', `確定要恢復「${item.name}」的權限嗎？`, async () => {
+              if (staffMsgEl) { staffMsgEl.textContent = ''; staffMsgEl.style.display = 'none'; }
+              try {
+                const res = await callApi('/api/admin/staff_set', { staff_pin: staffPin, id: item.id, action: 'enable' });
+                renderStaffList(res.staff);
+              } catch (err) {
+                if (staffMsgEl) {
+                  staffMsgEl.textContent = err.message || '恢復失敗';
+                  staffMsgEl.style.display = 'block';
+                }
+              }
+            });
+          }
+        });
+        actionsDiv.appendChild(toggleBtn);
+
+        // 改角色按鈕
+        const roleBtn = document.createElement('button');
+        roleBtn.type = 'button';
+        roleBtn.className = 'btn btn-secondary staff-role';
+        const nextRole = (item.role === 'admin' ? 'judge' : 'admin');
+        const nextRoleLabel = (nextRole === 'admin' ? '主辦' : '裁判');
+        roleBtn.textContent = `改為${nextRoleLabel}`;
+        roleBtn.addEventListener('click', () => {
+          const staffMsgEl = document.getElementById('staffMsg');
+          showConfirm('變更角色確認', `確定要將「${item.name}」的角色變更為${nextRoleLabel}嗎？`, async () => {
+            if (staffMsgEl) { staffMsgEl.textContent = ''; staffMsgEl.style.display = 'none'; }
+            try {
+              const res = await callApi('/api/admin/staff_set', { staff_pin: staffPin, id: item.id, action: 'set_role', role: nextRole });
+              renderStaffList(res.staff);
+            } catch (err) {
+              if (staffMsgEl) {
+                staffMsgEl.textContent = err.message || '變更角色失敗';
+                staffMsgEl.style.display = 'block';
+              }
+            }
+          });
+        });
+        actionsDiv.appendChild(roleBtn);
+
+        // 重設 PIN 按鈕
+        const pinResetBtn = document.createElement('button');
+        pinResetBtn.type = 'button';
+        pinResetBtn.className = 'btn btn-secondary staff-pinreset';
+        pinResetBtn.textContent = '重設 PIN';
+        pinResetBtn.addEventListener('click', () => {
+          const staffMsgEl = document.getElementById('staffMsg');
+          showConfirm('重設 PIN 碼確認', `確定要重設「${item.name}」的 PIN 碼嗎？舊 PIN 將立即失效。`, async () => {
+            if (staffMsgEl) { staffMsgEl.textContent = ''; staffMsgEl.style.display = 'none'; }
+            try {
+              const res = await callApi('/api/admin/staff_pin_reset', { staff_pin: staffPin, id: item.id });
+              showNewStaffPin(res.pin);
+              await fetchStaffList();
+            } catch (err) {
+              if (staffMsgEl) {
+                staffMsgEl.textContent = err.message || '重設 PIN 失敗';
+                staffMsgEl.style.display = 'block';
+              }
+            }
+          });
+        });
+        actionsDiv.appendChild(pinResetBtn);
+
+        // 移除按鈕
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'btn btn-danger staff-remove';
+        removeBtn.textContent = '移除';
+        removeBtn.addEventListener('click', () => {
+          const staffMsgEl = document.getElementById('staffMsg');
+          showConfirm('移除工作人員確認', `確定要移除「${item.name}」嗎？移除後將刪除此工作人員紀錄。`, async () => {
+            if (staffMsgEl) { staffMsgEl.textContent = ''; staffMsgEl.style.display = 'none'; }
+            try {
+              const res = await callApi('/api/admin/staff_set', { staff_pin: staffPin, id: item.id, action: 'remove' });
+              renderStaffList(res.staff);
+            } catch (err) {
+              if (staffMsgEl) {
+                staffMsgEl.textContent = err.message || '移除失敗';
+                staffMsgEl.style.display = 'block';
+              }
+            }
+          });
+        });
+        actionsDiv.appendChild(removeBtn);
+
+        rowEl.appendChild(actionsDiv);
+        container.appendChild(rowEl);
+      }
+    }
+
+    function showNewStaffPin(pin) {
+      const pinEl = document.getElementById('staffPinShow');
+      const boxEl = document.getElementById('staffPinBox');
+      if (pinEl) pinEl.textContent = pin;
+      if (boxEl) boxEl.style.display = 'block';
+    }
+
+    function handleStaffPinDone() {
+      const pinEl = document.getElementById('staffPinShow');
+      if (pinEl) pinEl.textContent = '';
+      const boxEl = document.getElementById('staffPinBox');
+      if (boxEl) boxEl.style.display = 'none';
+    }
+
+    async function handleAddStaff() {
+      const btn = document.getElementById('staffAddBtn');
+      if (isAddingStaff || (btn && btn.disabled)) return;
+      const staffMsgEl = document.getElementById('staffMsg');
+      if (staffMsgEl) { staffMsgEl.textContent = ''; staffMsgEl.style.display = 'none'; }
+      const nameInput = document.getElementById('staffAddName');
+      const roleSelect = document.getElementById('staffAddRole');
+      const name = (nameInput ? nameInput.value : '').trim();
+      const role = (roleSelect ? roleSelect.value : 'judge');
+
+      if (!name) {
+        if (staffMsgEl) {
+          staffMsgEl.textContent = '請輸入工作人員姓名';
+          staffMsgEl.style.display = 'block';
+        }
+        return;
+      }
+
+      isAddingStaff = true;
+      const origText = btn ? btn.textContent : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '新增中…';
+      }
+
+      try {
+        const res = await callApi('/api/admin/staff_add', { staff_pin: staffPin, name, role });
+        if (nameInput) nameInput.value = '';
+        showNewStaffPin(res.pin);
+        if (res.staff) {
+          renderStaffList(res.staff);
+        } else {
+          await fetchStaffList();
+        }
+      } catch (err) {
+        if (staffMsgEl) {
+          staffMsgEl.textContent = err.message || '新增工作人員失敗';
+          staffMsgEl.style.display = 'block';
+        }
+      } finally {
+        isAddingStaff = false;
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = origText;
+        }
+      }
+    }
+
+    // ------------------------------------------------ 結束賽事 (PROJECT.md 第四十二輪, review.py [46])
+    function handleFinishClick() {
+      const msgEl = document.getElementById('eaFinishMsg');
+      if (msgEl) { msgEl.textContent = ''; msgEl.style.display = 'none'; }
+      showConfirm('結束賽事確認', '確定要結束整場賽事嗎？結束後就不能再報分。', async () => {
+        try {
+          await callApi('/api/admin/finish', { staff_pin: staffPin });
+          if (msgEl) {
+            msgEl.textContent = '賽事已正式結束';
+            msgEl.className = 'msg-box success';
+            msgEl.style.display = 'block';
+          }
+          if (poller) await poller.fetchOnce();
+        } catch (err) {
+          if (msgEl) {
+            msgEl.textContent = err.message || '結束賽事失敗';
+            msgEl.className = 'msg-box error';
+            msgEl.style.display = 'block';
+          }
+        }
+      });
+    }
+
+    // 初始化檢查與事件綁定
+    window.addEventListener('DOMContentLoaded', () => {
+      // 工作人員管理 (PROJECT.md 第四十二輪)
+      const staffRefreshBtn = document.getElementById('staffRefresh');
+      if (staffRefreshBtn) {
+        staffRefreshBtn.addEventListener('click', fetchStaffList);
+      }
+      const staffAddBtn = document.getElementById('staffAddBtn');
+      if (staffAddBtn) {
+        staffAddBtn.addEventListener('click', handleAddStaff);
+      }
+      const staffAddNameInput = document.getElementById('staffAddName');
+      if (staffAddNameInput) {
+        staffAddNameInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') handleAddStaff();
+        });
+      }
+      const staffPinDoneBtn = document.getElementById('staffPinDone');
+      if (staffPinDoneBtn) {
+        staffPinDoneBtn.addEventListener('click', handleStaffPinDone);
+      }
+
+      // 結束賽事 (PROJECT.md 第四十二輪)
+      const eaFinishBtn = document.getElementById('eaFinish');
+      if (eaFinishBtn) {
+        eaFinishBtn.addEventListener('click', handleFinishClick);
+      }
+
+      const savedPin = sessionStorage.getItem(SESSION_KEY_PIN);
+      if (savedPin) {
+        document.getElementById('eaPin').value = savedPin;
+        doLogin(savedPin);
+      }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        stopHealthTimer();
+      } else if (staffPin) {
+        fetchHealth();
+        startHealthTimer();
+        fetchStaffList();
+      }
+    });
+  </script>
+</body>
+</html>

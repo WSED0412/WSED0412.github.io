@@ -1,0 +1,3431 @@
+{
+  "contract_version": 1,
+  "kind": "bracket",
+  "server_now": 1790402700000,
+  "event": {
+    "name": "示範 16 強決賽（假資料）",
+    "status": "done",
+    "note": "",
+    "api_base": "",
+    "viewers": 0,
+    "format": {
+      "elim_type": "single",
+      "third_place": false,
+      "final_size": 4,
+      "scoring": "beyblade_x",
+      "win_point": 4,
+      "tables_per_div": 4
+    }
+  },
+  "policy": {
+    "all": {
+      "who": [
+        "judge",
+        "player"
+      ],
+      "how": [
+        "winner",
+        "score",
+        "points"
+      ]
+    },
+    "div": {},
+    "table": {
+      "F": {
+        "1": {
+          "how": [
+            "points"
+          ]
+        }
+      }
+    }
+  },
+  "divisions": [
+    {
+      "div": "A",
+      "players": 9,
+      "tables": [
+        {
+          "table": 1,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        },
+        {
+          "table": 2,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        },
+        {
+          "table": 3,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        },
+        {
+          "table": 4,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        }
+      ],
+      "order": [
+        "A-R0-M00",
+        "A-R0-M01",
+        "A-R0-M02",
+        "A-R0-M03",
+        "A-R0-M04",
+        "A-R0-M05",
+        "A-R0-M06",
+        "A-R0-M07",
+        "A-R1-M00",
+        "A-R1-M01",
+        "A-R1-M02",
+        "A-R1-M03",
+        "A-R2-M00",
+        "A-R2-M01"
+      ],
+      "matches": [
+        {
+          "id": "A-R0-M00",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "A-01",
+            "name": "阿翔",
+            "seed": 1
+          },
+          "p2": null,
+          "state": "bye",
+          "table": null,
+          "report_state": null,
+          "winner": "A-01",
+          "score": null,
+          "how": null,
+          "points": null,
+          "next_win": [
+            "A-R1-M00",
+            "p1"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": null,
+          "done_at": null
+        },
+        {
+          "id": "A-R0-M01",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "A-08",
+            "name": "阿哲",
+            "seed": 8
+          },
+          "p2": {
+            "id": "A-09",
+            "name": "Leo",
+            "seed": 9
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-08",
+          "score": [
+            4,
+            1
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": [
+            "A-R1-M00",
+            "p2"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 1,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "A-R0-M02",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "A-04",
+            "name": "旋風",
+            "seed": 4
+          },
+          "p2": null,
+          "state": "bye",
+          "table": null,
+          "report_state": null,
+          "winner": "A-04",
+          "score": null,
+          "how": null,
+          "points": null,
+          "next_win": [
+            "A-R1-M01",
+            "p1"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": null,
+          "done_at": null
+        },
+        {
+          "id": "A-R0-M03",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "A-05",
+            "name": "老王",
+            "seed": 5
+          },
+          "p2": null,
+          "state": "bye",
+          "table": null,
+          "report_state": null,
+          "winner": "A-05",
+          "score": null,
+          "how": null,
+          "points": null,
+          "next_win": [
+            "A-R1-M01",
+            "p2"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": null,
+          "done_at": null
+        },
+        {
+          "id": "A-R0-M04",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "A-02",
+            "name": "小楓",
+            "seed": 2
+          },
+          "p2": null,
+          "state": "bye",
+          "table": null,
+          "report_state": null,
+          "winner": "A-02",
+          "score": null,
+          "how": null,
+          "points": null,
+          "next_win": [
+            "A-R1-M02",
+            "p1"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": null,
+          "done_at": null
+        },
+        {
+          "id": "A-R0-M05",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "A-07",
+            "name": "夜貓",
+            "seed": 7
+          },
+          "p2": null,
+          "state": "bye",
+          "table": null,
+          "report_state": null,
+          "winner": "A-07",
+          "score": null,
+          "how": null,
+          "points": null,
+          "next_win": [
+            "A-R1-M02",
+            "p2"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": null,
+          "done_at": null
+        },
+        {
+          "id": "A-R0-M06",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "A-03",
+            "name": "Kuro",
+            "seed": 3
+          },
+          "p2": null,
+          "state": "bye",
+          "table": null,
+          "report_state": null,
+          "winner": "A-03",
+          "score": null,
+          "how": null,
+          "points": null,
+          "next_win": [
+            "A-R1-M03",
+            "p1"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": null,
+          "done_at": null
+        },
+        {
+          "id": "A-R0-M07",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "A-06",
+            "name": "Miya",
+            "seed": 6
+          },
+          "p2": null,
+          "state": "bye",
+          "table": null,
+          "report_state": null,
+          "winner": "A-06",
+          "score": null,
+          "how": null,
+          "points": null,
+          "next_win": [
+            "A-R1-M03",
+            "p2"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": null,
+          "done_at": null
+        },
+        {
+          "id": "A-R1-M00",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 1,
+          "label": "第 2 輪",
+          "p1": {
+            "id": "A-01",
+            "name": "阿翔",
+            "seed": 1
+          },
+          "p2": {
+            "id": "A-08",
+            "name": "阿哲",
+            "seed": 8
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-08",
+          "score": [
+            2,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": [
+            "A-R2-M00",
+            "p1"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 1,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "A-R1-M01",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 1,
+          "label": "第 2 輪",
+          "p1": {
+            "id": "A-04",
+            "name": "旋風",
+            "seed": 4
+          },
+          "p2": {
+            "id": "A-05",
+            "name": "老王",
+            "seed": 5
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-04",
+          "score": [
+            4,
+            3
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": [
+            "A-R2-M00",
+            "p2"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 2,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "A-R1-M02",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 1,
+          "label": "第 2 輪",
+          "p1": {
+            "id": "A-02",
+            "name": "小楓",
+            "seed": 2
+          },
+          "p2": {
+            "id": "A-07",
+            "name": "夜貓",
+            "seed": 7
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-02",
+          "score": [
+            4,
+            1
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": [
+            "A-R2-M01",
+            "p1"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 3,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "A-R1-M03",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 1,
+          "label": "第 2 輪",
+          "p1": {
+            "id": "A-03",
+            "name": "Kuro",
+            "seed": 3
+          },
+          "p2": {
+            "id": "A-06",
+            "name": "Miya",
+            "seed": 6
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-03",
+          "score": [
+            5,
+            2
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": [
+            "A-R2-M01",
+            "p2"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 4,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "A-R2-M00",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 2,
+          "label": "第 3 輪",
+          "p1": {
+            "id": "A-08",
+            "name": "阿哲",
+            "seed": 8
+          },
+          "p2": {
+            "id": "A-04",
+            "name": "旋風",
+            "seed": 4
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-08",
+          "score": [
+            4,
+            1
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 1,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "A-R2-M01",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 2,
+          "label": "第 3 輪",
+          "p1": {
+            "id": "A-02",
+            "name": "小楓",
+            "seed": 2
+          },
+          "p2": {
+            "id": "A-03",
+            "name": "Kuro",
+            "seed": 3
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-02",
+          "score": [
+            5,
+            2
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 2,
+          "done_at": 1790402700000
+        }
+      ],
+      "finished": true,
+      "winners": [
+        "A-08",
+        "A-02"
+      ],
+      "losers": [
+        "A-04",
+        "A-03"
+      ],
+      "placements": null,
+      "progress": {
+        "total": 7,
+        "done": 7
+      }
+    },
+    {
+      "div": "B",
+      "players": 6,
+      "tables": [
+        {
+          "table": 1,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        },
+        {
+          "table": 2,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        },
+        {
+          "table": 3,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        },
+        {
+          "table": 4,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        }
+      ],
+      "order": [
+        "B-R0-M00",
+        "B-R0-M01",
+        "B-R0-M02",
+        "B-R0-M03",
+        "B-R1-M00",
+        "B-R1-M01"
+      ],
+      "matches": [
+        {
+          "id": "B-R0-M00",
+          "div": "B",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "B-01",
+            "name": "小雨",
+            "seed": 1
+          },
+          "p2": null,
+          "state": "bye",
+          "table": null,
+          "report_state": null,
+          "winner": "B-01",
+          "score": null,
+          "how": null,
+          "points": null,
+          "next_win": [
+            "B-R1-M00",
+            "p1"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": null,
+          "done_at": null
+        },
+        {
+          "id": "B-R0-M01",
+          "div": "B",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "B-04",
+            "name": "白熊",
+            "seed": 4
+          },
+          "p2": {
+            "id": "B-05",
+            "name": "阿凱",
+            "seed": 5
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "B-04",
+          "score": [
+            4,
+            1
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": [
+            "B-R1-M00",
+            "p2"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 1,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "B-R0-M02",
+          "div": "B",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "B-02",
+            "name": "鐵牛",
+            "seed": 2
+          },
+          "p2": null,
+          "state": "bye",
+          "table": null,
+          "report_state": null,
+          "winner": "B-02",
+          "score": null,
+          "how": null,
+          "points": null,
+          "next_win": [
+            "B-R1-M01",
+            "p1"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": null,
+          "done_at": null
+        },
+        {
+          "id": "B-R0-M03",
+          "div": "B",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "B-03",
+            "name": "Yuki",
+            "seed": 3
+          },
+          "p2": {
+            "id": "B-06",
+            "name": "Nana",
+            "seed": 6
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "B-06",
+          "score": [
+            2,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": [
+            "B-R1-M01",
+            "p2"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 2,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "B-R1-M00",
+          "div": "B",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 1,
+          "label": "第 2 輪",
+          "p1": {
+            "id": "B-01",
+            "name": "小雨",
+            "seed": 1
+          },
+          "p2": {
+            "id": "B-04",
+            "name": "白熊",
+            "seed": 4
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "B-01",
+          "score": [
+            4,
+            3
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 1,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "B-R1-M01",
+          "div": "B",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 1,
+          "label": "第 2 輪",
+          "p1": {
+            "id": "B-02",
+            "name": "鐵牛",
+            "seed": 2
+          },
+          "p2": {
+            "id": "B-06",
+            "name": "Nana",
+            "seed": 6
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "B-06",
+          "score": [
+            2,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 2,
+          "done_at": 1790402700000
+        }
+      ],
+      "finished": true,
+      "winners": [
+        "B-01",
+        "B-06"
+      ],
+      "losers": [
+        "B-04",
+        "B-02"
+      ],
+      "placements": null,
+      "progress": {
+        "total": 4,
+        "done": 4
+      }
+    },
+    {
+      "div": "C",
+      "players": 5,
+      "tables": [
+        {
+          "table": 1,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        },
+        {
+          "table": 2,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        },
+        {
+          "table": 3,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        },
+        {
+          "table": 4,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        }
+      ],
+      "order": [
+        "C-R0-M00",
+        "C-R0-M01",
+        "C-R0-M02",
+        "C-R0-M03",
+        "C-R1-M00",
+        "C-R1-M01"
+      ],
+      "matches": [
+        {
+          "id": "C-R0-M00",
+          "div": "C",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "C-01",
+            "name": "疾風",
+            "seed": 1
+          },
+          "p2": null,
+          "state": "bye",
+          "table": null,
+          "report_state": null,
+          "winner": "C-01",
+          "score": null,
+          "how": null,
+          "points": null,
+          "next_win": [
+            "C-R1-M00",
+            "p1"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": null,
+          "done_at": null
+        },
+        {
+          "id": "C-R0-M01",
+          "div": "C",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "C-04",
+            "name": "Momo",
+            "seed": 4
+          },
+          "p2": {
+            "id": "C-05",
+            "name": "大雄",
+            "seed": 5
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "C-04",
+          "score": [
+            5,
+            2
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": [
+            "C-R1-M00",
+            "p2"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 1,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "C-R0-M02",
+          "div": "C",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "C-02",
+            "name": "可樂",
+            "seed": 2
+          },
+          "p2": null,
+          "state": "bye",
+          "table": null,
+          "report_state": null,
+          "winner": "C-02",
+          "score": null,
+          "how": null,
+          "points": null,
+          "next_win": [
+            "C-R1-M01",
+            "p1"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": null,
+          "done_at": null
+        },
+        {
+          "id": "C-R0-M03",
+          "div": "C",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "C-03",
+            "name": "小虎",
+            "seed": 3
+          },
+          "p2": null,
+          "state": "bye",
+          "table": null,
+          "report_state": null,
+          "winner": "C-03",
+          "score": null,
+          "how": null,
+          "points": null,
+          "next_win": [
+            "C-R1-M01",
+            "p2"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": null,
+          "done_at": null
+        },
+        {
+          "id": "C-R1-M00",
+          "div": "C",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 1,
+          "label": "第 2 輪",
+          "p1": {
+            "id": "C-01",
+            "name": "疾風",
+            "seed": 1
+          },
+          "p2": {
+            "id": "C-04",
+            "name": "Momo",
+            "seed": 4
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "C-04",
+          "score": [
+            2,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 1,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "C-R1-M01",
+          "div": "C",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 1,
+          "label": "第 2 輪",
+          "p1": {
+            "id": "C-02",
+            "name": "可樂",
+            "seed": 2
+          },
+          "p2": {
+            "id": "C-03",
+            "name": "小虎",
+            "seed": 3
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "C-02",
+          "score": [
+            4,
+            3
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 2,
+          "done_at": 1790402700000
+        }
+      ],
+      "finished": true,
+      "winners": [
+        "C-04",
+        "C-02"
+      ],
+      "losers": [
+        "C-01",
+        "C-03"
+      ],
+      "placements": null,
+      "progress": {
+        "total": 3,
+        "done": 3
+      }
+    },
+    {
+      "div": "D",
+      "players": 7,
+      "tables": [
+        {
+          "table": 1,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        },
+        {
+          "table": 2,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        },
+        {
+          "table": 3,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        },
+        {
+          "table": 4,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        }
+      ],
+      "order": [
+        "D-R0-M00",
+        "D-R0-M01",
+        "D-R0-M02",
+        "D-R0-M03",
+        "D-R1-M00",
+        "D-R1-M01"
+      ],
+      "matches": [
+        {
+          "id": "D-R0-M00",
+          "div": "D",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "D-01",
+            "name": "阿布",
+            "seed": 1
+          },
+          "p2": null,
+          "state": "bye",
+          "table": null,
+          "report_state": null,
+          "winner": "D-01",
+          "score": null,
+          "how": null,
+          "points": null,
+          "next_win": [
+            "D-R1-M00",
+            "p1"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": null,
+          "done_at": null
+        },
+        {
+          "id": "D-R0-M01",
+          "div": "D",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "D-04",
+            "name": "小楓",
+            "seed": 4
+          },
+          "p2": {
+            "id": "D-05",
+            "name": "Kuro",
+            "seed": 5
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "D-04",
+          "score": [
+            4,
+            3
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": [
+            "D-R1-M00",
+            "p2"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 1,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "D-R0-M02",
+          "div": "D",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "D-02",
+            "name": "Rex",
+            "seed": 2
+          },
+          "p2": {
+            "id": "D-07",
+            "name": "老王",
+            "seed": 7
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "D-02",
+          "score": [
+            4,
+            1
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": [
+            "D-R1-M01",
+            "p1"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 2,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "D-R0-M03",
+          "div": "D",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "第 1 輪",
+          "p1": {
+            "id": "D-03",
+            "name": "阿翔",
+            "seed": 3
+          },
+          "p2": {
+            "id": "D-06",
+            "name": "旋風",
+            "seed": 6
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "D-06",
+          "score": [
+            2,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": [
+            "D-R1-M01",
+            "p2"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 3,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "D-R1-M00",
+          "div": "D",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 1,
+          "label": "第 2 輪",
+          "p1": {
+            "id": "D-01",
+            "name": "阿布",
+            "seed": 1
+          },
+          "p2": {
+            "id": "D-04",
+            "name": "小楓",
+            "seed": 4
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "D-01",
+          "score": [
+            4,
+            3
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 1,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "D-R1-M01",
+          "div": "D",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 1,
+          "label": "第 2 輪",
+          "p1": {
+            "id": "D-02",
+            "name": "Rex",
+            "seed": 2
+          },
+          "p2": {
+            "id": "D-06",
+            "name": "旋風",
+            "seed": 6
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "D-02",
+          "score": [
+            4,
+            3
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 2,
+          "done_at": 1790402700000
+        }
+      ],
+      "finished": true,
+      "winners": [
+        "D-01",
+        "D-02"
+      ],
+      "losers": [
+        "D-04",
+        "D-06"
+      ],
+      "placements": null,
+      "progress": {
+        "total": 5,
+        "done": 5
+      }
+    },
+    {
+      "div": "F",
+      "players": 16,
+      "tables": [
+        {
+          "table": 1,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "points"
+          ]
+        },
+        {
+          "table": 2,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        },
+        {
+          "table": 3,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        },
+        {
+          "table": 4,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        },
+        {
+          "table": 5,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        },
+        {
+          "table": 6,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        },
+        {
+          "table": 7,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        },
+        {
+          "table": 8,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        }
+      ],
+      "order": [
+        "GA-1-1",
+        "GA-1-2",
+        "GA-2-1",
+        "GA-2-2",
+        "GA-3-1",
+        "GA-3-2",
+        "GB-1-1",
+        "GB-1-2",
+        "GB-2-1",
+        "GB-2-2",
+        "GB-3-1",
+        "GB-3-2",
+        "GC-1-1",
+        "GC-1-2",
+        "GC-2-1",
+        "GC-2-2",
+        "GC-3-1",
+        "GC-3-2",
+        "GD-1-1",
+        "GD-1-2",
+        "GD-2-1",
+        "GD-2-2",
+        "GD-3-1",
+        "GD-3-2",
+        "PAB-1",
+        "PAB-2",
+        "PAB-3",
+        "PAB-4",
+        "PCD-1",
+        "PCD-2",
+        "PCD-3",
+        "PCD-4"
+      ],
+      "matches": [
+        {
+          "id": "GA-1-1",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "A",
+          "round": 1,
+          "label": "A 組第 1 輪",
+          "p1": {
+            "id": "A-08",
+            "name": "阿哲",
+            "seed": 8
+          },
+          "p2": {
+            "id": "A-02",
+            "name": "小楓",
+            "seed": 2
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-08",
+          "score": [
+            4,
+            3
+          ],
+          "how": "points",
+          "points": [
+            {
+              "side": "p1",
+              "type": "xtreme"
+            },
+            {
+              "side": "p2",
+              "type": "burst"
+            },
+            {
+              "side": "p2",
+              "type": "spin"
+            },
+            {
+              "side": "p1",
+              "type": "spin"
+            }
+          ],
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 1,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GA-1-2",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "A",
+          "round": 1,
+          "label": "A 組第 1 輪",
+          "p1": {
+            "id": "B-01",
+            "name": "小雨",
+            "seed": 1
+          },
+          "p2": {
+            "id": "B-06",
+            "name": "Nana",
+            "seed": 6
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "B-01",
+          "score": [
+            4,
+            3
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 2,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GA-2-1",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "A",
+          "round": 2,
+          "label": "A 組第 2 輪",
+          "p1": {
+            "id": "A-08",
+            "name": "阿哲",
+            "seed": 8
+          },
+          "p2": {
+            "id": "B-01",
+            "name": "小雨",
+            "seed": 1
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "B-01",
+          "score": [
+            3,
+            4
+          ],
+          "how": "points",
+          "points": [
+            {
+              "side": "p2",
+              "type": "xtreme"
+            },
+            {
+              "side": "p1",
+              "type": "burst"
+            },
+            {
+              "side": "p1",
+              "type": "spin"
+            },
+            {
+              "side": "p2",
+              "type": "spin"
+            }
+          ],
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 1,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GA-2-2",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "A",
+          "round": 2,
+          "label": "A 組第 2 輪",
+          "p1": {
+            "id": "A-02",
+            "name": "小楓",
+            "seed": 2
+          },
+          "p2": {
+            "id": "B-06",
+            "name": "Nana",
+            "seed": 6
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-02",
+          "score": [
+            4,
+            3
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 2,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GA-3-1",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "A",
+          "round": 3,
+          "label": "A 組第 3 輪",
+          "p1": {
+            "id": "A-08",
+            "name": "阿哲",
+            "seed": 8
+          },
+          "p2": {
+            "id": "B-06",
+            "name": "Nana",
+            "seed": 6
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-08",
+          "score": [
+            4,
+            3
+          ],
+          "how": "points",
+          "points": [
+            {
+              "side": "p1",
+              "type": "xtreme"
+            },
+            {
+              "side": "p2",
+              "type": "burst"
+            },
+            {
+              "side": "p2",
+              "type": "spin"
+            },
+            {
+              "side": "p1",
+              "type": "spin"
+            }
+          ],
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 1,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GA-3-2",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "A",
+          "round": 3,
+          "label": "A 組第 3 輪",
+          "p1": {
+            "id": "A-02",
+            "name": "小楓",
+            "seed": 2
+          },
+          "p2": {
+            "id": "B-01",
+            "name": "小雨",
+            "seed": 1
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-02",
+          "score": [
+            4,
+            3
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 2,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GB-1-1",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "B",
+          "round": 1,
+          "label": "B 組第 1 輪",
+          "p1": {
+            "id": "C-04",
+            "name": "Momo",
+            "seed": 4
+          },
+          "p2": {
+            "id": "C-02",
+            "name": "可樂",
+            "seed": 2
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "C-02",
+          "score": [
+            1,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 3,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GB-1-2",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "B",
+          "round": 1,
+          "label": "B 組第 1 輪",
+          "p1": {
+            "id": "D-01",
+            "name": "阿布",
+            "seed": 1
+          },
+          "p2": {
+            "id": "D-02",
+            "name": "Rex",
+            "seed": 2
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "D-02",
+          "score": [
+            1,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 4,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GB-2-1",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "B",
+          "round": 2,
+          "label": "B 組第 2 輪",
+          "p1": {
+            "id": "C-04",
+            "name": "Momo",
+            "seed": 4
+          },
+          "p2": {
+            "id": "D-01",
+            "name": "阿布",
+            "seed": 1
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "D-01",
+          "score": [
+            1,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 1,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GB-2-2",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "B",
+          "round": 2,
+          "label": "B 組第 2 輪",
+          "p1": {
+            "id": "C-02",
+            "name": "可樂",
+            "seed": 2
+          },
+          "p2": {
+            "id": "D-02",
+            "name": "Rex",
+            "seed": 2
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "D-02",
+          "score": [
+            1,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 2,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GB-3-1",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "B",
+          "round": 3,
+          "label": "B 組第 3 輪",
+          "p1": {
+            "id": "C-04",
+            "name": "Momo",
+            "seed": 4
+          },
+          "p2": {
+            "id": "D-02",
+            "name": "Rex",
+            "seed": 2
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "D-02",
+          "score": [
+            1,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 1,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GB-3-2",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "B",
+          "round": 3,
+          "label": "B 組第 3 輪",
+          "p1": {
+            "id": "C-02",
+            "name": "可樂",
+            "seed": 2
+          },
+          "p2": {
+            "id": "D-01",
+            "name": "阿布",
+            "seed": 1
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "D-01",
+          "score": [
+            1,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 2,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GC-1-1",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "C",
+          "round": 1,
+          "label": "C 組第 1 輪",
+          "p1": {
+            "id": "A-04",
+            "name": "旋風",
+            "seed": 4
+          },
+          "p2": {
+            "id": "A-03",
+            "name": "Kuro",
+            "seed": 3
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-04",
+          "score": [
+            4,
+            2
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 5,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GC-1-2",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "C",
+          "round": 1,
+          "label": "C 組第 1 輪",
+          "p1": {
+            "id": "B-04",
+            "name": "白熊",
+            "seed": 4
+          },
+          "p2": {
+            "id": "B-02",
+            "name": "鐵牛",
+            "seed": 2
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "B-02",
+          "score": [
+            3,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 6,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GC-2-1",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "C",
+          "round": 2,
+          "label": "C 組第 2 輪",
+          "p1": {
+            "id": "A-04",
+            "name": "旋風",
+            "seed": 4
+          },
+          "p2": {
+            "id": "B-04",
+            "name": "白熊",
+            "seed": 4
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "B-04",
+          "score": [
+            1,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 5,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GC-2-2",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "C",
+          "round": 2,
+          "label": "C 組第 2 輪",
+          "p1": {
+            "id": "A-03",
+            "name": "Kuro",
+            "seed": 3
+          },
+          "p2": {
+            "id": "B-02",
+            "name": "鐵牛",
+            "seed": 2
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "B-02",
+          "score": [
+            3,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 6,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GC-3-1",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "C",
+          "round": 3,
+          "label": "C 組第 3 輪",
+          "p1": {
+            "id": "A-04",
+            "name": "旋風",
+            "seed": 4
+          },
+          "p2": {
+            "id": "B-02",
+            "name": "鐵牛",
+            "seed": 2
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "B-02",
+          "score": [
+            3,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 5,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GC-3-2",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "C",
+          "round": 3,
+          "label": "C 組第 3 輪",
+          "p1": {
+            "id": "A-03",
+            "name": "Kuro",
+            "seed": 3
+          },
+          "p2": {
+            "id": "B-04",
+            "name": "白熊",
+            "seed": 4
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "B-04",
+          "score": [
+            1,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 6,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GD-1-1",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "D",
+          "round": 1,
+          "label": "D 組第 1 輪",
+          "p1": {
+            "id": "C-01",
+            "name": "疾風",
+            "seed": 1
+          },
+          "p2": {
+            "id": "C-03",
+            "name": "小虎",
+            "seed": 3
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "C-03",
+          "score": [
+            1,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 7,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GD-1-2",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "D",
+          "round": 1,
+          "label": "D 組第 1 輪",
+          "p1": {
+            "id": "D-04",
+            "name": "小楓",
+            "seed": 4
+          },
+          "p2": {
+            "id": "D-06",
+            "name": "旋風",
+            "seed": 6
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "D-04",
+          "score": [
+            4,
+            2
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 8,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GD-2-1",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "D",
+          "round": 2,
+          "label": "D 組第 2 輪",
+          "p1": {
+            "id": "C-01",
+            "name": "疾風",
+            "seed": 1
+          },
+          "p2": {
+            "id": "D-04",
+            "name": "小楓",
+            "seed": 4
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "C-01",
+          "score": [
+            4,
+            0
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 5,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GD-2-2",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "D",
+          "round": 2,
+          "label": "D 組第 2 輪",
+          "p1": {
+            "id": "C-03",
+            "name": "小虎",
+            "seed": 3
+          },
+          "p2": {
+            "id": "D-06",
+            "name": "旋風",
+            "seed": 6
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "D-06",
+          "score": [
+            3,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 6,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GD-3-1",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "D",
+          "round": 3,
+          "label": "D 組第 3 輪",
+          "p1": {
+            "id": "C-01",
+            "name": "疾風",
+            "seed": 1
+          },
+          "p2": {
+            "id": "D-06",
+            "name": "旋風",
+            "seed": 6
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "C-01",
+          "score": [
+            4,
+            2
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 5,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "GD-3-2",
+          "div": "F",
+          "bracket": "G",
+          "kind": "rr",
+          "group": "D",
+          "round": 3,
+          "label": "D 組第 3 輪",
+          "p1": {
+            "id": "C-03",
+            "name": "小虎",
+            "seed": 3
+          },
+          "p2": {
+            "id": "D-04",
+            "name": "小楓",
+            "seed": 4
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "C-03",
+          "score": [
+            4,
+            0
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 6,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "PAB-1",
+          "div": "F",
+          "bracket": "P",
+          "kind": "place",
+          "group": "A·B",
+          "round": 0,
+          "label": "名次賽（第 1、2 名）",
+          "p1": {
+            "id": "A-08",
+            "name": "阿哲",
+            "seed": 8
+          },
+          "p2": {
+            "id": "D-02",
+            "name": "Rex",
+            "seed": 2
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-08",
+          "score": [
+            4,
+            0
+          ],
+          "how": "points",
+          "points": [
+            {
+              "side": "p1",
+              "type": "over"
+            },
+            {
+              "side": "p1",
+              "type": "burst"
+            }
+          ],
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 1,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "PAB-2",
+          "div": "F",
+          "bracket": "P",
+          "kind": "place",
+          "group": "A·B",
+          "round": 1,
+          "label": "名次賽（第 3、4 名）",
+          "p1": {
+            "id": "A-02",
+            "name": "小楓",
+            "seed": 2
+          },
+          "p2": {
+            "id": "D-01",
+            "name": "阿布",
+            "seed": 1
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-02",
+          "score": [
+            4,
+            0
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 2,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "PAB-3",
+          "div": "F",
+          "bracket": "P",
+          "kind": "place",
+          "group": "A·B",
+          "round": 2,
+          "label": "名次賽（第 5、6 名）",
+          "p1": {
+            "id": "B-01",
+            "name": "小雨",
+            "seed": 1
+          },
+          "p2": {
+            "id": "C-02",
+            "name": "可樂",
+            "seed": 2
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "C-02",
+          "score": [
+            3,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 3,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "PAB-4",
+          "div": "F",
+          "bracket": "P",
+          "kind": "place",
+          "group": "A·B",
+          "round": 3,
+          "label": "名次賽（第 7、8 名）",
+          "p1": {
+            "id": "B-06",
+            "name": "Nana",
+            "seed": 6
+          },
+          "p2": {
+            "id": "C-04",
+            "name": "Momo",
+            "seed": 4
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "B-06",
+          "score": [
+            4,
+            2
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 4,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "PCD-1",
+          "div": "F",
+          "bracket": "P",
+          "kind": "place",
+          "group": "C·D",
+          "round": 0,
+          "label": "名次賽（第 9、10 名）",
+          "p1": {
+            "id": "B-02",
+            "name": "鐵牛",
+            "seed": 2
+          },
+          "p2": {
+            "id": "C-03",
+            "name": "小虎",
+            "seed": 3
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "B-02",
+          "score": [
+            4,
+            0
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 5,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "PCD-2",
+          "div": "F",
+          "bracket": "P",
+          "kind": "place",
+          "group": "C·D",
+          "round": 1,
+          "label": "名次賽（第 11、12 名）",
+          "p1": {
+            "id": "B-04",
+            "name": "白熊",
+            "seed": 4
+          },
+          "p2": {
+            "id": "C-01",
+            "name": "疾風",
+            "seed": 1
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "B-04",
+          "score": [
+            4,
+            2
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 6,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "PCD-3",
+          "div": "F",
+          "bracket": "P",
+          "kind": "place",
+          "group": "C·D",
+          "round": 2,
+          "label": "名次賽（第 13、14 名）",
+          "p1": {
+            "id": "A-04",
+            "name": "旋風",
+            "seed": 4
+          },
+          "p2": {
+            "id": "D-04",
+            "name": "小楓",
+            "seed": 4
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "D-04",
+          "score": [
+            1,
+            4
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 7,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "PCD-4",
+          "div": "F",
+          "bracket": "P",
+          "kind": "place",
+          "group": "C·D",
+          "round": 3,
+          "label": "名次賽（第 15、16 名）",
+          "p1": {
+            "id": "A-03",
+            "name": "Kuro",
+            "seed": 3
+          },
+          "p2": {
+            "id": "D-06",
+            "name": "旋風",
+            "seed": 6
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-03",
+          "score": [
+            4,
+            0
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 8,
+          "done_at": 1790402700000
+        }
+      ],
+      "finished": true,
+      "winners": [],
+      "losers": [],
+      "placements": null,
+      "progress": {
+        "total": 32,
+        "done": 32
+      }
+    }
+  ],
+  "finals": {
+    "drawn": true,
+    "ready": true,
+    "pools": {
+      "winners": [
+        {
+          "id": "A-08",
+          "name": "阿哲",
+          "seed": 8
+        },
+        {
+          "id": "A-02",
+          "name": "小楓",
+          "seed": 2
+        },
+        {
+          "id": "B-01",
+          "name": "小雨",
+          "seed": 1
+        },
+        {
+          "id": "B-06",
+          "name": "Nana",
+          "seed": 6
+        },
+        {
+          "id": "C-04",
+          "name": "Momo",
+          "seed": 4
+        },
+        {
+          "id": "C-02",
+          "name": "可樂",
+          "seed": 2
+        },
+        {
+          "id": "D-01",
+          "name": "阿布",
+          "seed": 1
+        },
+        {
+          "id": "D-02",
+          "name": "Rex",
+          "seed": 2
+        }
+      ],
+      "losers": [
+        {
+          "id": "A-04",
+          "name": "旋風",
+          "seed": 4
+        },
+        {
+          "id": "A-03",
+          "name": "Kuro",
+          "seed": 3
+        },
+        {
+          "id": "B-04",
+          "name": "白熊",
+          "seed": 4
+        },
+        {
+          "id": "B-02",
+          "name": "鐵牛",
+          "seed": 2
+        },
+        {
+          "id": "C-01",
+          "name": "疾風",
+          "seed": 1
+        },
+        {
+          "id": "C-03",
+          "name": "小虎",
+          "seed": 3
+        },
+        {
+          "id": "D-04",
+          "name": "小楓",
+          "seed": 4
+        },
+        {
+          "id": "D-06",
+          "name": "旋風",
+          "seed": 6
+        }
+      ]
+    },
+    "numbers": {
+      "A-08": 1,
+      "A-02": 2,
+      "B-01": 3,
+      "B-06": 4,
+      "C-04": 5,
+      "C-02": 6,
+      "D-01": 7,
+      "D-02": 8,
+      "A-04": 1,
+      "A-03": 2,
+      "B-04": 3,
+      "B-02": 4,
+      "C-01": 5,
+      "C-03": 6,
+      "D-04": 7,
+      "D-06": 8
+    },
+    "groups": {
+      "A": {
+        "members": [
+          {
+            "id": "A-08",
+            "name": "阿哲",
+            "seed": 8
+          },
+          {
+            "id": "A-02",
+            "name": "小楓",
+            "seed": 2
+          },
+          {
+            "id": "B-01",
+            "name": "小雨",
+            "seed": 1
+          },
+          {
+            "id": "B-06",
+            "name": "Nana",
+            "seed": 6
+          }
+        ],
+        "round": 4,
+        "complete": true,
+        "override": true,
+        "needs_lot": false,
+        "standings": [
+          {
+            "id": "A-08",
+            "name": "阿哲",
+            "seed": 8,
+            "rank": 1,
+            "w": 2,
+            "l": 1,
+            "diff": 1,
+            "pf": 11,
+            "tie": 0
+          },
+          {
+            "id": "A-02",
+            "name": "小楓",
+            "seed": 2,
+            "rank": 2,
+            "w": 2,
+            "l": 1,
+            "diff": 1,
+            "pf": 11,
+            "tie": 0
+          },
+          {
+            "id": "B-01",
+            "name": "小雨",
+            "seed": 1,
+            "rank": 3,
+            "w": 2,
+            "l": 1,
+            "diff": 1,
+            "pf": 11,
+            "tie": 0
+          },
+          {
+            "id": "B-06",
+            "name": "Nana",
+            "seed": 6,
+            "rank": 4,
+            "w": 0,
+            "l": 3,
+            "diff": -3,
+            "pf": 9,
+            "tie": 0
+          }
+        ]
+      },
+      "B": {
+        "members": [
+          {
+            "id": "C-04",
+            "name": "Momo",
+            "seed": 4
+          },
+          {
+            "id": "C-02",
+            "name": "可樂",
+            "seed": 2
+          },
+          {
+            "id": "D-01",
+            "name": "阿布",
+            "seed": 1
+          },
+          {
+            "id": "D-02",
+            "name": "Rex",
+            "seed": 2
+          }
+        ],
+        "round": 4,
+        "complete": true,
+        "override": false,
+        "needs_lot": false,
+        "standings": [
+          {
+            "id": "D-02",
+            "name": "Rex",
+            "seed": 2,
+            "rank": 1,
+            "w": 3,
+            "l": 0,
+            "diff": 9,
+            "pf": 12,
+            "tie": 0
+          },
+          {
+            "id": "D-01",
+            "name": "阿布",
+            "seed": 1,
+            "rank": 2,
+            "w": 2,
+            "l": 1,
+            "diff": 3,
+            "pf": 9,
+            "tie": 0
+          },
+          {
+            "id": "C-02",
+            "name": "可樂",
+            "seed": 2,
+            "rank": 3,
+            "w": 1,
+            "l": 2,
+            "diff": -3,
+            "pf": 6,
+            "tie": 0
+          },
+          {
+            "id": "C-04",
+            "name": "Momo",
+            "seed": 4,
+            "rank": 4,
+            "w": 0,
+            "l": 3,
+            "diff": -9,
+            "pf": 3,
+            "tie": 0
+          }
+        ]
+      },
+      "C": {
+        "members": [
+          {
+            "id": "A-04",
+            "name": "旋風",
+            "seed": 4
+          },
+          {
+            "id": "A-03",
+            "name": "Kuro",
+            "seed": 3
+          },
+          {
+            "id": "B-04",
+            "name": "白熊",
+            "seed": 4
+          },
+          {
+            "id": "B-02",
+            "name": "鐵牛",
+            "seed": 2
+          }
+        ],
+        "round": 4,
+        "complete": true,
+        "override": false,
+        "needs_lot": false,
+        "standings": [
+          {
+            "id": "B-02",
+            "name": "鐵牛",
+            "seed": 2,
+            "rank": 1,
+            "w": 3,
+            "l": 0,
+            "diff": 3,
+            "pf": 12,
+            "tie": 0
+          },
+          {
+            "id": "B-04",
+            "name": "白熊",
+            "seed": 4,
+            "rank": 2,
+            "w": 2,
+            "l": 1,
+            "diff": 5,
+            "pf": 11,
+            "tie": 0
+          },
+          {
+            "id": "A-04",
+            "name": "旋風",
+            "seed": 4,
+            "rank": 3,
+            "w": 1,
+            "l": 2,
+            "diff": -2,
+            "pf": 8,
+            "tie": 0
+          },
+          {
+            "id": "A-03",
+            "name": "Kuro",
+            "seed": 3,
+            "rank": 4,
+            "w": 0,
+            "l": 3,
+            "diff": -6,
+            "pf": 6,
+            "tie": 0
+          }
+        ]
+      },
+      "D": {
+        "members": [
+          {
+            "id": "C-01",
+            "name": "疾風",
+            "seed": 1
+          },
+          {
+            "id": "C-03",
+            "name": "小虎",
+            "seed": 3
+          },
+          {
+            "id": "D-04",
+            "name": "小楓",
+            "seed": 4
+          },
+          {
+            "id": "D-06",
+            "name": "旋風",
+            "seed": 6
+          }
+        ],
+        "round": 4,
+        "complete": true,
+        "override": false,
+        "needs_lot": false,
+        "standings": [
+          {
+            "id": "C-03",
+            "name": "小虎",
+            "seed": 3,
+            "rank": 1,
+            "w": 2,
+            "l": 1,
+            "diff": 6,
+            "pf": 11,
+            "tie": 0
+          },
+          {
+            "id": "C-01",
+            "name": "疾風",
+            "seed": 1,
+            "rank": 2,
+            "w": 2,
+            "l": 1,
+            "diff": 3,
+            "pf": 9,
+            "tie": 0
+          },
+          {
+            "id": "D-04",
+            "name": "小楓",
+            "seed": 4,
+            "rank": 3,
+            "w": 1,
+            "l": 2,
+            "diff": -6,
+            "pf": 4,
+            "tie": 0
+          },
+          {
+            "id": "D-06",
+            "name": "旋風",
+            "seed": 6,
+            "rank": 4,
+            "w": 1,
+            "l": 2,
+            "diff": -3,
+            "pf": 8,
+            "tie": 0
+          }
+        ]
+      }
+    },
+    "placements": [
+      {
+        "id": "A-08",
+        "name": "阿哲",
+        "seed": 8,
+        "place": 1
+      },
+      {
+        "id": "D-02",
+        "name": "Rex",
+        "seed": 2,
+        "place": 2
+      },
+      {
+        "id": "A-02",
+        "name": "小楓",
+        "seed": 2,
+        "place": 3
+      },
+      {
+        "id": "D-01",
+        "name": "阿布",
+        "seed": 1,
+        "place": 4
+      },
+      {
+        "id": "C-02",
+        "name": "可樂",
+        "seed": 2,
+        "place": 5
+      },
+      {
+        "id": "B-01",
+        "name": "小雨",
+        "seed": 1,
+        "place": 6
+      },
+      {
+        "id": "B-06",
+        "name": "Nana",
+        "seed": 6,
+        "place": 7
+      },
+      {
+        "id": "C-04",
+        "name": "Momo",
+        "seed": 4,
+        "place": 8
+      },
+      {
+        "id": "B-02",
+        "name": "鐵牛",
+        "seed": 2,
+        "place": 9
+      },
+      {
+        "id": "C-03",
+        "name": "小虎",
+        "seed": 3,
+        "place": 10
+      },
+      {
+        "id": "B-04",
+        "name": "白熊",
+        "seed": 4,
+        "place": 11
+      },
+      {
+        "id": "C-01",
+        "name": "疾風",
+        "seed": 1,
+        "place": 12
+      },
+      {
+        "id": "D-04",
+        "name": "小楓",
+        "seed": 4,
+        "place": 13
+      },
+      {
+        "id": "A-04",
+        "name": "旋風",
+        "seed": 4,
+        "place": 14
+      },
+      {
+        "id": "A-03",
+        "name": "Kuro",
+        "seed": 3,
+        "place": 15
+      },
+      {
+        "id": "D-06",
+        "name": "旋風",
+        "seed": 6,
+        "place": 16
+      }
+    ]
+  },
+  "checkin": null
+}

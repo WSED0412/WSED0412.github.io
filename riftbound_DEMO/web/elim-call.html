@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>符文戰場 — 唱名／叫號管理</title>
+  <style>
+    :root {
+      --bg: #01222F;
+      --card-bg: #013951;
+      --card-border: #0A5570;
+      --text-primary: #F9F9F9;
+      --text-secondary: #9FB8C4;
+      --accent: #EF7D00;
+      --accent-hover: #C86800;
+      --accent-text: #FF941E;
+      --warning-bg: #3E3312;
+      --warning-border: #8A6D1F;
+      --warning-text: #F2C94C;
+      --success-bg: #0A3F33;
+      --success-border: #1F7A55;
+      --success-text: #2FB574;
+      --danger-bg: #4A1F1C;
+      --danger-border: #A8443C;
+      --danger-text: #ED807A;
+      --chip-bg: #0A4A63;
+      --input-bg: #011A24;
+      --info-bg: #1B2F4A;
+      --info-border: #2F5A80;
+      --info-text: #4FA8D8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      -webkit-text-size-adjust: 100%;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      min-height: 100svh;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 16px 12px 40px;
+      overflow-x: hidden;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .page-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .auth-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .div-select-bar {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    select, input[type="password"] {
+      min-height: 44px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 16px;
+      padding: 6px 12px;
+    }
+    select:focus, input[type="password"]:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      min-width: 44px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      text-decoration: none;
+      transition: background-color 0.15s, opacity 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #141212;
+    }
+    .btn-primary:not(:disabled):hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--chip-bg);
+      border-color: var(--card-border);
+      color: var(--text-primary);
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--accent-text);
+      margin: 16px 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* 唱名卡片 */
+    .ec-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      transition: border-color 0.3s, background-color 0.3s;
+    }
+
+    /* 新卡片醒目提示（45秒） */
+    .ec-card[data-new="true"] {
+      border-color: var(--accent);
+      background: rgba(239, 125, 0, 0.12);
+      box-shadow: 0 0 10px rgba(239, 125, 0, 0.25);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-table-badge {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: var(--accent-text);
+    }
+
+    .card-wait-time {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--warning-text);
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .card-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .card-players {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      background: var(--input-bg);
+      border-radius: 6px;
+      padding: 10px;
+    }
+
+    .card-player-row {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      word-break: break-word;
+    }
+
+    .card-player-seed {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .card-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    /* 已唱名卡片樣式 */
+    #ecAcked .ec-card {
+      opacity: 0.85;
+      background: rgba(1, 26, 36, 0.6);
+      border-color: var(--card-border);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--text-secondary);
+      font-size: 1rem;
+      background: var(--card-bg);
+      border: 1px dashed var(--card-border);
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    .msg-box {
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      margin-bottom: 12px;
+      word-break: break-word;
+    }
+    .msg-box.error {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1 class="page-title">唱名／叫號台</h1>
+      <div class="auth-bar">
+        <div id="loginForm" style="display: flex; gap: 6px;">
+          <input type="password" id="ecPin" placeholder="工作人員 PIN" style="width: 140px;" autocomplete="off">
+          <button type="button" id="ecLogin" class="btn btn-primary">登入</button>
+        </div>
+        <div id="userInfo" style="display: none; align-items: center; gap: 8px;">
+          <span id="userName" style="font-size: 0.88rem; font-weight: 700; color: var(--accent-text);"></span>
+          <button type="button" id="ecLogout" class="btn btn-secondary" style="min-height: 44px; padding: 4px 10px; font-size: 0.82rem;">登出</button>
+        </div>
+      </div>
+    </header>
+
+    <div id="ecMsg" class="msg-box error" style="display: none;"></div>
+
+    <!-- 選擇分區選單 -->
+    <div class="div-select-bar">
+      <label for="ecDiv" style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">請選擇分區：</label>
+      <select id="ecDiv" style="min-width: 130px;"></select>
+    </div>
+
+    <!-- 唱名清單（未唱名） -->
+    <section>
+      <h2 class="section-title">
+        <span>待唱名桌次</span>
+        <span id="ecListBadge" style="font-size: 0.82rem; color: var(--text-secondary);"></span>
+      </h2>
+      <div id="ecList"></div>
+    </section>
+
+    <!-- 已唱名清單（等候上場） -->
+    <section style="margin-top: 24px;">
+      <h2 class="section-title">
+        <span>已唱名・等候就座中</span>
+        <span id="ecAckedBadge" style="font-size: 0.82rem; color: var(--text-secondary);"></span>
+      </h2>
+      <div id="ecAcked"></div>
+    </section>
+
+    <!-- 全部清空時的全局提示 -->
+    <div id="ecEmptyGlobal" class="empty-state" style="display: none;">目前沒有要唱名的桌</div>
+  </div>
+
+  <script src="elim-common.js"></script>
+  <script>
+    // 嚴格遵守：PIN 僅存放在記憶體或 sessionStorage，絕不存進 localStorage
+    const SESSION_KEY_PIN = 'riftbound_elim_call_pin';
+    let staffPin = '';
+    let staffRole = '';
+    let currentDiv = '';
+
+    let isInitialLoad = true;
+    const cardFirstSeen = {}; // 記錄每場上桌時刻的首次發現時間
+
+    // 登入
+    async function doLogin(pin) {
+      const msgEl = document.getElementById('ecMsg');
+      msgEl.style.display = 'none';
+
+      try {
+        const res = await callApi('/api/staff/whoami', { staff_pin: pin });
+        staffPin = pin;
+        staffRole = res.role || 'judge';
+        sessionStorage.setItem(SESSION_KEY_PIN, pin);
+
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('userInfo').style.display = 'flex';
+        document.getElementById('userName').textContent = res.name || '裁判';
+      } catch (err) {
+        msgEl.textContent = err.message || '登入失敗，請檢查 PIN 碼';
+        msgEl.style.display = 'block';
+      }
+    }
+
+    document.getElementById('ecLogin').addEventListener('click', () => {
+      const pin = document.getElementById('ecPin').value.trim();
+      if (!pin) return;
+      doLogin(pin);
+    });
+
+    document.getElementById('ecLogout').addEventListener('click', () => {
+      staffPin = '';
+      staffRole = '';
+      sessionStorage.removeItem(SESSION_KEY_PIN);
+      document.getElementById('ecPin').value = '';
+      document.getElementById('userInfo').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'flex';
+    });
+
+    // 分區切換
+    document.getElementById('ecDiv').addEventListener('change', (e) => {
+      currentDiv = e.target.value;
+      if (window.elimSnapshot) {
+        renderCalls(window.elimSnapshot);
+      }
+    });
+
+    // 取得已唱名 key
+    function getAckKey(matchId, seatedAt) {
+      return `ack_${matchId}_${seatedAt}`;
+    }
+
+    // 輪詢與資料渲染
+    const poller = new ElimPoller({
+      onData: (snapshot) => {
+        updateDivSelect(snapshot);
+        renderCalls(snapshot);
+      },
+      onError: (err) => {
+        // 連線中斷處理
+      },
+      interval: 5000
+    });
+
+    // 更新分區選單
+    function updateDivSelect(snapshot) {
+      const divSelect = document.getElementById('ecDiv');
+      const divs = snapshot.divisions || [];
+      if (divs.length === 0) return;
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryDiv = urlParams.get('div');
+
+      const existingValues = Array.from(divSelect.options).map(o => o.value);
+      const newValues = divs.map(d => d.div);
+
+      if (existingValues.join(',') !== newValues.join(',')) {
+        divSelect.innerHTML = '';
+        for (const dv of divs) {
+          const opt = document.createElement('option');
+          opt.value = dv.div;
+          opt.textContent = `${dv.div} 區`;
+          divSelect.appendChild(opt);
+        }
+
+        if (queryDiv && newValues.includes(queryDiv)) {
+          divSelect.value = queryDiv;
+          currentDiv = queryDiv;
+        } else if (!currentDiv || !newValues.includes(currentDiv)) {
+          divSelect.value = newValues[0];
+          currentDiv = newValues[0];
+        } else {
+          divSelect.value = currentDiv;
+        }
+      } else if (!currentDiv) {
+        if (queryDiv && newValues.includes(queryDiv)) {
+          divSelect.value = queryDiv;
+          currentDiv = queryDiv;
+        } else {
+          currentDiv = divSelect.value;
+        }
+      }
+    }
+
+    // 渲染唱名清單
+    function renderCalls(snapshot) {
+      if (!snapshot || !currentDiv) return;
+
+      const divData = (snapshot.divisions || []).find(d => d.div === currentDiv);
+      if (!divData) return;
+
+      const nowMs = Date.now() + (poller.serverOffsetMs || 0);
+
+      // 唱名清單條件：
+      // 1. 屬於選中分區
+      // 2. table !== null (坐在桌上)
+      // 3. state === 'open'
+      // 4. started_at === null (裁判尚未按開始對戰)
+      const matches = (divData.matches || []).filter(m => {
+        return m.table !== null && m.state === 'open' && !m.started_at;
+      });
+
+      // 依 seated_at 由舊到新排序（等最久的排最前面）
+      matches.sort((a, b) => (a.seated_at || 0) - (b.seated_at || 0));
+
+      // 追蹤新出現的卡片
+      const now = Date.now();
+      if (isInitialLoad && snapshot.divisions) {
+        for (const dv of snapshot.divisions) {
+          for (const m of (dv.matches || [])) {
+            if (m.seated_at) {
+              cardFirstSeen[`${m.id}_${m.seated_at}`] = now - 60000;
+            }
+          }
+        }
+        isInitialLoad = false;
+      }
+
+      for (const m of matches) {
+        const key = `${m.id}_${m.seated_at}`;
+        if (!(key in cardFirstSeen)) {
+          cardFirstSeen[key] = now;
+        }
+      }
+
+      const pendingMatches = [];
+      const ackedMatches = [];
+
+      for (const m of matches) {
+        const ackKey = getAckKey(m.id, m.seated_at);
+        if (localStorage.getItem(ackKey)) {
+          ackedMatches.push(m);
+        } else {
+          pendingMatches.push(m);
+        }
+      }
+
+      // 渲染待唱名清單
+      const listEl = document.getElementById('ecList');
+      const ackedEl = document.getElementById('ecAcked');
+      const emptyGlobal = document.getElementById('ecEmptyGlobal');
+
+      document.getElementById('ecListBadge').textContent = `共 ${pendingMatches.length} 桌`;
+      document.getElementById('ecAckedBadge').textContent = `共 ${ackedMatches.length} 桌`;
+
+      listEl.innerHTML = '';
+      ackedEl.innerHTML = '';
+
+      if (matches.length === 0) {
+        emptyGlobal.style.display = 'block';
+        return;
+      } else {
+        emptyGlobal.style.display = 'none';
+      }
+
+      if (pendingMatches.length === 0) {
+        listEl.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.88rem; padding: 8px 0;">目前無未唱名桌次</div>';
+      } else {
+        for (const m of pendingMatches) {
+          listEl.appendChild(createCardElement(m, nowMs, false));
+        }
+      }
+
+      if (ackedMatches.length === 0) {
+        ackedEl.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.88rem; padding: 8px 0;">目前無已唱名桌次</div>';
+      } else {
+        for (const m of ackedMatches) {
+          ackedEl.appendChild(createCardElement(m, nowMs, true));
+        }
+      }
+    }
+
+    // 建立卡片 DOM 元素
+    function createCardElement(m, nowMs, isAcked) {
+      const card = document.createElement('div');
+      card.className = 'ec-card';
+      card.dataset.match = m.id;
+
+      // 判斷是否為 45 秒內的新卡片
+      const key = `${m.id}_${m.seated_at}`;
+      const firstSeenTime = cardFirstSeen[key] || 0;
+      const isNew = (!isAcked && (Date.now() - firstSeenTime < 45000));
+      card.dataset.new = isNew ? 'true' : 'false';
+
+      // 等候時間計算（分鐘）
+      let waitMinutes = 0;
+      if (m.seated_at) {
+        const diffMs = nowMs - m.seated_at;
+        waitMinutes = Math.max(0, Math.floor(diffMs / 60000));
+      }
+
+      const p1Name = m.p1 ? escapeHtml(m.p1.name) : '待定';
+      const p1Seed = (m.p1 && m.p1.seed != null) ? `(${m.p1.seed}號)` : '';
+      const p2Name = m.p2 ? escapeHtml(m.p2.name) : '待定';
+      const p2Seed = (m.p2 && m.p2.seed != null) ? `(${m.p2.seed}號)` : '';
+      const labelText = escapeHtml(m.label || '');
+
+      card.innerHTML = `
+        <div class="card-top">
+          <span class="card-table-badge">第 ${m.table} 桌</span>
+          <span class="card-wait-time">已等 ${waitMinutes} 分</span>
+        </div>
+        <div class="card-label">${labelText} · 場次 ${m.id}</div>
+        <div class="card-players">
+          <div class="card-player-row">
+            <span>${p1Name}</span>
+            <span class="card-player-seed">${p1Seed}</span>
+          </div>
+          <div style="font-size: 0.82rem; color: var(--accent-text); font-weight: 700;">VS</div>
+          <div class="card-player-row">
+            <span>${p2Name}</span>
+            <span class="card-player-seed">${p2Seed}</span>
+          </div>
+        </div>
+        <div class="card-actions">
+          ${!isAcked ? '<button type="button" class="btn btn-secondary ec-ack">已唱名</button>' : ''}
+          <button type="button" class="btn btn-primary ec-start">開始對戰</button>
+        </div>
+      `;
+
+      // 已唱名按鈕點擊
+      if (!isAcked) {
+        card.querySelector('.ec-ack').addEventListener('click', () => {
+          const ackKey = getAckKey(m.id, m.seated_at);
+          localStorage.setItem(ackKey, '1');
+          if (window.elimSnapshot) {
+            renderCalls(window.elimSnapshot);
+          }
+        });
+      }
+
+      // 開始對戰按鈕點擊（需登入）
+      card.querySelector('.ec-start').addEventListener('click', async () => {
+        if (!staffPin) {
+          const pinInput = document.getElementById('ecPin');
+          pinInput.focus();
+          const msgEl = document.getElementById('ecMsg');
+          msgEl.textContent = '請先輸入工作人員 PIN 碼並登入以開始對戰';
+          msgEl.style.display = 'block';
+          return;
+        }
+
+        const startBtn = card.querySelector('.ec-start');
+        startBtn.disabled = true;
+
+        try {
+          await callApi('/api/staff/match_start', {
+            staff_pin: staffPin,
+            match: m.id,
+            on: true
+          });
+          poller.fetchOnce();
+        } catch (err) {
+          const msgEl = document.getElementById('ecMsg');
+          msgEl.textContent = err.message || '無法設定開始對戰';
+          msgEl.style.display = 'block';
+          startBtn.disabled = false;
+        }
+      });
+
+      return card;
+    }
+
+    // 頁面載入
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedPin = sessionStorage.getItem(SESSION_KEY_PIN);
+      if (savedPin) {
+        doLogin(savedPin);
+      }
+      poller.fetchOnce();
+      poller.start();
+    });
+  </script>
+</body>
+</html>

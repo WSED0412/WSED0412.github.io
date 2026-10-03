@@ -1,0 +1,422 @@
+{
+  "contract_version": 1,
+  "kind": "bracket",
+  "server_now": 1790402700000,
+  "event": {
+    "name": "示範淘汰賽（假資料）",
+    "status": "done",
+    "note": "",
+    "api_base": "",
+    "viewers": 0,
+    "format": {
+      "elim_type": "single",
+      "third_place": true,
+      "final_size": 2,
+      "scoring": "beyblade_x",
+      "win_point": 4,
+      "tables_per_div": 2
+    }
+  },
+  "policy": {
+    "all": {
+      "who": [
+        "judge",
+        "player"
+      ],
+      "how": [
+        "winner",
+        "score",
+        "points"
+      ]
+    },
+    "div": {},
+    "table": {}
+  },
+  "divisions": [
+    {
+      "div": "A",
+      "players": 6,
+      "tables": [
+        {
+          "table": 1,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        },
+        {
+          "table": 2,
+          "hold": false,
+          "pinned": null,
+          "match": null,
+          "who": [
+            "judge",
+            "player"
+          ],
+          "how": [
+            "winner",
+            "score",
+            "points"
+          ]
+        }
+      ],
+      "order": [
+        "A-R0-M00",
+        "A-R0-M01",
+        "A-R0-M02",
+        "A-R0-M03",
+        "A-R1-M00",
+        "A-R1-M01",
+        "A-R2-M00",
+        "A-3RD"
+      ],
+      "matches": [
+        {
+          "id": "A-R0-M00",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "八強",
+          "p1": {
+            "id": "A-01",
+            "name": "阿翔",
+            "seed": 1
+          },
+          "p2": null,
+          "state": "bye",
+          "table": null,
+          "report_state": null,
+          "winner": "A-01",
+          "score": null,
+          "how": null,
+          "points": null,
+          "next_win": [
+            "A-R1-M00",
+            "p1"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": null,
+          "done_at": null
+        },
+        {
+          "id": "A-R0-M01",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "八強",
+          "p1": {
+            "id": "A-04",
+            "name": "符文少女",
+            "seed": 4
+          },
+          "p2": {
+            "id": "A-05",
+            "name": "老王",
+            "seed": 5
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-04",
+          "score": [
+            4,
+            1
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": [
+            "A-R1-M00",
+            "p2"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 1,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "A-R0-M02",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "八強",
+          "p1": {
+            "id": "A-02",
+            "name": "小楓",
+            "seed": 2
+          },
+          "p2": null,
+          "state": "bye",
+          "table": null,
+          "report_state": null,
+          "winner": "A-02",
+          "score": null,
+          "how": null,
+          "points": null,
+          "next_win": [
+            "A-R1-M01",
+            "p1"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": null,
+          "done_at": null
+        },
+        {
+          "id": "A-R0-M03",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 0,
+          "label": "八強",
+          "p1": {
+            "id": "A-03",
+            "name": "Kuro",
+            "seed": 3
+          },
+          "p2": {
+            "id": "A-06",
+            "name": "Miya",
+            "seed": 6
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-06",
+          "score": [
+            3,
+            5
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": [
+            "A-R1-M01",
+            "p2"
+          ],
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 2,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "A-R1-M00",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 1,
+          "label": "四強",
+          "p1": {
+            "id": "A-01",
+            "name": "阿翔",
+            "seed": 1
+          },
+          "p2": {
+            "id": "A-04",
+            "name": "符文少女",
+            "seed": 4
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-01",
+          "score": [
+            4,
+            2
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": [
+            "A-R2-M00",
+            "p1"
+          ],
+          "next_lose": [
+            "A-3RD",
+            "p1"
+          ],
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 1,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "A-R1-M01",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 1,
+          "label": "四強",
+          "p1": {
+            "id": "A-02",
+            "name": "小楓",
+            "seed": 2
+          },
+          "p2": {
+            "id": "A-06",
+            "name": "Miya",
+            "seed": 6
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-02",
+          "score": [
+            6,
+            3
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": [
+            "A-R2-M00",
+            "p2"
+          ],
+          "next_lose": [
+            "A-3RD",
+            "p2"
+          ],
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 2,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "A-R2-M00",
+          "div": "A",
+          "bracket": "W",
+          "kind": "main",
+          "group": null,
+          "round": 2,
+          "label": "決賽",
+          "p1": {
+            "id": "A-01",
+            "name": "阿翔",
+            "seed": 1
+          },
+          "p2": {
+            "id": "A-02",
+            "name": "小楓",
+            "seed": 2
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-01",
+          "score": [
+            4,
+            0
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 1,
+          "done_at": 1790402700000
+        },
+        {
+          "id": "A-3RD",
+          "div": "A",
+          "bracket": "W",
+          "kind": "third",
+          "group": null,
+          "round": 2,
+          "label": "季軍戰",
+          "p1": {
+            "id": "A-04",
+            "name": "符文少女",
+            "seed": 4
+          },
+          "p2": {
+            "id": "A-06",
+            "name": "Miya",
+            "seed": 6
+          },
+          "state": "complete",
+          "table": null,
+          "report_state": null,
+          "winner": "A-04",
+          "score": [
+            4,
+            1
+          ],
+          "how": "score",
+          "points": null,
+          "next_win": null,
+          "next_lose": null,
+          "seated_at": null,
+          "started_at": null,
+          "live": null,
+          "done_table": 2,
+          "done_at": 1790402700000
+        }
+      ],
+      "finished": true,
+      "winners": [
+        "A-01"
+      ],
+      "losers": [
+        "A-02"
+      ],
+      "placements": [
+        {
+          "place": 1,
+          "id": "A-01"
+        },
+        {
+          "place": 2,
+          "id": "A-02"
+        },
+        {
+          "place": 3,
+          "id": "A-04"
+        },
+        {
+          "place": 4,
+          "id": "A-06"
+        },
+        {
+          "place": 5,
+          "id": "A-03"
+        },
+        {
+          "place": 5,
+          "id": "A-05"
+        }
+      ],
+      "progress": {
+        "total": 6,
+        "done": 6
+      }
+    }
+  ],
+  "finals": null,
+  "checkin": null
+}

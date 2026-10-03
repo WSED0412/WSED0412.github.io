@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>符文戰場 — 檢錄台管理</title>
+  <style>
+    :root {
+      --bg: #01222F;
+      --card-bg: #013951;
+      --card-border: #0A5570;
+      --text-primary: #F9F9F9;
+      --text-secondary: #9FB8C4;
+      --accent: #EF7D00;
+      --accent-hover: #C86800;
+      --accent-text: #FF941E;
+      --warning-bg: #3E3312;
+      --warning-border: #8A6D1F;
+      --warning-text: #F2C94C;
+      --success-bg: #0A3F33;
+      --success-border: #1F7A55;
+      --success-text: #2FB574;
+      --danger-bg: #4A1F1C;
+      --danger-border: #A8443C;
+      --danger-text: #ED807A;
+      --chip-bg: #0A4A63;
+      --input-bg: #011A24;
+      --info-bg: #1B2F4A;
+      --info-border: #2F5A80;
+      --info-text: #4FA8D8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      -webkit-text-size-adjust: 100%;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      min-height: 100svh;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 16px 12px 40px;
+      overflow-x: hidden;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--card-border);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .header-title-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .header-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .counts-badge {
+      font-size: 0.88rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(239, 125, 0, 0.15);
+      border: 1px solid rgba(239, 125, 0, 0.35);
+      color: var(--accent-text);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 16px 14px;
+      margin-bottom: 16px;
+      overflow-x: hidden;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent-text);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+    @media (max-width: 600px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      min-height: 44px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 16px;
+      padding: 8px 12px;
+    }
+
+    input[type="text"]:focus, input[type="password"]:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      min-width: 44px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      text-decoration: none;
+      transition: background-color 0.15s, opacity 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #141212;
+    }
+    .btn-primary:not(:disabled):hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--chip-bg);
+      border-color: var(--card-border);
+      color: var(--text-primary);
+    }
+
+    .btn-success {
+      background: var(--success-bg);
+      border-color: var(--success-border);
+      color: var(--success-text);
+    }
+
+    .btn-danger {
+      background: var(--danger-bg);
+      border-color: var(--danger-border);
+      color: var(--danger-text);
+    }
+
+    .btn-warning {
+      background: var(--warning-bg);
+      border-color: var(--warning-border);
+      color: var(--warning-text);
+    }
+
+    .msg-box {
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      margin-bottom: 12px;
+      word-break: break-word;
+    }
+    .msg-box.error {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+
+    /* PIN 顯示橫幅 */
+    .pin-banner {
+      background: var(--success-bg);
+      border: 1.5px solid var(--success-border);
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .pin-number {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 3px;
+      margin: 6px 0 10px;
+    }
+
+    /* 待審清單項目 */
+    .ed-sub {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ed-sub-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .ed-sub-card {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: var(--accent-text);
+      letter-spacing: 0.5px;
+    }
+
+    .ed-sub-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      word-break: break-word;
+    }
+
+    .same-card-warn {
+      padding: 6px 10px;
+      border-radius: 4px;
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .ed-sub-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    /* 已通過清單項目 */
+    .ed-done {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ed-done-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ed-done-card {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--accent-text);
+      min-width: 65px;
+    }
+
+    .ed-done-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      word-break: break-word;
+    }
+
+    /* 操作確認彈窗 */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 16px;
+    }
+    .modal-box {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 420px;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--accent-text);
+      margin-bottom: 8px;
+    }
+    .modal-msg {
+      font-size: 0.92rem;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 18px;
+      word-break: break-word;
+    }
+    .modal-btns {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 登入卡片 -->
+    <section id="edLoginSection" class="card" style="max-width: 440px; margin: 40px auto;">
+      <h1 class="card-title">檢錄台工作人員登入</h1>
+      <div id="edLoginMsg" class="msg-box error" style="display: none;"></div>
+      <div style="margin-bottom: 14px;">
+        <label for="edPin" style="font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; display: block;">工作人員 PIN 碼：</label>
+        <input type="password" id="edPin" placeholder="請輸入裁判或主辦 PIN" autocomplete="off">
+      </div>
+      <button type="button" id="edLogin" class="btn btn-primary" style="width: 100%;">登入</button>
+    </section>
+
+    <!-- 檢錄台主工作區 -->
+    <div id="edMainSection" style="display: none;">
+      <header>
+        <div class="header-title-box">
+          <h1 class="header-title">檢錄台作業</h1>
+          <div id="edCounts" class="counts-badge">載入中...</div>
+        </div>
+        <div class="header-actions">
+          <button type="button" id="edRefresh" class="btn btn-secondary">重新整理</button>
+          <button type="button" id="edStart" class="btn btn-warning" style="display: none;">開賽</button>
+          <button type="button" id="edLogout" class="btn btn-secondary">登出</button>
+        </div>
+      </header>
+
+      <div id="edMsg" class="msg-box error" style="display: none;"></div>
+
+      <!-- PIN 碼顯示橫幅（僅顯示一次） -->
+      <div id="edPinShowContainer" class="pin-banner" style="display: none;">
+        <div style="font-size: 0.95rem; font-weight: 700; color: #fff;">報到完成！選手 PIN 碼：</div>
+        <div id="edPinShow" class="pin-number"></div>
+        <div style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px;">請抄在號碼牌或報到單上交給選手，此號碼不再顯示</div>
+        <button type="button" id="edPinDone" class="btn btn-primary" style="min-width: 120px;">已抄下</button>
+      </div>
+
+      <!-- 現場直接登記 -->
+      <section class="card">
+        <h2 class="card-title">現場直接登記（無手機／直接通過）</h2>
+        <div class="form-row">
+          <input type="text" id="edAddCard" placeholder="卡號，例如：B-003 或 b3" autocomplete="off">
+          <input type="text" id="edAddName" maxlength="20" placeholder="選手姓名" autocomplete="off">
+          <button type="button" id="edAddBtn" class="btn btn-primary">直接登記</button>
+        </div>
+      </section>
+
+      <!-- 待審核清單 -->
+      <section class="card">
+        <h2 class="card-title">
+          <span>待審核清單</span>
+          <span id="edPendingBadge" style="font-size: 0.85rem; color: var(--text-secondary);"></span>
+        </h2>
+        <div id="edPending">
+          <div style="color: var(--text-secondary); font-size: 0.88rem; padding: 10px 0;">目前無待審核名單</div>
+        </div>
+      </section>
+
+      <!-- 已通過清單 -->
+      <section class="card">
+        <div class="card-title">
+          <span>已通過清單</span>
+          <span id="edApprovedBadge" style="font-size: 0.85rem; color: var(--text-secondary);"></span>
+        </div>
+        <div style="margin-bottom: 12px;">
+          <input type="text" id="edSearch" placeholder="搜尋卡號或姓名..." autocomplete="off">
+        </div>
+        <div id="edApproved">
+          <div style="color: var(--text-secondary); font-size: 0.88rem; padding: 10px 0;">目前尚無已通過名單</div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- 操作確認彈窗 -->
+  <div id="confirmModal" class="modal-overlay" style="display: none;">
+    <div class="modal-box">
+      <div id="confirmTitle" class="modal-title">操作確認</div>
+      <div id="confirmMessage" class="modal-msg"></div>
+      <div class="modal-btns">
+        <button type="button" id="confirmNo" class="btn btn-secondary">取消</button>
+        <button type="button" id="confirmYes" class="btn btn-danger">確認執行</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="elim-common.js"></script>
+  <script>
+    // 嚴格遵守：PIN 僅存放在記憶體或 sessionStorage，絕不存進 localStorage
+    const SESSION_KEY_PIN = 'riftbound_elim_desk_pin';
+    let staffPin = '';
+    let staffRole = '';
+    let autoRefreshTimer = null;
+    let pendingConfirmAction = null;
+
+    // 確認彈窗
+    function showConfirm(title, message, onConfirmed) {
+      document.getElementById('confirmTitle').textContent = title;
+      document.getElementById('confirmMessage').textContent = message;
+      document.getElementById('confirmModal').style.display = 'flex';
+      pendingConfirmAction = onConfirmed;
+    }
+
+    document.getElementById('confirmYes').addEventListener('click', async () => {
+      document.getElementById('confirmModal').style.display = 'none';
+      if (pendingConfirmAction) {
+        const action = pendingConfirmAction;
+        pendingConfirmAction = null;
+        await action();
+      }
+    });
+
+    document.getElementById('confirmNo').addEventListener('click', () => {
+      document.getElementById('confirmModal').style.display = 'none';
+      pendingConfirmAction = null;
+    });
+
+    // 登入
+    async function doLogin(pin) {
+      const loginBtn = document.getElementById('edLogin');
+      const loginMsg = document.getElementById('edLoginMsg');
+      loginBtn.disabled = true;
+      loginMsg.style.display = 'none';
+
+      try {
+        const res = await callApi('/api/staff/whoami', { staff_pin: pin });
+        staffPin = pin;
+        staffRole = res.role || 'judge';
+        sessionStorage.setItem(SESSION_KEY_PIN, pin);
+
+        document.getElementById('edLoginSection').style.display = 'none';
+        document.getElementById('edMainSection').style.display = 'block';
+
+        // 開賽按鈕僅主辦可見
+        const startBtn = document.getElementById('edStart');
+        if (staffRole === 'admin') {
+          startBtn.style.display = 'inline-flex';
+        } else {
+          startBtn.style.display = 'none';
+        }
+
+        await fetchQueue();
+        startAutoRefresh();
+      } catch (err) {
+        loginMsg.textContent = err.message || '登入失敗，請檢查 PIN 碼';
+        loginMsg.style.display = 'block';
+      } finally {
+        loginBtn.disabled = false;
+      }
+    }
+
+    document.getElementById('edLogin').addEventListener('click', () => {
+      const pin = document.getElementById('edPin').value.trim();
+      if (!pin) return;
+      doLogin(pin);
+    });
+
+    document.getElementById('edLogout').addEventListener('click', () => {
+      stopAutoRefresh();
+      staffPin = '';
+      staffRole = '';
+      sessionStorage.removeItem(SESSION_KEY_PIN);
+      document.getElementById('edPin').value = '';
+      document.getElementById('edMainSection').style.display = 'none';
+      document.getElementById('edLoginSection').style.display = 'block';
+    });
+
+    // 重新整理
+    document.getElementById('edRefresh').addEventListener('click', async () => {
+      const btn = document.getElementById('edRefresh');
+      btn.disabled = true;
+      await fetchQueue();
+      btn.disabled = false;
+    });
+
+    function startAutoRefresh() {
+      stopAutoRefresh();
+      autoRefreshTimer = setInterval(() => {
+        if (document.visibilityState !== 'hidden' && staffPin) {
+          fetchQueue();
+        }
+      }, 10000);
+    }
+
+    function stopAutoRefresh() {
+      if (autoRefreshTimer) {
+        clearInterval(autoRefreshTimer);
+        autoRefreshTimer = null;
+      }
+    }
+
+    // 讀取審核佇列
+    async function fetchQueue() {
+      if (!staffPin) return;
+      try {
+        const res = await callApi('/api/staff/checkin_queue', { staff_pin: staffPin });
+        renderQueue(res);
+      } catch (err) {
+        const msgEl = document.getElementById('edMsg');
+        msgEl.textContent = err.message || '無法更新審核佇列';
+        msgEl.style.display = 'block';
+      }
+    }
+
+    // 渲染審核清單與通過名單
+    function renderQueue(data) {
+      if (!data) return;
+
+      // 各區通過人數
+      const countsEl = document.getElementById('edCounts');
+      const divs = data.divs || [];
+      if (divs.length > 0) {
+        countsEl.textContent = divs.map(d => `${d.div} 區 ${d.approved}`).join('、');
+      } else {
+        countsEl.textContent = '尚無分區';
+      }
+
+      // 待審清單
+      const pendingBox = document.getElementById('edPending');
+      const pendingList = data.pending || [];
+      document.getElementById('edPendingBadge').textContent = `共 ${pendingList.length} 筆`;
+
+      if (pendingList.length === 0) {
+        pendingBox.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.88rem; padding: 10px 0;">目前無待審核名單</div>';
+      } else {
+        pendingBox.innerHTML = '';
+        for (const sub of pendingList) {
+          const item = document.createElement('div');
+          item.className = 'ed-sub';
+          item.dataset.sub = sub.sub_id;
+
+          const sameWarn = (sub.same_card_pending > 1)
+            ? `<div class="same-card-warn">這個號碼有 ${sub.same_card_pending} 筆，請看卡片</div>`
+            : '';
+
+          item.innerHTML = `
+            <div class="ed-sub-header">
+              <span class="ed-sub-card">${escapeHtml(sub.card)}</span>
+              <span class="ed-sub-name">${escapeHtml(sub.name)}</span>
+            </div>
+            ${sameWarn}
+            <div class="ed-sub-actions">
+              <button type="button" class="btn btn-danger ed-no">不通過</button>
+              <button type="button" class="btn btn-success ed-ok">通過</button>
+            </div>
+          `;
+
+          // 通過按鈕（不用確認框，加速檢錄）
+          item.querySelector('.ed-ok').addEventListener('click', async () => {
+            await decideCheckin(sub.sub_id, true);
+          });
+
+          // 不通過按鈕（需要確認框）
+          item.querySelector('.ed-no').addEventListener('click', () => {
+            showConfirm(
+              '操作確認',
+              `確定將 ${sub.card}（${sub.name}）標記為不通過？`,
+              async () => {
+                await decideCheckin(sub.sub_id, false);
+              }
+            );
+          });
+
+          pendingBox.appendChild(item);
+        }
+      }
+
+      // 已通過清單
+      const approvedBox = document.getElementById('edApproved');
+      const approvedList = data.approved || [];
+      document.getElementById('edApprovedBadge').textContent = `共 ${approvedList.length} 人`;
+
+      if (approvedList.length === 0) {
+        approvedBox.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.88rem; padding: 10px 0;">目前尚無已通過名單</div>';
+      } else {
+        approvedBox.innerHTML = '';
+        for (const done of approvedList) {
+          const row = document.createElement('div');
+          row.className = 'ed-done';
+          row.dataset.card = done.card;
+
+          row.innerHTML = `
+            <div class="ed-done-info">
+              <span class="ed-done-card">${escapeHtml(done.card)}</span>
+              <span class="ed-done-name">${escapeHtml(done.name)}</span>
+            </div>
+            <button type="button" class="btn btn-secondary ed-undo">取消報到</button>
+          `;
+
+          // 取消報到（需要確認框）
+          row.querySelector('.ed-undo').addEventListener('click', () => {
+            showConfirm(
+              '取消報到確認',
+              `確定取消 ${done.card}（${done.name}）的報到？取消後號碼將空出。`,
+              async () => {
+                await undoCheckin(done.card);
+              }
+            );
+          });
+
+          approvedBox.appendChild(row);
+        }
+        filterApproved();
+      }
+    }
+
+    // 審核決定（通過／不通過）
+    async function decideCheckin(subId, ok) {
+      const msgEl = document.getElementById('edMsg');
+      msgEl.style.display = 'none';
+
+      try {
+        const res = await callApi('/api/staff/checkin_decide', {
+          staff_pin: staffPin,
+          sub_id: subId,
+          ok: ok
+        });
+
+        if (ok && res.pin) {
+          showGeneratedPin(res.pin);
+        }
+        await fetchQueue();
+      } catch (err) {
+        msgEl.textContent = err.message || '審核操作失敗';
+        msgEl.style.display = 'block';
+      }
+    }
+
+    // 取消報到
+    async function undoCheckin(card) {
+      const msgEl = document.getElementById('edMsg');
+      msgEl.style.display = 'none';
+
+      try {
+        await callApi('/api/staff/checkin_undo', {
+          staff_pin: staffPin,
+          card: card
+        });
+        await fetchQueue();
+      } catch (err) {
+        msgEl.textContent = err.message || '取消報到失敗';
+        msgEl.style.display = 'block';
+      }
+    }
+
+    // 現場直接登記
+    document.getElementById('edAddBtn').addEventListener('click', async () => {
+      const cardInput = document.getElementById('edAddCard');
+      const nameInput = document.getElementById('edAddName');
+      const addBtn = document.getElementById('edAddBtn');
+      const msgEl = document.getElementById('edMsg');
+
+      const card = cardInput.value.trim();
+      const name = nameInput.value.trim();
+
+      msgEl.style.display = 'none';
+      if (!card || !name) {
+        msgEl.textContent = '請輸入卡號與選手姓名';
+        msgEl.style.display = 'block';
+        return;
+      }
+
+      addBtn.disabled = true;
+
+      try {
+        const res = await callApi('/api/staff/checkin_add', {
+          staff_pin: staffPin,
+          card: card,
+          name: name
+        });
+
+        cardInput.value = '';
+        nameInput.value = '';
+
+        if (res.pin) {
+          showGeneratedPin(res.pin);
+        }
+        await fetchQueue();
+      } catch (err) {
+        msgEl.textContent = err.message || '現場登記失敗';
+        msgEl.style.display = 'block';
+      } finally {
+        addBtn.disabled = false;
+      }
+    });
+
+    // 顯示 PIN 碼
+    function showGeneratedPin(pin) {
+      const pinContainer = document.getElementById('edPinShowContainer');
+      const pinShow = document.getElementById('edPinShow');
+      pinShow.textContent = String(pin);
+      pinContainer.style.display = 'block';
+    }
+
+    // 已抄下按鈕：PIN 碼從畫面消失，任何地方都不存
+    document.getElementById('edPinDone').addEventListener('click', () => {
+      const pinContainer = document.getElementById('edPinShowContainer');
+      const pinShow = document.getElementById('edPinShow');
+      pinContainer.style.display = 'none';
+      pinShow.textContent = '';
+    });
+
+    // 搜尋已通過名單
+    function filterApproved() {
+      const query = document.getElementById('edSearch').value.trim().toLowerCase();
+      const rows = document.querySelectorAll('#edApproved .ed-done');
+      for (const row of rows) {
+        const card = (row.dataset.card || '').toLowerCase();
+        const text = row.textContent.toLowerCase();
+        if (!query || card.includes(query) || text.includes(query)) {
+          row.style.display = 'flex';
+        } else {
+          row.style.display = 'none';
+        }
+      }
+    }
+    document.getElementById('edSearch').addEventListener('input', filterApproved);
+
+    // 主辦開賽
+    document.getElementById('edStart').addEventListener('click', async () => {
+      const msgEl = document.getElementById('edMsg');
+      msgEl.style.display = 'none';
+
+      try {
+        // 先送 dry_run
+        const res = await callApi('/api/admin/start', {
+          staff_pin: staffPin,
+          dry_run: true
+        });
+
+        const totalPlayers = res.players || 0;
+        const divs = res.divs || [];
+        const divStr = divs.map(d => `${d.div} 區 ${d.approved} 人`).join('、');
+
+        showConfirm(
+          '開賽確認',
+          `共 ${totalPlayers} 人已通過報到（${divStr}）。確定要開賽並建立淘汰賽賽程嗎？開賽後將無法再進行報到。`,
+          async () => {
+            try {
+              await callApi('/api/admin/start', {
+                staff_pin: staffPin,
+                dry_run: false
+              });
+              await fetchQueue();
+            } catch (startErr) {
+              msgEl.textContent = startErr.message || '開賽失敗';
+              msgEl.style.display = 'block';
+            }
+          }
+        );
+      } catch (err) {
+        msgEl.textContent = err.message || '無法預覽開賽狀態';
+        msgEl.style.display = 'block';
+      }
+    });
+
+    // 頁面載入時檢查 sessionStorage 是否有 PIN
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedPin = sessionStorage.getItem(SESSION_KEY_PIN);
+      if (savedPin) {
+        doLogin(savedPin);
+      }
+    });
+  </script>
+</body>
+</html>
