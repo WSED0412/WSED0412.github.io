@@ -5,56 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="data:,">
   <title>符文戰場 — 裁判手機頁</title>
+  <link rel="stylesheet" href="common.css">
   <style>
-    :root {
-      --bg: #01222F;
-      --card-bg: #013951;
-      --card-border: #0A5570;
-      --text-primary: #F9F9F9;
-      --text-secondary: #9FB8C4;
-      --accent: #EF7D00;
-      --accent-hover: #C86800;
-      --accent-text: #FF941E;
-      --warning-bg: #3E3312;
-      --warning-border: #8A6D1F;
-      --warning-text: #F2C94C;
-      --danger-bg: #4A1F1C;
-      --danger-border: #A8443C;
-      --danger-text: #ED807A;
-      --success-bg: #0A3F33;
-      --success-border: #1F7A55;
-      --success-text: #2FB574;
-      --chip-bg: #0A4A63;
-      --input-bg: #011A24;
-      --info-bg: #1B2F4A;
-      --info-border: #2F5A80;
-      --info-text: #4FA8D8;
-      --judge-bg: #2E2140;
-      --judge-border: #553C77;
-      --judge-text: #B38FE0;
-
-      /* Aliases */
-      --panel-bg: var(--card-bg);
-      --panel-border: var(--card-border);
-      --text-main: var(--text-primary);
-      --text-sub: var(--text-secondary);
-      --warning: var(--warning-text);
-      --danger: var(--danger-text);
-      --success: var(--success-text);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
+html, body {
       -webkit-text-size-adjust: 100%;
     }
 
-    body {
+body {
       background-color: var(--bg);
       color: var(--text-main);
       font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
@@ -65,19 +22,18 @@
       width: 100%;
     }
 
-    input, select, textarea {
+input, select, textarea {
       font-size: 1rem;
     }
 
-    .container {
+.container {
       width: 100%;
       max-width: 540px;
       margin: 0 auto;
       padding: 12px 14px 60px;
     }
 
-    /* 頂部導覽列 */
-    header {
+header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -88,20 +44,20 @@
       gap: 8px;
     }
 
-    .header-left {
+.header-left {
       display: flex;
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
     }
 
-    .page-title {
+.page-title {
       font-size: 1.15rem;
       font-weight: 800;
       color: var(--text-main);
     }
 
-    .judge-badge {
+.judge-badge {
       font-size: 0.72rem;
       background: var(--judge-bg);
       color: var(--judge-text);
@@ -111,24 +67,23 @@
       font-weight: 700;
     }
 
-    .header-right {
+.header-right {
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .judge-user-info {
+.judge-user-info {
       font-size: 0.82rem;
       color: var(--text-sub);
     }
 
-    .judge-user-name {
+.judge-user-name {
       color: var(--accent-text);
       font-weight: 700;
     }
 
-    /* 提示橫幅 */
-    .banner {
+.banner {
       padding: 8px 12px;
       border-radius: 8px;
       font-size: 0.82rem;
@@ -136,19 +91,20 @@
       margin-bottom: 10px;
       text-align: center;
     }
-    .contract-warning {
+
+.contract-warning {
       background: var(--warning-bg);
       color: var(--warning-text);
       border: 1px solid var(--warning-border);
     }
-    .stale-warning {
+
+.stale-warning {
       background: var(--danger-bg);
       color: var(--danger-text);
       border: 1px solid var(--danger-border);
     }
 
-    /* 區塊卡片 */
-    .judge-card {
+.judge-card {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
       border-radius: 12px;
@@ -156,7 +112,7 @@
       margin-bottom: 14px;
     }
 
-    .card-title {
+.card-title {
       font-size: 1.05rem;
       font-weight: 800;
       color: var(--text-main);
@@ -166,19 +122,18 @@
       gap: 6px;
     }
 
-    .card-subtitle {
+.card-subtitle {
       font-size: 0.82rem;
       font-weight: 700;
       color: var(--text-sub);
       margin-bottom: 8px;
     }
 
-    /* 表單元件 */
-    .form-group {
+.form-group {
       margin-bottom: 10px;
     }
 
-    .form-label {
+.form-label {
       display: block;
       font-size: 0.8rem;
       font-weight: 600;
@@ -186,14 +141,14 @@
       margin-bottom: 4px;
     }
 
-    .form-row {
+.form-row {
       display: flex;
       gap: 8px;
       align-items: center;
       flex-wrap: wrap;
     }
 
-    .input-text, .input-number {
+.input-text, .input-number {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
       color: var(--text-main);
@@ -207,18 +162,17 @@
       max-width: 100%;
     }
 
-    .input-text:focus, .input-number:focus, .select-input:focus {
+.input-text:focus, .input-number:focus, .select-input:focus {
       border-color: var(--accent);
     }
 
-    .input-sm {
+.input-sm {
       min-width: 70px;
       width: 90px;
       flex: none;
     }
 
-    /* 按鈕樣式 */
-    .btn {
+.btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -234,77 +188,82 @@
       text-decoration: none;
     }
 
-    #judgeLogin,
+#judgeLogin,
     #judgeLogout,
     #callRefresh,
     #conflictRefresh {
       min-height: 44px;
     }
 
-    .call-take, .call-done, .late-mark, .late-arrived, .late-extend, .late-loss {
+.call-take, .call-done, .late-mark, .late-arrived, .late-extend, .late-loss {
       min-height: 44px;
     }
 
-    .late-item-danger {
+.late-item-danger {
       border-color: var(--danger-border) !important;
       background: rgba(74, 31, 28, 0.4) !important;
     }
 
-    .btn:active {
+.btn:active {
       transform: translateY(1px);
     }
 
-    .btn-block {
+.btn-block {
       width: 100%;
     }
 
-    .btn-primary {
+.btn-primary {
       background: var(--accent);
       color: #141212;
       border-color: var(--accent);
     }
-    .btn-primary:hover, .btn-primary:active {
+
+.btn-primary:hover, .btn-primary:active {
       background: var(--accent-hover);
       border-color: var(--accent-hover);
     }
 
-    .btn-secondary {
+.btn-secondary {
       background: var(--chip-bg);
       color: var(--text-primary);
       border-color: var(--card-border);
     }
-    .btn-secondary:hover {
+
+.btn-secondary:hover {
       background: var(--card-border);
     }
 
-    .btn-warning {
+.btn-warning {
       background: var(--warning-border);
       color: #141212;
       border-color: var(--warning-border);
     }
-    .btn-warning:hover {
+
+.btn-warning:hover {
       background: #705515;
     }
 
-    .btn-success {
+.btn-success {
       background: var(--success-border);
       color: #141212;
       border-color: var(--success-border);
     }
-    .btn-success:hover {
+
+.btn-success:hover {
       background: #175d41;
     }
 
-    .btn-danger {
+.btn-danger {
       background: var(--danger-border);
       color: #141212;
       border-color: var(--danger-border);
     }
-    .btn-danger:hover {
+
+.btn-danger:hover {
       background: #7f322b;
     }
 
-    .btn-logout {
+.btn-logout {
       background: transparent;
       color: var(--text-sub);
       border: 1px solid var(--panel-border);
@@ -313,13 +272,14 @@
       border-radius: 6px;
       min-height: 44px;
     }
-    .btn-logout:hover {
+
+.btn-logout:hover {
       background: var(--danger-bg);
       color: var(--danger-text);
       border-color: var(--danger-border);
     }
 
-    .btn-quick {
+.btn-quick {
       background: var(--chip-bg);
       border: 1px solid var(--card-border);
       color: var(--text-primary);
@@ -330,26 +290,26 @@
       min-height: 44px;
       cursor: pointer;
     }
-    .btn-quick:hover {
+
+.btn-quick:hover {
       background: var(--card-border);
       color: var(--text-primary);
     }
 
-    /* 快捷原因區 */
-    .quick-reason-row {
+.quick-reason-row {
       display: flex;
       align-items: center;
       gap: 6px;
       flex-wrap: wrap;
       margin-bottom: 8px;
     }
-    .quick-reason-label {
+
+.quick-reason-label {
       font-size: 0.75rem;
       color: var(--text-sub);
     }
 
-    /* 訊息顯示框 */
-    .msg-box {
+.msg-box {
       margin-top: 10px;
       padding: 8px 12px;
       border-radius: 6px;
@@ -358,36 +318,37 @@
       line-height: 1.4;
       word-break: break-all;
     }
-    .msg-box.error {
+
+.msg-box.error {
       background: var(--danger-bg);
       border: 1px solid var(--danger-border);
       color: var(--danger-text);
     }
-    .msg-box.success {
+
+.msg-box.success {
       background: var(--success-bg);
       border: 1px solid var(--success-border);
       color: var(--success-text);
     }
 
-    .btn-sm {
+.btn-sm {
       padding: 4px 10px;
       font-size: 0.8rem;
       min-height: 44px;
     }
 
-    .call-take, .call-done {
+.call-take, .call-done {
       min-height: 44px;
     }
 
-    /* 裁判呼叫佇列 */
-    .call-list {
+.call-list {
       display: flex;
       flex-direction: column;
       gap: 8px;
       margin-top: 8px;
     }
 
-    .call-item {
+.call-item {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
       border-radius: 8px;
@@ -398,23 +359,22 @@
       transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
     }
 
-    .call-item.call-item-waiting {
+.call-item.call-item-waiting {
       border-left: 4px solid var(--judge-border);
       background: var(--judge-bg);
     }
 
-    .call-item.call-item-taken {
+.call-item.call-item-taken {
       border-left: 4px solid var(--info-border);
       background: var(--info-bg);
     }
 
-    /* 45 秒新案件醒目效果 (PROJECT.md) */
-    .call-item.call-item-new {
+.call-item.call-item-new {
       box-shadow: 0 0 10px rgba(179, 143, 224, 0.4);
       border-color: var(--judge-text);
     }
 
-    .call-item-header {
+.call-item-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -422,65 +382,65 @@
       gap: 6px;
     }
 
-    .call-table-title {
+.call-table-title {
       font-size: 1rem;
       font-weight: 800;
       color: var(--accent-text);
       cursor: pointer;
     }
 
-    .call-item-badges {
+.call-item-badges {
       display: flex;
       align-items: center;
       gap: 6px;
       flex-wrap: wrap;
     }
 
-    .call-state-badge {
+.call-state-badge {
       font-size: 0.72rem;
       padding: 2px 7px;
       border-radius: 9999px;
       font-weight: 700;
     }
 
-    .call-state-badge.waiting {
+.call-state-badge.waiting {
       background: var(--judge-bg);
       border: 1px solid var(--judge-border);
       color: var(--judge-text);
     }
 
-    .call-state-badge.taken {
+.call-state-badge.taken {
       background: var(--info-bg);
       border: 1px solid var(--info-border);
       color: var(--info-text);
     }
 
-    .call-item-time {
+.call-item-time {
       font-size: 0.78rem;
       color: var(--warning-text);
       font-weight: 600;
     }
 
-    .call-item-body {
+.call-item-body {
       display: flex;
       flex-direction: column;
       gap: 4px;
       font-size: 0.86rem;
     }
 
-    .call-reason-row {
+.call-reason-row {
       display: flex;
       align-items: center;
       gap: 6px;
       color: var(--text-primary);
     }
 
-    .call-reason-label {
+.call-reason-label {
       font-weight: 700;
       color: var(--warning-text);
     }
 
-    .call-note-text {
+.call-note-text {
       color: var(--text-primary);
       background: var(--card-bg);
       padding: 4px 8px;
@@ -489,7 +449,7 @@
       word-break: break-all;
     }
 
-    .call-item-meta {
+.call-item-meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -500,7 +460,7 @@
       gap: 4px;
     }
 
-    .call-item-actions {
+.call-item-actions {
       display: flex;
       justify-content: flex-end;
       gap: 8px;
@@ -509,15 +469,14 @@
       border-top: 1px solid rgba(255, 255, 255, 0.06);
     }
 
-    /* 爭議清單 */
-    .conflict-list {
+.conflict-list {
       display: flex;
       flex-direction: column;
       gap: 8px;
       margin-top: 10px;
     }
 
-    .conflict-open {
+.conflict-open {
       width: 100%;
       text-align: left;
       padding: 10px 12px;
@@ -533,23 +492,23 @@
       justify-content: space-between;
       min-height: 44px;
     }
-    .conflict-open:hover {
+
+.conflict-open:hover {
       background: rgba(62, 51, 18, 0.4);
     }
 
-    /* 桌況詳情卡片 */
-    .table-detail-container {
+.table-detail-container {
       margin-top: 10px;
     }
 
-    .table-detail-card {
+.table-detail-card {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
       border-radius: 8px;
       padding: 12px 14px;
     }
 
-    .stale-table-banner {
+.stale-table-banner {
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
@@ -561,7 +520,7 @@
       text-align: center;
     }
 
-    .table-detail-header {
+.table-detail-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -570,39 +529,43 @@
       gap: 6px;
     }
 
-    .table-detail-title {
+.table-detail-title {
       font-size: 1.15rem;
       font-weight: 800;
       color: var(--accent-text);
     }
 
-    .table-badge {
+.table-badge {
       font-size: 0.75rem;
       padding: 2px 8px;
       border-radius: 9999px;
       font-weight: 700;
     }
-    .table-badge.state-conflict {
+
+.table-badge.state-conflict {
       background: var(--danger-bg);
       border: 1px solid var(--danger-border);
       color: var(--danger-text);
     }
-    .table-badge.state-confirmed {
+
+.table-badge.state-confirmed {
       background: var(--success-bg);
       border: 1px solid var(--success-border);
       color: var(--success-text);
     }
-    .table-badge.state-pending {
+
+.table-badge.state-pending {
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
     }
-    .table-badge.state-none {
+
+.table-badge.state-none {
       background: var(--chip-bg);
       color: var(--text-secondary);
     }
 
-    .table-players {
+.table-players {
       font-size: 1.02rem;
       color: var(--text-main);
       margin-bottom: 10px;
@@ -611,13 +574,13 @@
       word-break: break-all;
     }
 
-    .vs-text {
+.vs-text {
       color: var(--accent-text);
       font-weight: 700;
       margin: 0 4px;
     }
 
-    .table-reports-box {
+.table-reports-box {
       font-size: 0.88rem;
       line-height: 1.5;
       color: var(--text-primary);
@@ -628,58 +591,60 @@
       border: 1px solid var(--card-border);
     }
 
-    .report-subtitle {
+.report-subtitle {
       font-size: 0.8rem;
       color: var(--text-sub);
       font-weight: 700;
       margin-bottom: 4px;
     }
 
-    .final-result {
+.final-result {
       padding: 8px 10px;
       border-radius: 6px;
       font-size: 0.9rem;
       margin-bottom: 10px;
       line-height: 1.4;
     }
-    .final-result.success {
+
+.final-result.success {
       background: var(--success-bg);
       border: 1px solid var(--success-border);
       color: var(--success-text);
     }
-    .final-result.danger {
+
+.final-result.danger {
       background: var(--danger-bg);
       border: 1px solid var(--danger-border);
       color: var(--danger-text);
       font-weight: 700;
     }
-    .final-result.pending {
+
+.final-result.pending {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       color: var(--text-secondary);
     }
 
-    .table-ext-box {
+.table-ext-box {
       font-size: 0.85rem;
       color: var(--text-secondary);
       padding-top: 6px;
       border-top: 1px dashed var(--card-border);
     }
 
-    /* 判定選單三欄網格 */
-    .judge-scores-grid {
+.judge-scores-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: 8px;
       margin-bottom: 10px;
     }
 
-    .score-field {
+.score-field {
       display: flex;
       flex-direction: column;
     }
 
-    .select-input {
+.select-input {
       width: 100%;
       background: var(--input-bg);
       border: 1px solid var(--card-border);
@@ -694,8 +659,7 @@
       appearance: none;
     }
 
-    /* 雙方判負核取方塊 */
-    .checkbox-row {
+.checkbox-row {
       margin-bottom: 12px;
       background: var(--danger-bg);
       border: 1px solid var(--danger-border);
@@ -703,7 +667,7 @@
       padding: 8px 10px;
     }
 
-    .checkbox-label {
+.checkbox-label {
       display: flex;
       align-items: center;
       gap: 8px;
@@ -713,7 +677,7 @@
       cursor: pointer;
     }
 
-    .checkbox-label input[type="checkbox"] {
+.checkbox-label input[type="checkbox"] {
       font-size: 1rem;
       width: 18px;
       height: 18px;
@@ -721,8 +685,7 @@
       cursor: pointer;
     }
 
-    /* 新 PIN 顯示大字區塊 */
-    .new-pin-display {
+.new-pin-display {
       background: var(--success-bg);
       border: 2px solid var(--success-border);
       border-radius: 8px;
@@ -736,16 +699,14 @@
       word-break: break-all;
     }
 
-    /* 空狀態提示 */
-    .empty-state-sm {
+.empty-state-sm {
       color: var(--text-sub);
       font-size: 0.85rem;
       padding: 8px 0;
       text-align: center;
     }
 
-    /* 確認彈窗 (Modal) */
-    .modal-overlay {
+.modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
@@ -764,7 +725,7 @@
       z-index: 9999;
     }
 
-    .modal-box {
+.modal-box {
       background: var(--card-bg);
       border: 2px solid var(--danger-border);
       border-radius: 12px;
@@ -774,14 +735,14 @@
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     }
 
-    .modal-title {
+.modal-title {
       font-size: 1.05rem;
       font-weight: 800;
       color: var(--danger-text);
       margin-bottom: 8px;
     }
 
-    .modal-msg {
+.modal-msg {
       font-size: 0.9rem;
       color: var(--text-primary);
       margin-bottom: 14px;
@@ -789,14 +750,13 @@
       word-break: break-all;
     }
 
-    .modal-btns {
+.modal-btns {
       display: flex;
       justify-content: flex-end;
       gap: 8px;
     }
 
-    /* 尚未連上賽務系統覆蓋層 */
-    .disconnected-overlay {
+.disconnected-overlay {
       position: fixed;
       top: 0;
       left: 0;
@@ -811,17 +771,20 @@
       text-align: center;
       z-index: 2000;
     }
-    .disconnected-icon {
+
+.disconnected-icon {
       font-size: 3rem;
       margin-bottom: 12px;
     }
-    .disconnected-title {
+
+.disconnected-title {
       font-size: 1.3rem;
       font-weight: 800;
       color: var(--danger-text);
       margin-bottom: 8px;
     }
-    .disconnected-desc {
+
+.disconnected-desc {
       font-size: 0.9rem;
       color: var(--text-sub);
       max-width: 320px;
@@ -829,8 +792,7 @@
       line-height: 1.5;
     }
 
-    /* 逐張打勾核對牌組 (PROJECT.md 第三十三輪, DATA-CONTRACT 6.5) */
-    .deck-check-row {
+.deck-check-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -847,15 +809,18 @@
       box-sizing: border-box;
       transition: background 0.15s, border-color 0.15s;
     }
-    .deck-check-row:hover {
+
+.deck-check-row:hover {
       background: rgba(255, 255, 255, 0.05);
     }
-    .deck-check-row[aria-pressed="true"] {
+
+.deck-check-row[aria-pressed="true"] {
       background: var(--chip-bg);
       border-color: var(--accent);
       color: var(--text-primary);
     }
-    .deck-section-title {
+
+.deck-section-title {
       font-size: 0.88rem;
       font-weight: 700;
       color: var(--accent-text);
@@ -863,7 +828,7 @@
       margin-bottom: 4px;
       padding-left: 2px;
     }
-  </style>
+</style>
 </head>
 <body>
   <div class="container">
@@ -917,6 +882,40 @@
             </select>
           </div>
           <div id="zoneHiddenNote" style="font-size: 0.85rem; font-weight: 700; color: var(--warning-text); display: none;"></div>
+        </div>
+      </section>
+
+      <!-- 區塊: 現場報到 -->
+      <section class="judge-card" id="judgeCheckinSection">
+        <h2 class="card-title">📋 選手報到</h2>
+        
+        <!-- 抽號碼牌報到區塊 (snapshot.checkin 存在時顯示) -->
+        <div id="judgeDeskLinkBox" style="display: none; padding: 10px 0;">
+          <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 10px;">
+            本賽事採用現場抽號碼牌報到，審核作業請至檢錄台處理。
+          </p>
+          <a id="judgeDeskLink" href="elim-desk.html" class="btn btn-primary" style="display: inline-flex; text-decoration: none;">
+            前往檢錄台管理（檢錄台在這裡審核選手）
+          </a>
+        </div>
+
+        <!-- 名單報到區塊 (snapshot.checkin 不存在時顯示) -->
+        <div id="judgeListCheckinBox">
+          <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 10px;">
+            代為勾選報到或查詢名單報到狀態。
+          </p>
+          <div class="form-group">
+            <label for="judgeCheckinId" class="form-label">輸入選手編號代為報到</label>
+            <div class="form-row">
+              <input type="text" id="judgeCheckinId" class="input-text" placeholder="例如 R0001">
+              <button type="button" id="judgeCheckinBtn" class="btn btn-success">代為報到</button>
+            </div>
+          </div>
+          <div id="judgeCheckinMsg" class="msg-box" style="display: none; margin-top: 8px;"></div>
+          <div style="margin-top: 10px;">
+            <button type="button" id="judgeCheckinRefresh" class="btn btn-secondary btn-sm">重新整理報到清單</button>
+          </div>
+          <div id="judgeCheckinList" style="margin-top: 8px; max-height: 200px; overflow-y: auto;"></div>
         </div>
       </section>
 
@@ -1009,31 +1008,8 @@
 
         <!-- 局數比分選擇 -->
         <div class="judge-scores-grid">
-          <div class="score-field">
-            <label for="resP1" id="resP1Label" class="form-label">選手 1 勝局</label>
-            <select id="resP1" class="select-input">
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-            </select>
+            <div id="judgeReportWidgetContainer"></div>
           </div>
-          <div class="score-field">
-            <label for="resP2" id="resP2Label" class="form-label">選手 2 勝局</label>
-            <select id="resP2" class="select-input">
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-            </select>
-          </div>
-          <div class="score-field">
-            <label for="resDraws" id="resDrawsLabel" class="form-label">平手局數</label>
-            <select id="resDraws" class="select-input">
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-            </select>
-          </div>
-        </div>
 
         <!-- 雙方判負選項 -->
         <div class="checkbox-row">
@@ -1204,6 +1180,8 @@
     <button type="button" class="btn btn-primary" id="retryBtn">重新連線</button>
   </div>
 
+  <script src="common.js"></script>
+  <script src="admin-panels.js"></script>
   <script>
     const CURRENT_CONTRACT_VERSION = 16;
     const SESSION_STORAGE_KEY_STAFF_PIN = 'riftbound_judge_staff_pin';
@@ -1219,6 +1197,8 @@
     let lastContentChangeTime = Date.now();
 
     // 裁判工作人員狀態
+    let auth = null;
+    let playerAssist = null;
     let staffPin = null;
     let judgeName = '';
     let currentTable = null;
@@ -1379,99 +1359,11 @@
       return '../snapshot.json';
     }
 
-    // 取得 API 完整路徑 (DATA-CONTRACT 3.1)
-    function getApiUrl(endpoint) {
-      const base = (snapshotData && snapshotData.event && typeof snapshotData.event.api_base === 'string')
-        ? snapshotData.event.api_base
-        : '';
-      return base + endpoint;
-    }
-
-    // 通用呼叫 API
-    async function callApi(endpoint, body = {}) {
-      const url = getApiUrl(endpoint);
-      const payload = Object.assign({}, body);
-      if (staffPin) {
-        payload.staff_pin = staffPin;
-      }
-
-      let res;
-      try {
-        res = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-      } catch (networkErr) {
-        const err = new Error('沒有送出：連不上主機，請確認網路後再按一次');
-        err.isNetwork = true;
-        throw err;
-      }
-
-      const data = await res.json().catch(() => null);
-
-      if (!res.ok || !data || !data.ok) {
-        const errorMsg = (data && data.message) ? data.message : `操作失敗 (HTTP ${res.status})`;
-        const err = new Error(errorMsg);
-        err.status = res.status;
-        err.code = data ? data.error : null;
-        err.data = data;
-        throw err;
-      }
-
-      return data;
-    }
-
-    // 讀取 snapshot 資料 (DATA-CONTRACT 1.10)
-    async function fetchData() {
-      if (document.visibilityState === 'hidden') return;
-      const primaryUrl = getDataSourceUrl();
-      try {
-        const responseTime = Date.now();
-        let res = await fetch(primaryUrl, { cache: 'no-store' });
-        if (!res.ok && primaryUrl.startsWith('../')) {
-          const fallbackUrl = primaryUrl.replace(/^\.\.\//, '/');
-          res = await fetch(fallbackUrl, { cache: 'no-store' });
-        }
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
-        }
-
-        const text = await res.text();
-        const data = JSON.parse(text);
-
-        // DATA-CONTRACT 1.10 時間換算
-        const isDemo = !!new URLSearchParams(window.location.search).get('demo');
-        if (isDemo) {
-          if (!demoOffsetCalculated && data.server_now) {
-            serverOffsetMs = data.server_now - responseTime;
-            demoOffsetCalculated = true;
-          }
-        } else {
-          let dateHeaderMs = null;
-          try {
-            const dateHeader = res.headers.get('Date');
-            if (dateHeader) {
-              const t = new Date(dateHeader).getTime();
-              if (!isNaN(t)) dateHeaderMs = t;
-            }
-          } catch (e) {}
-
-          if (dateHeaderMs !== null) {
-            serverOffsetMs = dateHeaderMs - responseTime;
-          } else if (data.server_now) {
-            serverOffsetMs = data.server_now - responseTime;
-          }
-        }
-
+    const poller = createPoller({
+      onData: (data) => {
         document.getElementById('disconnectedScreen').style.display = 'none';
-
-        if (text === rawJsonText) {
-          return;
-        }
-
+        serverOffsetMs = poller.now() - Date.now();
         lastContentChangeTime = Date.now();
-        rawJsonText = text;
         snapshotData = data;
         window.snapshotData = data;
 
@@ -1481,13 +1373,17 @@
         }
         renderLateList();
         updateZoneFilterOptions();
-        checkFreshness();
-      } catch (err) {
-        checkFreshness();
+        renderCheckinSection();
+      },
+      onError: (err) => {
         if (!snapshotData) {
           document.getElementById('disconnectedScreen').style.display = 'flex';
         }
       }
+    });
+
+    async function fetchData() {
+      return poller.fetchOnce();
     }
 
     // 格式版本提示
@@ -1520,16 +1416,6 @@
       }
     }
 
-    function escapeHtml(str) {
-      if (str === null || str === undefined) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-
     // 訊息顯示 helper (使用 textContent 避免 XSS)
     function showMsg(elId, msg, isError = true) {
       const el = document.getElementById(elId);
@@ -1547,17 +1433,20 @@
     }
 
     // 彈窗確認處理
-    function showConfirm(title, message, action) {
-      document.getElementById('confirmTitle').textContent = title;
-      document.getElementById('confirmMessage').textContent = message;
-      pendingConfirmAction = action;
-      document.getElementById('confirmModal').style.display = 'flex';
+    async function showConfirm(title, message, action) {
+      const ok = await confirmDialog({
+        title: title,
+        message: message,
+        yes: '確認執行',
+        no: '取消',
+        danger: true
+      });
+      if (ok && action) {
+        await action();
+      }
     }
 
-    function hideConfirm() {
-      document.getElementById('confirmModal').style.display = 'none';
-      pendingConfirmAction = null;
-    }
+    function hideConfirm() {}
 
     // 取得當前輪次
     function getEffectiveRound() {
@@ -1592,110 +1481,49 @@
       }
     }
 
-    // 登入處理
-    let isLoggingIn = false;
-    async function handleLogin() {
-      const loginBtn = document.getElementById('judgeLogin');
-      if (isLoggingIn || (loginBtn && loginBtn.disabled)) return;
-      hideMsg('loginError');
-      const pinInput = document.getElementById('judgePin');
-      const pinVal = (pinInput ? pinInput.value : '').trim();
-
-      if (!pinVal) {
-        showMsg('loginError', '請輸入工作人員 PIN 碼');
-        return;
-      }
-
-      isLoggingIn = true;
-      const origText = loginBtn ? loginBtn.textContent : '';
-      if (loginBtn) {
-        loginBtn.disabled = true;
-        loginBtn.textContent = '登入中…';
-      }
-
-      try {
-        const res = await callApi('/api/staff/whoami', { staff_pin: pinVal });
-        // judge 或 admin 都可以使用裁判頁
-        if (res.role !== 'judge' && res.role !== 'admin') {
-          staffPin = null;
-          try { sessionStorage.removeItem(SESSION_STORAGE_KEY_STAFF_PIN); } catch (e) {}
-          showMsg('loginError', '權限不足：僅裁判與主辦可使用');
-          renderAuthUI();
-          return;
-        }
-
-        // 登入成功：只存記憶體與 sessionStorage，禁止放 localStorage
-        staffPin = pinVal;
+    // 初始化工作人員登入面板 (web/admin-panels.js)
+    auth = AdminPanels.mountLogin({
+      ids: {
+        section: 'loginSection',
+        pin: 'judgePin',
+        btn: 'judgeLogin',
+        error: 'loginError',
+        logout: 'judgeLogout'
+      },
+      storageKey: SESSION_STORAGE_KEY_STAFF_PIN,
+      allowedRoles: ['judge', 'admin'],
+      onLogin: async (res) => {
+        staffPin = auth.getPin();
+        window.staffPin = staffPin;
         judgeName = res.name || '示範裁判';
-        try {
-          sessionStorage.setItem(SESSION_STORAGE_KEY_STAFF_PIN, pinVal);
-        } catch (e) {}
-
-        if (pinInput) pinInput.value = '';
         renderAuthUI();
+        renderCheckinSection();
+        if (!(snapshotData && snapshotData.checkin)) {
+          fetchJudgeCheckinList();
+        }
         await fetchCalls();
         await fetchConflicts();
         startCallTimer();
         startConflictTimer();
-      } catch (err) {
+      },
+      onLogout: () => {
+        stopCallTimer();
+        stopConflictTimer();
         staffPin = null;
-        try { sessionStorage.removeItem(SESSION_STORAGE_KEY_STAFF_PIN); } catch (e) {}
-        showMsg('loginError', err.message);
+        window.staffPin = null;
+        judgeName = '';
+        currentTable = null;
+        renderTableDetail(null);
+        renderConflictList([]);
+        renderCallList([]);
+        renderLateList();
+        updateZoneFilterOptions();
+        if (playerAssist) {
+          playerAssist.clear();
+        }
         renderAuthUI();
-      } finally {
-        isLoggingIn = false;
-        if (loginBtn) {
-          loginBtn.disabled = false;
-          loginBtn.textContent = origText;
-        }
       }
-    }
-
-    // 登出處理
-    function handleLogout() {
-      stopCallTimer();
-      stopConflictTimer();
-      staffPin = null;
-      judgeName = '';
-      currentTable = null;
-      renderTableDetail(null);
-      renderConflictList([]);
-      renderCallList([]);
-      renderLateList();
-      updateZoneFilterOptions();
-      try {
-        sessionStorage.removeItem(SESSION_STORAGE_KEY_STAFF_PIN);
-      } catch (e) {}
-      renderAuthUI();
-    }
-
-    // 嘗試從 sessionStorage 自動驗證登入
-    async function checkAutoLogin() {
-      let savedPin = null;
-      try {
-        savedPin = sessionStorage.getItem(SESSION_STORAGE_KEY_STAFF_PIN);
-      } catch (e) {}
-
-      if (!savedPin) return;
-
-      try {
-        const res = await callApi('/api/staff/whoami', { staff_pin: savedPin });
-        if (res.role === 'judge' || res.role === 'admin') {
-          staffPin = savedPin;
-          judgeName = res.name || '示範裁判';
-          renderAuthUI();
-          await fetchCalls();
-          await fetchConflicts();
-          startCallTimer();
-          startConflictTimer();
-          return;
-        }
-      } catch (e) {}
-
-      try { sessionStorage.removeItem(SESSION_STORAGE_KEY_STAFF_PIN); } catch (e) {}
-      staffPin = null;
-      renderAuthUI();
-    }
+    });
 
     // 呼叫佇列定時器 (每 20 秒自動更新)
     function startCallTimer() {
@@ -2460,19 +2288,29 @@
       `;
 
       // 同步更新判定選單標籤與初值
+      // 動態產生裁判的回報網格
+      const widgetContainer = document.getElementById('judgeReportWidgetContainer');
+      if (widgetContainer && typeof buildReportWidgetHtml === 'function' && snapshotData && snapshotData.event && snapshotData.event.game) {
+          const stage = (snapshotData.round && snapshotData.round.stage === 'top_cut') ? 'top_cut' : 'swiss';
+          widgetContainer.innerHTML = buildReportWidgetHtml(snapshotData.event.game.report, stage, 'judge', {});
+      }
+      
       if (tb.p1) {
-        document.getElementById('resP1Label').textContent = `${tb.p1.name} 勝局`;
+        const l = document.getElementById('resP1Label');
+        if (l) l.textContent = `${tb.p1.name} 勝`;
       } else {
-        document.getElementById('resP1Label').textContent = '選手 1 勝局';
+        const l = document.getElementById('resP1Label');
+        if (l) l.textContent = '玩家 1 勝';
       }
 
       if (tb.p2) {
-        document.getElementById('resP2Label').textContent = `${tb.p2.name} 勝局`;
+        const l = document.getElementById('resP2Label');
+        if (l) l.textContent = `${tb.p2.name} 勝`;
       } else {
-        document.getElementById('resP2Label').textContent = '選手 2 勝局';
+        const l = document.getElementById('resP2Label');
+        if (l) l.textContent = '玩家 2 勝';
       }
-
-      // 若該桌已是雙方判負，勾選核取方塊
+      
       document.getElementById('resDoubleLoss').checked = !!(tb.final && tb.final.double_loss);
       document.getElementById('resRule').value = (tb.final && tb.final.rule) ? tb.final.rule : '';
     }
@@ -2656,59 +2494,18 @@
       }
     }
 
-    // 重設選手 PIN (PROJECT.md 硬性規定 4, 6)
-    function handlePinResetClick() {
-      hideMsg('assistMsg');
-      const pid = (document.getElementById('playerId').value || '').trim().toUpperCase();
-      if (!pid) {
-        showMsg('assistMsg', '請輸入選手編號');
-        return;
-      }
-
-      showConfirm(
-        '重設選手 PIN 確認',
-        `確定要重設選手 ${pid} 的 PIN 碼嗎？舊 PIN 將立即失效。`,
-        async () => {
-          try {
-            const res = await callApi('/api/staff/player_pin_reset', { player_id: pid });
-            const displayEl = document.getElementById('newPinDisplay');
-            const doneBtn = document.getElementById('newPinDone');
-            displayEl.textContent = `新 PIN：${res.pin}`;
-            displayEl.style.display = 'block';
-            doneBtn.style.display = 'inline-flex';
-            showMsg('assistMsg', `選手 ${pid} PIN 已重設，請口述給選手抄寫`, false);
-          } catch (err) {
-            showMsg('assistMsg', err.message);
-          }
-        }
-      );
-    }
-
-    // 已抄下按鈕：從畫面清空並消失，任何地方都不存 (硬性規定 6)
-    function handleNewPinDoneClick() {
-      const displayEl = document.getElementById('newPinDisplay');
-      const doneBtn = document.getElementById('newPinDone');
-      displayEl.textContent = '';
-      displayEl.style.display = 'none';
-      doneBtn.style.display = 'none';
-    }
-
-    // 解鎖選手
-    async function handleUnlockPlayerClick() {
-      hideMsg('assistMsg');
-      const pid = (document.getElementById('playerId').value || '').trim().toUpperCase();
-      if (!pid) {
-        showMsg('assistMsg', '請輸入選手編號');
-        return;
-      }
-
-      try {
-        await callApi('/api/staff/player_unlock', { player_id: pid });
-        showMsg('assistMsg', `選手 ${pid} 已解除鎖定`, false);
-      } catch (err) {
-        showMsg('assistMsg', err.message);
-      }
-    }
+    // 初始化選手協助面板 (web/admin-panels.js)
+    playerAssist = AdminPanels.mountPlayerAssist({
+      ids: {
+        playerId: 'playerId',
+        resetBtn: 'pinResetBtn',
+        unlockBtn: 'unlockBtn',
+        pinDisplay: 'newPinDisplay',
+        pinDone: 'newPinDone',
+        msg: 'assistMsg'
+      },
+      getPin: () => (auth ? auth.getPin() : (staffPin || ''))
+    });
 
     let currentLoadedDeckCode = '';
     let isDeckViewCollapsed = false;
@@ -3039,14 +2836,92 @@
       );
     }
 
+    // ------------------------------------------------ 現場報到管理 (DATA-CONTRACT 10.3)
+    function renderCheckinSection() {
+      const checkinSection = document.getElementById('judgeCheckinSection');
+      if (!checkinSection) return;
+      const deskBox = document.getElementById('judgeDeskLinkBox');
+      const listBox = document.getElementById('judgeListCheckinBox');
+      const hasCardCheckin = !!(snapshotData && snapshotData.checkin);
+
+      if (hasCardCheckin) {
+        if (deskBox) deskBox.style.display = 'block';
+        if (listBox) listBox.style.display = 'none';
+      } else {
+        if (deskBox) deskBox.style.display = 'none';
+        if (listBox) listBox.style.display = 'block';
+      }
+    }
+
+    async function handleJudgeCheckin() {
+      if (snapshotData && snapshotData.checkin) return;
+      const input = document.getElementById('judgeCheckinId');
+      const msgEl = document.getElementById('judgeCheckinMsg');
+      const pid = (input ? input.value : '').trim().toUpperCase();
+      if (!pid) return;
+      if (msgEl) msgEl.style.display = 'none';
+      try {
+        await callApi('/api/staff/checkin', { player_id: pid });
+        if (msgEl) {
+          msgEl.className = 'msg-box success';
+          msgEl.textContent = `已為 ${pid} 完成報到`;
+          msgEl.style.display = 'block';
+        }
+        if (input) input.value = '';
+        fetchJudgeCheckinList();
+      } catch (err) {
+        if (msgEl) {
+          msgEl.className = 'msg-box error';
+          msgEl.textContent = err.message || '報到失敗';
+          msgEl.style.display = 'block';
+        }
+      }
+    }
+
+    async function fetchJudgeCheckinList() {
+      if (snapshotData && snapshotData.checkin) return;
+      if (!staffPin) return;
+      const listEl = document.getElementById('judgeCheckinList');
+      try {
+        const res = await callApi('/api/staff/checkin_list', {});
+        if (!listEl) return;
+        const rows = res.rows || [];
+        if (rows.length === 0) {
+          listEl.innerHTML = '<div class="empty-state-sm">尚無選手資料</div>';
+          return;
+        }
+        let html = '<div style="font-size:0.85rem; font-weight:700; margin-bottom:4px;">已報到 ' + (res.checked_in || 0) + ' / 總數 ' + (res.total || 0) + '</div>';
+        html += '<ul style="list-style:none; padding:0; margin:0; font-size:0.85rem;">';
+        for (const r of rows) {
+          const statusText = r.checked_in ? '已報到' : '未報到';
+          const color = r.checked_in ? '#6ee7b7' : '#fde68a';
+          html += `<li style="padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between;">` +
+            `<span><strong>${escapeHtml(r.id)}</strong> ${escapeHtml(r.name)}</span>` +
+            `<span style="color:${color}">${statusText}</span>` +
+            `</li>`;
+        }
+        html += '</ul>';
+        listEl.innerHTML = html;
+      } catch (err) {}
+    }
+
     // 綁定事件
     window.addEventListener('DOMContentLoaded', () => {
-      // 登入與登出
-      document.getElementById('judgeLogin').addEventListener('click', handleLogin);
-      document.getElementById('judgeLogout').addEventListener('click', handleLogout);
-      document.getElementById('judgePin').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') handleLogin();
-      });
+      // 現場報到按鈕與事件
+      const judgeCkBtn = document.getElementById('judgeCheckinBtn');
+      if (judgeCkBtn) {
+        judgeCkBtn.addEventListener('click', handleJudgeCheckin);
+      }
+      const judgeCkInput = document.getElementById('judgeCheckinId');
+      if (judgeCkInput) {
+        judgeCkInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') handleJudgeCheckin();
+        });
+      }
+      const judgeCkRefreshBtn = document.getElementById('judgeCheckinRefresh');
+      if (judgeCkRefreshBtn) {
+        judgeCkRefreshBtn.addEventListener('click', fetchJudgeCheckinList);
+      }
 
       // 呼叫佇列
       const callRefreshBtn = document.getElementById('callRefresh');
@@ -3157,11 +3032,6 @@
         });
       });
 
-      // 選手協助
-      document.getElementById('pinResetBtn').addEventListener('click', handlePinResetClick);
-      document.getElementById('newPinDone').addEventListener('click', handleNewPinDoneClick);
-      document.getElementById('unlockBtn').addEventListener('click', handleUnlockPlayerClick);
-
       // 驗牌作業 (PROJECT.md 第十一輪任務、第三十一輪任務、第三十三輪任務)
       document.getElementById('deckLoadBtn').addEventListener('click', handleDeckLoad);
       document.getElementById('deckPlayerId').addEventListener('keydown', (e) => {
@@ -3182,16 +3052,6 @@
       document.getElementById('deckCheckOk').addEventListener('click', () => handleDeckCheck(true));
       document.getElementById('deckCheckFail').addEventListener('click', () => handleDeckCheck(false));
       document.getElementById('deckUnlockBtn').addEventListener('click', handleDeckUnlockClick);
-
-      // 確認彈窗按鈕
-      document.getElementById('confirmYes').addEventListener('click', async () => {
-        const action = pendingConfirmAction;
-        hideConfirm();
-        if (action) {
-          await action();
-        }
-      });
-      document.getElementById('confirmNo').addEventListener('click', hideConfirm);
 
       // 重新連線
       document.getElementById('retryBtn').addEventListener('click', fetchData);
@@ -3246,34 +3106,24 @@
 
       function handleVisibilityChange() {
         if (document.visibilityState === 'hidden') {
-          if (pollTimer) {
-            clearInterval(pollTimer);
-            pollTimer = null;
-          }
           stopCallTimer();
           stopConflictTimer();
         } else {
-          fetchData();
           if (staffPin) {
             fetchCalls();
             fetchConflicts();
             startCallTimer();
             startConflictTimer();
           }
-          if (!pollTimer) {
-            pollTimer = setInterval(fetchData, 5000);
-          }
         }
       }
       document.addEventListener('visibilitychange', handleVisibilityChange);
 
       // 初始化
-      checkAutoLogin();
-      fetchData();
-      pollTimer = setInterval(fetchData, 5000);
+      poller.start();
       setInterval(updateLateTimes, 1000);
-      setInterval(checkFreshness, 1000);
     });
   </script>
+  <script src="report-widget.js"></script>
 </body>
 </html>

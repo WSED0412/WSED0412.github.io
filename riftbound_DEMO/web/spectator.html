@@ -5,47 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="data:,">
   <title>符文戰場 — 觀眾端</title>
+  <link rel="stylesheet" href="common.css">
   <style>
-    :root {
-      --bg: #01222F;
-      --card-bg: #013951;
-      --card-border: #0A5570;
-      --text-primary: #F9F9F9;
-      --text-secondary: #9FB8C4;
-      --accent: #EF7D00;
-      --accent-hover: #C86800;
-      --accent-text: #FF941E;
-      --warning-bg: #3E3312;
-      --warning-border: #8A6D1F;
-      --warning-text: #F2C94C;
-      --danger-bg: #4A1F1C;
-      --danger-border: #A8443C;
-      --danger-text: #ED807A;
-      --success-bg: #0A3F33;
-      --success-border: #1F7A55;
-      --success-text: #2FB574;
-      --chip-bg: #0A4A63;
-      --input-bg: #011A24;
-      --info-bg: #1B2F4A;
-      --info-border: #2F5A80;
-      --info-text: #4FA8D8;
-      --judge-bg: #2E2140;
-      --judge-border: #553C77;
-      --judge-text: #B38FE0;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
+html, body {
       -webkit-text-size-adjust: 100%;
     }
 
-    body {
+body {
       background-color: var(--bg);
       color: var(--text-primary);
       font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
@@ -58,11 +24,11 @@
       width: 100%;
     }
 
-    input, select, textarea {
+input, select, textarea {
       font-size: 1rem;
     }
 
-    .container {
+.container {
       width: 100%;
       max-width: 680px;
       margin: 0 auto;
@@ -72,18 +38,19 @@
       overflow-x: hidden;
     }
 
-    /* 頂部賽事資訊與導航 */
-    header {
+header {
       margin-bottom: 12px;
     }
-    .header-top {
+
+.header-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 8px;
       margin-bottom: 4px;
     }
-    .event-title {
+
+.event-title {
       font-size: 1.15rem;
       font-weight: 800;
       color: var(--text-primary);
@@ -91,13 +58,15 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .header-badges {
+
+.header-badges {
       display: flex;
       align-items: center;
       gap: 6px;
       flex-shrink: 0;
     }
-    .status-badge {
+
+.status-badge {
       font-size: 0.75rem;
       padding: 2px 8px;
       border-radius: 9999px;
@@ -107,17 +76,20 @@
       border: 1px solid var(--card-border);
       color: var(--text-secondary);
     }
-    .status-badge.live {
+
+.status-badge.live {
       background: var(--success-bg);
       border-color: var(--success-border);
       color: var(--success-text);
     }
-    .status-badge.paused {
+
+.status-badge.paused {
       background: var(--warning-bg);
       border-color: var(--warning-border);
       color: var(--warning-text);
     }
-    .viewer-badge {
+
+.viewer-badge {
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -131,7 +103,7 @@
       white-space: nowrap;
     }
 
-    .header-nav {
+.header-nav {
       display: flex;
       justify-content: flex-end;
       align-items: center;
@@ -139,7 +111,8 @@
       margin-top: 6px;
       flex-wrap: wrap;
     }
-    .nav-link {
+
+.nav-link {
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -154,12 +127,12 @@
       white-space: nowrap;
       min-height: 32px;
     }
-    .nav-link:active {
+
+.nav-link:active {
       background: rgba(239, 125, 0, 0.2);
     }
 
-    /* 警示橫幅 */
-    .banner {
+.banner {
       padding: 8px 12px;
       border-radius: 6px;
       font-size: 0.85rem;
@@ -167,19 +140,20 @@
       text-align: center;
       font-weight: 600;
     }
-    .contract-warning {
+
+.contract-warning {
       background: var(--warning-bg);
       color: var(--warning-text);
       border: 1px solid var(--warning-border);
     }
-    .stale-warning {
+
+.stale-warning {
       background: var(--danger-bg);
       color: var(--danger-text);
       border: 1px solid var(--danger-border);
     }
 
-    /* 休息橫幅 */
-    .break-banner {
+.break-banner {
       background: linear-gradient(135deg, #3E3312, #554415);
       border: 1px solid #8A6D1F;
       color: #F9F9F9;
@@ -188,12 +162,14 @@
       margin-bottom: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
     }
-    .break-banner-main {
+
+.break-banner-main {
       font-size: 1.25rem;
       font-weight: 800;
       margin-bottom: 4px;
     }
-    .break-banner-sub {
+
+.break-banner-sub {
       font-size: 0.85rem;
       color: #F2C94C;
       display: flex;
@@ -202,8 +178,7 @@
       gap: 4px;
     }
 
-    /* 分頁切換列 */
-    .tab-bar {
+.tab-bar {
       display: flex;
       background: var(--input-bg);
       border: 1px solid var(--card-border);
@@ -212,7 +187,8 @@
       margin-bottom: 14px;
       gap: 4px;
     }
-    .tab-btn {
+
+.tab-btn {
       flex: 1;
       padding: 10px 4px;
       background: transparent;
@@ -229,36 +205,38 @@
       align-items: center;
       justify-content: center;
     }
-    .tab-btn.active {
+
+.tab-btn.active {
       background: var(--card-bg);
       color: var(--accent-text);
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
       border: 1px solid rgba(239, 125, 0, 0.3);
     }
 
-    /* 面板容器 */
-    .tab-panel {
+.tab-panel {
       width: 100%;
     }
 
-    /* 現正開打面板 */
-    .live-list-wrap {
+.live-list-wrap {
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
-    .live-table {
+
+.live-table {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 10px;
       padding: 12px 14px;
       transition: border-color 0.2s;
     }
-    .live-table.is-feature {
+
+.live-table.is-feature {
       border: 1.5px solid var(--info-border);
       background: linear-gradient(180deg, rgba(27, 47, 74, 0.5), var(--card-bg));
     }
-    .live-table-header {
+
+.live-table-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -266,17 +244,20 @@
       padding-bottom: 6px;
       border-bottom: 1px solid var(--card-border);
     }
-    .live-table-title {
+
+.live-table-title {
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .table-num {
+
+.table-num {
       font-size: 1.05rem;
       font-weight: 800;
       color: var(--accent-text);
     }
-    .tag-feature {
+
+.tag-feature {
       background: var(--info-bg);
       color: var(--info-text);
       border: 1px solid var(--info-border);
@@ -286,54 +267,63 @@
       font-weight: 700;
       letter-spacing: 0.5px;
     }
-    .live-status-badge {
+
+.live-status-badge {
       font-size: 0.75rem;
       font-weight: 700;
       padding: 2px 8px;
       border-radius: 9999px;
       white-space: nowrap;
     }
-    .status-ongoing {
+
+.status-ongoing {
       background: rgba(239, 125, 0, 0.1);
       border: 1px solid rgba(239, 125, 0, 0.3);
       color: var(--accent-text);
     }
-    .status-pending {
+
+.status-pending {
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
     }
-    .status-conflict {
-      background: var(--danger-bg);
-      border: 1px solid var(--danger-border);
-      color: var(--danger-text);
-    }
-    .status-confirmed {
-      background: var(--success-bg);
-      border: 1px solid var(--success-border);
-      color: var(--success-text);
-    }
-    .status-double-loss {
+
+.status-conflict {
       background: var(--danger-bg);
       border: 1px solid var(--danger-border);
       color: var(--danger-text);
     }
 
-    .live-players-grid {
+.status-confirmed {
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: var(--success-text);
+    }
+
+.status-double-loss {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+
+.live-players-grid {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
     }
-    .player-col {
+
+.player-col {
       flex: 1;
       min-width: 0;
       overflow: hidden;
     }
-    .player-col.right {
+
+.player-col.right {
       text-align: right;
     }
-    .player-name-text {
+
+.player-name-text {
       font-size: 0.95rem;
       font-weight: 700;
       color: var(--text-primary);
@@ -341,48 +331,54 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .player-sub-text {
+
+.player-sub-text {
       font-size: 0.75rem;
       color: var(--text-secondary);
       margin-top: 2px;
     }
-    .score-center-box {
+
+.score-center-box {
       padding: 0 10px;
       text-align: center;
       flex-shrink: 0;
     }
-    .score-text {
+
+.score-text {
       font-size: 1.15rem;
       font-weight: 900;
       color: var(--success-text);
       letter-spacing: 1px;
       white-space: nowrap;
     }
-    .vs-text {
+
+.vs-text {
       font-size: 0.85rem;
       font-weight: 700;
       color: var(--text-secondary);
     }
 
-    /* 查選手面板 */
-    .search-card {
+.search-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
       padding: 16px;
       margin-bottom: 14px;
     }
-    .search-title {
+
+.search-title {
       font-size: 1rem;
       font-weight: 700;
       margin-bottom: 10px;
       color: var(--text-primary);
     }
-    .search-box-row {
+
+.search-box-row {
       display: flex;
       gap: 8px;
     }
-    .search-input-field {
+
+.search-input-field {
       flex: 1;
       height: 46px;
       background: var(--input-bg);
@@ -394,10 +390,12 @@
       outline: none;
       transition: border-color 0.2s;
     }
-    .search-input-field:focus {
+
+.search-input-field:focus {
       border-color: var(--accent);
     }
-    .btn-action-search {
+
+.btn-action-search {
       height: 46px;
       padding: 0 20px;
       background: var(--accent);
@@ -409,31 +407,37 @@
       cursor: pointer;
       white-space: nowrap;
     }
-    .btn-action-search:active {
+
+.btn-action-search:active {
       background: var(--accent-hover);
     }
-    .viewer-result-box {
+
+.viewer-result-box {
       margin-top: 14px;
     }
-    .search-match-card {
+
+.search-match-card {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
       border-radius: 8px;
       padding: 14px;
       margin-bottom: 8px;
     }
-    .search-match-title {
+
+.search-match-title {
       font-size: 1.05rem;
       font-weight: 800;
       color: var(--accent-text);
       margin-bottom: 6px;
     }
-    .search-match-detail {
+
+.search-match-detail {
       font-size: 0.9rem;
       color: var(--text-primary);
       line-height: 1.5;
     }
-    .not-found-card {
+
+.not-found-card {
       background: var(--input-bg);
       border: 1px dashed var(--card-border);
       border-radius: 8px;
@@ -443,37 +447,42 @@
       font-size: 0.95rem;
     }
 
-    /* 賽程面板 */
-    .schedule-card {
+.schedule-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
       padding: 16px;
       margin-bottom: 12px;
     }
-    .schedule-info-row {
+
+.schedule-info-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
       font-size: 0.95rem;
     }
-    .schedule-info-row:last-child {
+
+.schedule-info-row:last-child {
       margin-bottom: 0;
     }
-    .schedule-label {
+
+.schedule-label {
       color: var(--text-secondary);
     }
-    .schedule-val {
+
+.schedule-val {
       font-weight: 700;
       color: var(--text-primary);
       text-align: right;
     }
-    .schedule-val.highlight {
+
+.schedule-val.highlight {
       color: var(--accent-text);
       font-size: 1.15rem;
     }
-    .schedule-note-box {
+
+.schedule-note-box {
       margin-top: 12px;
       padding: 10px 12px;
       border-radius: 8px;
@@ -484,61 +493,13 @@
       line-height: 1.5;
     }
 
-    footer {
+footer {
       text-align: center;
       font-size: 0.75rem;
       color: var(--text-secondary);
       margin-top: 24px;
     }
-
-    /* 斷線覆蓋層 */
-    .disconnected-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: #01222F;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      text-align: center;
-      z-index: 9999;
-    }
-    .disconnected-icon {
-      font-size: 3rem;
-      margin-bottom: 12px;
-    }
-    .disconnected-title {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: var(--danger-text);
-      margin-bottom: 8px;
-    }
-    .disconnected-desc {
-      font-size: 0.95rem;
-      color: var(--text-secondary);
-      max-width: 360px;
-      margin-bottom: 20px;
-      line-height: 1.6;
-    }
-    .btn-retry {
-      background: var(--accent);
-      color: #141212;
-      font-weight: 800;
-      padding: 10px 24px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-size: 0.95rem;
-      min-height: 44px;
-    }
-    .btn-retry:active {
-      background: var(--accent-hover);
-    }
-  </style>
+</style>
 </head>
 <body>
   <div class="container">
@@ -648,19 +609,18 @@
     </footer>
   </div>
 
-  <!-- 尚未連上賽務系統畫面 -->
-  <div class="disconnected-overlay" id="disconnectedScreen">
-    <div class="disconnected-icon">⚠️</div>
-    <div class="disconnected-title">尚未連上賽務系統</div>
-    <div class="disconnected-desc">
-      目前無法讀取賽事即時資料。<br>請確認網路連線是否正常，連線恢復後將自動重新載入。
-    </div>
-    <button type="button" class="btn-retry" id="retryBtn">重新連線</button>
-  </div>
-
+  <script src="common.js"></script>
+  <script src="disconnect-overlay.js"></script>
   <script>
     const CURRENT_CONTRACT_VERSION = 16;
     const STORAGE_KEY_TOKEN = 'riftbound_viewer_device_token';
+
+    const disconnectOverlay = DisconnectOverlay.create({
+      id: 'disconnectedScreen',
+      retryId: 'retryBtn',
+      desc: '目前無法讀取賽事即時資料。<br>請確認網路連線是否正常，連線恢復後將自動重新載入。',
+      onRetry: () => fetchData()
+    });
 
     let snapshotData = null;
     let rawJsonText = '';
@@ -671,16 +631,6 @@
     let demoOffsetCalculated = false;
     let lastContentChangeTime = Date.now();
     let currentTab = 'panelLive';
-
-    function escapeHtml(str) {
-      if (str === null || str === undefined) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
 
     function getDataSourceUrl() {
       const params = new URLSearchParams(window.location.search);
@@ -703,23 +653,6 @@
       const bLink = document.getElementById('bracketLink');
       if (sLink) sLink.href = 'standings.html' + suffix;
       if (bLink) bLink.href = 'bracket.html' + suffix;
-    }
-
-    function formatTimeHHMM(ms) {
-      if (!ms) return '待定';
-      try {
-        return new Intl.DateTimeFormat('zh-TW', {
-          timeZone: 'Asia/Taipei',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false
-        }).format(new Date(ms));
-      } catch (e) {
-        const d = new Date(ms);
-        const hours = d.getHours().toString().padStart(2, '0');
-        const minutes = d.getMinutes().toString().padStart(2, '0');
-        return `${hours}:${minutes}`;
-      }
     }
 
     function formatRelativeMinutes(updatedMs, nowMs) {
@@ -829,7 +762,7 @@
           }
         }
 
-        document.getElementById('disconnectedScreen').style.display = 'none';
+        disconnectOverlay.hide();
 
         if (text === rawJsonText) {
           renderViewerCountOnly();
@@ -844,7 +777,7 @@
       } catch (err) {
         checkFreshness();
         if (!snapshotData) {
-          document.getElementById('disconnectedScreen').style.display = 'flex';
+          disconnectOverlay.show();
         }
       }
     }

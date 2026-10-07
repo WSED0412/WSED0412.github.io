@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>賽事設定精靈 — 符文戰場 / 寶可夢 / 戰鬥陀螺</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+html, body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+    }
+
+body {
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      min-height: 100svh;
+      padding-bottom: 60px;
+    }
+
+input:not([type="checkbox"]):not([type="radio"]), select, textarea {
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+button {
+      min-height: 44px;
+      min-width: 44px;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+.container {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+
+header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--card-border);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+.header-title-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+.page-title {
+      font-size: clamp(1.2rem, 3vw, 1.5rem);
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+.badge-tag {
+      font-size: 0.75rem;
+      background: rgba(239, 125, 0, 0.15);
+      color: var(--accent-text);
+      border: 1px solid rgba(239, 125, 0, 0.4);
+      padding: 3px 8px;
+      border-radius: 9999px;
+      font-weight: 700;
+    }
+
+.setup-section {
+      margin-bottom: 24px;
+    }
+
+.section-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+.section-desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+
+.form-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 18px;
+      box-sizing: border-box;
+    }
+
+.game-group {
+      margin-bottom: 16px;
+    }
+
+.game-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--accent-text);
+      margin-bottom: 4px;
+    }
+
+.game-note {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+.template-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+@media (min-width: 600px) {
+      .template-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+.setup-tpl {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+      background: var(--card-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: var(--text-primary);
+      cursor: pointer;
+      width: 100%;
+      min-height: 72px;
+      min-width: 44px;
+      box-sizing: border-box;
+      transition: all 0.15s ease;
+    }
+
+.setup-tpl:hover {
+      border-color: var(--accent);
+      background: rgba(239, 125, 0, 0.08);
+    }
+
+.setup-tpl.selected {
+      border-color: var(--accent);
+      background: rgba(239, 125, 0, 0.16);
+      box-shadow: 0 0 10px rgba(239, 125, 0, 0.35);
+    }
+
+.tpl-title {
+      font-weight: 800;
+      font-size: 0.98rem;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+.setup-tpl.selected .tpl-title {
+      color: var(--accent-text);
+    }
+
+.tpl-desc {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+.form-group {
+      margin-bottom: 14px;
+    }
+
+.form-label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+.form-label .required {
+      color: var(--danger-text);
+      margin-left: 2px;
+    }
+
+.form-hint {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+.input-text, .input-select, .textarea-box {
+      width: 100%;
+      max-width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      color: var(--text-primary);
+      padding: 10px 12px;
+      font-size: 16px;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+.input-text:focus, .input-select:focus, .textarea-box:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(239, 125, 0, 0.2);
+    }
+
+.textarea-box {
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+.checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      min-height: 44px;
+      min-width: 44px;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+.checkbox-label input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+.stat-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+
+.stat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--chip-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-primary);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+.msg-box {
+      margin: 12px 0;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      box-sizing: border-box;
+    }
+
+.msg-box.error {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+
+.msg-box.warning {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+    }
+
+.msg-box ul {
+      margin: 6px 0 0 18px;
+      padding: 0;
+    }
+
+.msg-box li {
+      margin-bottom: 4px;
+    }
+
+.problem-msg {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+.checklist-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 14px;
+      margin-bottom: 16px;
+    }
+
+@media (min-width: 600px) {
+      .checklist-container {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+.checklist-col {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+
+.checklist-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+.checklist-title.locked {
+      color: var(--danger-text);
+    }
+
+.checklist-title.editable {
+      color: var(--success-text);
+    }
+
+.checklist-items ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+.checklist-items li {
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(10, 85, 112, 0.3);
+    }
+
+.checklist-items li:last-child {
+      border-bottom: none;
+    }
+
+.btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      min-width: 44px;
+      padding: 10px 18px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      box-sizing: border-box;
+      text-decoration: none;
+      font-family: inherit;
+      transition: all 0.15s ease;
+    }
+
+.btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+.btn-accent {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+.btn-accent:hover:not(:disabled) {
+      background: var(--accent-hover);
+    }
+
+.btn-primary {
+      background: #0284c7;
+      color: #fff;
+      border-color: #0284c7;
+    }
+
+.btn-primary:hover:not(:disabled) {
+      background: #0369a1;
+    }
+
+.btn-secondary {
+      background: var(--input-bg);
+      color: var(--text-primary);
+      border-color: var(--card-border);
+    }
+
+.btn-secondary:hover:not(:disabled) {
+      background: var(--card-border);
+    }
+
+.btn-danger {
+      background: var(--danger-border);
+      color: #fff;
+      border-color: var(--danger-border);
+    }
+
+.btn-danger:hover:not(:disabled) {
+      background: #8b322b;
+    }
+
+.btn-create {
+      width: 100%;
+      font-size: 1.05rem;
+      padding: 14px;
+      margin-top: 8px;
+    }
+
+.success-card {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(239, 125, 0, 0.2);
+    }
+
+.success-header {
+      margin-bottom: 16px;
+    }
+
+.success-header h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--accent-text);
+      margin-bottom: 8px;
+    }
+
+.warning-callout {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+.pin-display-box {
+      background: var(--input-bg);
+      border: 2px dashed var(--accent);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      margin: 18px 0;
+    }
+
+.pin-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+.pin-huge {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: 4px;
+      color: var(--accent-text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      user-select: all;
+      margin: 8px 0;
+      word-break: break-all;
+    }
+
+.pin-sub {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+
+.success-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+@media (min-width: 600px) {
+      .success-actions {
+        flex-direction: row;
+        justify-content: flex-end;
+      }
+    }
+
+.modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      -webkit-backdrop-filter: blur(2px);
+      backdrop-filter: blur(2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+
+.modal-box {
+      background: var(--card-bg);
+      border: 2px solid var(--danger-border);
+      border-radius: 12px;
+      max-width: 440px;
+      width: 100%;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      box-sizing: border-box;
+    }
+
+.modal-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--danger-text);
+      margin-bottom: 10px;
+    }
+
+.modal-msg {
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      margin-bottom: 18px;
+      line-height: 1.5;
+      white-space: pre-line;
+    }
+
+.modal-btns {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-title-box">
+        <h1 class="page-title">賽事設定精靈</h1>
+        <span class="badge-tag">建立賽事</span>
+      </div>
+    </header>
+
+    <!-- 步驟 1: 選擇範本 -->
+    <section id="templateSection" class="setup-section">
+      <h2 class="section-title">1. 選擇賽事範本</h2>
+      <p class="section-desc">請選擇最符合您賽事需求的範本。選定後所有項目皆可微調。</p>
+      <div id="templateList"></div>
+    </section>
+
+    <!-- 步驟 2: 表單與即時預覽 -->
+    <section id="setupFormSection" class="setup-section">
+      <h2 class="section-title">2. 賽事設定與名單</h2>
+      <p class="section-desc">修改賽事名稱、規則設定與選手名單，系統將自動預覽與驗證。</p>
+
+      <div class="form-card">
+        <!-- 基本欄位 -->
+        <div class="form-group">
+          <label for="setupName" class="form-label">賽事名稱 <span class="required">*</span></label>
+          <input type="text" id="setupName" class="input-text" placeholder="例如：2026 台北春季爭霸賽" maxlength="60">
+        </div>
+
+        <div class="form-group">
+          <label for="setupExpected" class="form-label">預估參賽人數（選填）</label>
+          <input type="number" id="setupExpected" class="input-text" placeholder="尚未確認名單時可用於預估輪數與時間，例如 64" min="2" max="4096">
+        </div>
+
+        <!-- 新增的 4 個獨立選項 -->
+        <div class="form-group" id="axesGameGroup">
+            <label for="setupGame" class="form-label">遊戲</label>
+            <select id="setupGame" class="input-select"></select>
+        </div>
+        
+        <div class="form-group" id="axesFormatGroup">
+            <label for="setupFormat" class="form-label">賽制</label>
+            <select id="setupFormat" class="input-select"></select>
+        </div>
+
+        <div class="form-group" id="axesPaceGroup">
+            <label for="setupPace" class="form-label">進行方式</label>
+            <select id="setupPace" class="input-select"></select>
+        </div>
+
+        <div class="form-group" id="axesDivisionGroup">
+            <label for="setupDivision" class="form-label">分組</label>
+            <select id="setupDivision" class="input-select"></select>
+            <div id="divisionNote" class="form-hint" style="display:none; color: var(--warning-text);"></div>
+        </div>
+
+        <div id="setupTag" class="setup-tpl" style="display: none; min-height: 0; margin-bottom: 14px; cursor: default; border-color: var(--card-border); background: var(--input-bg);">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                <span class="setup-badge badge-tag" data-tag="" id="setupTagBadge"></span>
+                <span class="tpl-title" id="setupTagLabel" style="margin-bottom: 0;"></span>
+            </div>
+            <div class="tpl-desc" id="setupTagNote"></div>
+            <div class="tpl-desc" id="setupTagSource" style="display: none; font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;"></div>
+        </div>
+
+        <!-- 依賴於以上選項的進階欄位 (部分隱藏) -->
+        <div class="form-group" id="modeGroup" style="display: none;">
+            <label for="setupMode" class="form-label">賽事模式</label>
+            <select id="setupMode" class="input-select">
+                <option value="B">自辦賽（模式 B：內建瑞士輪引擎、報名、配對、計分）</option>
+                <option value="A">官方賽輔助（模式 A：配對來自官方平台，輔助找桌與計時）</option>
+            </select>
+        </div>
+        <div class="form-group" id="swissBoGroup" style="display: none;">
+            <label for="setupSwissBo" class="form-label">瑞士輪每場制式</label>
+            <select id="setupSwissBo" class="input-select">
+                <option value="1">Bo1（每場一局）</option>
+                <option value="3">Bo3（三局兩勝）</option>
+            </select>
+        </div>
+        <div class="form-group" id="roundsGroup" style="display: none;">
+            <label for="setupRounds" class="form-label">瑞士輪輪數</label>
+            <input type="number" id="setupRounds" class="input-text" placeholder="留空＝依人數自動建議" min="1" max="20">
+            <div id="roundsHint" class="form-hint">留空＝依人數自動建議</div>
+        </div>
+        <div class="form-group" id="topCutGroup" style="display: none;">
+            <label for="setupTopCut" class="form-label">淘汰賽人數（Top Cut）</label>
+            <select id="setupTopCut" class="input-select">
+                <option value="">照官方表</option>
+                <option value="0">不打淘汰賽 (0 人)</option>
+                <option value="2">決賽 (2 人)</option>
+                <option value="4">四強 (4 人)</option>
+                <option value="8">八強 (8 人)</option>
+                <option value="16">16 強 (16 人)</option>
+                <option value="32">32 強 (32 人)</option>
+            </select>
+        </div>
+        <div class="form-group" id="twoPhaseGroup" style="display: none;">
+            <label class="checkbox-label">
+                <input type="checkbox" id="cfgTwoPhase">
+                <span>兩階段（達門檻晉級）</span>
+            </label>
+            <div id="twoPhaseFields" style="display: none; margin-top: 10px; padding: 12px; background: rgba(1, 26, 36, 0.6); border: 1px solid var(--card-border); border-radius: 8px;">
+                <div style="margin-bottom: 12px;">
+                    <label for="cfgPhase1Rounds" class="form-label">
+                        第一階段輪數
+                        <span id="cfgPhase1Official" class="form-hint" style="display: none; font-size: 0.8rem; color: var(--accent-text); margin-left: 6px;">照官方表</span>
+                    </label>
+                    <input type="number" id="cfgPhase1Rounds" class="input-text" placeholder="留空＝照官方表" min="1" max="20">
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <label for="cfgPhase2Points" class="form-label">
+                        晉級門檻（累計場積分）
+                        <span id="cfgPhase2Official" class="form-hint" style="display: none; font-size: 0.8rem; color: var(--accent-text); margin-left: 6px;">照官方表</span>
+                    </label>
+                    <input type="number" id="cfgPhase2Points" class="input-text" placeholder="留空＝照官方表" min="1" max="60">
+                </div>
+                <div>
+                    <label for="cfgPhase2Rounds" class="form-label">
+                        第二階段輪數
+                        <span id="cfgPhase2RoundsOfficial" class="form-hint" style="display: none; font-size: 0.8rem; color: var(--accent-text); margin-left: 6px;">照官方表</span>
+                    </label>
+                    <input type="number" id="cfgPhase2Rounds" class="input-text" placeholder="留空＝照官方表" min="1" max="20">
+                </div>
+                <div class="form-hint" style="margin-top: 8px;">
+                    第一階段打完後，達到門檻積分的選手晉級第二階段繼續打；未達門檻者留在排名表不參與後續配對。
+                </div>
+            </div>
+        </div>
+        <div class="form-group" id="roundMinGroup" style="display: none;">
+            <label for="setupRoundMin" class="form-label">每輪時間（分鐘）</label>
+            <input type="number" id="setupRoundMin" class="input-text" value="60" min="10" max="180">
+        </div>
+        <div class="form-group" id="decklistGroup" style="display: none;">
+            <label class="checkbox-label">
+                <input type="checkbox" id="setupDecklist">
+                <span>要求選手登錄牌表（第一輪開賽前送出即鎖定）</span>
+            </label>
+            <div id="setupDecklistHint" class="form-hint" style="display: none; color: var(--warning-text); margin-top: 4px;"></div>
+            <div id="decklistSettingsGroup" style="display: none; margin-top: 10px; padding: 12px; background: rgba(1, 26, 36, 0.6); border: 1px solid var(--card-border); border-radius: 8px;">
+                <div style="margin-bottom: 12px;">
+                    <label for="setupDecklistLock" class="form-label">牌表鎖定方式</label>
+                    <select id="setupDecklistLock" class="input-select">
+                        <option value="submit">送出就鎖（官方賽，規則 401.3）</option>
+                        <option value="deadline">截止前可以修改（店家賽）</option>
+                    </select>
+                    <div class="form-hint">
+                        送出就鎖：選手送出後即鎖定，要修改需由裁判解鎖（官方賽標準）<br>
+                        截止前可以修改：選手在截止時間前可隨時重貼牌表修改（適合店家賽）
+                    </div>
+                </div>
+                <div>
+                    <label for="setupDecklistDeadline" class="form-label">牌表截止時間</label>
+                    <input type="datetime-local" id="setupDecklistDeadline" class="input-text">
+                    <div class="form-hint">不填＝到賽事開始為止；可以比報名時間更晚</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group" id="elimGroup" style="display: none;">
+            <label for="setupElim" class="form-label">淘汰賽制</label>
+            <select id="setupElim" class="input-select">
+                <option value="single">單淘汰制</option>
+                <option value="double">雙敗淘汰制（敗部冠軍進總決賽需重置）</option>
+            </select>
+        </div>
+        <div class="form-group" id="thirdPlaceGroup" style="display: none;">
+            <label class="checkbox-label">
+                <input type="checkbox" id="setupThird">
+                <span>舉辦季軍賽（第 3、4 名爭奪）</span>
+            </label>
+        </div>
+        <div class="form-group" id="finalSizeGroup" style="display: none;">
+            <label for="setupFinalSize" class="form-label">每區打到剩幾人</label>
+            <select id="setupFinalSize" class="input-select">
+                <option value="2">打到冠軍 (2 人)</option>
+                <option value="4">資格賽（打到剩 4 人，勝部 2 人＋敗部 2 人）</option>
+            </select>
+        </div>
+        <div class="form-group" id="finals16Group" style="display: none;">
+            <label class="checkbox-label">
+                <input type="checkbox" id="setupFinals">
+                <span>舉辦 16 強決賽（四區各剩 4 人 → 抽籤小組循環 → 名次賽排出 1～16 名）</span>
+            </label>
+        </div>
+        <div class="form-group" id="tablesGroup" style="display: none;">
+            <label for="setupTables" class="form-label">每區桌數（1～64）</label>
+            <input type="number" id="setupTables" class="input-text" value="8" min="1" max="64">
+        </div>
+        <div class="form-group" id="finalTablesGroup" style="display: none;">
+            <label for="setupFinalTables" class="form-label">決賽桌數（2～32）</label>
+            <input type="number" id="setupFinalTables" class="input-text" value="8" min="2" max="32">
+        </div>
+        <div class="form-group" id="rosterSourceGroup" style="display: none;">
+            <label for="setupCheckinMethod" class="form-label">報到方式</label>
+            <select id="setupCheckinMethod" class="input-select"></select>
+            <input type="hidden" id="setupRosterSource" value="list">
+            <div id="setupCheckinMethodDesc" class="form-hint" style="margin-top: 6px;"></div>
+        </div>
+        <div id="checkinFieldsGroup" style="display: none;">
+            <div class="form-group" id="divsGroup">
+                <label for="setupDivs" class="form-label">分區代碼（英文字母，例：ABCD 或 A）</label>
+                <input type="text" id="setupDivs" class="input-text" value="A">
+            </div>
+            <div class="form-group" id="cardMaxGroup">
+                <label for="setupCardMax" class="form-label">每區號碼牌最大號（2～1024）</label>
+                <input type="number" id="setupCardMax" class="input-text" value="128" min="2" max="1024">
+            </div>
+        </div>
+
+        <!-- 名單區塊 -->
+        <div class="form-group" id="rosterGroup">
+          <label for="setupRoster" class="form-label">選手名單</label>
+          <div id="rosterHint" class="form-hint">第一列寫 id,name（例如 R001,選手名稱）</div>
+          <textarea id="setupRoster" class="textarea-box" rows="8" placeholder="貼上名單 CSV 或從 Excel 複製貼上..."></textarea>
+        </div>
+
+        <!-- 即時統計與預估 -->
+        <div class="stat-strip">
+          <span id="setupPlayers" class="stat-badge">名單 0 人</span>
+          <span id="setupEstimate" class="stat-badge">預估時間計算中…</span>
+        </div>
+
+        <!-- 警示與錯誤問題區塊 -->
+        <div id="setupWarnings" class="msg-box warning" style="display: none;"></div>
+        <div id="setupProblems" class="msg-box error" style="display: none;"></div>
+
+        <!-- 鎖定與可修改項目 -->
+        <div class="checklist-container">
+          <div class="checklist-col">
+            <div class="checklist-title locked">🔒 開賽後鎖定項目（不可更改）</div>
+            <div id="setupLocked" class="checklist-items"></div>
+          </div>
+          <div class="checklist-col">
+            <div class="checklist-title editable">✏️ 開賽後仍可微調項目</div>
+            <div id="setupEditable" class="checklist-items"></div>
+          </div>
+        </div>
+
+        <!-- 建立賽事按鈕 -->
+        <button type="button" id="setupCreate" class="btn btn-accent btn-create">建立賽事（需確認）</button>
+      </div>
+    </section>
+
+    <!-- 步驟 3: 建立成功完成畫面 -->
+    <section id="setupSuccessSection" class="setup-section" style="display: none;">
+      <div class="form-card success-card">
+        <div class="success-header">
+          <h2>🎉 賽事建立成功！</h2>
+          <p class="warning-callout">⚠️ 請務必立即抄下或備份以下主辦 PIN 碼與選手清單。<strong>離開此頁面後，系統將不再顯示明文 PIN 碼！</strong></p>
+        </div>
+
+        <div class="pin-display-box">
+          <div class="pin-label">主辦管理員 PIN 碼（控制台專用）</div>
+          <div id="setupAdminPin" class="pin-huge"></div>
+          <div class="pin-sub">請妥善保存，切勿外流給非主辦人員</div>
+        </div>
+
+        <div class="success-actions">
+          <button type="button" id="setupPinsDownload" class="btn btn-primary" style="display: none;">下載選手 PIN 清單 (CSV)</button>
+          <button type="button" id="setupGo" class="btn btn-accent">已抄下，前往主辦頁</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 危險動作確認彈窗 -->
+  <div id="confirmModal" class="modal-overlay" style="display: none;">
+    <div class="modal-box">
+      <div id="confirmTitle" class="modal-title">建立賽事確認</div>
+      <div id="confirmMessage" class="modal-msg">確定要依照目前設定建立賽事嗎？</div>
+      <div class="modal-btns">
+        <button type="button" id="confirmYes" class="btn btn-danger">確認建立</button>
+        <button type="button" id="confirmNo" class="btn btn-secondary">返回修改</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="common.js"></script>
+  <script>
+    const CURRENT_CONTRACT_VERSION = 16;
+
+    function msToDateTimeLocalTW(ms) {
+      if (!ms) return '';
+      try {
+        const formatter = new Intl.DateTimeFormat('en-CA', {
+          timeZone: 'Asia/Taipei',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+        const parts = formatter.formatToParts(new Date(ms));
+        const p = {};
+        for (const part of parts) {
+          p[part.type] = part.value;
+        }
+        let hour = p.hour === '24' ? '00' : p.hour;
+        return `${p.year}-${p.month}-${p.day}T${hour}:${p.minute}`;
+      } catch (e) {
+        const d = new Date(ms);
+        return d.toISOString().slice(0, 16);
+      }
+    }
+
+    function getGameObj(gameId) {
+      return gamesData.find(g => g.id === gameId) || null;
+    }
+
+    function getGameCaps(gameId) {
+      const g = getGameObj(gameId);
+      return (g && g.capabilities) ? g.capabilities : {};
+    }
+
+    function isGameDefaultBracket(gameId) {
+      const g = getGameObj(gameId);
+      return !!(g && Array.isArray(g.kinds) && g.kinds[0] === 'bracket');
+    }
+
+    function getEffectiveMode(gameId, currentVal) {
+      const caps = getGameCaps(gameId);
+      if (caps.modes && !caps.modes.includes('A')) {
+        return 'B';
+      }
+      return currentVal || 'B';
+    }
+
+    let templatesData = [];
+    let gamesData = [];
+    let currentTemplateId = null;
+    let currentGame = null;
+    let currentAxes = {}; let serverCatalog = null;
+    let createdNextUrl = 'admin.html';
+    let createdPlayers = [];
+    let pendingConfirmAction = null;
+    let previewDebounceTimer = null;
+    let isPreviewing = false;
+    let isCreating = false;
+    let userTouchedPhase1 = false;
+    let userTouchedPhase2 = false;
+    let userTouchedPhase2Rounds = false;
+
+    function formatMinutes(mins) {
+      if (mins === null || mins === undefined) return '時間待估算';
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      if (h > 0 && m > 0) {
+        return `預估約 ${h} 小時 ${m} 分`;
+      } else if (h > 0) {
+        return `預估約 ${h} 小時`;
+      } else {
+        return `預估約 ${m} 分鐘`;
+      }
+    }
+
+    async function showConfirm(title, message, action) {
+      const ok = await confirmDialog({ title, message, yes: '確認建立', no: '返回修改', danger: true });
+      if (ok && typeof action === 'function') {
+        await action();
+      }
+    }
+
+    function hideConfirm() {
+      const m = document.getElementById('confirmModal');
+      if (m) m.style.display = 'none';
+      pendingConfirmAction = null;
+    }
+
+    async function fetchTemplates() {
+      try {
+        const res = await fetch('/api/setup/templates', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({})
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (data.ok && Array.isArray(data.templates) && data.templates.length > 0) {
+          templatesData = data.templates;
+          gamesData = data.games || [];
+          serverCatalog = data;
+          
+          const gameSelect = document.getElementById('setupGame');
+          gameSelect.innerHTML = '';
+          gamesData.forEach(g => {
+            const opt = document.createElement('option');
+            opt.value = g.id;
+            opt.textContent = g.label;
+            gameSelect.appendChild(opt);
+          });
+          
+          renderTemplates();
+          if (data.created) {
+            renderProblems({ message: '這個資料夾已經有賽事了，不能再建立（要重來請換一個資料夾 --data）' });
+          }
+        } else {
+          renderProblems({ message: '讀不到範本，請確認主機有開著' });
+        }
+      } catch (err) {
+        renderProblems({ message: '讀不到範本，請確認主機有開著' });
+      }
+    }
+
+    function renderTemplates() {
+      const container = document.getElementById('templateList');
+      if (!container) return;
+
+      const gamesList = gamesData;
+      const tplsList = templatesData;
+
+      let html = '';
+      for (const g of gamesList) {
+        const gameTpls = tplsList.filter(t => t.game === g.id);
+        if (gameTpls.length === 0) continue;
+
+        html += `<div class="game-group">`;
+        html += `<div class="game-title">🎮 ${escapeHtml(g.label)}</div>`;
+        if (g.note) {
+          html += `<div class="game-note">${escapeHtml(g.note)}</div>`;
+        }
+        html += `<div class="template-grid">`;
+        for (const t of gameTpls) {
+          const isSel = (t.id === currentTemplateId);
+          let tagHtml = '';
+          if (t.tag) {
+            let badgeClass = 'bg-secondary';
+            if (t.tag === 'official') badgeClass = 'bg-primary';
+            else if (t.tag === 'common') badgeClass = 'bg-success';
+            tagHtml = `<span class="badge ${badgeClass} setup-badge" data-tag="${t.tag}">${t.tag === 'official' ? '官方標準' : (t.tag === 'common' ? '常見打法' : '自訂組合')}</span>`;
+          }
+          html += `
+            <button type="button" class="setup-tpl${isSel ? ' selected' : ''}" data-tpl="${escapeHtml(t.id)}" aria-pressed="${isSel ? 'true' : 'false'}">
+              ${tagHtml}
+              <div class="tpl-title">${escapeHtml(t.title)}</div>
+              <div class="tpl-desc">${escapeHtml(t.desc)}</div>
+            </button>
+          `;
+        }
+        html += `</div></div>`;
+      }
+      container.innerHTML = html;
+
+      container.querySelectorAll('.setup-tpl').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tplId = btn.getAttribute('data-tpl');
+          selectTemplate(tplId);
+        });
+      });
+    }
+
+    function selectTemplate(tplId) {
+      const tplsList = templatesData;
+      const tpl = tplsList.find(t => t.id === tplId);
+      if (!tpl) return;
+
+      currentTemplateId = tplId;
+      currentGame = tpl.game;
+      
+      document.getElementById('setupGame').value = tpl.game;
+
+      document.querySelectorAll('.setup-tpl').forEach(b => {
+        const isThis = (b.getAttribute('data-tpl') === tplId);
+        b.classList.toggle('selected', isThis);
+        b.setAttribute('aria-pressed', isThis ? 'true' : 'false');
+      });
+
+      const cfg = tpl.config || {};
+      const caps = getGameCaps(tpl.game);
+      
+      // Step 1: 先設定好非級聯欄位
+      document.getElementById('setupMode').value = (caps.modes && !caps.modes.includes('A')) ? 'B' : (cfg.mode || 'B');
+      const rVal = (cfg.rounds !== null && cfg.rounds !== undefined) ? cfg.rounds : '';
+      document.getElementById('setupRounds').value = rVal;
+      document.getElementById('setupTopCut').value = (cfg.top_cut !== null && cfg.top_cut !== undefined) ? String(cfg.top_cut) : '';
+      document.getElementById('setupRoundMin').value = cfg.round_min || caps.default_round_min || 60;
+      document.getElementById('setupDecklist').checked = !!cfg.decklist_required;
+      const lockSelect = document.getElementById('setupDecklistLock');
+      if (lockSelect) {
+        lockSelect.value = cfg.decklist_lock || 'submit';
+      }
+      const deadlineInput = document.getElementById('setupDecklistDeadline');
+      if (deadlineInput) {
+        if (cfg.decklist_deadline_at) {
+          deadlineInput.value = msToDateTimeLocalTW(cfg.decklist_deadline_at);
+        } else {
+          deadlineInput.value = '';
+        }
+      }
+      
+      const swissBoEl = document.getElementById('setupSwissBo');
+      if (swissBoEl) swissBoEl.value = String(cfg.swiss_bo || 1);
+      
+      document.getElementById('setupElim').value = cfg.elim || 'single';
+      document.getElementById('setupThird').checked = !!cfg.third_place;
+      document.getElementById('setupFinalSize').value = String(cfg.final_size || 2);
+      document.getElementById('setupFinals').checked = !!cfg.finals;
+      document.getElementById('setupTables').value = cfg.tables || 8;
+      document.getElementById('setupFinalTables').value = cfg.final_tables || 8;
+      document.getElementById('setupDivs').value = cfg.divs || 'A';
+      document.getElementById('setupCardMax').value = cfg.card_max || 128;
+
+      const twoPhaseChk = document.getElementById('cfgTwoPhase');
+      if (twoPhaseChk) {
+        twoPhaseChk.checked = !!cfg.two_phase;
+        const fields = document.getElementById('twoPhaseFields');
+        if (fields) fields.style.display = twoPhaseChk.checked ? 'block' : 'none';
+        userTouchedPhase1 = (cfg.phase1_rounds !== undefined && cfg.phase1_rounds !== null);
+        userTouchedPhase2 = (cfg.phase2_points !== undefined && cfg.phase2_points !== null);
+        userTouchedPhase2Rounds = (cfg.phase2_rounds !== undefined && cfg.phase2_rounds !== null);
+        const p1In = document.getElementById('cfgPhase1Rounds');
+        if (p1In) p1In.value = cfg.phase1_rounds ?? '';
+        const p2PtsIn = document.getElementById('cfgPhase2Points');
+        if (p2PtsIn) p2PtsIn.value = cfg.phase2_points ?? '';
+        const p2RoundsIn = document.getElementById('cfgPhase2Rounds');
+        if (p2RoundsIn) p2RoundsIn.value = cfg.phase2_rounds ?? '';
+        const p1Note = document.getElementById('cfgPhase1Official');
+        if (p1Note) p1Note.style.display = 'none';
+        const p2Note = document.getElementById('cfgPhase2Official');
+        if (p2Note) p2Note.style.display = 'none';
+        const p2RoundsNote = document.getElementById('cfgPhase2RoundsOfficial');
+        if (p2RoundsNote) p2RoundsNote.style.display = 'none';
+      }
+
+      let tplRosterSource = cfg.roster_source;
+      if (!tplRosterSource) {
+        if (cfg.mode === 'A') tplRosterSource = 'none';
+        else tplRosterSource = caps.default_roster_source || 'list';
+      }
+      if (document.getElementById('setupRosterSource')) {
+        document.getElementById('setupRosterSource').value = tplRosterSource;
+      }
+
+      // Step 2: 重新建立 axes options（帶入範本的 roster_source）
+      refreshAxesOptions(tplRosterSource);
+
+      // Step 3: 設定 format, pace, division
+      const tplAxes = tpl.axes || {};
+      document.getElementById('setupFormat').value = cfg.format || tplAxes.format || 'swiss_topcut';
+      if (cfg.pace || tplAxes.pace) document.getElementById('setupPace').value = cfg.pace || tplAxes.pace;
+      if (cfg.division || tplAxes.division) document.getElementById('setupDivision').value = cfg.division || tplAxes.division;
+
+      // Step 4: 再次刷新 axes 與報到方式欄位（帶入範本的 roster_source）
+      refreshAxesOptions(tplRosterSource);
+
+      document.getElementById('setupFormSection').style.display = 'block';
+      schedulePreview(true);
+    }
+
+    function buildCurrentPayload() {
+      const nameVal = (document.getElementById('setupName').value || '').trim();
+      const config = {
+        name: nameVal,
+        game: document.getElementById('setupGame').value,
+        format: document.getElementById('setupFormat').value,
+        pace: document.getElementById('setupPace').value,
+        division: document.getElementById('setupDivision').value
+      };
+
+      const expVal = document.getElementById('setupExpected').value.trim();
+      if (expVal) {
+        const expNum = parseInt(expVal, 10);
+        if (!isNaN(expNum)) {
+          config.expected_players = expNum;
+        }
+      }
+
+      config.mode = document.getElementById('setupMode').value || 'B';
+      const swissBoEl = document.getElementById('setupSwissBo');
+      if (swissBoEl) config.swiss_bo = parseInt(swissBoEl.value, 10) || 1;
+      
+      const rVal = document.getElementById('setupRounds').value.trim();
+      config.rounds = rVal ? parseInt(rVal, 10) : null;
+      
+      const topVal = document.getElementById('setupTopCut').value;
+      config.top_cut = (topVal === '' ? null : (parseInt(topVal, 10) || 0));
+      
+      config.round_min = parseInt(document.getElementById('setupRoundMin').value, 10) || 60;
+      
+      config.elim = document.getElementById('setupElim').value || 'single';
+      config.third_place = document.getElementById('setupThird').checked;
+      config.final_size = parseInt(document.getElementById('setupFinalSize').value, 10) || 2;
+      config.finals = document.getElementById('setupFinals').checked;
+      config.tables = parseInt(document.getElementById('setupTables').value, 10) || 8;
+      config.final_tables = parseInt(document.getElementById('setupFinalTables').value, 10) || 8;
+
+      const format = config.format;
+      const bracket_fmts = ['single_elim', 'double_elim', 'finals16'];
+      const isBracket = bracket_fmts.includes(format) || isGameDefaultBracket(config.game);
+
+      const methodVal = document.getElementById('setupCheckinMethod').value || 'list';
+      if (document.getElementById('setupRosterSource')) {
+        document.getElementById('setupRosterSource').value = methodVal;
+      }
+      config.roster_source = methodVal;
+      if (!isBracket && config.mode === 'A') {
+        config.roster_source = 'none';
+      }
+      if (config.roster_source === 'checkin') {
+        if (isBracket) {
+          config.divs = (document.getElementById('setupDivs').value || 'A').trim().toUpperCase();
+        } else {
+          config.divs = 'A';
+        }
+        config.card_max = parseInt(document.getElementById('setupCardMax').value, 10) || 128;
+      }
+
+      const caps = getGameCaps(config.game);
+      let isDecklistReq = false;
+      if (isBracket) {
+        if (caps.decklist_bracket && config.roster_source !== 'list') {
+          isDecklistReq = document.getElementById('setupDecklist').checked;
+        }
+      } else {
+        if (caps.decklist_swiss && config.mode !== 'A') {
+          isDecklistReq = document.getElementById('setupDecklist').checked;
+        }
+      }
+      config.decklist_required = isDecklistReq;
+
+      if (isDecklistReq) {
+        const lockEl = document.getElementById('setupDecklistLock');
+        config.decklist_lock = (lockEl && lockEl.value) ? lockEl.value : 'submit';
+
+        const deadlineEl = document.getElementById('setupDecklistDeadline');
+        const deadlineVal = deadlineEl ? deadlineEl.value : '';
+        if (deadlineVal) {
+          const parsedMs = Date.parse(deadlineVal + ':00+08:00');
+          if (!isNaN(parsedMs) && parsedMs > 0) {
+            config.decklist_deadline_at = parsedMs;
+          }
+        }
+      }
+
+      // 兩階段瑞士輪（達門檻晉級，DATA-CONTRACT 10.9）
+      const twoPhaseChk = document.getElementById('cfgTwoPhase');
+      const fmt = config.format;
+      const m = config.mode;
+      const isTwoPhaseEligible = (fmt === 'swiss_topcut') && (m === 'B') && !!caps.two_phase;
+      if (isTwoPhaseEligible && twoPhaseChk && twoPhaseChk.checked) {
+        config.two_phase = true;
+        const p1Val = document.getElementById('cfgPhase1Rounds').value.trim();
+        config.phase1_rounds = p1Val ? parseInt(p1Val, 10) : null;
+        const p2PtsVal = document.getElementById('cfgPhase2Points').value.trim();
+        config.phase2_points = p2PtsVal ? parseInt(p2PtsVal, 10) : null;
+        const p2RoundsVal = document.getElementById('cfgPhase2Rounds').value.trim();
+        config.phase2_rounds = p2RoundsVal ? parseInt(p2RoundsVal, 10) : null;
+      }
+
+      const rosterText = document.getElementById('setupRoster').value || '';
+      return {
+        config: config,
+        roster_text: rosterText
+      };
+    }
+    
+    function refreshCheckinMethod(preferredMethod) {
+      const methodSelect = document.getElementById('setupCheckinMethod');
+      const methodDescEl = document.getElementById('setupCheckinMethodDesc');
+      const rosterSourceGroup = document.getElementById('rosterSourceGroup');
+      const rosterSourceHidden = document.getElementById('setupRosterSource');
+      const rosterGroup = document.getElementById('rosterGroup');
+      const checkinFieldsGroup = document.getElementById('checkinFieldsGroup');
+      const divsGroup = document.getElementById('divsGroup');
+      const cardMaxGroup = document.getElementById('cardMaxGroup');
+
+      if (!methodSelect) return;
+
+      const g = document.getElementById('setupGame').value;
+      const format = document.getElementById('setupFormat').value;
+      const bracket_fmts = ['single_elim', 'double_elim', 'finals16'];
+      const isBracket = bracket_fmts.includes(format) || isGameDefaultBracket(g);
+      const isSwiss = !isBracket;
+      const mode = getEffectiveMode(g, document.getElementById('setupMode').value);
+
+      // 決定目標值：有指定優先，否則讀 select 目前值，最後讀 hidden
+      let target = preferredMethod;
+      if (!target && methodSelect) target = methodSelect.value;
+      if (!target && rosterSourceHidden) target = rosterSourceHidden.value;
+
+      // 1. 先重建 <option> 並設好 select 的值
+      if (isSwiss) {
+        if (mode === 'B') {
+          methodSelect.innerHTML = `
+            <option value="list">匯入名單＋PIN</option>
+            <option value="checkin">現場抽號碼牌</option>
+          `;
+          const validOptions = ['list', 'checkin'];
+          methodSelect.value = validOptions.includes(target) ? target : 'list';
+        } else {
+          // Mode A
+          methodSelect.innerHTML = '<option value="none">官方賽輔助（不使用名單）</option>';
+          methodSelect.value = 'none';
+        }
+      } else {
+        // Bracket
+        methodSelect.innerHTML = `
+          <option value="checkin">現場抽號碼牌</option>
+          <option value="list">匯入名單，開賽前直接建賽程</option>
+          <option value="list_checkin">匯入名單＋PIN 報到（沒報到的人開賽時拿掉）</option>
+        `;
+        const validOptions = ['checkin', 'list', 'list_checkin'];
+        methodSelect.value = validOptions.includes(target) ? target : 'checkin';
+      }
+
+      // 2. 再讀 select 實際的值當作 currentMethod
+      const currentMethod = methodSelect.value;
+      if (rosterSourceHidden) {
+        rosterSourceHidden.value = currentMethod;
+      }
+
+      // 3. 之後所有欄位的顯示／隱藏都只依這一個 currentMethod 決定
+      if (isSwiss && mode === 'A') {
+        rosterSourceGroup.style.display = 'none';
+        rosterGroup.style.display = 'none';
+        checkinFieldsGroup.style.display = 'none';
+        divsGroup.style.display = 'none';
+        cardMaxGroup.style.display = 'none';
+        if (methodDescEl) methodDescEl.textContent = '';
+      } else {
+        rosterSourceGroup.style.display = 'block';
+
+        if (currentMethod === 'checkin') {
+          if (methodDescEl) {
+            methodDescEl.textContent = '選手在檢錄台抽一張卡，用手機送出卡號與名字，工作人員核對後通過';
+          }
+          rosterGroup.style.display = 'none';
+          checkinFieldsGroup.style.display = 'block';
+          divsGroup.style.display = isBracket ? 'block' : 'none';
+          cardMaxGroup.style.display = 'block';
+        } else if (currentMethod === 'list_checkin') {
+          if (methodDescEl) {
+            methodDescEl.textContent = '事前匯入名單與 PIN 碼，選手自行按報到，開賽時沒報到的人會被拿掉';
+          }
+          rosterGroup.style.display = 'block';
+          checkinFieldsGroup.style.display = 'none';
+        } else { // 'list'
+          if (methodDescEl) {
+            methodDescEl.textContent = isBracket
+              ? '事前匯入名單，開賽前直接排定對戰，不需額外報到'
+              : '事前匯入名單與 PIN 碼，選手開賽前輸入 PIN 報到';
+          }
+          rosterGroup.style.display = 'block';
+          checkinFieldsGroup.style.display = 'none';
+        }
+      }
+
+      // 每次重建報到方式後，立刻依讀回的值更新牌表選項狀態
+      updateDecklistOptionState();
+    }
+
+    function updateDecklistOptionState() {
+      const gameSelect = document.getElementById('setupGame');
+      const formatSelect = document.getElementById('setupFormat');
+      const methodSelect = document.getElementById('setupCheckinMethod');
+      const modeSelect = document.getElementById('setupMode');
+      const decklistGroup = document.getElementById('decklistGroup');
+      const setupDecklist = document.getElementById('setupDecklist');
+      const hintEl = document.getElementById('setupDecklistHint');
+      if (!decklistGroup || !setupDecklist) return;
+
+      const g = gameSelect ? gameSelect.value : '';
+      const caps = getGameCaps(g);
+      const format = formatSelect ? formatSelect.value : '';
+      const bracket_fmts = ['single_elim', 'double_elim', 'finals16'];
+      const isBracket = bracket_fmts.includes(format) || isGameDefaultBracket(g);
+      const mode = getEffectiveMode(g, modeSelect && modeSelect.value);
+      const currentMethod = methodSelect ? methodSelect.value : 'list';
+
+      if (isBracket) {
+        if (caps.decklist_bracket) {
+          if (currentMethod !== 'list') {
+            decklistGroup.style.display = 'block';
+            setupDecklist.disabled = false;
+            if (hintEl) {
+              hintEl.textContent = '';
+              hintEl.style.display = 'none';
+            }
+          } else {
+            // list 情況停用並提示，且不准勾選
+            decklistGroup.style.display = 'block';
+            setupDecklist.checked = false;
+            setupDecklist.disabled = true;
+            if (hintEl) {
+              hintEl.textContent = '牌表要在開賽前交：『匯入名單、開賽前直接建賽程』沒有開賽前的階段，請把報到方式改成現場抽號碼牌或匯入名單＋PIN 報到';
+              hintEl.style.display = 'block';
+            }
+          }
+        } else {
+          // 其他遊戲隱藏
+          decklistGroup.style.display = 'none';
+          setupDecklist.checked = false;
+          setupDecklist.disabled = true;
+          if (hintEl) {
+            hintEl.textContent = '';
+            hintEl.style.display = 'none';
+          }
+        }
+      } else {
+        // 整輪賽事 (isSwiss)
+        if (caps.decklist_swiss) {
+          if (mode === 'A') {
+            decklistGroup.style.display = 'none';
+            setupDecklist.checked = false;
+            setupDecklist.disabled = true;
+            if (hintEl) {
+              hintEl.textContent = '';
+              hintEl.style.display = 'none';
+            }
+          } else {
+            decklistGroup.style.display = 'block';
+            setupDecklist.disabled = false;
+            if (hintEl) {
+              hintEl.textContent = '';
+              hintEl.style.display = 'none';
+            }
+          }
+        } else {
+          decklistGroup.style.display = 'none';
+          setupDecklist.checked = false;
+          setupDecklist.disabled = true;
+          if (hintEl) {
+            hintEl.textContent = '';
+            hintEl.style.display = 'none';
+          }
+        }
+      }
+
+      const settingsGroup = document.getElementById('decklistSettingsGroup');
+      if (settingsGroup) {
+        const isShown = decklistGroup.style.display !== 'none' && !setupDecklist.disabled && setupDecklist.checked;
+        settingsGroup.style.display = isShown ? 'block' : 'none';
+      }
+    }
+
+    function refreshAxesOptions(desiredRosterSource) {
+      if (!serverCatalog) {
+        refreshCheckinMethod(desiredRosterSource);
+        return;
+      }
+      
+      const gameSelect = document.getElementById('setupGame');
+      const formatSelect = document.getElementById('setupFormat');
+      const paceSelect = document.getElementById('setupPace');
+      const divSelect = document.getElementById('setupDivision');
+
+      const g = gameSelect.value;
+      const prevF = formatSelect.value;
+      const prevP = paceSelect.value;
+      const prevD = divSelect.value;
+      
+      formatSelect.innerHTML = '';
+      serverCatalog.formats.forEach(fmt => {
+        if (serverCatalog.combos.some(c => c.game === g && c.format === fmt.id)) {
+          const opt = document.createElement('option');
+          opt.value = fmt.id;
+          opt.textContent = fmt.label;
+          formatSelect.appendChild(opt);
+        }
+      });
+      if ([...formatSelect.options].some(o => o.value === prevF)) formatSelect.value = prevF;
+      const newF = formatSelect.value;
+
+      paceSelect.innerHTML = '';
+      serverCatalog.paces.forEach(pace => {
+        if (serverCatalog.combos.some(c => c.game === g && c.format === newF && c.pace === pace.id)) {
+          const opt = document.createElement('option');
+          opt.value = pace.id;
+          opt.textContent = pace.label;
+          paceSelect.appendChild(opt);
+        }
+      });
+      if ([...paceSelect.options].some(o => o.value === prevP)) paceSelect.value = prevP;
+      const newP = paceSelect.value;
+
+      divSelect.innerHTML = '';
+      serverCatalog.divisions.forEach(d => {
+        if (serverCatalog.combos.some(c => c.game === g && c.format === newF && c.pace === newP && c.division === d.id)) {
+          const opt = document.createElement('option');
+          opt.value = d.id;
+          opt.textContent = d.label;
+          divSelect.appendChild(opt);
+        }
+      });
+      if ([...divSelect.options].some(o => o.value === prevD)) divSelect.value = prevD;
+      
+      // Update form fields visibility based on new axes
+      const format = formatSelect.value;
+      const caps = getGameCaps(g);
+      const bracket_fmts = ['single_elim', 'double_elim', 'finals16'];
+      const isBracket = bracket_fmts.includes(format) || isGameDefaultBracket(g);
+      
+      document.getElementById('modeGroup').style.display = caps.official_assist ? 'block' : 'none';
+      
+      document.getElementById('roundsGroup').style.display = format.startsWith('swiss') ? 'block' : 'none';
+
+      const isSwiss = format.startsWith('swiss');
+      const swissBoGroup = document.getElementById('swissBoGroup');
+      const hasSwissBo = (caps.swiss_bo !== null && caps.swiss_bo !== undefined && Array.isArray(caps.swiss_bo));
+      swissBoGroup.style.display = (hasSwissBo && isSwiss) ? 'block' : 'none';
+      if (hasSwissBo) {
+        const swissBoSelect = document.getElementById('setupSwissBo');
+        if (swissBoSelect) {
+          const prevBo = swissBoSelect.value;
+          swissBoSelect.innerHTML = '';
+          caps.swiss_bo.forEach(n => {
+            const opt = document.createElement('option');
+            opt.value = String(n);
+            opt.textContent = n === 1 ? 'Bo1（每場一局）' : (n === 3 ? 'Bo3（三局兩勝）' : `Bo${n}`);
+            swissBoSelect.appendChild(opt);
+          });
+          if ([...swissBoSelect.options].some(o => o.value === prevBo)) {
+            swissBoSelect.value = prevBo;
+          }
+        }
+      }
+
+      document.getElementById('topCutGroup').style.display = (format === 'swiss_topcut') ? 'block' : 'none';
+
+      const modeVal = getEffectiveMode(g, document.getElementById('setupMode').value);
+      if (caps.modes && !caps.modes.includes('A')) {
+        document.getElementById('setupMode').value = 'B';
+      }
+      const isTwoPhaseEligible = (format === 'swiss_topcut') && (modeVal === 'B') && !!caps.two_phase;
+      const twoPhaseGroup = document.getElementById('twoPhaseGroup');
+      if (twoPhaseGroup) {
+        twoPhaseGroup.style.display = isTwoPhaseEligible ? 'block' : 'none';
+        if (!isTwoPhaseEligible) {
+          const twoPhaseChk = document.getElementById('cfgTwoPhase');
+          if (twoPhaseChk) twoPhaseChk.checked = false;
+          const fields = document.getElementById('twoPhaseFields');
+          if (fields) fields.style.display = 'none';
+          userTouchedPhase1 = false;
+          userTouchedPhase2 = false;
+          userTouchedPhase2Rounds = false;
+          const p1In = document.getElementById('cfgPhase1Rounds');
+          if (p1In) p1In.value = '';
+          const p2PtsIn = document.getElementById('cfgPhase2Points');
+          if (p2PtsIn) p2PtsIn.value = '';
+          const p2RoundsIn = document.getElementById('cfgPhase2Rounds');
+          if (p2RoundsIn) p2RoundsIn.value = '';
+          const p1Note = document.getElementById('cfgPhase1Official');
+          if (p1Note) p1Note.style.display = 'none';
+          const p2Note = document.getElementById('cfgPhase2Official');
+          if (p2Note) p2Note.style.display = 'none';
+          const p2RoundsNote = document.getElementById('cfgPhase2RoundsOfficial');
+          if (p2RoundsNote) p2RoundsNote.style.display = 'none';
+        }
+      }
+
+      document.getElementById('roundMinGroup').style.display = 'block';
+      
+      document.getElementById('elimGroup').style.display = isBracket ? 'block' : 'none';
+      document.getElementById('thirdPlaceGroup').style.display = isBracket ? 'block' : 'none';
+      document.getElementById('finalSizeGroup').style.display = isBracket ? 'block' : 'none';
+      document.getElementById('finals16Group').style.display = isBracket ? 'block' : 'none';
+      document.getElementById('tablesGroup').style.display = isBracket ? 'block' : 'none';
+      document.getElementById('finalTablesGroup').style.display = (isBracket && document.getElementById('setupFinals').checked) ? 'block' : 'none';
+      
+      // 重畫報到方式區塊（內部會呼叫 updateDecklistOptionState）
+      refreshCheckinMethod(desiredRosterSource);
+      updateDecklistOptionState();
+    }
+
+    document.getElementById('setupGame').addEventListener('change', () => { refreshAxesOptions(); schedulePreview(); });
+    document.getElementById('setupFormat').addEventListener('change', () => { refreshAxesOptions(); schedulePreview(); });
+    document.getElementById('setupPace').addEventListener('change', schedulePreview);
+    document.getElementById('setupDivision').addEventListener('change', schedulePreview);
+
+    function schedulePreview(immediate = false) {
+      if (previewDebounceTimer) {
+        clearTimeout(previewDebounceTimer);
+        previewDebounceTimer = null;
+      }
+      if (immediate) {
+        runPreview();
+      } else {
+        previewDebounceTimer = setTimeout(runPreview, 400);
+      }
+    }
+
+    async function runPreview() {
+      if (isPreviewing) {
+        pendingPreview = true;
+        return;
+      }
+      isPreviewing = true;
+      pendingPreview = false;
+
+      const payload = buildCurrentPayload();
+
+      try {
+        const res = await fetch('/api/setup/preview', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json().catch(() => null);
+
+        if (!res.ok || !data || !data.ok) {
+          const errMsg = (data && data.message) ? data.message : `檢查未通過 (HTTP ${res.status})`;
+          renderProblems({ message: errMsg, problems: data && data.problems });
+          return;
+        }
+
+        renderPreviewSuccess(data);
+      } catch (err) {
+        renderProblems({ message: '沒有送出：連不上主機，請確認網路後再按一次' });
+      } finally {
+        isPreviewing = false;
+        if (pendingPreview) {
+          runPreview();
+        }
+      }
+    }
+
+    
+    function renderPreviewSuccess(data) {
+      const problemsEl = document.getElementById('setupProblems');
+      problemsEl.innerHTML = '';
+      problemsEl.style.display = 'none';
+
+      const createBtn = document.getElementById('setupCreate');
+      createBtn.disabled = false;
+      
+      const cfg = data.config || {};
+      const tagBox = document.getElementById('setupTag');
+      if (cfg.tag) {
+        tagBox.style.display = 'block';
+        tagBox.setAttribute('data-tag', cfg.tag.kind || '');
+        const badge = document.getElementById('setupTagBadge');
+        badge.setAttribute('data-tag', cfg.tag.kind);
+        badge.textContent = cfg.tag.kind === 'official' ? '🏆 官方' : (cfg.tag.kind === 'common' ? '💡 常見' : '🛠️ 自訂');
+        document.getElementById('setupTagLabel').textContent = cfg.tag.label || '';
+        document.getElementById('setupTagNote').textContent = cfg.tag.note || '';
+        const sourceEl = document.getElementById('setupTagSource');
+        if (sourceEl) {
+          if (cfg.tag.source) {
+            sourceEl.textContent = cfg.tag.source;
+            sourceEl.style.display = 'block';
+          } else {
+            sourceEl.textContent = '';
+            sourceEl.style.display = 'none';
+          }
+        }
+      } else {
+        tagBox.removeAttribute('data-tag');
+        tagBox.style.display = 'none';
+      }
+
+      const warningsEl = document.getElementById('setupWarnings');
+      if (Array.isArray(data.warnings) && data.warnings.length > 0) {
+        warningsEl.innerHTML = `
+          <div class="problem-msg">⚠️ 注意事項</div>
+          <ul>
+            ${data.warnings.map(w => `<li>${escapeHtml(w)}</li>`).join('')}
+          </ul>
+        `;
+        warningsEl.style.display = 'block';
+      } else {
+        warningsEl.innerHTML = '';
+        warningsEl.style.display = 'none';
+      }
+
+      const playersEl = document.getElementById('setupPlayers');
+      const count = (data.players !== undefined && data.players !== null) ? data.players : 0;
+      playersEl.textContent = `名單 ${count} 人`;
+
+      const estEl = document.getElementById('setupEstimate');
+
+      const est = cfg.estimate || {};
+      let estText = formatMinutes(est.minutes);
+
+      if (cfg.kind === 'swiss') {
+        if (cfg.format === 'round_robin') {
+          const rNum = (cfg.rounds !== undefined && cfg.rounds !== null) ? cfg.rounds : (est.recommended_rounds || null);
+          if (rNum !== null) {
+            estText += ` · ${rNum} 輪`;
+          }
+        } else {
+          if (est.recommended_rounds) {
+            estText += ` · 建議 ${est.recommended_rounds} 輪`;
+            const hintEl = document.getElementById('roundsHint');
+            if (hintEl) {
+              hintEl.textContent = `空白＝自動建議（目前建議 ${est.recommended_rounds} 輪）`;
+            }
+          }
+          if (est.top_cut_rounds) {
+            const tcName = est.top_cut_rounds === 1 ? '決賽' : (est.top_cut_rounds === 2 ? '四強' : (est.top_cut_rounds === 3 ? '八強' : `${Math.pow(2, est.top_cut_rounds)} 強`));
+            estText += ` · 淘汰賽 ${est.top_cut_rounds} 輪（${tcName}）`;
+          }
+        }
+      } else if (cfg.kind === 'bracket') {
+        if (est.matches) {
+          estText += ` · 預估共 ${est.matches} 場`;
+        }
+      }
+      estEl.textContent = estText;
+
+      const lockedEl = document.getElementById('setupLocked');
+      if (Array.isArray(data.locked) && data.locked.length > 0) {
+        lockedEl.innerHTML = `<ul>${data.locked.map(item => `<li>🔒 ${escapeHtml(item)}</li>`).join('')}</ul>`;
+      }
+
+      const editableEl = document.getElementById('setupEditable');
+      if (Array.isArray(data.editable) && data.editable.length > 0) {
+        editableEl.innerHTML = `<ul>${data.editable.map(item => `<li>✏️ ${escapeHtml(item)}</li>`).join('')}</ul>`;
+      }
+
+      // 兩階段欄位帶回預設值 (DATA-CONTRACT 10.9)
+      const twoPhaseChk = document.getElementById('cfgTwoPhase');
+      if (twoPhaseChk && twoPhaseChk.checked) {
+        const p1Input = document.getElementById('cfgPhase1Rounds');
+        const p1Note = document.getElementById('cfgPhase1Official');
+        if (cfg.phase1_rounds !== undefined && cfg.phase1_rounds !== null) {
+          if (!userTouchedPhase1 && p1Input) {
+            p1Input.value = cfg.phase1_rounds;
+            if (p1Note) p1Note.style.display = 'inline';
+          }
+        }
+
+        const p2PtsInput = document.getElementById('cfgPhase2Points');
+        const p2PtsNote = document.getElementById('cfgPhase2Official');
+        if (cfg.phase2_points !== undefined && cfg.phase2_points !== null) {
+          if (!userTouchedPhase2 && p2PtsInput) {
+            p2PtsInput.value = cfg.phase2_points;
+            if (p2PtsNote) p2PtsNote.style.display = 'inline';
+          }
+        }
+
+        const p2RoundsInput = document.getElementById('cfgPhase2Rounds');
+        const p2RoundsNote = document.getElementById('cfgPhase2RoundsOfficial');
+        if (cfg.phase2_rounds !== undefined && cfg.phase2_rounds !== null) {
+          if (!userTouchedPhase2Rounds && p2RoundsInput) {
+            p2RoundsInput.value = cfg.phase2_rounds;
+            if (p2RoundsNote) p2RoundsNote.style.display = 'inline';
+          }
+        }
+      }
+    }
+
+    function renderProblems(info) {
+      const problemsEl = document.getElementById('setupProblems');
+      const createBtn = document.getElementById('setupCreate');
+      createBtn.disabled = true;
+
+      let html = '';
+      if (info.message) {
+        html += `<div class="problem-msg">${escapeHtml(info.message)}</div>`;
+      }
+      if (Array.isArray(info.problems) && info.problems.length > 0) {
+        html += `<ul>${info.problems.map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ul>`;
+      }
+      problemsEl.innerHTML = html;
+      problemsEl.style.display = 'block';
+    }
+
+    async function handleActualCreate() {
+      if (isCreating) return;
+      isCreating = true;
+
+      const createBtn = document.getElementById('setupCreate');
+      const origText = createBtn.textContent;
+      createBtn.disabled = true;
+      createBtn.textContent = '建立中…';
+
+      const payload = buildCurrentPayload();
+
+      try {
+        const res = await fetch('/api/setup/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json().catch(() => null);
+
+        if (!res.ok || !data || !data.ok) {
+          const errMsg = (data && data.message) ? data.message : `建立失敗 (HTTP ${res.status})`;
+          renderProblems({ message: errMsg, problems: data && data.problems });
+          return;
+        }
+
+        handleCreateSuccess(data);
+      } catch (err) {
+        renderProblems({ message: '沒有送出：連不上主機，請確認網路後再按一次' });
+      } finally {
+        isCreating = false;
+        createBtn.disabled = false;
+        createBtn.textContent = origText;
+      }
+    }
+
+    function handleCreateSuccess(data) {
+      createdNextUrl = data.next || 'admin.html';
+      createdPlayers = data.players || [];
+
+      const adminPinEl = document.getElementById('setupAdminPin');
+      adminPinEl.textContent = data.admin_pin || '';
+
+      const downloadBtn = document.getElementById('setupPinsDownload');
+      if (createdPlayers.length > 0) {
+        downloadBtn.style.display = 'inline-flex';
+      } else {
+        downloadBtn.style.display = 'none';
+      }
+
+      document.getElementById('templateSection').style.display = 'none';
+      document.getElementById('setupFormSection').style.display = 'none';
+      document.getElementById('setupSuccessSection').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function downloadPlayerPinsCsv() {
+      if (!createdPlayers || createdPlayers.length === 0) return;
+      let csv = '\uFEFFid,name,pin\r\n';
+      for (const p of createdPlayers) {
+        const idStr = String(p.id || '').replace(/"/g, '""');
+        const nameStr = String(p.name || '').replace(/"/g, '""');
+        const pinStr = String(p.pin || '').replace(/"/g, '""');
+        csv += `"${idStr}","${nameStr}","${pinStr}"\r\n`;
+      }
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'player-pins.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function handleSetupGo() {
+      const goBtn = document.getElementById('setupGo');
+      goBtn.disabled = true;
+      goBtn.textContent = '主機啟動中，請稍候…';
+
+      const targetUrl = createdNextUrl || 'admin.html';
+
+      const poll = async () => {
+        try {
+          const res = await fetch('../snapshot.json', { cache: 'no-store' });
+          if (res.ok) {
+            window.location.href = targetUrl;
+            return;
+          }
+        } catch (e) {}
+        setTimeout(poll, 1000);
+      };
+      poll();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // 立即渲染靜態預設範本
+      renderTemplates();
+      updateDecklistOptionState();
+
+      // 向後端請求正式範本資料
+      fetchTemplates();
+
+      // 表單輸入事件監聽
+      document.getElementById('setupName').addEventListener('input', () => schedulePreview());
+      document.getElementById('setupExpected').addEventListener('input', () => schedulePreview());
+
+      // 符文戰場欄位監聽
+      document.getElementById('setupFormat').addEventListener('change', () => {
+        refreshAxesOptions();
+        schedulePreview();
+      });
+      document.getElementById('setupMode').addEventListener('change', () => {
+        refreshAxesOptions();
+        schedulePreview();
+      });
+      document.getElementById('setupRounds').addEventListener('input', () => schedulePreview());
+      document.getElementById('setupTopCut').addEventListener('change', () => schedulePreview());
+      document.getElementById('setupRoundMin').addEventListener('input', () => schedulePreview());
+      document.getElementById('setupDecklist').addEventListener('change', () => {
+        updateDecklistOptionState();
+        schedulePreview();
+      });
+      const deckLockEl = document.getElementById('setupDecklistLock');
+      if (deckLockEl) {
+        deckLockEl.addEventListener('change', () => schedulePreview());
+      }
+      const deckDeadlineEl = document.getElementById('setupDecklistDeadline');
+      if (deckDeadlineEl) {
+        deckDeadlineEl.addEventListener('input', () => schedulePreview());
+        deckDeadlineEl.addEventListener('change', () => schedulePreview());
+      }
+      const swissBoEl = document.getElementById('setupSwissBo');
+      if (swissBoEl) {
+        swissBoEl.addEventListener('change', () => schedulePreview());
+      }
+
+      // 兩階段瑞士輪監聽
+      const twoPhaseChk = document.getElementById('cfgTwoPhase');
+      if (twoPhaseChk) {
+        twoPhaseChk.addEventListener('change', () => {
+          const fields = document.getElementById('twoPhaseFields');
+          if (fields) fields.style.display = twoPhaseChk.checked ? 'block' : 'none';
+          if (!twoPhaseChk.checked) {
+            userTouchedPhase1 = false;
+            userTouchedPhase2 = false;
+            userTouchedPhase2Rounds = false;
+            const p1In = document.getElementById('cfgPhase1Rounds');
+            if (p1In) p1In.value = '';
+            const p2PtsIn = document.getElementById('cfgPhase2Points');
+            if (p2PtsIn) p2PtsIn.value = '';
+            const p2RoundsIn = document.getElementById('cfgPhase2Rounds');
+            if (p2RoundsIn) p2RoundsIn.value = '';
+            const p1Note = document.getElementById('cfgPhase1Official');
+            if (p1Note) p1Note.style.display = 'none';
+            const p2Note = document.getElementById('cfgPhase2Official');
+            if (p2Note) p2Note.style.display = 'none';
+            const p2RoundsNote = document.getElementById('cfgPhase2RoundsOfficial');
+            if (p2RoundsNote) p2RoundsNote.style.display = 'none';
+          }
+          schedulePreview();
+        });
+      }
+
+      const p1Input = document.getElementById('cfgPhase1Rounds');
+      if (p1Input) {
+        p1Input.addEventListener('input', () => {
+          userTouchedPhase1 = (p1Input.value.trim() !== '');
+          const note = document.getElementById('cfgPhase1Official');
+          if (note && userTouchedPhase1) note.style.display = 'none';
+          schedulePreview();
+        });
+      }
+
+      const p2PtsInput = document.getElementById('cfgPhase2Points');
+      if (p2PtsInput) {
+        p2PtsInput.addEventListener('input', () => {
+          userTouchedPhase2 = (p2PtsInput.value.trim() !== '');
+          const note = document.getElementById('cfgPhase2Official');
+          if (note && userTouchedPhase2) note.style.display = 'none';
+          schedulePreview();
+        });
+      }
+
+      const p2RoundsInput = document.getElementById('cfgPhase2Rounds');
+      if (p2RoundsInput) {
+        p2RoundsInput.addEventListener('input', () => {
+          userTouchedPhase2Rounds = (p2RoundsInput.value.trim() !== '');
+          const note = document.getElementById('cfgPhase2RoundsOfficial');
+          if (note && userTouchedPhase2Rounds) note.style.display = 'none';
+          schedulePreview();
+        });
+      }
+
+      // 陀螺欄位監聽
+      document.getElementById('setupElim').addEventListener('change', () => {
+        refreshAxesOptions();
+        schedulePreview();
+      });
+      document.getElementById('setupThird').addEventListener('change', () => schedulePreview());
+      document.getElementById('setupFinalSize').addEventListener('change', () => schedulePreview());
+      document.getElementById('setupFinals').addEventListener('change', () => {
+        refreshAxesOptions();
+        schedulePreview();
+      });
+      document.getElementById('setupTables').addEventListener('input', () => schedulePreview());
+      document.getElementById('setupFinalTables').addEventListener('input', () => schedulePreview());
+      const ckMethodEl = document.getElementById('setupCheckinMethod');
+      if (ckMethodEl) {
+        ckMethodEl.addEventListener('change', () => {
+          refreshAxesOptions();
+          schedulePreview();
+        });
+      }
+      document.getElementById('setupRosterSource').addEventListener('change', () => {
+        refreshAxesOptions();
+        schedulePreview();
+      });
+      document.getElementById('setupDivs').addEventListener('input', () => schedulePreview());
+      document.getElementById('setupCardMax').addEventListener('input', () => schedulePreview());
+
+      // 名單輸入監聽
+      document.getElementById('setupRoster').addEventListener('input', () => schedulePreview());
+
+      // 建立賽事按鈕點擊
+      document.getElementById('setupCreate').addEventListener('click', () => {
+        const createBtn = document.getElementById('setupCreate');
+        if (createBtn.disabled) return;
+        showConfirm(
+          '建立賽事確認',
+          '確定要依照目前設定建立賽事嗎？建立後賽制與計分方式將被鎖定。',
+          handleActualCreate
+        );
+      });
+
+
+      // 下載選手 PIN 清單
+      document.getElementById('setupPinsDownload').addEventListener('click', downloadPlayerPinsCsv);
+
+      // 已抄下，前往主辦頁
+      document.getElementById('setupGo').addEventListener('click', handleSetupGo);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>賽事入口</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+html, body {
+      -webkit-text-size-adjust: 100%;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      min-height: 100svh;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+.container {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 16px 14px 40px;
+      box-sizing: border-box;
+    }
+
+.stale-banner {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 16px;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+.start-header {
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+.start-header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+.start-event-title {
+      font-size: clamp(1.25rem, 4vw, 1.6rem);
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.3;
+      word-break: break-word;
+      flex: 1;
+      min-width: 160px;
+    }
+
+.start-status-badge {
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      line-height: 1.2;
+    }
+
+.start-status-badge.status-live {
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: var(--success-text);
+    }
+
+.start-status-badge.status-before {
+      background: var(--chip-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-primary);
+    }
+
+.start-status-badge.status-paused {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+    }
+
+.start-status-badge.status-done {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #94a3b8;
+    }
+
+.start-note {
+      background: var(--info-bg);
+      border: 1px solid var(--info-border);
+      color: var(--info-text);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-top: 10px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+.start-empty {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 36px 16px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 20px 0;
+      word-break: break-word;
+    }
+
+.start-group {
+      margin-bottom: 24px;
+    }
+
+.start-group-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+#startGroupPlayer .start-group-title {
+      color: var(--text-primary);
+    }
+
+#startGroupScreen .start-group-title {
+      color: var(--info-text);
+    }
+
+#startGroupStaff {
+      background: rgba(46, 33, 64, 0.45);
+      border: 1.5px solid var(--judge-border);
+      border-radius: 14px;
+      padding: 16px 12px 18px;
+      margin-top: 28px;
+    }
+
+#startGroupStaff .start-group-title {
+      color: var(--judge-text);
+      margin-bottom: 12px;
+      padding-left: 2px;
+    }
+
+.start-links-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+.start-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 52px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      text-decoration: none;
+      box-sizing: border-box;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+      -webkit-tap-highlight-color: transparent;
+      width: 100%;
+      min-width: 0;
+    }
+
+.start-link:active {
+      transform: scale(0.99);
+    }
+
+#startGroupPlayer .start-link {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-left: 5px solid var(--accent);
+    }
+
+#startGroupPlayer .start-link:hover, #startGroupPlayer .start-link:focus-visible {
+      border-color: var(--accent);
+      background: #024562;
+    }
+
+#startGroupScreen .start-link {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-left: 5px solid var(--info-text);
+    }
+
+#startGroupScreen .start-link:hover, #startGroupScreen .start-link:focus-visible {
+      border-color: var(--info-text);
+      background: #0d3859;
+    }
+
+#startGroupScreen .start-link-arrow {
+      color: var(--info-text);
+    }
+
+#startGroupStaff .start-link {
+      background: var(--judge-bg);
+      border: 1.5px solid var(--judge-border);
+      border-left: 5px solid var(--judge-text);
+    }
+
+#startGroupStaff .start-link:hover, #startGroupStaff .start-link:focus-visible {
+      border-color: #9d78cc;
+      background: #392850;
+    }
+
+#startGroupStaff .start-link-hint {
+      color: #d1b8f0;
+    }
+
+#startGroupStaff .start-link-arrow {
+      color: var(--judge-text);
+    }
+
+.start-link-content {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      flex: 1;
+      min-width: 0;
+      text-align: left;
+    }
+
+.start-link-label {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+.start-link-hint {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+.start-link-arrow {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--accent-text);
+      margin-left: 12px;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+.start-footer {
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(10, 85, 112, 0.4);
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+.disconnected-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      z-index: 9999;
+      box-sizing: border-box;
+    }
+
+.disconnected-icon {
+      font-size: 3.5rem;
+      margin-bottom: 12px;
+      line-height: 1;
+    }
+
+.disconnected-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--danger-text);
+      margin-bottom: 8px;
+    }
+
+.disconnected-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 24px;
+      max-width: 360px;
+    }
+
+.btn-retry {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      min-width: 120px;
+      padding: 10px 24px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+.btn-retry:hover {
+      background: var(--accent-hover);
+    }
+
+.btn-retry:active {
+      transform: scale(0.98);
+    }
+</style>
+</head>
+<body>
+  <div class="container">
+    <!-- 尚未連上賽務系統畫面 -->
+    <div id="startDisconnected" class="disconnected-overlay">
+      <div class="disconnected-icon" aria-hidden="true">⚠️</div>
+      <div class="disconnected-title">尚未連上賽務系統</div>
+      <div class="disconnected-desc">目前無法讀取賽事資料。<br>請確認賽事主機是否已啟動，或網路連線是否正常。</div>
+      <button type="button" class="btn-retry" id="startRetryBtn">重新連線</button>
+    </div>
+
+    <!-- 主內容區 -->
+    <main id="startMain" style="display: none;">
+      <!-- 最上方過期提示橫幅 (DATA-CONTRACT 1.10) -->
+      <div id="staleBanner" class="stale-banner" style="display: none;"></div>
+
+      <!-- 最上方賽事標題與狀態 -->
+      <header class="start-header">
+        <div class="start-header-top">
+          <h1 id="startEvent" class="start-event-title"></h1>
+          <span id="startStatus" class="start-status-badge"></span>
+        </div>
+        <div id="startNote" class="start-note" style="display: none;"></div>
+      </header>
+
+      <!-- 查無入口清單提示 -->
+      <div id="startEmpty" class="start-empty" style="display: none;">這份資料沒有入口清單</div>
+
+      <!-- 選手分塊 -->
+      <section id="startGroupPlayer" class="start-group" style="display: none;">
+        <h2 class="start-group-title">選手</h2>
+        <div class="start-links-list" id="startListPlayer"></div>
+      </section>
+
+      <!-- 大螢幕與觀眾分塊 -->
+      <section id="startGroupScreen" class="start-group" style="display: none;">
+        <h2 class="start-group-title">大螢幕與觀眾</h2>
+        <div class="start-links-list" id="startListScreen"></div>
+      </section>
+
+      <!-- 工作人員分塊 -->
+      <section id="startGroupStaff" class="start-group" style="display: none;">
+        <h2 class="start-group-title">工作人員（要工作人員 PIN）</h2>
+        <div class="start-links-list" id="startListStaff"></div>
+      </section>
+
+      <!-- 頁面最下方小字 -->
+      <footer id="startFooter" class="start-footer">這個網址就是全場入口，QR 只要印這一個</footer>
+    </main>
+  </div>
+
+  <script src="common.js"></script>
+  <script>
+    var snapshotData = null;
+    window.snapshotData = null;
+
+    let hasLoadedData = false;
+    let lastRenderSignature = null;
+
+    function getStatusLabel(status) {
+      switch (status) {
+        case 'before': return '尚未開始';
+        case 'live': return '進行中';
+        case 'paused': return '暫停';
+        case 'done': return '已結束';
+        default: return status ? String(status) : '尚未開始';
+      }
+    }
+
+    function computeSignature(event) {
+      if (!event) return '';
+      return JSON.stringify({
+        name: event.name || '',
+        status: event.status || '',
+        note: event.note || '',
+        pages: (Array.isArray(event.pages) ? event.pages : []).map(p => ({
+          id: p ? p.id : '',
+          label: p ? p.label : '',
+          href: p ? p.href : '',
+          audience: p ? p.audience : '',
+          hint: p ? p.hint : ''
+        }))
+      });
+    }
+
+    function renderPageLink(p, audience) {
+      const pid = escapeHtml(p ? p.id : '');
+      const href = escapeHtml(p ? p.href : '');
+      const label = escapeHtml(p ? p.label : '');
+      const hint = escapeHtml(p ? p.hint : '');
+      const isStaff = audience === 'staff';
+      const staffClass = isStaff ? ' staff-link' : '';
+
+      return `
+        <a href="${href}" class="start-link${staffClass}" data-page="${pid}">
+          <div class="start-link-content">
+            <div class="start-link-label">${label}</div>
+            <div class="start-link-hint">${hint}</div>
+          </div>
+          <span class="start-link-arrow" aria-hidden="true">→</span>
+        </a>
+      `.trim();
+    }
+
+    function showDisconnected() {
+      const dis = document.getElementById('startDisconnected');
+      if (dis) dis.style.display = 'flex';
+      const main = document.getElementById('startMain');
+      if (main) main.style.display = 'none';
+    }
+
+    function hideDisconnected() {
+      const dis = document.getElementById('startDisconnected');
+      if (dis) dis.style.display = 'none';
+      const main = document.getElementById('startMain');
+      if (main) main.style.display = 'block';
+    }
+
+    function updateStatusBadge(status) {
+      const el = document.getElementById('startStatus');
+      if (!el) return;
+      el.textContent = getStatusLabel(status);
+      el.className = 'start-status-badge status-' + (status || 'before');
+    }
+
+    function updateEventNote(note) {
+      const el = document.getElementById('startNote');
+      if (!el) return;
+      if (note && String(note).trim() !== '') {
+        el.textContent = String(note).trim();
+        el.style.display = 'block';
+      } else {
+        el.textContent = '';
+        el.style.display = 'none';
+      }
+    }
+
+    function showEmptyPages() {
+      const emptyEl = document.getElementById('startEmpty');
+      if (emptyEl) {
+        emptyEl.textContent = '這份資料沒有入口清單';
+        emptyEl.style.display = 'block';
+      }
+      const gp = document.getElementById('startGroupPlayer');
+      if (gp) gp.style.display = 'none';
+      const gs = document.getElementById('startGroupScreen');
+      if (gs) gs.style.display = 'none';
+      const gw = document.getElementById('startGroupStaff');
+      if (gw) gw.style.display = 'none';
+
+      const lp = document.getElementById('startListPlayer');
+      if (lp) lp.innerHTML = '';
+      const ls = document.getElementById('startListScreen');
+      if (ls) ls.innerHTML = '';
+      const lw = document.getElementById('startListStaff');
+      if (lw) lw.innerHTML = '';
+    }
+
+    function hideEmptyPages() {
+      const emptyEl = document.getElementById('startEmpty');
+      if (emptyEl) {
+        emptyEl.style.display = 'none';
+      }
+    }
+
+    function renderGroupSection(groupId, listId, items, audience) {
+      const groupEl = document.getElementById(groupId);
+      const listEl = document.getElementById(listId);
+      if (!groupEl || !listEl) return;
+
+      if (!items || items.length === 0) {
+        groupEl.style.display = 'none';
+        listEl.innerHTML = '';
+      } else {
+        groupEl.style.display = 'block';
+        listEl.innerHTML = items.map(p => renderPageLink(p, audience)).join('');
+      }
+    }
+
+    function renderStartPage(event) {
+      if (!event) {
+        const nameEl = document.getElementById('startEvent');
+        if (nameEl) nameEl.textContent = '';
+        updateStatusBadge('before');
+        updateEventNote('');
+        showEmptyPages();
+        return;
+      }
+
+      // 1. 賽事名稱
+      const nameEl = document.getElementById('startEvent');
+      if (nameEl) {
+        nameEl.textContent = event.name || '';
+      }
+      if (event.name) {
+        document.title = event.name + ' — 入口';
+      }
+
+      // 2. 狀態中文
+      updateStatusBadge(event.status);
+
+      // 3. 公告 Note
+      updateEventNote(event.note);
+
+      // 4. 入口清單
+      const pages = Array.isArray(event.pages) ? event.pages : [];
+      if (pages.length === 0) {
+        showEmptyPages();
+      } else {
+        hideEmptyPages();
+        const playerPages = pages.filter(p => p && p.audience === 'player');
+        const screenPages = pages.filter(p => p && p.audience === 'screen');
+        const staffPages = pages.filter(p => p && p.audience === 'staff');
+
+        renderGroupSection('startGroupPlayer', 'startListPlayer', playerPages, 'player');
+        renderGroupSection('startGroupScreen', 'startListScreen', screenPages, 'screen');
+        renderGroupSection('startGroupStaff', 'startListStaff', staffPages, 'staff');
+      }
+    }
+
+    function handleSnapshot(snapshot) {
+      if (!snapshot || typeof snapshot !== 'object') {
+        if (!hasLoadedData) showDisconnected();
+        return;
+      }
+
+      const event = snapshot.event || null;
+      const signature = computeSignature(event);
+
+      if (hasLoadedData && signature === lastRenderSignature) {
+        return; // 輪詢內容沒變，不重畫
+      }
+
+      lastRenderSignature = signature;
+      hasLoadedData = true;
+
+      hideDisconnected();
+      renderStartPage(event);
+    }
+
+    const poller = createPoller({
+      url: '../snapshot.json',
+      interval: 5000,
+      pauseInBackground: false,
+      onData: (data) => {
+        snapshotData = data;
+        window.snapshotData = data;
+        handleSnapshot(data);
+      },
+      onError: (err) => {
+        if (!hasLoadedData) {
+          showDisconnected();
+        }
+      }
+    });
+    window.poller = poller;
+
+    function init() {
+      const retryBtn = document.getElementById('startRetryBtn');
+      if (retryBtn) {
+        retryBtn.addEventListener('click', () => {
+          poller.fetchOnce();
+        });
+      }
+      poller.start();
+    }
+
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>

@@ -5,40 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="data:,">
   <title>符文戰場 — 檢錄台管理</title>
+  <link rel="stylesheet" href="common.css">
   <style>
-    :root {
-      --bg: #01222F;
-      --card-bg: #013951;
-      --card-border: #0A5570;
-      --text-primary: #F9F9F9;
-      --text-secondary: #9FB8C4;
-      --accent: #EF7D00;
-      --accent-hover: #C86800;
-      --accent-text: #FF941E;
-      --warning-bg: #3E3312;
-      --warning-border: #8A6D1F;
-      --warning-text: #F2C94C;
-      --success-bg: #0A3F33;
-      --success-border: #1F7A55;
-      --success-text: #2FB574;
-      --danger-bg: #4A1F1C;
-      --danger-border: #A8443C;
-      --danger-text: #ED807A;
-      --chip-bg: #0A4A63;
-      --input-bg: #011A24;
-      --info-bg: #1B2F4A;
-      --info-border: #2F5A80;
-      --info-text: #4FA8D8;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
+html, body {
       -webkit-text-size-adjust: 100%;
       background-color: var(--bg);
       color: var(--text-primary);
@@ -50,7 +19,7 @@
       width: 100%;
     }
 
-    .container {
+.container {
       width: 100%;
       max-width: 900px;
       margin: 0 auto;
@@ -58,7 +27,7 @@
       overflow-x: hidden;
     }
 
-    header {
+header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -69,20 +38,20 @@
       gap: 10px;
     }
 
-    .header-title-box {
+.header-title-box {
       display: flex;
       align-items: center;
       gap: 10px;
       flex-wrap: wrap;
     }
 
-    .header-title {
+.header-title {
       font-size: 1.25rem;
       font-weight: 800;
       color: var(--text-primary);
     }
 
-    .counts-badge {
+.counts-badge {
       font-size: 0.88rem;
       font-weight: 700;
       padding: 4px 10px;
@@ -92,14 +61,14 @@
       color: var(--accent-text);
     }
 
-    .header-actions {
+.header-actions {
       display: flex;
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
     }
 
-    .card {
+.card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 10px;
@@ -108,7 +77,7 @@
       overflow-x: hidden;
     }
 
-    .card-title {
+.card-title {
       font-size: 1.05rem;
       font-weight: 700;
       color: var(--accent-text);
@@ -118,19 +87,20 @@
       justify-content: space-between;
     }
 
-    .form-row {
+.form-row {
       display: grid;
       grid-template-columns: 1fr 1fr auto;
       gap: 8px;
       align-items: center;
     }
-    @media (max-width: 600px) {
+
+@media (max-width: 600px) {
       .form-row {
         grid-template-columns: 1fr;
       }
     }
 
-    input[type="text"], input[type="password"] {
+input[type="text"], input[type="password"] {
       width: 100%;
       min-height: 44px;
       background: var(--input-bg);
@@ -141,12 +111,12 @@
       padding: 8px 12px;
     }
 
-    input[type="text"]:focus, input[type="password"]:focus {
+input[type="text"]:focus, input[type="password"]:focus {
       outline: none;
       border-color: var(--accent);
     }
 
-    .btn {
+.btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -163,58 +133,59 @@
       white-space: nowrap;
     }
 
-    .btn:disabled {
+.btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
 
-    .btn-primary {
+.btn-primary {
       background: var(--accent);
       color: #141212;
     }
-    .btn-primary:not(:disabled):hover {
+
+.btn-primary:not(:disabled):hover {
       background: var(--accent-hover);
     }
 
-    .btn-secondary {
+.btn-secondary {
       background: var(--chip-bg);
       border-color: var(--card-border);
       color: var(--text-primary);
     }
 
-    .btn-success {
+.btn-success {
       background: var(--success-bg);
       border-color: var(--success-border);
       color: var(--success-text);
     }
 
-    .btn-danger {
+.btn-danger {
       background: var(--danger-bg);
       border-color: var(--danger-border);
       color: var(--danger-text);
     }
 
-    .btn-warning {
+.btn-warning {
       background: var(--warning-bg);
       border-color: var(--warning-border);
       color: var(--warning-text);
     }
 
-    .msg-box {
+.msg-box {
       padding: 10px 12px;
       border-radius: 6px;
       font-size: 0.88rem;
       margin-bottom: 12px;
       word-break: break-word;
     }
-    .msg-box.error {
+
+.msg-box.error {
       background: var(--danger-bg);
       border: 1px solid var(--danger-border);
       color: var(--danger-text);
     }
 
-    /* PIN 顯示橫幅 */
-    .pin-banner {
+.pin-banner {
       background: var(--success-bg);
       border: 1.5px solid var(--success-border);
       border-radius: 8px;
@@ -222,7 +193,8 @@
       text-align: center;
       margin-bottom: 16px;
     }
-    .pin-number {
+
+.pin-number {
       font-size: 2.2rem;
       font-weight: 900;
       color: #ffffff;
@@ -230,8 +202,7 @@
       margin: 6px 0 10px;
     }
 
-    /* 待審清單項目 */
-    .ed-sub {
+.ed-sub {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
       border-radius: 8px;
@@ -242,7 +213,7 @@
       gap: 8px;
     }
 
-    .ed-sub-header {
+.ed-sub-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -250,21 +221,21 @@
       gap: 6px;
     }
 
-    .ed-sub-card {
+.ed-sub-card {
       font-size: 1.35rem;
       font-weight: 900;
       color: var(--accent-text);
       letter-spacing: 0.5px;
     }
 
-    .ed-sub-name {
+.ed-sub-name {
       font-size: 1.05rem;
       font-weight: 700;
       color: var(--text-primary);
       word-break: break-word;
     }
 
-    .same-card-warn {
+.same-card-warn {
       padding: 6px 10px;
       border-radius: 4px;
       background: var(--warning-bg);
@@ -274,14 +245,13 @@
       font-weight: 700;
     }
 
-    .ed-sub-actions {
+.ed-sub-actions {
       display: flex;
       gap: 8px;
       justify-content: flex-end;
     }
 
-    /* 已通過清單項目 */
-    .ed-done {
+.ed-done {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
       border-radius: 6px;
@@ -294,28 +264,48 @@
       flex-wrap: wrap;
     }
 
-    .ed-done-info {
+.ed-done-info {
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
-    .ed-done-card {
+.ed-done-card {
       font-size: 1.1rem;
       font-weight: 800;
       color: var(--accent-text);
       min-width: 65px;
     }
 
-    .ed-done-name {
+.ed-done-name {
       font-size: 0.95rem;
       font-weight: 600;
       color: var(--text-primary);
       word-break: break-word;
     }
 
-    /* 操作確認彈窗 */
-    .modal-overlay {
+.deck-badge {
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+.deck-badge[data-has="1"] {
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: var(--success-text);
+    }
+
+.deck-badge[data-has="0"] {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+    }
+
+.modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
@@ -328,7 +318,8 @@
       z-index: 9999;
       padding: 16px;
     }
-    .modal-box {
+
+.modal-box {
       background: var(--card-bg);
       border: 1.5px solid var(--card-border);
       border-radius: 12px;
@@ -337,25 +328,28 @@
       padding: 20px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
-    .modal-title {
+
+.modal-title {
       font-size: 1.15rem;
       font-weight: 800;
       color: var(--accent-text);
       margin-bottom: 8px;
     }
-    .modal-msg {
+
+.modal-msg {
       font-size: 0.92rem;
       color: var(--text-primary);
       line-height: 1.5;
       margin-bottom: 18px;
       word-break: break-word;
     }
-    .modal-btns {
+
+.modal-btns {
       display: flex;
       justify-content: flex-end;
       gap: 10px;
     }
-  </style>
+</style>
 </head>
 <body>
   <div class="container">
@@ -383,6 +377,9 @@
           <button type="button" id="edLogout" class="btn btn-secondary">登出</button>
         </div>
       </header>
+
+      <!-- 牌表進度 (DATA-CONTRACT 10.7) -->
+      <div id="deckProgress" style="display: none; padding: 10px 14px; margin-bottom: 12px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; font-weight: 800; color: #38bdf8; font-size: 0.95rem; text-align: center;"></div>
 
       <div id="edMsg" class="msg-box error" style="display: none;"></div>
 
@@ -443,6 +440,7 @@
     </div>
   </div>
 
+  <script src="common.js"></script>
   <script src="elim-common.js"></script>
   <script>
     // 嚴格遵守：PIN 僅存放在記憶體或 sessionStorage，絕不存進 localStorage
@@ -450,29 +448,14 @@
     let staffPin = '';
     let staffRole = '';
     let autoRefreshTimer = null;
-    let pendingConfirmAction = null;
 
     // 確認彈窗
-    function showConfirm(title, message, onConfirmed) {
-      document.getElementById('confirmTitle').textContent = title;
-      document.getElementById('confirmMessage').textContent = message;
-      document.getElementById('confirmModal').style.display = 'flex';
-      pendingConfirmAction = onConfirmed;
-    }
-
-    document.getElementById('confirmYes').addEventListener('click', async () => {
-      document.getElementById('confirmModal').style.display = 'none';
-      if (pendingConfirmAction) {
-        const action = pendingConfirmAction;
-        pendingConfirmAction = null;
-        await action();
+    async function showConfirm(title, message, onConfirmed) {
+      const ok = await confirmDialog({ title, message, yes: '確認執行', no: '取消', danger: true });
+      if (ok && typeof onConfirmed === 'function') {
+        await onConfirmed();
       }
-    });
-
-    document.getElementById('confirmNo').addEventListener('click', () => {
-      document.getElementById('confirmModal').style.display = 'none';
-      pendingConfirmAction = null;
-    });
+    }
 
     // 登入
     async function doLogin(pin) {
@@ -520,6 +503,11 @@
       staffRole = '';
       sessionStorage.removeItem(SESSION_KEY_PIN);
       document.getElementById('edPin').value = '';
+      const dp = document.getElementById('deckProgress');
+      if (dp) {
+        dp.style.display = 'none';
+        dp.textContent = '';
+      }
       document.getElementById('edMainSection').style.display = 'none';
       document.getElementById('edLoginSection').style.display = 'block';
     });
@@ -567,11 +555,15 @@
 
       // 各區通過人數
       const countsEl = document.getElementById('edCounts');
-      const divs = data.divs || [];
+      let divs = data.divs || [];
+      if (divs.length === 0 && window.elimSnapshot && window.elimSnapshot.checkin && window.elimSnapshot.checkin.divs) {
+        divs = window.elimSnapshot.checkin.divs;
+      }
       if (divs.length > 0) {
         countsEl.textContent = divs.map(d => `${d.div} 區 ${d.approved}`).join('、');
       } else {
-        countsEl.textContent = '尚無分區';
+        const approvedCount = (data.approved ? data.approved.length : 0);
+        countsEl.textContent = `A 區 ${approvedCount} 人`;
       }
 
       // 待審清單
@@ -627,6 +619,19 @@
       // 已通過清單
       const approvedBox = document.getElementById('edApproved');
       const approvedList = data.approved || [];
+      const deckProgressEl = document.getElementById('deckProgress');
+      const isDeckRequired = Boolean(data.decklist_required);
+
+      if (isDeckRequired && deckProgressEl) {
+        const approvedCount = approvedList.length;
+        const decklistCount = approvedList.filter(d => Boolean(d.has_decklist)).length;
+        deckProgressEl.textContent = `已交牌表 ${decklistCount} / 通過 ${approvedCount}`;
+        deckProgressEl.style.display = 'block';
+      } else if (deckProgressEl) {
+        deckProgressEl.style.display = 'none';
+        deckProgressEl.textContent = '';
+      }
+
       document.getElementById('edApprovedBadge').textContent = `共 ${approvedList.length} 人`;
 
       if (approvedList.length === 0) {
@@ -638,10 +643,17 @@
           row.className = 'ed-done';
           row.dataset.card = done.card;
 
+          let deckBadgeHtml = '';
+          if (isDeckRequired) {
+            const hasDeck = Boolean(done.has_decklist);
+            deckBadgeHtml = `<span class="deck-badge" data-has="${hasDeck ? '1' : '0'}">${hasDeck ? '已交牌表' : '未交牌表'}</span>`;
+          }
+
           row.innerHTML = `
             <div class="ed-done-info">
               <span class="ed-done-card">${escapeHtml(done.card)}</span>
               <span class="ed-done-name">${escapeHtml(done.name)}</span>
+              ${deckBadgeHtml}
             </div>
             <button type="button" class="btn btn-secondary ed-undo">取消報到</button>
           `;
@@ -789,11 +801,11 @@
 
         const totalPlayers = res.players || 0;
         const divs = res.divs || [];
-        const divStr = divs.map(d => `${d.div} 區 ${d.approved} 人`).join('、');
+        const divStr = divs.length > 0 ? divs.map(d => `${d.div} 區 ${d.approved} 人`).join('、') : `${totalPlayers} 人`;
 
         showConfirm(
           '開賽確認',
-          `共 ${totalPlayers} 人已通過報到（${divStr}）。確定要開賽並建立淘汰賽賽程嗎？開賽後將無法再進行報到。`,
+          `共 ${totalPlayers} 人已通過報到（${divStr}）。確定要開賽並建立賽程嗎？開賽後將無法再進行報到。`,
           async () => {
             try {
               await callApi('/api/admin/start', {
@@ -813,8 +825,18 @@
       }
     });
 
-    // 頁面載入時檢查 sessionStorage 是否有 PIN
+    let elimPoller = null;
+    // 頁面載入時檢查 sessionStorage 是否有 PIN，並啟動 ElimPoller 讀取 snapshot
     window.addEventListener('DOMContentLoaded', () => {
+      elimPoller = new ElimPoller({
+        onData: (snapshot) => {
+          if (snapshot && snapshot.event && snapshot.event.name) {
+            document.title = `${snapshot.event.name} — 檢錄台管理`;
+          }
+        }
+      });
+      elimPoller.start();
+
       const savedPin = sessionStorage.getItem(SESSION_KEY_PIN);
       if (savedPin) {
         doLogin(savedPin);

@@ -5,36 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="data:,">
   <title>符文戰場 — 紙本備援列印</title>
+  <link rel="stylesheet" href="common.css">
   <style>
-    :root {
-      --bg: #01222F;
-      --card-bg: #013951;
-      --card-bg-alt: #012b3c;
-      --card-border: #0A5570;
-      --text-primary: #F9F9F9;
-      --text-secondary: #9FB8C4;
-      --accent: #EF7D00;
-      --accent-hover: #C86800;
-      --accent-text: #FF941E;
-      --highlight-bg: #1E3043;
-      --warning-bg: #3E3312;
-      --warning-border: #8A6D1F;
-      --warning-text: #F2C94C;
-      --danger-bg: #4A1F1C;
-      --danger-border: #A8443C;
-      --danger-text: #ED807A;
-      --chip-bg: #0A4A63;
-      --input-bg: #011A24;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
+html, body {
       -webkit-text-size-adjust: 100%;
       background-color: var(--bg);
       color: var(--text-primary);
@@ -46,7 +19,7 @@
       width: 100%;
     }
 
-    .container {
+.container {
       width: 100%;
       max-width: 960px;
       margin: 0 auto;
@@ -55,8 +28,7 @@
       overflow-x: hidden;
     }
 
-    /* 頂部導覽列（螢幕上） */
-    .nav-bar {
+.nav-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -64,18 +36,21 @@
       flex-wrap: wrap;
       gap: 8px;
     }
-    .page-title {
+
+.page-title {
       font-size: 1.15rem;
       font-weight: 800;
       color: var(--text-primary);
     }
-    .nav-links {
+
+.nav-links {
       display: flex;
       gap: 8px;
       align-items: center;
       flex-wrap: wrap;
     }
-    .nav-link {
+
+.nav-link {
       display: inline-flex;
       align-items: center;
       color: var(--accent-text);
@@ -90,12 +65,12 @@
       min-width: 44px;
       box-sizing: border-box;
     }
-    .nav-link:active {
+
+.nav-link:active {
       background: rgba(239, 125, 0, 0.2);
     }
 
-    /* 警告橫幅 */
-    .banner {
+.banner {
       padding: 8px 12px;
       border-radius: 6px;
       font-size: 0.85rem;
@@ -103,17 +78,20 @@
       text-align: center;
       font-weight: 600;
     }
-    .contract-warning {
+
+.contract-warning {
       background: var(--warning-bg);
       color: var(--warning-text);
       border: 1px solid var(--warning-border);
     }
-    .stale-warning {
+
+.stale-warning {
       background: var(--danger-bg);
       color: var(--danger-text);
       border: 1px solid var(--danger-border);
     }
-    .unpublished-banner {
+
+.unpublished-banner {
       background: var(--warning-bg);
       color: var(--warning-text);
       border: 1px solid var(--warning-border);
@@ -125,8 +103,7 @@
       margin-bottom: 16px;
     }
 
-    /* 操作工具列 (切換鈕與列印鈕) */
-    .toolbar {
+.toolbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -138,13 +115,15 @@
       padding: 10px 12px;
       border-radius: 8px;
     }
-    .tab-group {
+
+.tab-group {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       flex: 1;
     }
-    .tab-btn {
+
+.tab-btn {
       min-height: 44px;
       min-width: 44px;
       padding: 8px 14px;
@@ -161,23 +140,27 @@
       white-space: nowrap;
       transition: background 0.15s ease;
     }
-    .tab-btn:hover {
+
+.tab-btn:hover {
       background: var(--card-border);
     }
-    .tab-btn[aria-pressed="true"] {
+
+.tab-btn[aria-pressed="true"] {
       background: var(--accent);
       color: #141212;
       border-color: var(--accent);
       font-weight: 700;
     }
-    .tab-btn:disabled {
+
+.tab-btn:disabled {
       opacity: 0.45;
       cursor: not-allowed;
       background: var(--chip-bg);
       border-color: var(--card-border);
       color: var(--text-secondary);
     }
-    .btn-print {
+
+.btn-print {
       min-height: 44px;
       min-width: 44px;
       padding: 8px 18px;
@@ -194,12 +177,12 @@
       white-space: nowrap;
       transition: background 0.15s ease;
     }
-    .btn-print:hover {
+
+.btn-print:hover {
       background: var(--accent-hover);
     }
 
-    /* .print-header 樣式 */
-    .print-header {
+.print-header {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 8px;
@@ -211,18 +194,21 @@
       flex-wrap: wrap;
       gap: 8px;
     }
-    .print-header-main {
+
+.print-header-main {
       display: flex;
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
     }
-    .print-event-name {
+
+.print-event-name {
       font-size: 1.15rem;
       font-weight: 800;
       color: var(--text-primary);
     }
-    .print-round-label {
+
+.print-round-label {
       font-size: 1rem;
       font-weight: 700;
       color: var(--accent-text);
@@ -231,14 +217,14 @@
       padding: 2px 10px;
       border-radius: 9999px;
     }
-    .print-data-time {
+
+.print-data-time {
       font-size: 0.85rem;
       color: var(--text-secondary);
       font-weight: 600;
     }
 
-    /* 表格共用樣式 */
-    .table-wrap {
+.table-wrap {
       width: 100%;
       max-width: 100%;
       overflow-x: auto;
@@ -249,47 +235,54 @@
       background: var(--card-bg);
       box-sizing: border-box;
     }
-    .print-table {
+
+.print-table {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
       font-size: 0.95rem;
     }
-    .print-table th, .print-table td {
+
+.print-table th, .print-table td {
       padding: 10px 14px;
       border-bottom: 1px solid var(--card-border);
       vertical-align: middle;
     }
-    .print-table th {
+
+.print-table th {
       background: var(--card-bg-alt);
       color: var(--text-secondary);
       font-weight: 700;
       font-size: 0.85rem;
       white-space: nowrap;
     }
-    .print-table tbody tr:hover {
+
+.print-table tbody tr:hover {
       background: rgba(255, 255, 255, 0.03);
     }
-    .cell-table {
+
+.cell-table {
       font-weight: 700;
       color: var(--accent-text);
       white-space: nowrap;
     }
-    .cell-name-strong {
+
+.cell-name-strong {
       font-weight: 700;
       font-size: 1.05rem;
       color: var(--text-primary);
     }
-    .cell-id {
+
+.cell-id {
       font-family: monospace;
       color: var(--text-secondary);
     }
-    .name-table td {
+
+.name-table td {
       padding: 12px 14px;
     }
 
-    /* 結果單網格與卡片 (viewSlips) */
-    .slips-grid {
+.slips-grid {
       display: grid;
       grid-template-columns: 100%;
       gap: 14px;
@@ -297,12 +290,14 @@
       max-width: 100%;
       box-sizing: border-box;
     }
-    @media (min-width: 680px) {
+
+@media (min-width: 680px) {
       .slips-grid {
         grid-template-columns: repeat(2, 1fr);
       }
     }
-    .result-slip {
+
+.result-slip {
       background: var(--card-bg);
       border: 1px dashed var(--card-border);
       border-radius: 8px;
@@ -316,98 +311,73 @@
       max-width: 100%;
       box-sizing: border-box;
     }
-    .slip-header {
+
+.slip-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--card-border);
       padding-bottom: 6px;
     }
-    .slip-round-badge {
+
+.slip-round-badge {
       font-size: 0.85rem;
       font-weight: 700;
       color: var(--accent-text);
     }
-    .slip-table-title {
+
+.slip-table-title {
       font-size: 1.1rem;
       font-weight: 800;
       color: var(--text-primary);
     }
-    .slip-table {
+
+.slip-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 0.85rem;
     }
-    .slip-table th, .slip-table td {
+
+.slip-table th, .slip-table td {
       border: 1px solid var(--card-border);
       padding: 6px 8px;
       vertical-align: middle;
     }
-    .slip-table th {
+
+.slip-table th {
       background: var(--card-bg-alt);
       color: var(--text-secondary);
       font-weight: 700;
       font-size: 0.8rem;
     }
-    .slip-pname {
+
+.slip-pname {
       font-size: 0.95rem;
       font-weight: 700;
       color: var(--text-primary);
     }
-    .slip-pid {
+
+.slip-pid {
       font-size: 0.8rem;
       color: var(--text-secondary);
       font-family: monospace;
     }
-    .slip-footer {
+
+.slip-footer {
       font-size: 0.75rem;
       color: var(--text-secondary);
       text-align: right;
     }
 
-    /* 尚未連上賽務系統覆蓋層 */
-    .disconnected-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: #01222F;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      text-align: center;
-      z-index: 2000;
-    }
-    .disconnected-icon {
-      font-size: 3rem;
-      margin-bottom: 12px;
-    }
-    .disconnected-title {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: var(--danger-text);
-      margin-bottom: 8px;
-    }
-    .disconnected-desc {
-      font-size: 0.95rem;
-      color: var(--text-secondary);
-      max-width: 360px;
-      margin-bottom: 20px;
-      line-height: 1.6;
-    }
-
-    /* 分區列印樣式 (螢幕) */
-    .zone-group {
+.zone-group {
       break-before: page;
       page-break-before: always;
       margin-bottom: 24px;
       width: 100%;
       box-sizing: border-box;
     }
-    .zone-heading {
+
+.zone-heading {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 8px;
@@ -422,23 +392,27 @@
       width: 100%;
       word-break: break-word;
     }
-    .zone-heading-title {
+
+.zone-heading-title {
       display: flex;
       align-items: center;
       gap: 10px;
       flex-wrap: wrap;
     }
-    .zone-heading-name {
+
+.zone-heading-name {
       font-size: 1.2rem;
       font-weight: 800;
       color: var(--accent-text);
     }
-    .zone-heading-hint {
+
+.zone-heading-hint {
       font-size: 0.95rem;
       color: var(--text-secondary);
       font-weight: 600;
     }
-    .zone-heading-range {
+
+.zone-heading-range {
       font-size: 0.95rem;
       color: var(--text-primary);
       font-weight: 700;
@@ -447,7 +421,8 @@
       padding: 2px 10px;
       border-radius: 6px;
     }
-    .zone-heading-round {
+
+.zone-heading-round {
       font-size: 0.9rem;
       font-weight: 700;
       color: var(--accent-text);
@@ -456,7 +431,8 @@
       padding: 2px 10px;
       border-radius: 9999px;
     }
-    .zone-guide {
+
+.zone-guide {
       background: var(--card-bg);
       border: 2px solid var(--accent);
       border-radius: 8px;
@@ -466,7 +442,8 @@
       width: 100%;
       word-break: break-word;
     }
-    .zone-guide-header {
+
+.zone-guide-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -476,12 +453,14 @@
       border-bottom: 1px solid var(--card-border);
       padding-bottom: 8px;
     }
-    .zone-guide-title {
+
+.zone-guide-title {
       font-size: 1.4rem;
       font-weight: 800;
       color: var(--accent-text);
     }
-    .zone-guide-round {
+
+.zone-guide-round {
       font-size: 0.95rem;
       font-weight: 700;
       color: var(--text-primary);
@@ -490,25 +469,29 @@
       padding: 4px 12px;
       border-radius: 9999px;
     }
-    .zone-guide-desc {
+
+.zone-guide-desc {
       font-size: 0.95rem;
       color: var(--text-secondary);
       margin-bottom: 14px;
       font-weight: 600;
     }
-    .zone-guide-grid {
+
+.zone-guide-grid {
       display: grid;
       grid-template-columns: 100%;
       gap: 12px;
       box-sizing: border-box;
       width: 100%;
     }
-    @media (min-width: 600px) {
+
+@media (min-width: 600px) {
       .zone-guide-grid {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
       }
     }
-    .zone-guide-card {
+
+.zone-guide-card {
       background: var(--card-bg-alt);
       border: 1px solid var(--card-border);
       border-radius: 6px;
@@ -518,19 +501,20 @@
       gap: 6px;
       box-sizing: border-box;
     }
-    .zone-guide-name {
+
+.zone-guide-name {
       font-size: 1.15rem;
       font-weight: 800;
       color: var(--text-primary);
     }
-    .zone-guide-range {
+
+.zone-guide-range {
       font-size: 1.05rem;
       font-weight: 700;
       color: var(--accent-text);
     }
 
-    /* 列印專用樣式 (@media print) */
-    @media print {
+@media print {
       @page {
         margin: 10mm;
         size: auto;
@@ -741,7 +725,7 @@
         font-size: 12pt !important;
       }
     }
-  </style>
+</style>
 </head>
 <body>
   <div class="container">
@@ -797,18 +781,17 @@
     <div id="viewSlips" style="display: none;"></div>
   </div>
 
-  <!-- 尚未連上賽務系統覆蓋層 -->
-  <div class="disconnected-overlay no-print" id="disconnectedScreen">
-    <div class="disconnected-icon">⚠️</div>
-    <div class="disconnected-title">尚未連上賽務系統</div>
-    <div class="disconnected-desc">
-      目前無法讀取賽事即時資料。<br>請確認賽事主機是否已啟動，或網路連線是否正常。
-    </div>
-    <button type="button" class="btn btn-print" id="retryBtn">重新連線</button>
-  </div>
-
+  <script src="common.js"></script>
+  <script src="disconnect-overlay.js"></script>
   <script>
     const CURRENT_CONTRACT_VERSION = 16;
+
+    const disconnectOverlay = DisconnectOverlay.create({
+      id: 'disconnectedScreen',
+      retryId: 'retryBtn',
+      desc: '目前無法讀取賽事即時資料。<br>請確認賽事主機是否已啟動，或網路連線是否正常。',
+      onRetry: () => fetchData()
+    });
 
     let snapshotData = null;
     let rawJsonText = '';
@@ -819,16 +802,6 @@
     let pollTimer = null;
     let freshnessTimer = null;
     let isSplitZone = false;
-
-    function escapeHtml(str) {
-      if (str === null || str === undefined) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
 
     function formatTaiwanTime(tsMs) {
       if (!tsMs) return '--:--';
@@ -1450,8 +1423,7 @@
           }
         }
 
-        const disScreen = document.getElementById('disconnectedScreen');
-        if (disScreen) disScreen.style.display = 'none';
+        disconnectOverlay.hide();
 
         if (text !== rawJsonText) {
           lastContentChangeTime = Date.now();
@@ -1464,8 +1436,7 @@
       } catch (err) {
         console.warn('賽務快照讀取失敗:', err);
         if (!snapshotData) {
-          const disScreen = document.getElementById('disconnectedScreen');
-          if (disScreen) disScreen.style.display = 'flex';
+          disconnectOverlay.show();
         }
       }
     }

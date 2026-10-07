@@ -5,41 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="data:,">
   <title>符文戰場 — 現場報到</title>
+  <link rel="stylesheet" href="common.css">
   <style>
-    :root {
-      --bg: #01222F;
-      --card-bg: #013951;
-      --card-border: #0A5570;
-      --text-primary: #F9F9F9;
-      --text-secondary: #9FB8C4;
-      --accent: #EF7D00;
-      --accent-hover: #C86800;
-      --accent-text: #FF941E;
-      --success-bg: #0A3F33;
-      --success-border: #1F7A55;
-      --success-text: #2FB574;
-      --danger-bg: #4A1F1C;
-      --danger-border: #A8443C;
-      --danger-text: #ED807A;
-      --warning-bg: #3E3312;
-      --warning-border: #8A6D1F;
-      --warning-text: #F2C94C;
-      --chip-bg: #0A4A63;
-      --input-bg: #011A24;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
+html, body {
       -webkit-text-size-adjust: 100%;
     }
 
-    body {
+body {
       background-color: var(--bg);
       color: var(--text-primary);
       font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
@@ -51,11 +23,11 @@
       overflow-x: hidden;
     }
 
-    input, select, textarea {
+input, select, textarea {
       font-size: 1rem;
     }
 
-    .container {
+.container {
       width: 100%;
       max-width: 480px;
       margin: 0 auto;
@@ -63,12 +35,12 @@
       flex: 1;
     }
 
-    header {
+header {
       margin-bottom: 20px;
       text-align: center;
     }
 
-    .page-title {
+.page-title {
       font-size: 1.4rem;
       font-weight: 800;
       letter-spacing: -0.5px;
@@ -76,12 +48,12 @@
       margin-bottom: 4px;
     }
 
-    .event-name {
+.event-name {
       font-size: 0.9rem;
       color: var(--text-secondary);
     }
 
-    .card {
+.card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
@@ -90,7 +62,7 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
-    .card-title {
+.card-title {
       font-size: 1.1rem;
       font-weight: 700;
       margin-bottom: 12px;
@@ -100,18 +72,18 @@
       gap: 8px;
     }
 
-    .card-desc {
+.card-desc {
       font-size: 0.85rem;
       color: var(--text-secondary);
       margin-bottom: 16px;
       line-height: 1.5;
     }
 
-    .form-group {
+.form-group {
       margin-bottom: 16px;
     }
 
-    .form-label {
+.form-label {
       display: block;
       font-size: 0.85rem;
       font-weight: 700;
@@ -119,13 +91,13 @@
       margin-bottom: 6px;
     }
 
-    .form-hint {
+.form-hint {
       font-size: 0.75rem;
       color: var(--text-secondary);
       margin-top: 4px;
     }
 
-    .input-text {
+.input-text {
       width: 100%;
       height: 48px;
       background: var(--input-bg);
@@ -138,11 +110,11 @@
       transition: border-color 0.2s;
     }
 
-    .input-text:focus {
+.input-text:focus {
       border-color: var(--accent);
     }
 
-    .btn {
+.btn {
       width: 100%;
       height: 48px;
       border: none;
@@ -157,25 +129,25 @@
       min-height: 48px;
     }
 
-    .btn-primary {
+.btn-primary {
       background: var(--accent);
       color: #141212;
     }
 
-    .btn-primary:active {
+.btn-primary:active {
       background: var(--accent-hover);
     }
 
-    .btn-secondary {
+.btn-secondary {
       background: var(--chip-bg);
       color: var(--text-primary);
     }
 
-    .btn-secondary:active {
+.btn-secondary:active {
       background: var(--card-border);
     }
 
-    .btn-retry {
+.btn-retry {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -192,11 +164,11 @@
       transition: background-color 0.2s;
     }
 
-    .btn-retry:active {
+.btn-retry:active {
       background: var(--accent-hover);
     }
 
-    .msg-box {
+.msg-box {
       border-radius: 8px;
       padding: 12px 14px;
       font-size: 0.9rem;
@@ -206,31 +178,30 @@
       word-break: break-all;
     }
 
-    .msg-box.error {
+.msg-box.error {
       background: var(--danger-bg);
       border: 1px solid var(--danger-border);
       color: var(--danger-text);
     }
 
-    .msg-box.success {
+.msg-box.success {
       background: var(--success-bg);
       border: 1px solid var(--success-border);
       color: var(--success-text);
     }
 
-    /* 報到完成畫面 */
-    .done-container {
+.done-container {
       text-align: center;
       padding: 24px 16px;
     }
 
-    .done-icon {
+.done-icon {
       font-size: 3.5rem;
       margin-bottom: 12px;
       line-height: 1;
     }
 
-    .done-headline {
+.done-headline {
       font-size: 1.8rem;
       font-weight: 900;
       color: var(--success-text);
@@ -238,7 +209,7 @@
       letter-spacing: -0.5px;
     }
 
-    .done-info-card {
+.done-info-card {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
       border-radius: 10px;
@@ -247,7 +218,7 @@
       text-align: left;
     }
 
-    .done-info-row {
+.done-info-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -255,48 +226,47 @@
       font-size: 0.95rem;
     }
 
-    .done-info-row:last-child {
+.done-info-row:last-child {
       margin-bottom: 0;
     }
 
-    .done-info-label {
+.done-info-label {
       color: var(--text-secondary);
     }
 
-    .done-info-val {
+.done-info-val {
       font-weight: 700;
       color: var(--text-primary);
     }
 
-    .done-info-val.highlight {
+.done-info-val.highlight {
       color: var(--accent-text);
       font-size: 1.1rem;
     }
 
-    .nav-links {
+.nav-links {
       text-align: center;
       margin-top: 20px;
       font-size: 0.85rem;
     }
 
-    .nav-link {
+.nav-link {
       color: var(--accent-text);
       text-decoration: none;
     }
 
-    .nav-link:hover {
+.nav-link:hover {
       text-decoration: underline;
     }
 
-    footer {
+footer {
       text-align: center;
       font-size: 0.75rem;
       color: var(--text-secondary);
       margin-top: 24px;
     }
 
-    /* 尚未連上賽務系統畫面 */
-    .disconnected-overlay {
+.disconnected-overlay {
       position: fixed;
       top: 0;
       left: 0;
@@ -311,24 +281,27 @@
       text-align: center;
       z-index: 1000;
     }
-    .disconnected-icon {
+
+.disconnected-icon {
       font-size: 3rem;
       margin-bottom: 12px;
     }
-    .disconnected-title {
+
+.disconnected-title {
       font-size: 1.4rem;
       font-weight: 800;
       color: var(--danger-text);
       margin-bottom: 8px;
     }
-    .disconnected-desc {
+
+.disconnected-desc {
       font-size: 0.95rem;
       color: var(--text-secondary);
       max-width: 360px;
       margin-bottom: 20px;
       line-height: 1.6;
     }
-  </style>
+</style>
 </head>
 <body>
   <div class="container">
@@ -445,6 +418,8 @@
     <button type="button" class="btn-retry" id="retryBtn" style="max-width: 200px;">重新連線</button>
   </div>
 
+  <script src="common.js"></script>
+  <script src="player-auth.js"></script>
   <script>
     const CURRENT_CONTRACT_VERSION = 16;
     let snapshotData = null;
@@ -468,6 +443,60 @@
         : '';
       return base + endpoint;
     }
+
+    let playerAuth = null;
+    let checkinLockCountdown = null;
+
+    playerAuth = PlayerAuth.create({
+      post: async (path, body) => {
+        const url = getApiUrl(path);
+        let res;
+        try {
+          res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+        } catch (networkErr) {
+          throw new Error('沒有送出：連不上主機，請確認網路後再按一次');
+        }
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data || !data.ok) {
+          const msg = (data && data.message) ? data.message : `操作失敗 (HTTP ${res.status})`;
+          const err = new Error(msg);
+          err.status = res.status;
+          err.code = data ? data.error : null;
+          err.retryAfterSec = data ? (data.retry_after_sec || null) : null;
+          err.data = data;
+          throw err;
+        }
+        return data;
+      },
+      onLogin: (me, { auto }) => {
+        const auth = playerAuth.get();
+        const playerId = auth ? auth.player_id : (me.player && me.player.id);
+        const pin = auth ? auth.pin : '';
+        applyAutoAuth(playerId, pin, me);
+      },
+      onLogout: () => {
+        const idInput = document.getElementById('checkinId');
+        const pinInput = document.getElementById('checkinPin');
+        const nameInput = document.getElementById('checkinName');
+        if (idInput) idInput.value = '';
+        if (pinInput) pinInput.value = '';
+        if (nameInput) nameInput.value = '';
+        const noteEl = document.getElementById('playerAuthNote');
+        if (noteEl) noteEl.style.display = 'none';
+        const textEl = document.getElementById('playerAuthText');
+        if (textEl) textEl.textContent = '';
+        hideMsg();
+        const formEl = document.getElementById('checkinForm');
+        const doneEl = document.getElementById('checkinDone');
+        if (doneEl) doneEl.style.display = 'none';
+        if (formEl) formEl.style.display = 'block';
+      },
+      now: () => Date.now()
+    });
 
     async function fetchData() {
       const primaryUrl = getDataSourceUrl();
@@ -528,12 +557,13 @@
       }
 
       isSubmittingCheckin = true;
-      const origText = btn ? btn.textContent : '';
+      const origText = (btn && btn.textContent) ? btn.textContent : '確認報到';
       if (btn) {
         btn.disabled = true;
         btn.textContent = '報到中…';
       }
 
+      let isLocked = false;
       try {
         const url = getApiUrl('/api/player/checkin');
         let res;
@@ -550,6 +580,30 @@
         const data = await res.json().catch(() => null);
 
         if (!res.ok || !data || !data.ok) {
+          const retrySec = Number(data && (data.retry_after_sec || (data.data && data.data.retry_after_sec)) || 0);
+          if (res.status === 423 && retrySec > 0) {
+            isLocked = true;
+            if (checkinLockCountdown) checkinLockCountdown.stop();
+            if (btn) {
+              btn.disabled = true;
+              btn.textContent = origText;
+            }
+            checkinLockCountdown = PlayerAuth.startCountdown(
+              retrySec,
+              (sec) => {
+                showMsg(PlayerAuth.lockText(sec));
+              },
+              () => {
+                const b = document.getElementById('checkinSubmit');
+                if (b) {
+                  b.disabled = false;
+                  b.textContent = origText;
+                }
+                showMsg('鎖定已結束，請重新嘗試');
+              }
+            );
+            return;
+          }
           const errorMsg = (data && data.message) ? data.message : `報到失敗 (HTTP ${res.status})`;
           throw new Error(errorMsg);
         }
@@ -572,15 +626,11 @@
           nameInput.value = resolvedName;
         }
 
-        // 記住編號與 PIN（示範模式不寫入，PROJECT.md 第三十輪）
-        const isDemo = !!new URLSearchParams(window.location.search).get('demo');
-        if (!isDemo) {
-          try {
-            localStorage.setItem('riftbound_player_auth', JSON.stringify({
-              player_id: playerId,
-              pin: pin
-            }));
-          } catch (e) {}
+        // 記住編號與 PIN
+        if (playerAuth) {
+          playerAuth.login(playerId, pin).catch((authErr) => {
+            console.error('報到成功後登入同步失敗:', authErr);
+          });
         }
 
         // 檢查是否需要登錄牌表 (PROJECT.md 第十一輪任務, DATA-CONTRACT 1.12, 6)
@@ -605,7 +655,7 @@
         showMsg(err.message);
       } finally {
         isSubmittingCheckin = false;
-        if (btn) {
+        if (!isLocked && btn) {
           btn.disabled = false;
           btn.textContent = origText;
         }
@@ -632,62 +682,14 @@
     }
 
     function handlePlayerSwitch() {
-      try {
-        localStorage.removeItem('riftbound_player_auth');
-      } catch (e) {}
-      const idInput = document.getElementById('checkinId');
-      const pinInput = document.getElementById('checkinPin');
-      const nameInput = document.getElementById('checkinName');
-      if (idInput) idInput.value = '';
-      if (pinInput) pinInput.value = '';
-      if (nameInput) nameInput.value = '';
-      const noteEl = document.getElementById('playerAuthNote');
-      if (noteEl) noteEl.style.display = 'none';
-      const textEl = document.getElementById('playerAuthText');
-      if (textEl) textEl.textContent = '';
+      if (playerAuth) {
+        playerAuth.logout();
+      }
     }
 
     async function checkAutoLogin() {
-      if (autoLoginChecked) return;
-      autoLoginChecked = true;
-
-      const isDemo = !!new URLSearchParams(window.location.search).get('demo');
-      if (isDemo) return;
-
-      let savedAuth = null;
-      try {
-        const str = localStorage.getItem('riftbound_player_auth');
-        if (str) savedAuth = JSON.parse(str);
-      } catch (e) {}
-
-      if (!savedAuth || !savedAuth.player_id || !savedAuth.pin) {
-        return;
-      }
-
-      try {
-        const apiUrl = getApiUrl('/api/player/me');
-        const res = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            player_id: savedAuth.player_id,
-            pin: savedAuth.pin
-          })
-        });
-
-        if (res.status === 401) {
-          try {
-            localStorage.removeItem('riftbound_player_auth');
-          } catch (e) {}
-          return;
-        }
-
-        const data = await res.json().catch(() => null);
-        if (res.ok && data && data.ok) {
-          applyAutoAuth(savedAuth.player_id, savedAuth.pin, data);
-        }
-      } catch (err) {
-        console.warn('自動驗證失敗:', err);
+      if (playerAuth) {
+        await playerAuth.restore();
       }
     }
 

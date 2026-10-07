@@ -5,58 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="icon" href="data:,">
   <title>符文戰場 — 大螢幕計時鐘</title>
+  <link rel="stylesheet" href="common.css">
   <style>
-    :root {
-      --bg: #01222F;
-      --card-bg: #013951;
-      --card-border: #0A5570;
-      --text-primary: #F9F9F9;
-      --text-secondary: #9FB8C4;
-      --accent: #EF7D00;
-      --accent-hover: #C86800;
-      --accent-text: #FF941E;
-      --warning-bg: #3E3312;
-      --warning-border: #8A6D1F;
-      --warning-text: #F2C94C;
-      --danger-bg: #4A1F1C;
-      --danger-border: #A8443C;
-      --danger-text: #ED807A;
-      --success-bg: #0A3F33;
-      --success-border: #1F7A55;
-      --success-text: #2FB574;
-      --chip-bg: #0A4A63;
-      --input-bg: #011A24;
-      --info-bg: #1B2F4A;
-      --info-border: #2F5A80;
-      --info-text: #4FA8D8;
-      --judge-bg: #2E2140;
-      --judge-border: #553C77;
-      --judge-text: #B38FE0;
-
-      /* Aliases for clock.html */
-      --panel-bg: var(--card-bg);
-      --panel-border: var(--card-border);
-      --text-main: var(--text-primary);
-      --text-sub: var(--text-secondary);
-      --warning: var(--warning-text);
-      --danger: var(--danger-text);
-      --success: var(--success-text);
-      --note-bg: #1B2F4A;
-      --note-border: #2F5A80;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
+html, body {
       -webkit-text-size-adjust: 100%;
     }
 
-    body {
+body {
       background-color: var(--bg);
       color: var(--text-main);
       font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
@@ -68,11 +23,11 @@
       user-select: none;
     }
 
-    input, select, textarea {
+input, select, textarea {
       font-size: 1rem;
     }
 
-    .wrapper {
+.wrapper {
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -82,8 +37,7 @@
       padding: 16px 24px;
     }
 
-    /* 頂部導覽列 */
-    header {
+header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -93,17 +47,20 @@
       flex-wrap: wrap;
       gap: 8px;
     }
-    .header-left {
+
+.header-left {
       display: flex;
       align-items: center;
       gap: 12px;
     }
-    .event-title {
+
+.event-title {
       font-size: clamp(1.1rem, 2vw, 1.8rem);
       font-weight: 800;
       letter-spacing: 0.5px;
     }
-    .status-badge {
+
+.status-badge {
       font-size: clamp(0.75rem, 1vw, 0.95rem);
       padding: 3px 10px;
       border-radius: 9999px;
@@ -112,23 +69,26 @@
       border: 1px solid var(--panel-border);
       color: var(--text-sub);
     }
-    .status-badge.live {
+
+.status-badge.live {
       background: var(--success-bg);
       border-color: var(--success-border);
       color: var(--success-text);
     }
-    .status-badge.paused {
+
+.status-badge.paused {
       background: var(--warning-bg);
       border-color: var(--warning-border);
       color: var(--warning-text);
     }
 
-    .header-right {
+.header-right {
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .btn-fs {
+
+.btn-fs {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
       color: var(--text-sub);
@@ -138,13 +98,13 @@
       cursor: pointer;
       min-height: 44px;
     }
-    .btn-fs:hover {
+
+.btn-fs:hover {
       color: var(--text-main);
       border-color: var(--accent);
     }
 
-    /* 版本警告 */
-    .contract-warning {
+.contract-warning {
       background: var(--warning-bg);
       color: var(--warning-text);
       border: 1px solid var(--warning-border);
@@ -154,7 +114,8 @@
       margin-bottom: 12px;
       text-align: center;
     }
-    .stale-warning {
+
+.stale-warning {
       background: var(--danger-bg);
       color: var(--danger-text);
       padding: 12px 16px;
@@ -166,8 +127,7 @@
       border: 2px solid var(--danger-border);
     }
 
-    /* 主辦公告列 */
-    .announcement-bar {
+.announcement-bar {
       background: var(--note-bg);
       border: 1px solid var(--note-border);
       border-radius: 10px;
@@ -179,7 +139,8 @@
       align-items: center;
       gap: 10px;
     }
-    .announcement-tag {
+
+.announcement-tag {
       background: var(--accent);
       color: #141212;
       font-weight: 800;
@@ -189,8 +150,7 @@
       white-space: nowrap;
     }
 
-    /* 主要輪次與大字休息橫幅 (DATA-CONTRACT 1.8) */
-    .break-giant-banner {
+.break-giant-banner {
       background: linear-gradient(135deg, #3E3312, #554415);
       border: 2px solid #8A6D1F;
       border-radius: 16px;
@@ -199,7 +159,8 @@
       margin-bottom: 20px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
-    .break-giant-title {
+
+.break-giant-title {
       font-size: clamp(2rem, 5vw, 4.5rem);
       font-weight: 900;
       color: #F9F9F9;
@@ -207,19 +168,20 @@
       line-height: 1.15;
       margin-bottom: 10px;
     }
-    .break-giant-sub {
+
+.break-giant-sub {
       font-size: clamp(1.1rem, 2vw, 1.8rem);
       color: #F2C94C;
       font-weight: 600;
     }
-    .break-giant-time {
+
+.break-giant-time {
       font-size: clamp(0.85rem, 1.2vw, 1.1rem);
       color: #9FB8C4;
       margin-top: 8px;
     }
 
-    /* 遲到提醒全場橫幅 (DATA-CONTRACT 1.16, 規則 703.8) */
-    .late-reminder-banner {
+.late-reminder-banner {
       background: var(--warning-bg);
       border: 2px solid var(--warning-border);
       color: var(--warning-text);
@@ -232,8 +194,7 @@
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     }
 
-    /* 計時主區塊 */
-    .clock-main-card {
+.clock-main-card {
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -248,14 +209,16 @@
       min-height: 280px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
-    .round-label-badge {
+
+.round-label-badge {
       font-size: clamp(1.2rem, 2.5vw, 2.2rem);
       font-weight: 800;
       color: var(--accent-text);
       margin-bottom: 8px;
       letter-spacing: 1px;
     }
-    .clock-giant-digits {
+
+.clock-giant-digits {
       font-size: clamp(4.5rem, 18vw, 15rem);
       font-weight: 900;
       font-variant-numeric: tabular-nums;
@@ -266,20 +229,22 @@
       margin: 10px 0;
       transition: color 0.3s ease;
     }
-    .clock-giant-digits.warning {
+
+.clock-giant-digits.warning {
       color: var(--warning);
     }
-    .clock-giant-digits.danger {
+
+.clock-giant-digits.danger {
       color: var(--danger);
       animation: pulse 1.5s infinite ease-in-out;
     }
-    @keyframes pulse {
+
+@keyframes pulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.6; }
     }
 
-    /* 時間到 / 延長回合大字提示 */
-    .extra-turns-banner {
+.extra-turns-banner {
       background: var(--danger-bg);
       border: 2px solid var(--danger-border);
       border-radius: 12px;
@@ -289,24 +254,34 @@
       max-width: 900px;
       width: 100%;
     }
-    .extra-turns-title {
+
+.extra-turns-title {
       font-size: clamp(1.4rem, 3vw, 2.4rem);
       font-weight: 900;
       color: var(--danger-text);
       margin-bottom: 4px;
     }
-    .extra-turns-desc {
+
+.extra-turns-desc {
       font-size: clamp(1rem, 1.8vw, 1.4rem);
       color: var(--text-primary);
     }
 
-    /* 底部全場進度列 (DATA-CONTRACT 1.9) */
-    .progress-footer-grid {
+.extra-turns-countdown {
+      font-size: clamp(1.2rem, 2.4vw, 2.1rem);
+      font-weight: 800;
+      color: var(--warning-text);
+      margin-top: 8px;
+      letter-spacing: 0.5px;
+    }
+
+.progress-footer-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 16px;
     }
-    .progress-box {
+
+.progress-box {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
       border-radius: 12px;
@@ -315,70 +290,24 @@
       flex-direction: column;
       gap: 4px;
     }
-    .progress-box-label {
+
+.progress-box-label {
       font-size: clamp(0.8rem, 1.2vw, 1rem);
       color: var(--text-sub);
     }
-    .progress-box-val {
+
+.progress-box-val {
       font-size: clamp(1.3rem, 2.2vw, 2rem);
       font-weight: 800;
       color: var(--text-main);
     }
-    .progress-box-sub {
+
+.progress-box-sub {
       font-size: clamp(0.75rem, 1vw, 0.95rem);
       color: var(--text-sub);
     }
 
-    /* 尚未連上賽務系統畫面 */
-    .disconnected-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: #01222F;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      text-align: center;
-      z-index: 1000;
-    }
-    .disconnected-icon {
-      font-size: 4rem;
-      margin-bottom: 16px;
-    }
-    .disconnected-title {
-      font-size: clamp(1.5rem, 3vw, 2.4rem);
-      font-weight: 800;
-      color: var(--danger-text);
-      margin-bottom: 8px;
-    }
-    .disconnected-desc {
-      font-size: clamp(1rem, 1.5vw, 1.25rem);
-      color: var(--text-sub);
-      max-width: 500px;
-      margin-bottom: 24px;
-      line-height: 1.6;
-    }
-    .btn-retry {
-      background: var(--accent);
-      color: #141212;
-      font-weight: 800;
-      padding: 14px 36px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-size: 1.1rem;
-      min-height: 48px;
-    }
-    .btn-retry:active {
-      background: var(--accent-hover);
-    }
-
-    /* 手機 360px 邊距適配 */
-    @media (max-width: 600px) {
+@media (max-width: 600px) {
       .wrapper {
         padding: 10px;
       }
@@ -390,7 +319,7 @@
         grid-template-columns: 1fr;
       }
     }
-  </style>
+</style>
 </head>
 <body>
   <div class="wrapper">
@@ -443,6 +372,7 @@
         <div class="extra-turns-desc" id="extraTurnsDesc">
           目前回合結束後，再進行 3 個回合
         </div>
+        <div class="extra-turns-countdown" id="extraCountdown" style="display: none;"></div>
       </div>
     </main>
 
@@ -471,25 +401,23 @@
     </footer>
   </div>
 
-  <!-- 尚未連上主機畫面 (硬性規定 1) -->
-  <div class="disconnected-overlay" id="disconnectedScreen">
-    <div class="disconnected-icon">⚠️</div>
-    <div class="disconnected-title">尚未連上賽務系統</div>
-    <div class="disconnected-desc">
-      大螢幕計時器目前無法讀取賽事即時資料。<br>請確認本機或區域網路連線，連線恢復後將自動重新載入。
-    </div>
-    <button type="button" class="btn-retry" id="retryBtn">重新連線</button>
-  </div>
-
+  <script src="common.js"></script>
+  <script src="disconnect-overlay.js"></script>
   <script>
     const CURRENT_CONTRACT_VERSION = 16;
     let snapshotData = null;
     let rawJsonText = '';
     let clockTimer = null;
-    let pollTimer = null;
     let serverOffsetMs = 0;
-    let demoOffsetCalculated = false;
     let lastContentChangeTime = Date.now();
+
+    const disconnectOverlay = DisconnectOverlay.create({
+      id: 'disconnectedScreen',
+      retryId: 'retryBtn',
+      size: 'big',
+      desc: '大螢幕計時器目前無法讀取賽事即時資料。<br>請確認本機或區域網路連線，連線恢復後將自動重新載入。',
+      onRetry: () => fetchData()
+    });
 
     // 取得資料來源 URL (DATA-CONTRACT 1.10: 固定 ../snapshot.json，僅接受固定的 demo 參數)
     function getDataSourceUrl() {
@@ -505,24 +433,6 @@
       return '../snapshot.json';
     }
 
-    // 台灣時間 HH:MM 格式化 (Asia/Taipei)
-    function formatTimeHHMM(ms) {
-      if (!ms) return '待定';
-      try {
-        return new Intl.DateTimeFormat('zh-TW', {
-          timeZone: 'Asia/Taipei',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false
-        }).format(new Date(ms));
-      } catch (e) {
-        const d = new Date(ms);
-        const hours = d.getHours().toString().padStart(2, '0');
-        const minutes = d.getMinutes().toString().padStart(2, '0');
-        return `${hours}:${minutes}`;
-      }
-    }
-
     // 相對時間（N 分鐘前）
     function formatRelativeMinutes(updatedMs, serverNowMs) {
       if (!updatedMs) return '';
@@ -532,66 +442,27 @@
       return `${mins} 分鐘前更新`;
     }
 
-    // 讀取資料 (DATA-CONTRACT 1.10: 時間換算優先用 Date 標頭)
-    async function fetchData() {
-      const primaryUrl = getDataSourceUrl();
-      try {
-        const responseTime = Date.now();
-        let res = await fetch(primaryUrl, { cache: 'no-store' });
-        if (!res.ok && primaryUrl.startsWith('../')) {
-          const fallbackUrl = primaryUrl.replace(/^\.\.\//, '/');
-          res = await fetch(fallbackUrl, { cache: 'no-store' });
-        }
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
-        }
-
-        const text = await res.text();
-        const data = JSON.parse(text);
-
-        // DATA-CONTRACT 1.10: 示範模式的時間換算
-        // 示範檔的時間固定在 2026-09-26，不讀 Date 標頭，只在第一次載入時用 server_now 算一次 offset，之後不再重算
-        const isDemo = !!new URLSearchParams(window.location.search).get('demo');
-        if (isDemo) {
-          if (!demoOffsetCalculated && data.server_now) {
-            serverOffsetMs = data.server_now - responseTime;
-            demoOffsetCalculated = true;
-          }
-        } else {
-          // 正式模式：計算時間差 offset（優先 Date 標頭，次選 server_now，每次成功讀取皆重算）
-          let dateHeaderMs = null;
-          try {
-            const dateHeader = res.headers.get('Date');
-            if (dateHeader) {
-              const t = new Date(dateHeader).getTime();
-              if (!isNaN(t)) dateHeaderMs = t;
-            }
-          } catch (e) {}
-
-          if (dateHeaderMs !== null) {
-            serverOffsetMs = dateHeaderMs - responseTime;
-          } else if (data.server_now) {
-            serverOffsetMs = data.server_now - responseTime;
-          }
-        }
-
-        document.getElementById('disconnectedScreen').style.display = 'none';
-
-        // 避免無變動時重繪 DOM
-        if (text === rawJsonText) {
-          return;
-        }
-
+    const poller = createPoller({
+      url: getDataSourceUrl,
+      pauseInBackground: false,
+      onData: (data) => {
+        disconnectOverlay.hide();
+        serverOffsetMs = poller.now() - Date.now();
         lastContentChangeTime = Date.now();
-        rawJsonText = text;
         snapshotData = data;
         renderAll();
-      } catch (err) {
+      },
+      onError: (err) => {
         console.warn('大螢幕讀取賽事資料失敗:', err);
         if (!snapshotData) {
-          document.getElementById('disconnectedScreen').style.display = 'flex';
+          disconnectOverlay.show();
         }
       }
+    });
+
+    // 讀取資料 (DATA-CONTRACT 1.10: 時間換算優先用 Date 標頭)
+    async function fetchData() {
+      return poller.fetchOnce();
     }
 
     // 檢查資料新鮮度 (DATA-CONTRACT 1.10: 超過90秒沒收到新內容顯示警告，示範模式不檢查)
@@ -820,6 +691,35 @@
       }
     }
 
+    // 延長回合倒數換算 (DATA-CONTRACT 1.4, 1.10)
+    function getExtraCountdownText(clock, serverOffsetMs) {
+      if (!clock) return null;
+      let targetEndsAt = null;
+      if (clock.state === 'time_up') {
+        if (typeof clock.extra_ends_at === 'number') {
+          targetEndsAt = clock.extra_ends_at;
+        }
+      } else if (clock.state === 'running' && clock.ends_at) {
+        const currentServerNow = Date.now() + serverOffsetMs;
+        if (currentServerNow >= clock.ends_at) {
+          if (typeof clock.extra_max_sec === 'number') {
+            targetEndsAt = clock.ends_at + clock.extra_max_sec * 1000;
+          }
+        }
+      }
+
+      if (targetEndsAt === null) return null;
+
+      const currentServerNow = Date.now() + serverOffsetMs;
+      const diffSec = Math.floor((targetEndsAt - currentServerNow) / 1000);
+      if (diffSec <= 0) {
+        return '延長時間已到，請依規則判定本局';
+      }
+      const m = Math.floor(diffSec / 60).toString().padStart(2, '0');
+      const s = (diffSec % 60).toString().padStart(2, '0');
+      return `延長回合最多再 ${m}:${s}`;
+    }
+
     // 每秒計時鐘刷新
     function updateClockDisplay() {
       if (!snapshotData) return;
@@ -830,6 +730,25 @@
       const clockDigitsEl = document.getElementById('clockDigits');
       const extraTurnsBanner = document.getElementById('extraTurnsBanner');
       const extraTurnsDesc = document.getElementById('extraTurnsDesc');
+      const extraCountdownEl = document.getElementById('extraCountdown');
+
+      function hideExtraCountdown() {
+        if (extraCountdownEl) {
+          extraCountdownEl.style.display = 'none';
+          extraCountdownEl.textContent = '';
+        }
+      }
+
+      function updateExtraCountdown() {
+        if (!extraCountdownEl) return;
+        const extraText = getExtraCountdownText(clock, serverOffsetMs);
+        if (extraText) {
+          extraCountdownEl.textContent = extraText;
+          extraCountdownEl.style.display = 'block';
+        } else {
+          hideExtraCountdown();
+        }
+      }
 
       if (!round) {
         roundLabelEl.style.display = '';
@@ -837,6 +756,7 @@
         clockDigitsEl.textContent = '--:--';
         clockDigitsEl.className = 'clock-giant-digits';
         extraTurnsBanner.style.display = 'none';
+        hideExtraCountdown();
         return;
       }
 
@@ -847,6 +767,7 @@
         clockDigitsEl.style.fontSize = 'clamp(2.5rem, 8vw, 7rem)';
         clockDigitsEl.style.color = '#34d399';
         extraTurnsBanner.style.display = 'none';
+        hideExtraCountdown();
         return;
       }
 
@@ -858,6 +779,7 @@
       }
 
       extraTurnsBanner.style.display = 'none';
+      hideExtraCountdown();
       clockDigitsEl.className = 'clock-giant-digits';
       clockDigitsEl.style.color = 'var(--text-main)';
 
@@ -876,6 +798,7 @@
         clockDigitsEl.classList.add('danger');
         clockDigitsEl.style.fontSize = 'clamp(4.5rem, 18vw, 15rem)';
         extraTurnsBanner.style.display = 'block';
+        updateExtraCountdown();
         const extraTurns = typeof clock.extra_turns === 'number' ? clock.extra_turns : 3;
         if (extraTurns > 0) {
           extraTurnsDesc.style.display = 'block';
@@ -898,6 +821,7 @@
           clockDigitsEl.textContent = '00:00';
           clockDigitsEl.classList.add('danger');
           extraTurnsBanner.style.display = 'block';
+          updateExtraCountdown();
           const extraTurns = typeof clock.extra_turns === 'number' ? clock.extra_turns : 3;
           if (extraTurns > 0) {
             extraTurnsDesc.style.display = 'block';
@@ -983,8 +907,7 @@
         retryBtn.addEventListener('click', fetchData);
       }
 
-      fetchData();
-      pollTimer = setInterval(fetchData, 5000);
+      poller.start();
       clockTimer = setInterval(() => {
         updateClockDisplay();
         renderScheduleAndBreak();

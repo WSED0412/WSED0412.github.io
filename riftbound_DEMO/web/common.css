@@ -1,0 +1,52 @@
+/* 各頁共用的樣式（tools/extract_css.py 產生，之後可以直接手改）。
+   改主題色：改下面 :root 的變數，所有載入它的頁面一起變。頁面專屬的樣式留在各頁自己的 <style>。 */
+
+:root {
+  --bg: #01222F;
+  --card-bg: #013951;
+  --card-border: #0A5570;
+  --text-primary: #F9F9F9;
+  --text-secondary: #9FB8C4;
+  --accent: #EF7D00;
+  --accent-hover: #C86800;
+  --accent-text: #FF941E;
+  --warning-bg: #3E3312;
+  --warning-border: #8A6D1F;
+  --warning-text: #F2C94C;
+  --danger-bg: #4A1F1C;
+  --danger-border: #A8443C;
+  --danger-text: #ED807A;
+  --success-bg: #0A3F33;
+  --success-border: #1F7A55;
+  --success-text: #2FB574;
+  --chip-bg: #0A4A63;
+  --input-bg: #011A24;
+  --info-bg: #1B2F4A;
+  --info-border: #2F5A80;
+  --info-text: #4FA8D8;
+  --judge-bg: #2E2140;
+  --judge-border: #553C77;
+  --judge-text: #B38FE0;
+  --panel-bg: var(--card-bg);
+  --panel-border: var(--card-border);
+  --text-main: var(--text-primary);
+  --text-sub: var(--text-secondary);
+  --warning: var(--warning-text);
+  --danger: var(--danger-text);
+  --success: var(--success-text);
+  --card-bg-alt: #012b3c;
+  --winner-bg: rgba(47, 181, 116, 0.15);
+  --winner-border: #1F7A55;
+  --winner-text: #2FB574;
+  --note-bg: #1B2F4A;
+  --note-border: #2F5A80;
+  --table-border: #0A5570;
+  --highlight-bg: #1E3043;
+}
+
+* {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }

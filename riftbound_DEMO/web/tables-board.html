@@ -5,56 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="data:,">
   <title>符文戰場 — 桌況儀表板</title>
+  <link rel="stylesheet" href="common.css">
   <style>
-    :root {
-      --bg: #01222F;
-      --card-bg: #013951;
-      --card-border: #0A5570;
-      --text-primary: #F9F9F9;
-      --text-secondary: #9FB8C4;
-      --accent: #EF7D00;
-      --accent-hover: #C86800;
-      --accent-text: #FF941E;
-      --warning-bg: #3E3312;
-      --warning-border: #8A6D1F;
-      --warning-text: #F2C94C;
-      --danger-bg: #4A1F1C;
-      --danger-border: #A8443C;
-      --danger-text: #ED807A;
-      --success-bg: #0A3F33;
-      --success-border: #1F7A55;
-      --success-text: #2FB574;
-      --chip-bg: #0A4A63;
-      --input-bg: #011A24;
-      --info-bg: #1B2F4A;
-      --info-border: #2F5A80;
-      --info-text: #4FA8D8;
-      --judge-bg: #2E2140;
-      --judge-border: #553C77;
-      --judge-text: #B38FE0;
-
-      /* Aliases */
-      --panel-bg: var(--card-bg);
-      --panel-border: var(--card-border);
-      --text-main: var(--text-primary);
-      --text-sub: var(--text-secondary);
-      --warning: var(--warning-text);
-      --danger: var(--danger-text);
-      --success: var(--success-text);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
+html, body {
       -webkit-text-size-adjust: 100%;
     }
 
-    body {
+body {
       background-color: var(--bg);
       color: var(--text-main);
       font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
@@ -66,11 +23,11 @@
       overflow-x: hidden;
     }
 
-    input, select, textarea {
+input, select, textarea {
       font-size: 1rem;
     }
 
-    .container {
+.container {
       width: 100%;
       max-width: 1400px;
       margin: 0 auto;
@@ -78,8 +35,7 @@
       flex: 1;
     }
 
-    /* 頂部標題列 */
-    header {
+header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -89,18 +45,21 @@
       flex-wrap: wrap;
       gap: 8px;
     }
-    .header-left {
+
+.header-left {
       display: flex;
       align-items: center;
       gap: 12px;
     }
-    .page-title {
+
+.page-title {
       font-size: clamp(1.2rem, 2vw, 1.6rem);
       font-weight: 800;
       letter-spacing: 0.5px;
       color: var(--text-main);
     }
-    .role-badge {
+
+.role-badge {
       font-size: 0.75rem;
       background: var(--chip-bg);
       color: var(--text-primary);
@@ -109,14 +68,14 @@
       border-radius: 9999px;
       font-weight: 700;
     }
-    .round-tag {
+
+.round-tag {
       font-size: 0.9rem;
       font-weight: 700;
       color: var(--accent-text);
     }
 
-    /* 版本升級提示 */
-    .contract-warning {
+.contract-warning {
       background: var(--warning-bg);
       color: var(--warning-text);
       border: 1px solid var(--warning-border);
@@ -126,7 +85,8 @@
       margin-bottom: 12px;
       text-align: center;
     }
-    .stale-warning {
+
+.stale-warning {
       background: var(--danger-bg);
       color: var(--danger-text);
       padding: 10px 14px;
@@ -138,14 +98,14 @@
       border: 1px solid var(--danger-border);
     }
 
-    /* 總覽指標卡片 Grid */
-    .summary-grid {
+.summary-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 12px;
       margin-bottom: 16px;
     }
-    .summary-card {
+
+.summary-card {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
       border-radius: 10px;
@@ -154,41 +114,47 @@
       flex-direction: column;
       gap: 4px;
     }
-    .summary-card.alert {
+
+.summary-card.alert {
       border-color: var(--danger-border);
       background: var(--danger-bg);
     }
-    .summary-label {
+
+.summary-label {
       font-size: 0.8rem;
       color: var(--text-sub);
     }
-    .summary-value {
+
+.summary-value {
       font-size: clamp(1.3rem, 2.2vw, 1.8rem);
       font-weight: 900;
       color: var(--text-main);
     }
-    .summary-card.alert .summary-value {
+
+.summary-card.alert .summary-value {
       color: var(--danger-text);
     }
-    .summary-sub {
+
+.summary-sub {
       font-size: 0.75rem;
       color: var(--text-sub);
     }
 
-    /* 快速篩選按鈕區 */
-    .filter-bar {
+.filter-bar {
       display: flex;
       gap: 8px;
       margin-bottom: 16px;
       flex-wrap: wrap;
       align-items: center;
     }
-    .filter-label {
+
+.filter-label {
       font-size: 0.8rem;
       color: var(--text-sub);
       margin-right: 2px;
     }
-    .filter-chip {
+
+.filter-chip {
       background: var(--chip-bg);
       border: 1px solid var(--card-border);
       color: var(--text-primary);
@@ -202,34 +168,35 @@
       align-items: center;
       gap: 6px;
     }
-    .filter-chip.active {
+
+.filter-chip.active {
       background: var(--accent);
       color: #141212;
       border-color: var(--accent);
       font-weight: 800;
     }
-    .filter-chip.danger-active {
+
+.filter-chip.danger-active {
       background: var(--danger-border);
       color: var(--text-primary);
       border-color: var(--danger-border);
     }
-    .filter-badge {
+
+.filter-badge {
       background: rgba(0, 0, 0, 0.25);
       font-size: 0.75rem;
       padding: 1px 6px;
       border-radius: 9999px;
     }
 
-    /* 桌況卡片列表 Grid */
-    .tables-grid {
+.tables-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 14px;
       margin-bottom: 24px;
     }
 
-    /* 單一桌次卡片 */
-    .table-card {
+.table-card {
       background: var(--card-bg);
       border: 1.5px solid var(--card-border);
       border-radius: 12px;
@@ -240,31 +207,31 @@
       gap: 10px;
       transition: transform 0.15s ease, border-color 0.15s ease;
     }
-    .table-card:hover {
+
+.table-card:hover {
       border-color: var(--accent);
     }
 
-    /* 裁判處理中醒目樣式 (PROJECT.md 核心規定) */
-    .table-card.conflict-card {
+.table-card.conflict-card {
       border: 2px solid var(--danger-border);
       background: linear-gradient(135deg, rgba(74, 31, 28, 0.6), rgba(168, 68, 60, 0.15));
       box-shadow: 0 0 16px rgba(168, 68, 60, 0.25);
-      order: -10; /* 讓衝突桌置頂優先處理 */
+      order: -10; 
     }
 
-    .table-card.call-waiting-card {
+.table-card.call-waiting-card {
       border: 2px solid var(--judge-border);
       background: linear-gradient(135deg, rgba(46, 33, 64, 0.8), rgba(85, 60, 119, 0.2));
       box-shadow: 0 0 16px rgba(85, 60, 119, 0.3);
-      order: -20; /* 等裁判置頂 */
+      order: -20; 
     }
 
-    .table-card.call-taken-card {
+.table-card.call-taken-card {
       border: 2px solid var(--info-border);
       background: linear-gradient(135deg, rgba(27, 47, 74, 0.8), rgba(47, 90, 128, 0.2));
     }
 
-    .judge-call-badge {
+.judge-call-badge {
       display: inline-flex;
       align-items: center;
       padding: 2px 8px;
@@ -272,19 +239,21 @@
       font-size: 0.8rem;
       font-weight: 800;
     }
-    .judge-call-badge.waiting {
+
+.judge-call-badge.waiting {
       background: var(--judge-bg);
       color: var(--judge-text);
       border: 1px solid var(--judge-border);
       animation: pulse 1.5s infinite ease-in-out;
     }
-    .judge-call-badge.taken {
+
+.judge-call-badge.taken {
       background: var(--info-bg);
       color: var(--info-text);
       border: 1px solid var(--info-border);
     }
 
-    .late-badge {
+.late-badge {
       display: inline-flex;
       align-items: center;
       padding: 2px 8px;
@@ -293,52 +262,58 @@
       font-weight: 800;
       gap: 4px;
     }
-    .late-badge.warning {
+
+.late-badge.warning {
       background: var(--warning-bg);
       color: var(--warning-text);
       border: 1px solid var(--warning-border);
     }
-    .late-badge.danger {
+
+.late-badge.danger {
       background: var(--danger-bg);
       color: var(--danger-text);
       border: 1px solid var(--danger-border);
       animation: pulse 1.5s infinite ease-in-out;
     }
 
-    .table-card.late-card {
+.table-card.late-card {
       border: 2px solid var(--warning-border);
     }
-    .table-card.late-card-danger {
+
+.table-card.late-card-danger {
       border: 2px solid var(--danger-border);
       box-shadow: 0 0 12px rgba(168, 68, 60, 0.4);
     }
 
-    .table-card.pending-card {
+.table-card.pending-card {
       border-color: var(--warning-border);
       background: rgba(62, 51, 18, 0.2);
     }
 
-    /* 桌號與狀態 Header */
-    .card-header {
+.card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .table-title-wrap {
+
+.table-title-wrap {
       display: flex;
       align-items: baseline;
       gap: 6px;
     }
-    .table-title {
+
+.table-title {
       font-size: 1.4rem;
       font-weight: 900;
       color: var(--accent-text);
       line-height: 1;
     }
-    .conflict-card .table-title {
+
+.conflict-card .table-title {
       color: var(--danger-text);
     }
-    .feature-tag {
+
+.feature-tag {
       background: var(--info-bg);
       color: var(--info-text);
       border: 1px solid var(--info-border);
@@ -347,7 +322,8 @@
       border-radius: 4px;
       font-weight: 700;
     }
-    .zone-tag {
+
+.zone-tag {
       background: var(--chip-bg);
       color: var(--text-primary);
       border: 1px solid var(--card-border);
@@ -357,32 +333,33 @@
       font-weight: 700;
     }
 
-    /* 狀態標籤 */
-    .status-pill {
+.status-pill {
       font-size: 0.75rem;
       font-weight: 800;
       padding: 3px 8px;
       border-radius: 6px;
       white-space: nowrap;
     }
-    .status-pill.conflict {
+
+.status-pill.conflict {
       background: var(--danger-bg);
       border: 1px solid var(--danger-border);
       color: var(--danger-text);
     }
-    .status-pill.pending {
+
+.status-pill.pending {
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
     }
-    .status-pill.ongoing {
+
+.status-pill.ongoing {
       background: rgba(239, 125, 0, 0.1);
       border: 1px solid rgba(239, 125, 0, 0.3);
       color: var(--accent-text);
     }
 
-    /* 選手資訊 */
-    .players-box {
+.players-box {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
       border-radius: 8px;
@@ -392,14 +369,17 @@
       align-items: center;
       gap: 8px;
     }
-    .player-side {
+
+.player-side {
       flex: 1;
       overflow: hidden;
     }
-    .player-side.right {
+
+.player-side.right {
       text-align: right;
     }
-    .player-name {
+
+.player-name {
       font-size: 1.05rem;
       font-weight: 800;
       color: var(--text-main);
@@ -407,11 +387,13 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .player-meta {
+
+.player-meta {
       font-size: 0.75rem;
       color: var(--text-sub);
     }
-    .vs-tag {
+
+.vs-tag {
       font-size: 0.75rem;
       font-weight: 900;
       color: var(--text-secondary);
@@ -420,8 +402,7 @@
       border-radius: 4px;
     }
 
-    /* 補時與結束時間 */
-    .time-info-box {
+.time-info-box {
       background: rgba(1, 26, 36, 0.6);
       border-radius: 6px;
       padding: 8px 10px;
@@ -430,21 +411,25 @@
       flex-direction: column;
       gap: 4px;
     }
-    .time-row {
+
+.time-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .time-row-label {
+
+.time-row-label {
       color: var(--text-sub);
     }
-    .ext-badge-list {
+
+.ext-badge-list {
       display: flex;
       gap: 4px;
       flex-wrap: wrap;
       justify-content: flex-end;
     }
-    .ext-pill {
+
+.ext-pill {
       background: var(--warning-bg);
       color: var(--warning-text);
       border: 1px solid var(--warning-border);
@@ -453,13 +438,13 @@
       font-size: 0.75rem;
       font-weight: 700;
     }
-    .end-time-highlight {
+
+.end-time-highlight {
       font-weight: 700;
       color: var(--text-main);
     }
 
-    /* 空狀態 (全場完賽) */
-    .all-done-box {
+.all-done-box {
       background: var(--panel-bg);
       border: 2px solid var(--success);
       border-radius: 16px;
@@ -467,94 +452,52 @@
       text-align: center;
       margin: 20px 0;
     }
-    .all-done-icon {
+
+.all-done-icon {
       font-size: 3rem;
       margin-bottom: 12px;
     }
-    .all-done-title {
+
+.all-done-title {
       font-size: 1.6rem;
       font-weight: 900;
       color: var(--success-text);
       margin-bottom: 6px;
     }
-    .all-done-desc {
+
+.all-done-desc {
       font-size: 1rem;
       color: var(--text-sub);
       max-width: 480px;
       margin: 0 auto;
     }
 
-    /* 尚未連上賽務系統錯誤畫面 (硬性規定 1) */
-    .disconnected-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: #01222F;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      text-align: center;
-      z-index: 1000;
-    }
-    .disconnected-icon {
-      font-size: 3.5rem;
-      margin-bottom: 14px;
-    }
-    .disconnected-title {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--danger-text);
-      margin-bottom: 8px;
-    }
-    .disconnected-desc {
-      font-size: 1rem;
-      color: var(--text-sub);
-      max-width: 440px;
-      margin-bottom: 20px;
-      line-height: 1.6;
-    }
-    .btn-retry {
-      background: var(--accent);
-      color: #141212;
-      font-weight: 800;
-      padding: 12px 32px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-      min-height: 48px;
-    }
-    .btn-retry:active {
-      background: var(--accent-hover);
-    }
-
-    /* 已完賽桌次區塊 */
-    .completed-section {
+.completed-section {
       margin-top: 24px;
       padding-top: 20px;
       border-top: 1px solid var(--panel-border);
     }
-    .completed-header {
+
+.completed-header {
       margin-bottom: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .section-title {
+
+.section-title {
       font-size: 1.1rem;
       font-weight: 700;
       color: var(--text-sub);
     }
-    .completed-grid {
+
+.completed-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 12px;
     }
-    .completed-card {
+
+.completed-card {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
       border-radius: 8px;
@@ -563,26 +506,31 @@
       flex-direction: column;
       gap: 8px;
     }
-    .completed-card-header {
+
+.completed-card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .completed-table-num {
+
+.completed-table-num {
       font-weight: 700;
       font-size: 0.95rem;
       color: var(--accent-text);
     }
-    .completed-score {
+
+.completed-score {
       font-weight: 800;
       font-size: 0.95rem;
       color: var(--success-text);
       white-space: nowrap;
     }
-    .completed-score.double-loss {
+
+.completed-score.double-loss {
       color: var(--danger-text);
     }
-    .completed-players {
+
+.completed-players {
       font-size: 0.85rem;
       color: var(--text-main);
       display: flex;
@@ -590,22 +538,22 @@
       align-items: center;
       gap: 8px;
     }
-    .completed-player-name {
+
+.completed-player-name {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       flex: 1;
     }
 
-    footer {
+footer {
       text-align: center;
       font-size: 0.75rem;
       color: var(--text-secondary);
       margin-top: 24px;
     }
 
-    /* 手機 360px 適配 */
-    @media (max-width: 480px) {
+@media (max-width: 480px) {
       .container {
         padding: 10px 12px 30px;
       }
@@ -619,7 +567,7 @@
         grid-template-columns: 1fr;
       }
     }
-  </style>
+</style>
 </head>
 <body>
   <div class="container">
@@ -738,26 +686,23 @@
     </footer>
   </div>
 
-  <!-- 尚未連上賽務系統畫面 (硬性規定 1) -->
-  <div class="disconnected-overlay" id="disconnectedScreen">
-    <div class="disconnected-icon">⚠️</div>
-    <div class="disconnected-title">尚未連上賽務系統</div>
-    <div class="disconnected-desc">
-      桌況儀表板目前無法讀取賽事即時資料。<br>請確認主機服務狀態或網路連線，連線恢復後將自動載入。
-    </div>
-    <button type="button" class="btn-retry" id="retryBtn">重新連線</button>
-  </div>
-
+  <script src="common.js"></script>
+  <script src="disconnect-overlay.js"></script>
   <script>
     const CURRENT_CONTRACT_VERSION = 16;
     let snapshotData = null;
     let rawJsonText = '';
-    let pollTimer = null;
     let clockTimer = null;
     let serverOffsetMs = 0;
-    let demoOffsetCalculated = false;
     let currentFilter = 'all';
     let lastContentChangeTime = Date.now();
+
+    const disconnectOverlay = DisconnectOverlay.create({
+      id: 'disconnectedScreen',
+      retryId: 'retryBtn',
+      desc: '桌況儀表板目前無法讀取賽事即時資料。<br>請確認主機服務狀態或網路連線，連線恢復後將自動載入。',
+      onRetry: () => fetchData()
+    });
 
     // 取得資料來源 URL (DATA-CONTRACT 1.10: 固定 ../snapshot.json，僅接受固定的 demo 參數)
     function getDataSourceUrl() {
@@ -773,89 +718,29 @@
       return '../snapshot.json';
     }
 
-    // 台灣時間 HH:MM 格式化 (Asia/Taipei)
-    function formatTimeHHMM(ms) {
-      if (!ms) return '待定';
-      try {
-        return new Intl.DateTimeFormat('zh-TW', {
-          timeZone: 'Asia/Taipei',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false
-        }).format(new Date(ms));
-      } catch (e) {
-        const d = new Date(ms);
-        const hours = d.getHours().toString().padStart(2, '0');
-        const minutes = d.getMinutes().toString().padStart(2, '0');
-        return `${hours}:${minutes}`;
+    const poller = createPoller({
+      url: getDataSourceUrl,
+      onRaw: (text, res) => {
+        updateLastSyncTime();
+      },
+      onData: (data) => {
+        disconnectOverlay.hide();
+        serverOffsetMs = poller.now() - Date.now();
+        lastContentChangeTime = Date.now();
+        snapshotData = data;
+        renderAll();
+      },
+      onError: (err) => {
+        console.warn('桌況資料讀取失敗:', err);
+        if (!snapshotData) {
+          disconnectOverlay.show();
+        }
       }
-    }
+    });
 
     // 讀取資料 (DATA-CONTRACT 1.10: 時間換算優先用 Date 標頭)
     async function fetchData() {
-      if (document.visibilityState === 'hidden') return;
-      const primaryUrl = getDataSourceUrl();
-      try {
-        const responseTime = Date.now();
-        let res = await fetch(primaryUrl, { cache: 'no-store' });
-        if (!res.ok && primaryUrl.startsWith('../')) {
-          const fallbackUrl = primaryUrl.replace(/^\.\.\//, '/');
-          res = await fetch(fallbackUrl, { cache: 'no-store' });
-        }
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
-        }
-
-        const text = await res.text();
-        const data = JSON.parse(text);
-
-        // DATA-CONTRACT 1.10: 示範模式的時間換算
-        // 示範檔的時間固定在 2026-09-26，不讀 Date 標頭，只在第一次載入時用 server_now 算一次 offset，之後不再重算
-        const isDemo = !!new URLSearchParams(window.location.search).get('demo');
-        if (isDemo) {
-          if (!demoOffsetCalculated && data.server_now) {
-            serverOffsetMs = data.server_now - responseTime;
-            demoOffsetCalculated = true;
-          }
-        } else {
-          // 正式模式：計算時間差 offset（優先 Date 標頭，次選 server_now，每次成功讀取皆重算）
-          let dateHeaderMs = null;
-          try {
-            const dateHeader = res.headers.get('Date');
-            if (dateHeader) {
-              const t = new Date(dateHeader).getTime();
-              if (!isNaN(t)) dateHeaderMs = t;
-            }
-          } catch (e) {}
-
-          if (dateHeaderMs !== null) {
-            serverOffsetMs = dateHeaderMs - responseTime;
-          } else if (data.server_now) {
-            serverOffsetMs = data.server_now - responseTime;
-          }
-        }
-
-        document.getElementById('disconnectedScreen').style.display = 'none';
-
-        // 避免無變動時重刷 DOM，維持裁判在頁面上的操作
-        if (text === rawJsonText) {
-          updateLastSyncTime();
-          updateTimeLabelsOnly();
-          return;
-        }
-
-        lastContentChangeTime = Date.now();
-        rawJsonText = text;
-        snapshotData = data;
-        renderAll();
-        checkFreshness();
-      } catch (err) {
-        checkFreshness();
-        console.warn('桌況資料讀取失敗:', err);
-        if (!snapshotData) {
-          document.getElementById('disconnectedScreen').style.display = 'flex';
-        }
-      }
+      return poller.fetchOnce();
     }
 
     // 檢查資料新鮮度 (DATA-CONTRACT 1.10: 超過90秒沒收到新內容顯示警告，示範模式不檢查)
@@ -1347,16 +1232,6 @@
       }
     }
 
-    function escapeHtml(str) {
-      if (str === null || str === undefined) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-
     window.addEventListener('DOMContentLoaded', () => {
       const filterBar = document.getElementById('filterBar');
       if (filterBar) {
@@ -1373,23 +1248,7 @@
         retryBtn.addEventListener('click', fetchData);
       }
 
-      function handleVisibilityChange() {
-        if (document.visibilityState === 'hidden') {
-          if (pollTimer) {
-            clearInterval(pollTimer);
-            pollTimer = null;
-          }
-        } else {
-          fetchData();
-          if (!pollTimer) {
-            pollTimer = setInterval(fetchData, 5000);
-          }
-        }
-      }
-      document.addEventListener('visibilitychange', handleVisibilityChange);
-
-      fetchData();
-      pollTimer = setInterval(fetchData, 5000);
+      poller.start();
       clockTimer = setInterval(() => {
         updateTimeLabelsOnly();
         checkFreshness();

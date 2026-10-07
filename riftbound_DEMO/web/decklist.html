@@ -5,41 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="data:,">
   <title>符文戰場 — 牌表登錄</title>
+  <link rel="stylesheet" href="common.css">
   <style>
-    :root {
-      --bg: #01222F;
-      --card-bg: #013951;
-      --card-border: #0A5570;
-      --text-primary: #F9F9F9;
-      --text-secondary: #9FB8C4;
-      --accent: #EF7D00;
-      --accent-hover: #C86800;
-      --accent-text: #FF941E;
-      --success-bg: #0A3F33;
-      --success-border: #1F7A55;
-      --success-text: #2FB574;
-      --danger-bg: #4A1F1C;
-      --danger-border: #A8443C;
-      --danger-text: #ED807A;
-      --warning-bg: #3E3312;
-      --warning-border: #8A6D1F;
-      --warning-text: #F2C94C;
-      --chip-bg: #0A4A63;
-      --input-bg: #011A24;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
+html, body {
       -webkit-text-size-adjust: 100%;
     }
 
-    body {
+body {
       background-color: var(--bg);
       color: var(--text-primary);
       font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
@@ -51,11 +23,11 @@
       overflow-x: hidden;
     }
 
-    input, select, textarea {
+input, select, textarea {
       font-size: 1rem;
     }
 
-    .container {
+.container {
       width: 100%;
       max-width: 540px;
       margin: 0 auto;
@@ -63,12 +35,12 @@
       flex: 1;
     }
 
-    header {
+header {
       margin-bottom: 16px;
       text-align: center;
     }
 
-    .page-title {
+.page-title {
       font-size: 1.4rem;
       font-weight: 800;
       letter-spacing: -0.5px;
@@ -76,12 +48,12 @@
       margin-bottom: 4px;
     }
 
-    .event-name {
+.event-name {
       font-size: 0.9rem;
       color: var(--text-secondary);
     }
 
-    .banner {
+.banner {
       padding: 8px 12px;
       border-radius: 8px;
       font-size: 0.85rem;
@@ -90,13 +62,13 @@
       text-align: center;
     }
 
-    .contract-warning {
+.contract-warning {
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
     }
 
-    .card {
+.card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
@@ -105,7 +77,7 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
-    .card-title {
+.card-title {
       font-size: 1.05rem;
       font-weight: 700;
       margin-bottom: 10px;
@@ -115,15 +87,14 @@
       gap: 8px;
     }
 
-    .card-desc {
+.card-desc {
       font-size: 0.85rem;
       color: var(--text-secondary);
       margin-bottom: 14px;
       line-height: 1.5;
     }
 
-    /* 格式範例區塊 */
-    .example-box {
+.example-box {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
       border-radius: 8px;
@@ -133,13 +104,13 @@
       line-height: 1.5;
     }
 
-    .example-title {
+.example-title {
       font-weight: 700;
       color: var(--accent-text);
       margin-bottom: 6px;
     }
 
-    .example-code {
+.example-code {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       background: rgba(1, 26, 36, 0.8);
       padding: 8px 10px;
@@ -150,11 +121,11 @@
       white-space: pre-wrap;
     }
 
-    .form-group {
+.form-group {
       margin-bottom: 14px;
     }
 
-    .form-label {
+.form-label {
       display: block;
       font-size: 0.85rem;
       font-weight: 700;
@@ -162,13 +133,13 @@
       margin-bottom: 6px;
     }
 
-    .form-hint {
+.form-hint {
       font-size: 0.75rem;
       color: var(--text-secondary);
       margin-top: 4px;
     }
 
-    .input-text {
+.input-text {
       width: 100%;
       height: 46px;
       background: var(--input-bg);
@@ -181,11 +152,11 @@
       transition: border-color 0.2s;
     }
 
-    .input-text:focus {
+.input-text:focus {
       border-color: var(--accent);
     }
 
-    .textarea-deck {
+.textarea-deck {
       width: 100%;
       min-height: 220px;
       background: var(--input-bg);
@@ -201,11 +172,11 @@
       transition: border-color 0.2s;
     }
 
-    .textarea-deck:focus {
+.textarea-deck:focus {
       border-color: var(--accent);
     }
 
-    .count-indicator {
+.count-indicator {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -215,7 +186,7 @@
       color: var(--warning-text);
     }
 
-    .btn {
+.btn {
       width: 100%;
       height: 48px;
       border: none;
@@ -230,16 +201,16 @@
       min-height: 48px;
     }
 
-    .btn-primary {
+.btn-primary {
       background: var(--accent);
       color: #141212;
     }
 
-    .btn-primary:active {
+.btn-primary:active {
       background: var(--accent-hover);
     }
 
-    .msg-box {
+.msg-box {
       border-radius: 8px;
       padding: 12px 14px;
       font-size: 0.88rem;
@@ -249,20 +220,19 @@
       word-break: break-all;
     }
 
-    .msg-box.error {
+.msg-box.error {
       background: var(--danger-bg);
       border: 1px solid var(--danger-border);
       color: var(--danger-text);
     }
 
-    .msg-box.success {
+.msg-box.success {
       background: var(--success-bg);
       border: 1px solid var(--success-border);
       color: var(--success-text);
     }
 
-    /* 登錄成功鎖定卡片 */
-    .done-card {
+.done-card {
       background: var(--success-bg);
       border: 1.5px solid var(--success-border);
       border-radius: 12px;
@@ -271,8 +241,7 @@
       text-align: center;
     }
 
-    /* 送出前確認彈窗 (360x640 不用捲動就看得到) */
-    .confirm-modal-overlay {
+.confirm-modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
@@ -285,7 +254,8 @@
       z-index: 9999;
       padding: 16px;
     }
-    .confirm-modal-box {
+
+.confirm-modal-box {
       background: var(--card-bg);
       border: 2px solid var(--accent);
       border-radius: 12px;
@@ -298,31 +268,30 @@
       overflow-y: auto;
     }
 
-    .nav-links {
+.nav-links {
       text-align: center;
       margin-top: 20px;
       font-size: 0.85rem;
     }
 
-    .nav-link {
+.nav-link {
       color: var(--accent-text);
       text-decoration: none;
       margin: 0 6px;
     }
 
-    .nav-link:hover {
+.nav-link:hover {
       text-decoration: underline;
     }
 
-    footer {
+footer {
       text-align: center;
       font-size: 0.75rem;
       color: var(--text-secondary);
       margin-top: 24px;
     }
 
-    /* 尚未連上賽務系統覆蓋層 */
-    .disconnected-overlay {
+.disconnected-overlay {
       position: fixed;
       top: 0;
       left: 0;
@@ -337,24 +306,27 @@
       text-align: center;
       z-index: 1000;
     }
-    .disconnected-icon {
+
+.disconnected-icon {
       font-size: 3rem;
       margin-bottom: 12px;
     }
-    .disconnected-title {
+
+.disconnected-title {
       font-size: 1.4rem;
       font-weight: 800;
       color: var(--danger-text);
       margin-bottom: 8px;
     }
-    .disconnected-desc {
+
+.disconnected-desc {
       font-size: 0.95rem;
       color: var(--text-secondary);
       max-width: 360px;
       margin-bottom: 20px;
       line-height: 1.6;
     }
-  </style>
+</style>
 </head>
 <body>
   <div class="container">
@@ -374,10 +346,16 @@
     <!-- 登錄成功與鎖定畫面 (自動測試檢查 id="decklistDone") -->
     <section id="decklistDone" class="done-card" style="display: none;"></section>
 
+    <!-- 截止時間提示 -->
+    <div id="decklistDeadlineNotice" class="banner" style="display: none; background: rgba(56, 189, 248, 0.15); border: 1px solid #0284c7; color: #38bdf8; font-weight: 700; margin-bottom: 12px;"></div>
+
     <!-- 登錄輸入區塊 -->
     <section class="card" id="decklistForm">
       <div class="card-title">選手牌表登錄</div>
       <div class="card-desc">依賽事規則，構築賽必須在第一輪開始前登錄牌表。送出後將立即鎖定。</div>
+
+      <!-- 重新輸入提示（按「修改牌表」後顯示） -->
+      <div id="decklistReinputHint" class="form-hint" style="display: none; color: var(--warning-text); font-weight: 700; margin-bottom: 12px; padding: 8px 12px; background: rgba(242, 201, 76, 0.1); border: 1px solid var(--warning-border); border-radius: 6px;">要整份重貼，系統不會把舊牌表帶回來</div>
 
       <!-- 登錄模式切換鈕 (PROJECT.md 第三十一輪, review.py [35]) -->
       <div style="display: flex; gap: 8px; margin-bottom: 14px;">
@@ -507,6 +485,8 @@
     <button type="button" class="btn btn-primary" id="retryBtn" style="max-width: 200px;">重新連線</button>
   </div>
 
+  <script src="common.js"></script>
+  <script src="player-auth.js"></script>
   <script>
     const CURRENT_CONTRACT_VERSION = 16;
     let snapshotData = null;
@@ -532,34 +512,202 @@
       return base + endpoint;
     }
 
+    let playerAuth = null;
+    let decklistLockCountdown = null;
+
+    playerAuth = PlayerAuth.create({
+      post: async (path, body) => {
+        const url = getApiUrl(path);
+        let res;
+        try {
+          res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+        } catch (networkErr) {
+          throw new Error('沒有送出：連不上主機，請確認網路後再按一次');
+        }
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data || !data.ok) {
+          const msg = (data && data.message) ? data.message : `操作失敗 (HTTP ${res.status})`;
+          const err = new Error(msg);
+          err.status = res.status;
+          err.code = data ? data.error : null;
+          err.retryAfterSec = data ? (data.retry_after_sec || null) : null;
+          err.data = data;
+          throw err;
+        }
+        return data;
+      },
+      onLogin: (me, { auto }) => {
+        const auth = playerAuth.get();
+        const playerId = auth ? auth.player_id : (me.player && me.player.id);
+        const pin = auth ? auth.pin : '';
+        applyAutoAuth(playerId, pin, me);
+        if (me.decklist) {
+          const dl = me.decklist;
+          currentDecklist = dl;
+          updateDeadlineNotice();
+
+          if (dl.submitted) {
+            renderDoneCard(dl, playerId, dl.summary);
+            updateDeadlineNotice();
+          } else if (dl.can_submit === false && !dl.submitted) {
+            const problemsEl = document.getElementById('decklistProblems');
+            if (problemsEl) {
+              const msg = dl.message || '開賽後不可登錄牌表';
+              problemsEl.innerHTML = `<div style="font-weight: 700; margin-bottom: 4px;">${escapeHtml(msg)}</div><div>牌表要在開賽前交，請找工作人員</div>`;
+              problemsEl.style.display = 'block';
+            }
+          }
+        }
+      },
+      onLogout: () => {
+        currentDecklist = null;
+        updateDeadlineNotice();
+        const idInput = document.getElementById('decklistId');
+        const pinInput = document.getElementById('decklistPin');
+        if (idInput) idInput.value = '';
+        if (pinInput) pinInput.value = '';
+        const textInput = document.getElementById('decklistText');
+        if (textInput) textInput.value = '';
+        const codeInput = document.getElementById('decklistCode');
+        if (codeInput) codeInput.value = '';
+        updateLiveCount();
+        const noteEl = document.getElementById('playerAuthNote');
+        if (noteEl) noteEl.style.display = 'none';
+        const textEl = document.getElementById('playerAuthText');
+        if (textEl) textEl.textContent = '';
+        const doneEl = document.getElementById('decklistDone');
+        if (doneEl) {
+          doneEl.style.display = 'none';
+          doneEl.innerHTML = '';
+        }
+        const formEl = document.getElementById('decklistForm');
+        if (formEl) formEl.style.display = 'block';
+        const reinputHint = document.getElementById('decklistReinputHint');
+        if (reinputHint) reinputHint.style.display = 'none';
+        const problemsEl = document.getElementById('decklistProblems');
+        if (problemsEl) {
+          problemsEl.style.display = 'none';
+          problemsEl.innerHTML = '';
+        }
+      },
+      now: getServerNow
+    });
+
     function updateNavLinks() {
       const demoParam = new URLSearchParams(window.location.search).get('demo');
       const suffix = demoParam ? `?demo=${encodeURIComponent(demoParam)}` : '';
+      const isBracket = Boolean(snapshotData && snapshotData.kind === 'bracket');
       const cLink = document.getElementById('checkinLink');
       const fLink = document.getElementById('findTableLink');
-      if (cLink) cLink.href = 'checkin.html' + suffix;
-      if (fLink) fLink.href = 'find-table.html' + suffix;
+      if (cLink) cLink.href = (isBracket ? 'elim-checkin.html' : 'checkin.html') + suffix;
+      if (fLink) fLink.href = (isBracket ? 'elim-player.html' : 'find-table.html') + suffix;
+    }
+
+    let currentDecklist = null;
+
+    const poller = createPoller({
+      url: getDataSourceUrl,
+      pauseInBackground: true,
+      onData: (data) => {
+        snapshotData = data;
+        window.snapshotData = data;
+        if (snapshotData && snapshotData.event && snapshotData.event.name) {
+          document.getElementById('eventName').textContent = snapshotData.event.name;
+        }
+        renderVersionWarning();
+        updateNavLinks();
+        document.getElementById('disconnectedScreen').style.display = 'none';
+
+        if (currentDecklist && data) {
+          const snapDeadline = (data.event && data.event.checkin && data.event.checkin.decklist_deadline_at !== undefined)
+            ? data.event.checkin.decklist_deadline_at
+            : (data.checkin && data.checkin.decklist_deadline_at !== undefined ? data.checkin.decklist_deadline_at : undefined);
+          if (snapDeadline !== undefined) {
+            currentDecklist.deadline_at = snapDeadline;
+          }
+        }
+        updateDeadlineNotice();
+      },
+      onError: () => {
+        // snapshot 失敗不阻擋使用者提交表單
+        document.getElementById('disconnectedScreen').style.display = 'none';
+      }
+    });
+
+    function updateServerOffsetFromResponse(res) {
+      if (!res || !res.headers) return;
+      const isDemo = window.location.search.includes('demo=');
+      if (isDemo) return;
+      try {
+        const dateHeader = res.headers.get('Date');
+        if (dateHeader) {
+          const t = new Date(dateHeader).getTime();
+          if (!isNaN(t)) {
+            const off = t - Date.now();
+            if (poller) poller.serverOffsetMs = off;
+          }
+        }
+      } catch (e) {}
+    }
+
+    function getServerNow() {
+      if (poller && typeof poller.now === 'function') {
+        return poller.now();
+      }
+      return Date.now();
+    }
+
+    function getDeadlineNoticeText(dl) {
+      if (!dl || !dl.deadline_at) return '';
+      const isPast = (getServerNow() >= dl.deadline_at) || (Boolean(dl.locked) && dl.lock === 'deadline');
+      const timeStr = formatTimeHHMM(dl.deadline_at);
+      return isPast ? `牌表已於 ${timeStr} 截止修改` : `牌表可以修改到 ${timeStr}`;
+    }
+
+    function updateDeadlineNotice() {
+      const noticeEl = document.getElementById('decklistDeadlineNotice');
+      if (!currentDecklist || !currentDecklist.deadline_at) {
+        if (noticeEl) {
+          noticeEl.style.display = 'none';
+          noticeEl.textContent = '';
+        }
+        const doneNoteEl = document.getElementById('decklistDoneDeadlineNote');
+        if (doneNoteEl) {
+          doneNoteEl.textContent = '';
+          doneNoteEl.style.display = 'none';
+        }
+        return;
+      }
+
+      const text = getDeadlineNoticeText(currentDecklist);
+      if (noticeEl) {
+        noticeEl.textContent = text;
+        noticeEl.style.display = 'block';
+      }
+      const doneNoteEl = document.getElementById('decklistDoneDeadlineNote');
+      if (doneNoteEl) {
+        doneNoteEl.textContent = text;
+        doneNoteEl.style.display = 'block';
+      }
     }
 
     async function fetchData() {
-      const primaryUrl = getDataSourceUrl();
-      try {
-        let res = await fetch(primaryUrl, { cache: 'no-store' });
-        if (!res.ok && primaryUrl.startsWith('../')) {
-          res = await fetch(primaryUrl.replace(/^\.\.\//, '/'), { cache: 'no-store' });
+      const data = await poller.fetchOnce();
+      if (data) {
+        snapshotData = data;
+        window.snapshotData = data;
+        if (snapshotData && snapshotData.event && snapshotData.event.name) {
+          document.getElementById('eventName').textContent = snapshotData.event.name;
         }
-        if (res.ok) {
-          snapshotData = await res.json();
-          window.snapshotData = snapshotData;
-          if (snapshotData && snapshotData.event && snapshotData.event.name) {
-            document.getElementById('eventName').textContent = snapshotData.event.name;
-          }
-          renderVersionWarning();
-        }
+        renderVersionWarning();
+        updateNavLinks();
         document.getElementById('disconnectedScreen').style.display = 'none';
-      } catch (e) {
-        // snapshot 失敗不阻擋使用者提交表單
       }
+      return data;
     }
 
     function renderVersionWarning() {
@@ -570,16 +718,6 @@
       } else {
         warnEl.style.display = 'none';
       }
-    }
-
-    function escapeHtml(str) {
-      if (str === null || str === undefined) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
     }
 
     // 切換登錄模式 (PROJECT.md 第三十一輪, review.py [35])
@@ -692,6 +830,7 @@
         submitBtn.disabled = true;
         submitBtn.textContent = '解析預覽中…';
 
+        let isLocked = false;
         try {
           const url = getApiUrl('/api/player/decklist');
           let res;
@@ -713,14 +852,47 @@
           const data = await res.json().catch(() => null);
 
           if (!res.ok || !data || !data.ok) {
-            let html = '';
-            if (data && data.message) {
-              html += `<div style="font-weight: 700; margin-bottom: 4px;">${escapeHtml(data.message)}</div>`;
+            const retrySec = Number(data && (data.retry_after_sec || (data.data && data.data.retry_after_sec)) || 0);
+            if (res.status === 423 && retrySec > 0) {
+              isLocked = true;
+              submitBtn.disabled = true;
+              submitBtn.textContent = origText;
+              if (decklistLockCountdown) decklistLockCountdown.stop();
+              decklistLockCountdown = PlayerAuth.startCountdown(
+                retrySec,
+                (sec) => {
+                  problemsEl.textContent = PlayerAuth.lockText(sec);
+                  problemsEl.style.display = 'block';
+                },
+                () => {
+                  const btn = document.getElementById('decklistSubmit');
+                  if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = origText;
+                  }
+                  problemsEl.textContent = '鎖定已結束，請重新嘗試';
+                  problemsEl.style.display = 'block';
+                }
+              );
+              return;
             }
-            if (data && data.problems && Array.isArray(data.problems) && data.problems.length > 0) {
-              html += '<ul style="margin: 0; padding-left: 20px;">' +
-                data.problems.map(p => `<li>${escapeHtml(p)}</li>`).join('') +
-                '</ul>';
+            let html = '';
+            if (res.status === 409) {
+              const msg = (data && data.message) ? escapeHtml(data.message) : (data && data.error === 'already_final' ? '牌表已鎖定不可更改' : '開賽後不可登錄牌表');
+              if (data && data.error === 'not_allowed') {
+                html = `<div style="font-weight: 700; margin-bottom: 4px;">${msg}</div><div>牌表要在開賽前交，請找工作人員</div>`;
+              } else {
+                html = `<div style="font-weight: 700; margin-bottom: 4px;">${msg}</div>`;
+              }
+            } else {
+              if (data && data.message) {
+                html += `<div style="font-weight: 700; margin-bottom: 4px;">${escapeHtml(data.message)}</div>`;
+              }
+              if (data && data.problems && Array.isArray(data.problems) && data.problems.length > 0) {
+                html += '<ul style="margin: 0; padding-left: 20px;">' +
+                  data.problems.map(p => `<li>${escapeHtml(p)}</li>`).join('') +
+                  '</ul>';
+              }
             }
             problemsEl.innerHTML = html || (data && data.message) || `牌表送出失敗 (HTTP ${res.status})`;
             problemsEl.style.display = 'block';
@@ -796,8 +968,10 @@
           problemsEl.textContent = msg;
           problemsEl.style.display = 'block';
         } finally {
-          submitBtn.disabled = false;
-          submitBtn.textContent = origText;
+          if (!isLocked && submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = origText;
+          }
         }
 
       } else {
@@ -852,6 +1026,11 @@
         handleDecklistCancel();
         problemsEl.textContent = '請輸入選手編號與個人 PIN 碼';
         problemsEl.style.display = 'block';
+        const submitBtn = document.getElementById('decklistSubmit');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = '送出牌表（送出即鎖定）';
+        }
         return;
       }
 
@@ -863,6 +1042,11 @@
           handleDecklistCancel();
           problemsEl.textContent = '請貼上牌組碼';
           problemsEl.style.display = 'block';
+          const submitBtn = document.getElementById('decklistSubmit');
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '送出牌表（送出即鎖定）';
+          }
           return;
         }
         payload = {
@@ -877,6 +1061,11 @@
           handleDecklistCancel();
           problemsEl.textContent = '請貼上牌表內容';
           problemsEl.style.display = 'block';
+          const submitBtn = document.getElementById('decklistSubmit');
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '送出牌表（送出即鎖定）';
+          }
           return;
         }
         payload = {
@@ -911,7 +1100,40 @@
         handleDecklistCancel();
 
         if (!res.ok || !data || !data.ok) {
-          if (data && data.problems && Array.isArray(data.problems) && data.problems.length > 0) {
+          const retrySec = Number(data && (data.retry_after_sec || (data.data && data.data.retry_after_sec)) || 0);
+          if (res.status === 423 && retrySec > 0) {
+            const submitBtn = document.getElementById('decklistSubmit');
+            if (submitBtn) {
+              submitBtn.disabled = true;
+              submitBtn.textContent = '送出牌表（送出即鎖定）';
+            }
+            if (decklistLockCountdown) decklistLockCountdown.stop();
+            decklistLockCountdown = PlayerAuth.startCountdown(
+              retrySec,
+              (sec) => {
+                problemsEl.textContent = PlayerAuth.lockText(sec);
+                problemsEl.style.display = 'block';
+              },
+              () => {
+                const btn = document.getElementById('decklistSubmit');
+                if (btn) {
+                  btn.disabled = false;
+                  btn.textContent = '送出牌表（送出即鎖定）';
+                }
+                problemsEl.textContent = '鎖定已結束，請重新嘗試';
+                problemsEl.style.display = 'block';
+              }
+            );
+            return;
+          }
+          if (res.status === 409) {
+            const msg = (data && data.message) ? escapeHtml(data.message) : (data && data.error === 'already_final' ? '牌表已鎖定不可更改' : '開賽後不可登錄牌表');
+            if (data && data.error === 'not_allowed') {
+              problemsEl.innerHTML = `<div style="font-weight: 700; margin-bottom: 4px;">${msg}</div><div>牌表要在開賽前交，請找工作人員</div>`;
+            } else {
+              problemsEl.innerHTML = `<div style="font-weight: 700; margin-bottom: 4px;">${msg}</div>`;
+            }
+          } else if (data && data.problems && Array.isArray(data.problems) && data.problems.length > 0) {
             let html = '';
             if (data.message) {
               html += `<div style="font-weight: 700; margin-bottom: 4px;">${escapeHtml(data.message)}</div>`;
@@ -925,58 +1147,28 @@
             problemsEl.textContent = errorMsg;
           }
           problemsEl.style.display = 'block';
+          const submitBtn = document.getElementById('decklistSubmit');
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '送出牌表（送出即鎖定）';
+          }
           return;
         }
 
-        // 送出成功：記住編號與 PIN（示範模式不寫入，PROJECT.md 第三十輪）
-        const isDemo = !!new URLSearchParams(window.location.search).get('demo');
-        if (!isDemo) {
-          try {
-            localStorage.setItem('riftbound_player_auth', JSON.stringify({
-              player_id: playerId,
-              pin: pin
-            }));
-          } catch (e) {}
+        updateServerOffsetFromResponse(res);
+
+        // 送出成功：記住編號與 PIN
+        if (playerAuth) {
+          playerAuth.login(playerId, pin).catch((authErr) => {
+            console.error('牌表送出後登入同步失敗:', authErr);
+          });
         }
 
         // 登錄完成畫面
-        const doneEl = document.getElementById('decklistDone');
         const summary = (data.decklist && data.decklist.summary) || {};
-        let mainCount, sideCount;
-        if (currentDeckMode === 'code') {
-          mainCount = typeof summary.main_count === 'number' ? summary.main_count : 0;
-          sideCount = typeof summary.sideboard_count === 'number' ? summary.sideboard_count : 0;
-        } else {
-          const parsed = calculateDeckCounts(payload.text);
-          mainCount = typeof summary.main_count === 'number' ? summary.main_count : parsed.main;
-          sideCount = typeof summary.sideboard_count === 'number' ? summary.sideboard_count : parsed.side;
-        }
-        const distinct = summary.distinct ? `（${summary.distinct} 種卡片）` : '';
-
-        let breakdownText = '';
-        if (summary.breakdown && typeof summary.breakdown === 'object') {
-          const b = summary.breakdown;
-          const bdParts = [];
-          if (typeof b.main === 'number') bdParts.push(`主牌組 ${b.main}`);
-          if (typeof b.rune === 'number') bdParts.push(`符文 ${b.rune}`);
-          if (typeof b.battlefield === 'number') bdParts.push(`戰場 ${b.battlefield}`);
-          if (typeof b.legend === 'number') bdParts.push(`傳奇 ${b.legend}`);
-          if (typeof b.unknown === 'number' && b.unknown > 0) bdParts.push(`未知 ${b.unknown}`);
-          if (bdParts.length > 0) {
-            breakdownText = ` · ${bdParts.join('・')}`;
-          }
-        }
-
-        doneEl.innerHTML = `
-          <div style="font-size: 1.3rem; font-weight: 800; color: var(--success-text); margin-bottom: 6px;">✅ 牌表登錄完成</div>
-          <div style="font-size: 1rem; font-weight: 700; color: var(--danger-text); margin-bottom: 12px;">🔒 已鎖定，要更正請找裁判</div>
-          <div style="background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 10px; text-align: left; font-size: 0.9rem;">
-            <div><strong>選手編號：</strong>${escapeHtml(playerId)}</div>
-            <div style="margin-top: 4px;"><strong>張數統計：</strong>主牌組 ${mainCount} 張、備牌 ${sideCount} 張 ${distinct}${breakdownText}</div>
-            <div style="margin-top: 4px; font-size: 0.8rem; color: var(--text-secondary);">依賽事規則 401.3，牌表送出後不可更改。若需更正請至裁判桌由裁判解鎖。</div>
-          </div>
-        `;
-        doneEl.style.display = 'block';
+        currentDecklist = data.decklist;
+        renderDoneCard(data.decklist, playerId, summary, payload.text);
+        updateDeadlineNotice();
 
       } catch (err) {
         handleDecklistCancel();
@@ -985,6 +1177,11 @@
           : '沒有送出：連不上主機，請確認網路後再按一次';
         problemsEl.textContent = msg;
         problemsEl.style.display = 'block';
+        const submitBtn = document.getElementById('decklistSubmit');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = '送出牌表（送出即鎖定）';
+        }
       } finally {
         isSubmittingDecklist = false;
         if (confirmBtn) {
@@ -992,6 +1189,109 @@
           confirmBtn.textContent = origText;
         }
       }
+    }
+
+    function renderDoneCard(decklist, playerId, summary, payloadText) {
+      const doneEl = document.getElementById('decklistDone');
+      const formEl = document.getElementById('decklistForm');
+      if (!doneEl) return;
+      decklist = decklist || {};
+      summary = summary || decklist.summary || {};
+
+      let mainCount, sideCount;
+      if (currentDeckMode === 'code') {
+        mainCount = typeof summary.main_count === 'number' ? summary.main_count : 0;
+        sideCount = typeof summary.sideboard_count === 'number' ? summary.sideboard_count : 0;
+      } else {
+        const parsed = payloadText ? calculateDeckCounts(payloadText) : { main: 0, side: 0 };
+        mainCount = typeof summary.main_count === 'number' ? summary.main_count : parsed.main;
+        sideCount = typeof summary.sideboard_count === 'number' ? summary.sideboard_count : parsed.side;
+      }
+      const distinct = summary.distinct ? `（${summary.distinct} 種卡片）` : '';
+
+      let breakdownText = '';
+      if (summary.breakdown && typeof summary.breakdown === 'object') {
+        const b = summary.breakdown;
+        const bdParts = [];
+        if (typeof b.main === 'number') bdParts.push(`主牌組 ${b.main}`);
+        if (typeof b.rune === 'number') bdParts.push(`符文 ${b.rune}`);
+        if (typeof b.battlefield === 'number') bdParts.push(`戰場 ${b.battlefield}`);
+        if (typeof b.legend === 'number') bdParts.push(`傳奇 ${b.legend}`);
+        if (typeof b.unknown === 'number' && b.unknown > 0) bdParts.push(`未知 ${b.unknown}`);
+        if (bdParts.length > 0) {
+          breakdownText = ` · ${bdParts.join('・')}`;
+        }
+      }
+
+      const lockMode = decklist.lock;
+      const isLocked = Boolean(decklist.locked);
+
+      // locked 為 true 且 lock 是 'deadline'（過了截止時間）：寫「牌表修改時間已經截止，要更正請找裁判」，不要出現輸入框
+      if (isLocked && lockMode === 'deadline') {
+        if (formEl) formEl.style.display = 'none';
+        let statsHtml = '';
+        if (summary.main_count !== undefined || payloadText) {
+          statsHtml = `<div style="margin-top: 4px;"><strong>張數統計：</strong>主牌組 ${mainCount} 張、備牌 ${sideCount} 張 ${distinct}${breakdownText}</div>`;
+        }
+        doneEl.innerHTML = `
+          <div style="font-size: 1.15rem; font-weight: 800; color: var(--danger-text); margin-bottom: 6px;">牌表修改時間已經截止，要更正請找裁判</div>
+          <div style="background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 10px; text-align: left; font-size: 0.9rem;">
+            <div><strong>選手編號：</strong>${escapeHtml(playerId)}</div>
+            ${statsHtml}
+          </div>
+        `;
+        doneEl.style.display = 'block';
+        return;
+      }
+
+      // me.decklist.lock === 'deadline' 且 locked 為 false：送出成功後的畫面（#decklistDone）寫「已送出，截止前還可以修改」，並提供按鈕「修改牌表」（固定 id #decklistEdit），按下去回到輸入畫面（整份重貼，旁邊寫一句「要整份重貼，系統不會把舊牌表帶回來」）。送出前的確認框、dry_run 預覽照舊。
+      if (lockMode === 'deadline' && !isLocked) {
+        if (formEl) formEl.style.display = 'none';
+        let deadlineNote = '';
+        if (decklist.deadline_at) {
+          deadlineNote = `<div id="decklistDoneDeadlineNote" style="margin-top: 4px; font-size: 0.85rem; color: #38bdf8;">${getDeadlineNoticeText(decklist)}</div>`;
+        }
+        doneEl.innerHTML = `
+          <div style="font-size: 1.3rem; font-weight: 800; color: var(--success-text); margin-bottom: 6px;">✅ 牌表登錄完成</div>
+          <div style="font-size: 1rem; font-weight: 700; color: var(--accent-text); margin-bottom: 12px;">已送出，截止前還可以修改</div>
+          <div style="background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 10px; text-align: left; font-size: 0.9rem;">
+            <div><strong>選手編號：</strong>${escapeHtml(playerId)}</div>
+            <div style="margin-top: 4px;"><strong>張數統計：</strong>主牌組 ${mainCount} 張、備牌 ${sideCount} 張 ${distinct}${breakdownText}</div>
+            ${deadlineNote}
+          </div>
+          <button type="button" id="decklistEdit" class="btn btn-secondary" style="margin-top: 10px; width: 100%;">修改牌表</button>
+        `;
+        doneEl.style.display = 'block';
+
+        const editBtn = document.getElementById('decklistEdit');
+        if (editBtn) {
+          editBtn.addEventListener('click', () => {
+            doneEl.style.display = 'none';
+            if (formEl) formEl.style.display = 'block';
+            const textInput = document.getElementById('decklistText');
+            if (textInput) textInput.value = '';
+            const codeInput = document.getElementById('decklistCode');
+            if (codeInput) codeInput.value = '';
+            updateLiveCount();
+            const reinputHint = document.getElementById('decklistReinputHint');
+            if (reinputHint) reinputHint.style.display = 'block';
+            if (formEl) formEl.scrollIntoView({ behavior: 'smooth' });
+          });
+        }
+        return;
+      }
+
+      // lock 是 'submit' 或沒有 lock 欄位：照舊寫「已鎖定，要更正請找裁判」，一個字都不要動。
+      doneEl.innerHTML = `
+        <div style="font-size: 1.3rem; font-weight: 800; color: var(--success-text); margin-bottom: 6px;">✅ 牌表登錄完成</div>
+        <div style="font-size: 1rem; font-weight: 700; color: var(--danger-text); margin-bottom: 12px;">🔒 已鎖定，要更正請找裁判</div>
+        <div style="background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 10px; text-align: left; font-size: 0.9rem;">
+          <div><strong>選手編號：</strong>${escapeHtml(playerId)}</div>
+          <div style="margin-top: 4px;"><strong>張數統計：</strong>主牌組 ${mainCount} 張、備牌 ${sideCount} 張 ${distinct}${breakdownText}</div>
+          <div style="margin-top: 4px; font-size: 0.8rem; color: var(--text-secondary);">依賽事規則 401.3，牌表送出後不可更改。若需更正請至裁判桌由裁判解鎖。</div>
+        </div>
+      `;
+      doneEl.style.display = 'block';
     }
 
     let autoLoginChecked = false;
@@ -1014,60 +1314,14 @@
     }
 
     function handlePlayerSwitch() {
-      try {
-        localStorage.removeItem('riftbound_player_auth');
-      } catch (e) {}
-      const idInput = document.getElementById('decklistId');
-      const pinInput = document.getElementById('decklistPin');
-      if (idInput) idInput.value = '';
-      if (pinInput) pinInput.value = '';
-      const noteEl = document.getElementById('playerAuthNote');
-      if (noteEl) noteEl.style.display = 'none';
-      const textEl = document.getElementById('playerAuthText');
-      if (textEl) textEl.textContent = '';
+      if (playerAuth) {
+        playerAuth.logout();
+      }
     }
 
     async function checkAutoLogin() {
-      if (autoLoginChecked) return;
-      autoLoginChecked = true;
-
-      const isDemo = !!new URLSearchParams(window.location.search).get('demo');
-      if (isDemo) return;
-
-      let savedAuth = null;
-      try {
-        const str = localStorage.getItem('riftbound_player_auth');
-        if (str) savedAuth = JSON.parse(str);
-      } catch (e) {}
-
-      if (!savedAuth || !savedAuth.player_id || !savedAuth.pin) {
-        return;
-      }
-
-      try {
-        const apiUrl = getApiUrl('/api/player/me');
-        const res = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            player_id: savedAuth.player_id,
-            pin: savedAuth.pin
-          })
-        });
-
-        if (res.status === 401) {
-          try {
-            localStorage.removeItem('riftbound_player_auth');
-          } catch (e) {}
-          return;
-        }
-
-        const data = await res.json().catch(() => null);
-        if (res.ok && data && data.ok) {
-          applyAutoAuth(savedAuth.player_id, savedAuth.pin, data);
-        }
-      } catch (err) {
-        console.warn('自動驗證失敗:', err);
+      if (playerAuth) {
+        await playerAuth.restore();
       }
     }
 
@@ -1105,6 +1359,8 @@
         });
       }
 
+      poller.start();
+      setInterval(updateDeadlineNotice, 1000);
       fetchData().finally(() => {
         checkAutoLogin();
       });

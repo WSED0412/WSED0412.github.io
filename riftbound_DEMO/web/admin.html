@@ -5,56 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="data:,">
   <title>符文戰場 — 主辦控制台</title>
+  <link rel="stylesheet" href="common.css">
   <style>
-    :root {
-      --bg: #01222F;
-      --card-bg: #013951;
-      --card-border: #0A5570;
-      --text-primary: #F9F9F9;
-      --text-secondary: #9FB8C4;
-      --accent: #EF7D00;
-      --accent-hover: #C86800;
-      --accent-text: #FF941E;
-      --warning-bg: #3E3312;
-      --warning-border: #8A6D1F;
-      --warning-text: #F2C94C;
-      --danger-bg: #4A1F1C;
-      --danger-border: #A8443C;
-      --danger-text: #ED807A;
-      --success-bg: #0A3F33;
-      --success-border: #1F7A55;
-      --success-text: #2FB574;
-      --chip-bg: #0A4A63;
-      --input-bg: #011A24;
-      --info-bg: #1B2F4A;
-      --info-border: #2F5A80;
-      --info-text: #4FA8D8;
-      --judge-bg: #2E2140;
-      --judge-border: #553C77;
-      --judge-text: #B38FE0;
-
-      /* Aliases */
-      --panel-bg: var(--card-bg);
-      --panel-border: var(--card-border);
-      --text-main: var(--text-primary);
-      --text-sub: var(--text-secondary);
-      --warning: var(--warning-text);
-      --danger: var(--danger-text);
-      --success: var(--success-text);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
+html, body {
       -webkit-text-size-adjust: 100%;
     }
 
-    body {
+body {
       background-color: var(--bg);
       color: var(--text-main);
       font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
@@ -65,19 +22,18 @@
       width: 100%;
     }
 
-    input, select, textarea {
+input, select, textarea {
       font-size: 1rem;
     }
 
-    .container {
+.container {
       width: 100%;
       max-width: 1000px;
       margin: 0 auto;
       padding: 14px 16px 60px;
     }
 
-    /* 頂部標題列 */
-    header {
+header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -88,20 +44,20 @@
       gap: 10px;
     }
 
-    .header-left {
+.header-left {
       display: flex;
       align-items: center;
       gap: 10px;
       flex-wrap: wrap;
     }
 
-    .page-title {
+.page-title {
       font-size: clamp(1.2rem, 2.5vw, 1.5rem);
       font-weight: 800;
       color: var(--text-main);
     }
 
-    .admin-badge {
+.admin-badge {
       font-size: 0.75rem;
       background: rgba(239, 125, 0, 0.15);
       color: var(--accent-text);
@@ -111,23 +67,23 @@
       font-weight: 700;
     }
 
-    .header-right {
+.header-right {
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    .admin-user-info {
+.admin-user-info {
       font-size: 0.85rem;
       color: var(--text-sub);
     }
 
-    .admin-user-name {
+.admin-user-name {
       color: var(--accent-text);
       font-weight: 700;
     }
 
-    .nav-link {
+.nav-link {
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -145,13 +101,13 @@
       box-sizing: border-box;
       transition: background 0.15s ease;
     }
-    .nav-link:hover, .nav-link:active {
+
+.nav-link:hover, .nav-link:active {
       background: rgba(239, 125, 0, 0.22);
       color: var(--text-primary);
     }
 
-    /* 警告橫幅 */
-    .banner {
+.banner {
       padding: 10px 14px;
       border-radius: 8px;
       font-size: 0.85rem;
@@ -159,26 +115,28 @@
       margin-bottom: 12px;
       text-align: center;
     }
-    .contract-warning {
+
+.contract-warning {
       background: var(--warning-bg);
       color: var(--warning-text);
       border: 1px solid var(--warning-border);
     }
-    .stale-warning {
+
+.stale-warning {
       background: var(--danger-bg);
       color: var(--danger-text);
       border: 1px solid var(--danger-border);
     }
 
-    /* 即時賽況狀態總覽卡片 */
-    .status-summary-card {
+.status-summary-card {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
       border-radius: 12px;
       padding: 14px 16px;
       margin-bottom: 16px;
     }
-    .status-summary-header {
+
+.status-summary-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -186,12 +144,14 @@
       flex-wrap: wrap;
       gap: 6px;
     }
-    .summary-event-name {
+
+.summary-event-name {
       font-size: 1.1rem;
       font-weight: 700;
       color: var(--text-main);
     }
-    .status-badge {
+
+.status-badge {
       font-size: 0.75rem;
       padding: 2px 8px;
       border-radius: 9999px;
@@ -200,36 +160,43 @@
       border: 1px solid var(--card-border);
       color: var(--text-sub);
     }
-    .status-badge.live {
+
+.status-badge.live {
       background: var(--success-bg);
       border-color: var(--success-border);
       color: var(--success-text);
     }
-    .status-grid {
+
+.status-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 10px;
     }
-    .status-item {
+
+.status-item {
       background: var(--input-bg);
       border: 1px solid var(--panel-border);
       border-radius: 8px;
       padding: 10px 12px;
     }
-    .status-item-label {
+
+.status-item-label {
       font-size: 0.75rem;
       color: var(--text-sub);
       margin-bottom: 2px;
     }
-    .status-item-val {
+
+.status-item-val {
       font-size: 1.05rem;
       font-weight: 700;
       color: var(--text-main);
     }
-    .status-item-val.highlight {
+
+.status-item-val.highlight {
       color: var(--accent-text);
     }
-    .summary-note-box {
+
+.summary-note-box {
       margin-top: 10px;
       padding-top: 10px;
       border-top: 1px dashed var(--panel-border);
@@ -239,15 +206,15 @@
       gap: 6px;
     }
 
-    /* 區塊卡片共通樣式 */
-    .admin-card {
+.admin-card {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
       border-radius: 12px;
       padding: 16px;
       margin-bottom: 16px;
     }
-    .card-title {
+
+.card-title {
       font-size: 1.1rem;
       font-weight: 800;
       color: var(--text-main);
@@ -256,31 +223,34 @@
       align-items: center;
       gap: 8px;
     }
-    .card-subtitle {
+
+.card-subtitle {
       font-size: 0.85rem;
       font-weight: 700;
       color: var(--text-sub);
       margin: 12px 0 6px;
     }
 
-    /* 表單元件 */
-    .form-group {
+.form-group {
       margin-bottom: 12px;
     }
-    .form-label {
+
+.form-label {
       display: block;
       font-size: 0.8rem;
       font-weight: 600;
       color: var(--text-sub);
       margin-bottom: 4px;
     }
-    .form-row {
+
+.form-row {
       display: flex;
       gap: 8px;
       align-items: center;
       flex-wrap: wrap;
     }
-    .input-text, .input-number {
+
+.input-text, .input-number {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
       color: var(--text-main);
@@ -292,17 +262,18 @@
       flex: 1;
       min-width: 140px;
     }
-    .input-text:focus, .input-number:focus {
+
+.input-text:focus, .input-number:focus {
       border-color: var(--accent);
     }
-    .input-sm {
+
+.input-sm {
       min-width: 90px;
       flex: none;
       width: 100px;
     }
 
-    /* 按鈕樣式 */
-    .btn {
+.btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -317,72 +288,88 @@
       white-space: nowrap;
     }
 
-    #staffLogin {
+#staffLogin {
       min-height: 44px;
     }
-    .btn:active {
+
+.btn:active {
       transform: translateY(1px);
     }
-    .btn-primary {
+
+.btn-primary {
       background: var(--accent);
       color: #141212;
       border-color: var(--accent);
     }
-    .btn-primary:hover, .btn-primary:active {
+
+.btn-primary:hover, .btn-primary:active {
       background: var(--accent-hover);
       border-color: var(--accent-hover);
     }
-    .btn-accent {
+
+.btn-accent {
       background: var(--accent);
       color: #141212;
       border-color: var(--accent);
     }
-    .btn-accent:hover, .btn-accent:active {
+
+.btn-accent:hover, .btn-accent:active {
       background: var(--accent-hover);
       border-color: var(--accent-hover);
     }
-    .btn-secondary {
+
+.btn-secondary {
       background: var(--chip-bg);
       color: var(--text-primary);
       border-color: var(--card-border);
     }
-    .btn-secondary:hover {
+
+.btn-secondary:hover {
       background: var(--card-border);
     }
-    .btn-warning {
+
+.btn-warning {
       background: var(--warning-border);
       color: #141212;
       border-color: var(--warning-border);
     }
-    .btn-warning:hover {
+
+.btn-warning:hover {
       background: #705515;
     }
-    .btn-success {
+
+.btn-success {
       background: var(--success-border);
       color: #141212;
       border-color: var(--success-border);
     }
-    .btn-success:hover {
+
+.btn-success:hover {
       background: #175d41;
     }
-    .btn-danger {
+
+.btn-danger {
       background: var(--danger-border);
       color: #141212;
       border-color: var(--danger-border);
     }
-    .btn-danger:hover {
+
+.btn-danger:hover {
       background: #7f322b;
     }
-    .btn-danger-action {
+
+.btn-danger-action {
       background: var(--danger-border);
       color: #141212;
       border-color: var(--danger-border);
       font-weight: 800;
     }
-    .btn-danger-action:hover {
+
+.btn-danger-action:hover {
       background: #7f322b;
     }
-    .btn-logout {
+
+.btn-logout {
       background: transparent;
       color: var(--text-sub);
       border: 1px solid var(--panel-border);
@@ -390,24 +377,26 @@
       font-size: 0.8rem;
       border-radius: 6px;
     }
-    .btn-logout:hover {
+
+.btn-logout:hover {
       background: var(--danger-bg);
       color: var(--danger-text);
       border-color: var(--danger-border);
     }
-    button[data-next="true"] {
+
+button[data-next="true"] {
       background: #c2410c !important;
       color: #ffffff !important;
       border: 2px solid #f97316 !important;
       box-shadow: 0 0 10px rgba(234, 88, 12, 0.5);
       font-weight: 800;
     }
-    button[data-next="true"]:hover {
+
+button[data-next="true"]:hover {
       background: #9a3412 !important;
     }
 
-    /* 訊息顯示框 */
-    .msg-box {
+.msg-box {
       margin-top: 10px;
       padding: 8px 12px;
       border-radius: 6px;
@@ -415,24 +404,26 @@
       font-weight: 600;
       line-height: 1.4;
     }
-    .msg-box.error {
+
+.msg-box.error {
       background: var(--danger-bg);
       border: 1px solid var(--danger-border);
       color: var(--danger-text);
     }
-    .msg-box.success {
+
+.msg-box.success {
       background: var(--success-bg);
       border: 1px solid var(--success-border);
       color: var(--success-text);
     }
-    .msg-box.warning {
+
+.msg-box.warning {
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
     }
 
-    /* 表格容器 */
-    .table-wrap {
+.table-wrap {
       width: 100%;
       max-width: 100%;
       overflow-x: auto;
@@ -442,32 +433,38 @@
       border: 1px solid var(--card-border);
       border-radius: 8px;
     }
-    .admin-table {
+
+.admin-table {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
       font-size: 0.85rem;
       min-width: 340px;
     }
-    .admin-table th {
+
+.admin-table th {
       background: var(--card-bg);
       color: var(--text-secondary);
       font-weight: 700;
       padding: 8px 12px;
       border-bottom: 1px solid var(--card-border);
     }
-    .admin-table td {
+
+.admin-table td {
       padding: 8px 12px;
       border-bottom: 1px solid var(--card-border);
       color: var(--text-main);
     }
-    .admin-table tr:last-child td {
+
+.admin-table tr:last-child td {
       border-bottom: none;
     }
-    .admin-table tr:hover td {
+
+.admin-table tr:hover td {
       background: rgba(239, 125, 0, 0.05);
     }
-    .badge-feature {
+
+.badge-feature {
       background: var(--info-bg);
       color: var(--info-text);
       border: 1px solid var(--info-border);
@@ -478,20 +475,59 @@
       margin-left: 4px;
     }
 
-    /* 安全鎖定清單樣式 */
-    .sec-subtitle {
+.ctl-row {
+      background: var(--input-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+.ctl-row-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+.ctl-row-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+.ctl-row button {
+      min-height: 44px;
+      min-width: 44px;
+      box-sizing: border-box;
+    }
+
+#ctlHeldList button {
+      min-height: 44px;
+      min-width: 44px;
+      box-sizing: border-box;
+    }
+
+.sec-subtitle {
       font-size: 0.85rem;
       font-weight: 700;
       color: var(--warning);
       margin-top: 8px;
       margin-bottom: 4px;
     }
-    .sec-list {
+
+.sec-list {
       list-style: none;
       padding: 0;
       margin-bottom: 8px;
     }
-    .sec-list li {
+
+.sec-list li {
       padding: 6px 10px;
       background: var(--input-bg);
       border: 1px solid var(--panel-border);
@@ -500,14 +536,14 @@
       font-size: 0.85rem;
       word-break: break-all;
     }
-    .empty-state-sm {
+
+.empty-state-sm {
       color: var(--text-sub);
       font-size: 0.85rem;
       padding: 8px 0;
     }
 
-    /* 系統健康面板 (DATA-CONTRACT 3.9) */
-    .health-problem {
+.health-problem {
       padding: 10px 14px;
       border-radius: 8px;
       font-size: 0.88rem;
@@ -515,19 +551,20 @@
       margin-top: 8px;
       line-height: 1.5;
     }
-    .health-problem[data-level="bad"] {
+
+.health-problem[data-level="bad"] {
       background: var(--danger-bg);
       border: 1px solid var(--danger-border);
       color: var(--danger-text);
     }
-    .health-problem[data-level="warn"] {
+
+.health-problem[data-level="warn"] {
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
     }
 
-    /* 工作人員管理清單 (DATA-CONTRACT 3.8) */
-    .staff-row {
+.staff-row {
       background: var(--input-bg);
       border: 1px solid var(--panel-border);
       border-radius: 8px;
@@ -538,25 +575,27 @@
       flex-wrap: wrap;
       gap: 10px;
     }
-    .staff-row.staff-disabled {
+
+.staff-row.staff-disabled {
       opacity: 0.65;
       background: rgba(1, 26, 36, 0.4);
       border-color: rgba(10, 85, 112, 0.4);
     }
-    .staff-row-actions {
+
+.staff-row-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       align-items: center;
     }
-    #staffList button, #staffAddBtn, #staffPinDone, #staffRefresh {
+
+#staffList button, #staffAddBtn, #staffPinDone, #staffRefresh {
       min-height: 44px;
       min-width: 44px;
       box-sizing: border-box;
     }
 
-    /* 彈窗（Modal） */
-    .modal-overlay {
+.modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
@@ -571,7 +610,8 @@
       padding: 16px;
       z-index: 1000;
     }
-    .modal-box {
+
+.modal-box {
       background: var(--card-bg);
       border: 2px solid var(--danger-border);
       border-radius: 12px;
@@ -580,26 +620,29 @@
       padding: 20px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     }
-    .modal-title {
+
+.modal-title {
       font-size: 1.15rem;
       font-weight: 800;
       color: var(--danger-text);
       margin-bottom: 10px;
     }
-    .modal-msg {
+
+.modal-msg {
       font-size: 0.95rem;
       color: var(--text-primary);
       margin-bottom: 18px;
       line-height: 1.5;
+      white-space: pre-line;
     }
-    .modal-btns {
+
+.modal-btns {
       display: flex;
       justify-content: flex-end;
       gap: 10px;
     }
 
-    /* 尚未連上賽務系統覆蓋層 */
-    .disconnected-overlay {
+.disconnected-overlay {
       position: fixed;
       top: 0;
       left: 0;
@@ -614,24 +657,27 @@
       text-align: center;
       z-index: 2000;
     }
-    .disconnected-icon {
+
+.disconnected-icon {
       font-size: 3rem;
       margin-bottom: 12px;
     }
-    .disconnected-title {
+
+.disconnected-title {
       font-size: 1.4rem;
       font-weight: 800;
       color: var(--danger-text);
       margin-bottom: 8px;
     }
-    .disconnected-desc {
+
+.disconnected-desc {
       font-size: 0.95rem;
       color: var(--text-sub);
       max-width: 360px;
       margin-bottom: 20px;
       line-height: 1.6;
     }
-  </style>
+</style>
 </head>
 <body>
   <div class="container">
@@ -671,6 +717,7 @@
         <div class="status-item">
           <div class="status-item-label">全場計時狀態</div>
           <div id="summaryClockStatus" class="status-item-val">未開始</div>
+          <div id="adminExtraCountdown" style="display: none; font-size: 0.85rem; font-weight: 700; color: #f87171; margin-top: 4px;"></div>
         </div>
         <div class="status-item">
           <div class="status-item-label">全場桌數進度</div>
@@ -764,7 +811,7 @@
       </section>
 
       <!-- 區塊 0: 現場報到與選手登錄 (PROJECT.md 10 第八輪任務) -->
-      <section class="admin-card">
+      <section class="admin-card" id="adminCheckinCard">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
           <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
             <h2 class="card-title" style="margin-bottom: 0;">📋 現場報到與選手登錄</h2>
@@ -776,55 +823,112 @@
             重新整理報到清單
           </button>
         </div>
-        <p style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 12px;">
+        <p id="checkinDesc" style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 12px;">
           第一輪配對公布前為報到階段。未報到的選手不會排入第 1 輪配對（自動標為退賽）。
         </p>
 
-        <!-- 代為勾選報到 -->
-        <div class="form-group">
-          <label for="checkinMarkId" class="form-label">工作人員代為勾選報到</label>
-          <div class="form-row">
-            <input type="text" id="checkinMarkId" class="input-text" placeholder="輸入選手編號 (例如 R0002)">
-            <button type="button" id="checkinMarkBtn" class="btn btn-success">代為報到</button>
-          </div>
-        </div>
-
-        <!-- 現場報名 -->
-        <div class="form-group">
-          <label for="addPlayerName" class="form-label">現場報名新增選手（第 1 輪公布前有效）</label>
-          <div class="form-row">
-            <input type="text" id="addPlayerName" class="input-text" maxlength="20" placeholder="選手姓名">
-            <button type="button" id="addPlayerBtn" class="btn btn-primary">現場報名</button>
-          </div>
-        </div>
-        <div id="addPlayerResult" class="msg-box success" style="display: none; line-height: 1.6;"></div>
-        <div id="checkinMsg" class="msg-box" style="display: none;"></div>
-
-        <!-- 報到清單 -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
-          <div class="card-subtitle" style="margin-top: 0; margin-bottom: 0;">報到狀態名單（未報到排在前）</div>
-          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-            <button type="button" id="noShowCopy" class="btn btn-secondary" style="min-height: 44px; padding: 6px 14px; font-size: 0.85rem;">複製未報到／已退賽名單</button>
-            <span id="noShowCopyMsg" style="font-size: 0.82rem; color: var(--success-text); font-weight: 700;"></span>
-          </div>
-        </div>
-        <div id="checkinList" class="table-wrap" style="max-height: 280px; overflow-y: auto;">
-          <div class="empty-state-sm">請點擊「重新整理報到清單」載入選手</div>
-        </div>
-
-        <!-- 已報到但還沒交牌表 (PROJECT.md 第三十三輪, DATA-CONTRACT 3.3, 6.5) -->
-        <div id="noDeckSection" style="display: none; margin-top: 14px; padding: 12px; background: rgba(239, 125, 0, 0.08); border: 1px solid var(--accent); border-radius: 8px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-            <div id="noDeckCount" style="font-weight: 700; color: var(--accent-text); font-size: 0.95rem;">
-              已報到但還沒交牌表：0 人
+        <!-- 抽號碼牌報到面板 (整輪賽事 snapshot.checkin 存在時顯示) -->
+        <div id="adminCardCheckinContainer" style="display: none; margin-bottom: 14px; padding: 14px; background: rgba(1, 26, 36, 0.6); border: 1px solid var(--panel-border); border-radius: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <span style="font-weight: 700; color: var(--accent-text); font-size: 1rem;">抽號碼牌報到狀態：</span>
+              <span id="adminCardCheckinStatus" class="badge" style="background: #065f46; color: #6ee7b7; padding: 2px 8px; font-size: 0.82rem;">報到中</span>
             </div>
+            <div style="font-size: 0.9rem; color: var(--text-main); font-weight: 700;">
+              通過人數：<span id="adminCardApprovedCount" style="color: var(--accent-text); font-size: 1.1rem;">0</span> 人
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px; flex-wrap: wrap;">
+            <a href="elim-desk.html" class="btn btn-secondary" style="text-decoration: none;">檢錄台審核（檢錄台在這裡審核選手）</a>
+            <button type="button" id="adminCkStart" class="btn btn-primary">開賽</button>
+            <span id="adminCkStartDoneBadge" class="badge" style="display: none; background: #065f46; color: #6ee7b7; font-size: 0.85rem; padding: 6px 12px; font-weight: 700;">已開賽</span>
+          </div>
+        </div>
+
+        <div id="adminListCheckinContainer">
+          <!-- 代為勾選報到 -->
+          <div class="form-group">
+            <label for="checkinMarkId" class="form-label">工作人員代為勾選報到</label>
+            <div class="form-row">
+              <input type="text" id="checkinMarkId" class="input-text" placeholder="輸入選手編號 (例如 R0002)">
+              <button type="button" id="checkinMarkBtn" class="btn btn-success">代為報到</button>
+            </div>
+          </div>
+
+          <!-- 現場報名 -->
+          <div class="form-group">
+            <label for="addPlayerName" class="form-label">現場報名新增選手（第 1 輪公布前有效）</label>
+            <div class="form-row">
+              <input type="text" id="addPlayerName" class="input-text" maxlength="20" placeholder="選手姓名">
+              <button type="button" id="addPlayerBtn" class="btn btn-primary">現場報名</button>
+            </div>
+          </div>
+          <div id="addPlayerResult" class="msg-box success" style="display: none; line-height: 1.6;"></div>
+          <div id="checkinMsg" class="msg-box" style="display: none;"></div>
+
+          <!-- 報到清單 -->
+          <div id="checkinListHeader" style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+            <div class="card-subtitle" style="margin-top: 0; margin-bottom: 0;">報到狀態名單（未報到排在前）</div>
             <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <button type="button" id="noDeckCopy" class="btn btn-secondary" style="min-height: 44px; padding: 6px 14px; font-size: 0.85rem;">複製未交牌表名單</button>
-              <span id="noDeckCopyMsg" style="font-size: 0.82rem; color: var(--success-text); font-weight: 700;"></span>
+              <button type="button" id="noShowCopy" class="btn btn-secondary" style="min-height: 44px; padding: 6px 14px; font-size: 0.85rem;">複製未報到／已退賽名單</button>
+              <span id="noShowCopyMsg" style="font-size: 0.82rem; color: var(--success-text); font-weight: 700;"></span>
             </div>
           </div>
-          <div id="noDeckList" class="table-wrap" style="max-height: 180px; overflow-y: auto;"></div>
+          <div id="checkinList" class="table-wrap" style="max-height: 280px; overflow-y: auto;">
+            <div class="empty-state-sm">請點擊「重新整理報到清單」載入選手</div>
+          </div>
+
+          <!-- 已報到但還沒交牌表 (PROJECT.md 第三十三輪, DATA-CONTRACT 3.3, 6.5) -->
+          <div id="noDeckSection" style="display: none; margin-top: 14px; padding: 12px; background: rgba(239, 125, 0, 0.08); border: 1px solid var(--accent); border-radius: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+              <div id="noDeckCount" style="font-weight: 700; color: var(--accent-text); font-size: 0.95rem;">
+                已報到但還沒交牌表：0 人
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <button type="button" id="noDeckCopy" class="btn btn-secondary" style="min-height: 44px; padding: 6px 14px; font-size: 0.85rem;">複製未交牌表名單</button>
+                <span id="noDeckCopyMsg" style="font-size: 0.82rem; color: var(--success-text); font-weight: 700;"></span>
+              </div>
+            </div>
+            <div id="noDeckList" class="table-wrap" style="max-height: 180px; overflow-y: auto;"></div>
+          </div>
         </div>
+      </section>
+
+      <!-- 區塊: 牌表鎖定方式與截止時間 (DATA-CONTRACT 10.5) -->
+      <section class="admin-card" id="adminDeckSection" style="display: none;">
+        <h2 class="card-title">📝 牌表鎖定方式與截止時間</h2>
+        <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px;">
+          設定選手牌表的鎖定模式與修改截止時刻。變更設定後將立即套用。
+        </p>
+
+        <div class="form-group">
+          <label for="adminDeckLock" class="form-label">牌表鎖定方式</label>
+          <select id="adminDeckLock" class="input-text" style="width: 100%; min-height: 44px;">
+            <option value="submit">送出就鎖（官方賽，規則 401.3）</option>
+            <option value="deadline">截止前可以修改（店家賽）</option>
+          </select>
+          <div class="form-hint" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">
+            送出就鎖：選手送出後即鎖定，要修改需由裁判解鎖（官方賽標準）<br>
+            截止前可以修改：選手在截止時間前可隨時重貼牌表修改（適合店家賽）
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="adminDeckDeadline" class="form-label">牌表截止時間（選填）</label>
+          <div class="form-row" style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+            <input type="datetime-local" id="adminDeckDeadline" class="input-text" style="flex: 1; min-width: 200px;">
+            <button type="button" id="adminDeckClear" class="btn btn-secondary" style="min-height: 44px; white-space: nowrap;">清除截止時間</button>
+          </div>
+          <div class="form-hint" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">
+            不填＝到賽事開始為止；清除後需按「儲存」才生效。
+          </div>
+        </div>
+
+        <div class="form-row" style="margin-top: 14px;">
+          <button type="button" id="adminDeckSave" class="btn btn-primary" style="min-width: 120px;">儲存</button>
+        </div>
+
+        <div id="adminDeckMsg" class="msg-box" style="display: none; margin-top: 10px;"></div>
       </section>
 
       <!-- 區塊 1: 計時管理 -->
@@ -962,8 +1066,15 @@
         </div>
 
         <div id="proposeMsg" class="msg-box" style="display: none;"></div>
+        <div id="ctlRenumberNote" class="msg-box warning" style="display: none; line-height: 1.6; margin-bottom: 10px;">提案已重新編號，提案編號已更新</div>
         <!-- 未報到退賽名單提示 (DATA-CONTRACT 3.3 /api/admin/propose no_show_dropped) -->
         <div id="noShowNotice" class="msg-box warning" style="display: none; line-height: 1.6;"></div>
+
+        <!-- 第二階段達門檻晉級提示 (DATA-CONTRACT 10.9) -->
+        <div id="phase2Box" class="msg-box warning" style="display: none; line-height: 1.6; margin-bottom: 12px; border: 2px solid var(--accent); background: rgba(239, 125, 0, 0.12);">
+          <div id="phase2BoxHeader" style="font-weight: 800; font-size: 1rem; color: var(--accent-text); margin-bottom: 6px;"></div>
+          <div id="phase2OutList" style="font-size: 0.85rem; color: var(--text-primary); line-height: 1.6;"></div>
+        </div>
 
         <!-- 提案配對表格 -->
         <div class="table-wrap">
@@ -996,6 +1107,71 @@
           <button type="button" id="publishBtn" class="btn btn-danger-action" style="width: 100%;" disabled>
             📢 公布下一輪配對（需確認）
           </button>
+        </div>
+      </section>
+
+      <!-- 區塊: 報分與桌子 (DATA-CONTRACT 10.8) -->
+      <section class="admin-card" id="ctlPanel" style="display: none;">
+        <h2 class="card-title">⚙️ 報分與桌子控制</h2>
+        <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 14px;">
+          設定全場與個別桌次成績回報權限（裁判／選手），以及桌號停用與恢復控制。
+        </p>
+
+        <div id="ctlMsg" class="msg-box" style="display: none;"></div>
+
+        <!-- 1. 全場設定 -->
+        <div style="background: var(--input-bg); border: 1px solid var(--panel-border); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px;">
+          <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); margin-bottom: 8px;">
+            全場報分設定
+          </div>
+          <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-bottom: 10px;">
+            <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.9rem; min-height: 44px;">
+              <input type="checkbox" id="ctlAllJudge" style="width: 18px; height: 18px;">
+              <span>裁判可以報</span>
+            </label>
+            <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.9rem; min-height: 44px;">
+              <input type="checkbox" id="ctlAllPlayer" style="width: 18px; height: 18px;">
+              <span>選手可以報</span>
+            </label>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <button type="button" id="ctlAllSave" class="btn btn-primary" style="min-width: 100px;">儲存全場設定</button>
+            <button type="button" id="ctlAllClear" class="btn btn-secondary" style="min-width: 120px; display: none;">清除，跟回預設</button>
+          </div>
+        </div>
+
+        <!-- 2. 桌子控制 -->
+        <div style="background: var(--input-bg); border: 1px solid var(--panel-border); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px;">
+          <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); margin-bottom: 4px;">
+            桌子控制（停用／恢復）
+          </div>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.4;">
+            停用的桌號下一輪起會跳過；已公布的這一輪不動。
+          </p>
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 10px;">
+            <input type="number" id="ctlHoldTable" class="input-number input-sm" placeholder="桌號" min="1" style="min-width: 90px; max-width: 120px; min-height: 44px;">
+            <button type="button" id="ctlHoldBtn" class="btn btn-warning">停用</button>
+            <button type="button" id="ctlOpenBtn" class="btn btn-success">恢復</button>
+          </div>
+          <div>
+            <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">目前停用清單：</div>
+            <div id="ctlHeldList" style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; min-height: 36px;">
+              <span style="font-size: 0.85rem; color: var(--text-sub);">無停用桌號</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. 每桌報分設定總覽與個別調整 -->
+        <div>
+          <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); margin-bottom: 4px;">
+            每一桌報分設定
+          </div>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px;">
+            顯示每一桌（本輪有的桌與有單獨設定的桌）實際誰可以報及來源。可針對個別桌號進行單獨設定或跟回上一層。
+          </p>
+          <div id="ctlTables" style="display: flex; flex-direction: column; gap: 8px;">
+            <div class="empty-state-sm">讀取桌次報分設定中…</div>
+          </div>
         </div>
       </section>
 
@@ -1084,6 +1260,8 @@
     <button type="button" class="btn btn-primary" id="retryBtn">重新連線</button>
   </div>
 
+  <script src="common.js"></script>
+  <script src="admin-panels.js"></script>
   <script>
     const CURRENT_CONTRACT_VERSION = 16;
     const SESSION_STORAGE_KEY_STAFF_PIN = 'riftbound_staff_pin';
@@ -1111,11 +1289,19 @@
     let checkinAutoTimer = null;
     let lastProposalCheckTime = 0;
 
-    // 系統健康與工作人員管理狀態 (DATA-CONTRACT 3.8, 3.9, PROJECT.md 第三十四輪)
-    let healthAutoTimer = null;
-    let currentStaffMe = '';
-    let isAddingStaff = false;
-    let isFetchingStaff = false;
+    // 共用面板實例 (AdminPanels)
+    let loginPanel = null;
+    let healthPanel = null;
+    let staffPanel = null;
+    let deckConfigPanel = null;
+    let deckSamplePanel = null;
+
+    // 報分設定與桌子控制狀態 (DATA-CONTRACT 10.8)
+    let isAllDirty = false;
+    const dirtyTables = new Set();
+    const dirtyTableValues = new Map();
+    let ctlAutoRefreshTimer = null;
+    let lastPolicyViewData = null;
 
     // 更新「公布配對」按鈕可用狀態 (PROJECT.md 第二十七輪：未產生提案時停用)
     function updatePublishBtnState() {
@@ -1258,6 +1444,8 @@
       if (isStale) {
         currentProposal = null;
         updatePublishBtnState();
+        const ctlRenote = document.getElementById('ctlRenumberNote');
+        if (ctlRenote) ctlRenote.style.display = 'none';
         const tbody = document.getElementById('proposalTableBody');
         if (tbody) {
           tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #f87171; padding: 16px;"><strong>這份提案已經由其他人公布，請重新產生</strong></td></tr>';
@@ -1291,112 +1479,41 @@
       return '../snapshot.json';
     }
 
-    // 取得 API 完整路徑 (DATA-CONTRACT 3.1)
-    function getApiUrl(endpoint) {
-      const base = (snapshotData && snapshotData.event && typeof snapshotData.event.api_base === 'string')
-        ? snapshotData.event.api_base
-        : '';
-      return base + endpoint;
-    }
-
-    // 通用呼叫 API
-    async function callApi(endpoint, body = {}) {
-      const url = getApiUrl(endpoint);
-      const payload = Object.assign({}, body);
-      if (staffPin) {
-        payload.staff_pin = staffPin;
-      }
-
-      let res;
-      try {
-        res = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-      } catch (networkErr) {
-        const err = new Error('沒有送出：連不上主機，請確認網路後再按一次');
-        err.isNetwork = true;
-        throw err;
-      }
-
-      const data = await res.json().catch(() => null);
-
-      if (!res.ok || !data || !data.ok) {
-        const errorMsg = (data && (data.message || data.detail || data.error)) ? (data.message || data.detail || data.error) : `操作失敗 (HTTP ${res.status})`;
-        const err = new Error(errorMsg);
-        err.status = res.status;
-        err.code = data ? data.error : null;
-        err.data = data;
-        throw err;
-      }
-
-      return data;
-    }
-
-    // 讀取賽務資料
-    async function fetchData() {
-      if (document.visibilityState === 'hidden') return;
-      const primaryUrl = getDataSourceUrl();
-      try {
-        const responseTime = Date.now();
-        let res = await fetch(primaryUrl, { cache: 'no-store' });
-        if (!res.ok && primaryUrl.startsWith('../')) {
-          const fallbackUrl = primaryUrl.replace(/^\.\.\//, '/');
-          res = await fetch(fallbackUrl, { cache: 'no-store' });
-        }
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
-        }
-
-        const text = await res.text();
-        const data = JSON.parse(text);
-
-        // DATA-CONTRACT 1.10 時間換算
-        const isDemo = !!new URLSearchParams(window.location.search).get('demo');
-        if (isDemo) {
-          if (!demoOffsetCalculated && data.server_now) {
-            serverOffsetMs = data.server_now - responseTime;
-            demoOffsetCalculated = true;
-          }
-        } else {
-          let dateHeaderMs = null;
-          try {
-            const dateHeader = res.headers.get('Date');
-            if (dateHeader) {
-              const t = new Date(dateHeader).getTime();
-              if (!isNaN(t)) dateHeaderMs = t;
-            }
-          } catch (e) {}
-
-          if (dateHeaderMs !== null) {
-            serverOffsetMs = dateHeaderMs - responseTime;
-          } else if (data.server_now) {
-            serverOffsetMs = data.server_now - responseTime;
-          }
-        }
-
+    // 賽務資料輪詢器 (使用 common.js 的 createPoller)
+    const poller = createPoller({
+      url: getDataSourceUrl,
+      onData: (data, text, res) => {
         document.getElementById('disconnectedScreen').style.display = 'none';
-
         if (text === rawJsonText) {
           checkProposalStale();
           return;
         }
-
         lastContentChangeTime = Date.now();
         rawJsonText = text;
         snapshotData = data;
         window.snapshotData = data;
+        serverOffsetMs = poller.serverOffsetMs;
 
         renderSummary();
         renderVersionWarning();
         checkProposalStale();
         checkFreshness();
-      } catch (err) {
+      },
+      onError: (err) => {
         checkFreshness();
         if (!snapshotData) {
           document.getElementById('disconnectedScreen').style.display = 'flex';
         }
+      },
+      pauseInBackground: true,
+      interval: 5000
+    });
+
+    async function fetchData() {
+      try {
+        await poller.fetchOnce();
+      } catch (err) {
+        // 由 poller.onError 處理
       }
     }
 
@@ -1521,6 +1638,19 @@
       if (modeBSection) {
         modeBSection.style.display = isModeA ? 'none' : 'block';
       }
+      const ctlPanel = document.getElementById('ctlPanel');
+      if (ctlPanel) {
+        if (isModeA || !staffPin) {
+          ctlPanel.style.display = 'none';
+          stopCtlAutoRefresh();
+        } else {
+          ctlPanel.style.display = 'block';
+          if (!ctlAutoRefreshTimer) {
+            fetchPolicyView();
+            startCtlAutoRefresh();
+          }
+        }
+      }
       const proposeBtn = document.getElementById('proposeBtn');
       const proposeHint = document.getElementById('proposeHint');
       if (proposeBtn) {
@@ -1531,33 +1661,76 @@
           if (proposeHint) proposeHint.textContent = '';
         } else {
           proposeBtn.style.display = '';
-          const prog = round && round.progress;
-          let left = 0;
-          if (prog && typeof prog.tables_total === 'number') {
-            left = Math.max(0, prog.tables_total - (prog.tables_done || 0));
-          }
-          if (round && left > 0) {
+          const isCardCheckin = !!(snapshotData && snapshotData.checkin && snapshotData.kind !== 'bracket');
+          if (isCardCheckin && snapshotData.checkin.open) {
             proposeBtn.disabled = true;
             proposeBtn.removeAttribute('data-next');
             if (proposeHint) {
-              proposeHint.textContent = `這一輪還有 ${left} 桌沒有結果`;
+              proposeHint.textContent = '報到還沒結束，請先按開賽';
             }
           } else {
-            proposeBtn.disabled = false;
-            proposeBtn.setAttribute('data-next', 'true');
-            if (proposeHint) {
-              proposeHint.textContent = '';
+            const prog = round && round.progress;
+            let left = 0;
+            if (prog && typeof prog.tables_total === 'number') {
+              left = Math.max(0, prog.tables_total - (prog.tables_done || 0));
+            }
+            if (round && left > 0) {
+              proposeBtn.disabled = true;
+              proposeBtn.removeAttribute('data-next');
+              if (proposeHint) {
+                proposeHint.textContent = `這一輪還有 ${left} 桌沒有結果`;
+              }
+            } else {
+              proposeBtn.disabled = false;
+              proposeBtn.setAttribute('data-next', 'true');
+              if (proposeHint) {
+                proposeHint.textContent = '';
+              }
             }
           }
         }
       }
 
+      renderCheckinPanelMode();
       updatePublishBtnState();
       if (!zonesTextInitialized) {
         populateZonesInput(false);
       }
 
+      if (deckConfigPanel) {
+        deckConfigPanel.update(snapshotData);
+      }
+      if (deckSamplePanel) {
+        deckSamplePanel.update(snapshotData);
+      }
       updateClockDisplay();
+    }
+
+    // 延長回合倒數計算 (DATA-CONTRACT 1.4, 1.10)
+    function getExtraCountdownText(clock, serverOffsetMs) {
+      if (!clock) return null;
+      let targetEndsAt = null;
+      if (clock.state === 'time_up') {
+        if (typeof clock.extra_ends_at === 'number') {
+          targetEndsAt = clock.extra_ends_at;
+        }
+      } else if (clock.state === 'running' && clock.ends_at) {
+        const currentServerNow = Date.now() + serverOffsetMs;
+        if (currentServerNow >= clock.ends_at && typeof clock.extra_max_sec === 'number') {
+          targetEndsAt = clock.ends_at + clock.extra_max_sec * 1000;
+        }
+      }
+
+      if (targetEndsAt === null) return null;
+
+      const currentServerNow = Date.now() + serverOffsetMs;
+      const diffSec = Math.floor((targetEndsAt - currentServerNow) / 1000);
+      if (diffSec <= 0) {
+        return '延長時間已到，請依規則判定本局';
+      }
+      const m = Math.floor(diffSec / 60).toString().padStart(2, '0');
+      const s = (diffSec % 60).toString().padStart(2, '0');
+      return `延長回合最多再 ${m}:${s}`;
     }
 
     // 即時更新計時器顯示
@@ -1566,10 +1739,15 @@
       const clock = snapshotData.clock;
       const round = snapshotData.round;
       const clockEl = document.getElementById('summaryClockStatus');
+      const extraEl = document.getElementById('adminExtraCountdown');
 
       if (round && round.phase === 'finished') {
         clockEl.textContent = '本輪已結束';
         clockEl.style.color = '#34d399';
+        if (extraEl) {
+          extraEl.textContent = '';
+          extraEl.style.display = 'none';
+        }
         return;
       }
 
@@ -1590,6 +1768,10 @@
         if (!clock.ends_at) {
           clockEl.textContent = '計時中';
           clockEl.style.color = 'var(--accent-text)';
+          if (extraEl) {
+            extraEl.textContent = '';
+            extraEl.style.display = 'none';
+          }
           return;
         }
         const currentServerNow = Date.now() + serverOffsetMs;
@@ -1606,21 +1788,16 @@
           clockEl.style.color = totalSec < 300 ? '#fbbf24' : 'var(--accent-text)';
         }
       }
-    }
 
-    // 格式化 HH:MM (台灣時間)
-    function formatTimeHHMM(ms) {
-      if (!ms) return '待定';
-      try {
-        return new Intl.DateTimeFormat('zh-TW', {
-          timeZone: 'Asia/Taipei',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false
-        }).format(new Date(ms));
-      } catch (e) {
-        const d = new Date(ms);
-        return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+      if (extraEl) {
+        const extraText = getExtraCountdownText(clock, serverOffsetMs);
+        if (extraText && (clock.state === 'time_up' || (clock.state === 'running' && clock.ends_at && (Date.now() + serverOffsetMs >= clock.ends_at)))) {
+          extraEl.textContent = extraText;
+          extraEl.style.display = 'block';
+        } else {
+          extraEl.textContent = '';
+          extraEl.style.display = 'none';
+        }
       }
     }
 
@@ -1651,16 +1828,6 @@
       return isNaN(t) ? null : t;
     }
 
-    function escapeHtml(str) {
-      if (str === null || str === undefined) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-
     // 顯示訊息 helper (統一使用 textContent 避免 XSS)
     function showMsg(elId, msg, isError = true) {
       const el = document.getElementById(elId);
@@ -1677,16 +1844,17 @@
       el.textContent = '';
     }
 
-    // 彈窗確認處理 (PROJECT.md 10 硬性規定第 4 條)
-    function showConfirm(title, message, action) {
-      document.getElementById('confirmTitle').textContent = title;
-      document.getElementById('confirmMessage').textContent = message;
-      pendingConfirmAction = action;
-      document.getElementById('confirmModal').style.display = 'flex';
+    // 彈窗確認處理 (PROJECT.md 10 硬性規定第 4 條，委派至 common.js 的 confirmDialog)
+    async function showConfirm(title, message, action) {
+      const ok = await confirmDialog({ title, message, yes: '確認執行', no: '取消', danger: true });
+      if (ok && typeof action === 'function') {
+        await action();
+      }
     }
 
     function hideConfirm() {
-      document.getElementById('confirmModal').style.display = 'none';
+      const m = document.getElementById('confirmModal');
+      if (m) m.style.display = 'none';
       pendingConfirmAction = null;
     }
 
@@ -1713,174 +1881,7 @@
       }
     }
 
-    // 登入事件處理
-    let isLoggingIn = false;
-    async function handleLogin() {
-      const loginBtn = document.getElementById('staffLogin');
-      if (isLoggingIn || (loginBtn && loginBtn.disabled)) return;
-      hideMsg('loginError');
-      const pinInput = document.getElementById('staffPin');
-      const pinVal = (pinInput ? pinInput.value : '').trim();
 
-      if (!pinVal) {
-        showMsg('loginError', '請輸入工作人員 PIN 碼');
-        return;
-      }
-
-      isLoggingIn = true;
-      const origText = loginBtn ? loginBtn.textContent : '';
-      if (loginBtn) {
-        loginBtn.disabled = true;
-        loginBtn.textContent = '登入中…';
-      }
-
-      try {
-        const res = await callApi('/api/staff/whoami', { staff_pin: pinVal });
-        
-        // 角色非 admin 處理 (PROJECT.md 10 硬性規定第 1 條)
-        if (res.role !== 'admin') {
-          staffPin = null;
-          try { sessionStorage.removeItem(SESSION_STORAGE_KEY_STAFF_PIN); } catch (e) {}
-          showMsg('loginError', '只有主辦可以使用這一頁');
-          renderAuthUI();
-          return;
-        }
-
-        // 登入成功：僅存記憶體與 sessionStorage，禁止存 localStorage (硬性規定第 2 條)
-        staffPin = pinVal;
-        adminName = res.name || '示範主辦';
-        if (res.id) currentStaffMe = res.id;
-        try {
-          sessionStorage.setItem(SESSION_STORAGE_KEY_STAFF_PIN, pinVal);
-        } catch (e) {}
-
-        if (pinInput) pinInput.value = '';
-        renderAuthUI();
-        startCheckinAutoRefresh();
-        populateZonesInput(true);
-        await fetchHealth();
-        startHealthTimer();
-        await loadExistingProposal();
-        await fetchCheckinList();
-        await fetchStaffList();
-      } catch (err) {
-        staffPin = null;
-        stopCheckinAutoRefresh();
-        stopHealthTimer();
-        try { sessionStorage.removeItem(SESSION_STORAGE_KEY_STAFF_PIN); } catch (e) {}
-        showMsg('loginError', err.message);
-        renderAuthUI();
-      } finally {
-        isLoggingIn = false;
-        if (loginBtn) {
-          loginBtn.disabled = false;
-          loginBtn.textContent = origText;
-        }
-      }
-    }
-
-    // 登出處理
-    function handleLogout() {
-      stopCheckinAutoRefresh();
-      stopHealthTimer();
-      staffPin = null;
-      adminName = '';
-      currentStaffMe = '';
-      currentProposal = null;
-      renderProposalTable(null);
-      updatePublishBtnState();
-      zonesTextInitialized = false;
-      const zonesTextEl = document.getElementById('zonesText');
-      if (zonesTextEl) zonesTextEl.value = '';
-      hideMsg('zonesMsg');
-      const countEl = document.getElementById('checkinCount');
-      if (countEl) countEl.textContent = '已報到 0 / 總數 0';
-      const listEl = document.getElementById('checkinList');
-      if (listEl) listEl.innerHTML = '<div class="empty-state-sm">請點擊「重新整理報到清單」載入選手</div>';
-      hideMsg('addPlayerResult');
-      hideMsg('checkinMsg');
-      const noShowCopyMsgEl = document.getElementById('noShowCopyMsg');
-      if (noShowCopyMsgEl) noShowCopyMsgEl.textContent = '';
-      const noDeckSection = document.getElementById('noDeckSection');
-      if (noDeckSection) noDeckSection.style.display = 'none';
-      const noDeckCountEl = document.getElementById('noDeckCount');
-      if (noDeckCountEl) noDeckCountEl.textContent = '已報到但還沒交牌表：0 人';
-      const noDeckListEl = document.getElementById('noDeckList');
-      if (noDeckListEl) noDeckListEl.innerHTML = '';
-      const noDeckCopyMsgEl = document.getElementById('noDeckCopyMsg');
-      if (noDeckCopyMsgEl) noDeckCopyMsgEl.textContent = '';
-      const noShowEl = document.getElementById('noShowNotice');
-      if (noShowEl) noShowEl.style.display = 'none';
-      lastPreviewedImportText = null;
-      lastPreviewedImportLabel = null;
-      const importConf = document.getElementById('importConfirmBtn');
-      if (importConf) importConf.disabled = true;
-      const previewEl = document.getElementById('importPreview');
-      if (previewEl) { previewEl.innerHTML = ''; previewEl.style.display = 'none'; }
-      const problemsEl = document.getElementById('importProblems');
-      if (problemsEl) { problemsEl.innerHTML = ''; problemsEl.style.display = 'none'; }
-      hideMsg('importMsg');
-
-      // 系統健康與工作人員管理清理
-      const healthVerEl = document.getElementById('healthVersion');
-      if (healthVerEl) healthVerEl.textContent = '';
-      const healthBadge = document.getElementById('healthStatusBadge');
-      if (healthBadge) {
-        healthBadge.textContent = '正常';
-        healthBadge.style.background = 'var(--success-bg)';
-        healthBadge.style.color = 'var(--success-text)';
-        healthBadge.style.borderColor = 'var(--success-border)';
-      }
-      const healthProblemsEl = document.getElementById('healthProblemsList');
-      if (healthProblemsEl) { healthProblemsEl.innerHTML = ''; healthProblemsEl.style.display = 'none'; }
-      const healthExtraEl = document.getElementById('healthExtraInfo');
-      if (healthExtraEl) { healthExtraEl.textContent = ''; healthExtraEl.style.display = 'none'; }
-
-      handleStaffPinDone();
-      const staffListEl = document.getElementById('staffList');
-      if (staffListEl) staffListEl.innerHTML = '<div class="empty-state-sm">請點擊「重新整理清單」載入工作人員</div>';
-      const staffAddNameEl = document.getElementById('staffAddName');
-      if (staffAddNameEl) staffAddNameEl.value = '';
-      hideMsg('staffMsg');
-
-      try {
-        sessionStorage.removeItem(SESSION_STORAGE_KEY_STAFF_PIN);
-      } catch (e) {}
-      renderAuthUI();
-    }
-
-    // 嘗試從 sessionStorage 自動驗證
-    async function checkAutoLogin() {
-      let savedPin = null;
-      try {
-        savedPin = sessionStorage.getItem(SESSION_STORAGE_KEY_STAFF_PIN);
-      } catch (e) {}
-
-      if (!savedPin) return;
-
-      try {
-        const res = await callApi('/api/staff/whoami', { staff_pin: savedPin });
-        if (res.role === 'admin') {
-          staffPin = savedPin;
-          adminName = res.name || '示範主辦';
-          if (res.id) currentStaffMe = res.id;
-          renderAuthUI();
-          startCheckinAutoRefresh();
-          populateZonesInput(true);
-          await fetchHealth();
-          startHealthTimer();
-          await loadExistingProposal();
-          await fetchCheckinList();
-          await fetchStaffList();
-          return;
-        }
-      } catch (e) {}
-
-      // 驗證失敗清除
-      try { sessionStorage.removeItem(SESSION_STORAGE_KEY_STAFF_PIN); } catch (e) {}
-      staffPin = null;
-      renderAuthUI();
-    }
 
     // 載入未公布的配對提案 (DATA-CONTRACT 3.3 /api/admin/proposal)
     async function loadExistingProposal() {
@@ -1967,330 +1968,142 @@
       }
     }
 
-    // ------------------------------------------------ 系統健康 (DATA-CONTRACT 3.9, PROJECT.md 第三十四輪)
-    async function fetchHealth() {
-      if (!staffPin || document.visibilityState === 'hidden') return;
-      try {
-        const res = await callApi('/api/admin/health', {});
-        renderHealth(res);
-      } catch (err) {
-        // 暫態或網路錯誤不中斷輪詢
-      }
-    }
 
-    function renderHealth(data) {
-      if (!data) return;
-      const verEl = document.getElementById('healthVersion');
-      if (verEl) {
-        verEl.textContent = data.version || '未知';
-      }
-      const statusBadge = document.getElementById('healthStatusBadge');
-      const problemsList = document.getElementById('healthProblemsList');
-      const extraInfo = document.getElementById('healthExtraInfo');
-
-      if (extraInfo) {
-        const parts = [];
-        if (data.snapshot && typeof data.snapshot.age_sec === 'number') {
-          parts.push(`畫面資料 ${data.snapshot.age_sec} 秒前更新`);
-        }
-        if (data.log && typeof data.log.ops === 'number') {
-          parts.push(`操作紀錄 ${data.log.ops} 筆`);
-        }
-        if (parts.length > 0) {
-          extraInfo.textContent = parts.join(' · ');
-          extraInfo.style.display = 'block';
-        } else {
-          extraInfo.style.display = 'none';
-        }
-      }
-
-      const problems = Array.isArray(data.problems) ? data.problems : [];
-      if (problems.length === 0) {
-        if (statusBadge) {
-          statusBadge.textContent = '正常';
-          statusBadge.style.background = 'var(--success-bg)';
-          statusBadge.style.color = 'var(--success-text)';
-          statusBadge.style.borderColor = 'var(--success-border)';
-          statusBadge.style.display = 'inline-block';
-        }
-        if (problemsList) {
-          problemsList.innerHTML = '';
-          problemsList.style.display = 'none';
-        }
-      } else {
-        if (statusBadge) {
-          statusBadge.textContent = '注意';
-          statusBadge.style.background = 'var(--danger-bg)';
-          statusBadge.style.color = 'var(--danger-text)';
-          statusBadge.style.borderColor = 'var(--danger-border)';
-          statusBadge.style.display = 'inline-block';
-        }
-        if (problemsList) {
-          problemsList.innerHTML = '';
-          for (const p of problems) {
-            const itemEl = document.createElement('div');
-            itemEl.className = 'health-problem';
-            itemEl.setAttribute('data-level', p.level || 'warn');
-            itemEl.textContent = p.msg;
-            problemsList.appendChild(itemEl);
-          }
-          problemsList.style.display = 'block';
-        }
-      }
-    }
-
-    function startHealthTimer() {
-      stopHealthTimer();
-      healthAutoTimer = setInterval(fetchHealth, 3000);
-    }
-
-    function stopHealthTimer() {
-      if (healthAutoTimer) {
-        clearInterval(healthAutoTimer);
-        healthAutoTimer = null;
-      }
-    }
-
-    // ------------------------------------------------ 工作人員管理 (DATA-CONTRACT 3.8, PROJECT.md 第三十四輪)
-    async function fetchStaffList() {
-      if (!staffPin) return;
-      hideMsg('staffMsg');
-      const btn = document.getElementById('staffRefresh');
-      if (isFetchingStaff) return;
-      isFetchingStaff = true;
-      if (btn) btn.disabled = true;
-      try {
-        const res = await callApi('/api/admin/staff_list', {});
-        if (res.me) {
-          currentStaffMe = res.me;
-        }
-        renderStaffList(res.staff);
-      } catch (err) {
-        showMsg('staffMsg', err.message);
-      } finally {
-        isFetchingStaff = false;
-        if (btn) btn.disabled = false;
-      }
-    }
-
-    function renderStaffList(staff) {
-      const container = document.getElementById('staffList');
-      if (!container) return;
-      if (!Array.isArray(staff) || staff.length === 0) {
-        container.innerHTML = '<div class="empty-state-sm">目前無工作人員名單</div>';
-        return;
-      }
-
-      container.innerHTML = '';
-      for (const item of staff) {
-        const rowEl = document.createElement('div');
-        rowEl.className = `staff-row${item.active ? '' : ' staff-disabled'}`;
-        rowEl.setAttribute('data-id', item.id);
-
-        const isMe = (item.id === currentStaffMe);
-        const roleText = (item.role === 'admin' ? '主辦' : '裁判');
-
-        // 左側資訊區
-        const infoDiv = document.createElement('div');
-        infoDiv.style.display = 'flex';
-        infoDiv.style.alignItems = 'center';
-        infoDiv.style.flexWrap = 'wrap';
-        infoDiv.style.gap = '8px';
-
-        const idSpan = document.createElement('strong');
-        idSpan.style.color = 'var(--text-primary)';
-        idSpan.style.fontSize = '1rem';
-        idSpan.textContent = item.id;
-        infoDiv.appendChild(idSpan);
-
-        const nameSpan = document.createElement('span');
-        nameSpan.style.fontWeight = '700';
-        nameSpan.style.color = 'var(--text-main)';
-        nameSpan.textContent = item.name;
-        infoDiv.appendChild(nameSpan);
-
-        if (isMe) {
-          const meBadge = document.createElement('span');
-          meBadge.className = 'badge';
-          meBadge.style.cssText = 'background: rgba(239, 125, 0, 0.2); color: var(--accent-text); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(239, 125, 0, 0.4);';
-          meBadge.textContent = '你';
-          infoDiv.appendChild(meBadge);
-        }
-
-        const roleBadge = document.createElement('span');
-        roleBadge.className = 'badge';
-        roleBadge.style.cssText = 'background: var(--card-bg); color: var(--text-secondary); border: 1px solid var(--card-border); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600;';
-        roleBadge.textContent = roleText;
-        infoDiv.appendChild(roleBadge);
-
-        if (!item.active) {
-          const disabledBadge = document.createElement('span');
-          disabledBadge.className = 'badge';
-          disabledBadge.style.cssText = 'background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;';
-          disabledBadge.textContent = '停用';
-          infoDiv.appendChild(disabledBadge);
-        }
-
-        rowEl.appendChild(infoDiv);
-
-        // 右側操作區
-        const actionsDiv = document.createElement('div');
-        actionsDiv.className = 'staff-row-actions';
-
-        // 停用 / 恢復按鈕
-        const toggleBtn = document.createElement('button');
-        toggleBtn.type = 'button';
-        toggleBtn.className = `btn ${item.active ? 'btn-warning staff-disable' : 'btn-success staff-enable'}`;
-        toggleBtn.textContent = item.active ? '停用' : '恢復';
-        toggleBtn.addEventListener('click', () => {
-          if (item.active) {
-            showConfirm('停用工作人員確認', `確定要停用「${item.name}」嗎？停用後該 PIN 碼將無法登入。`, async () => {
-              hideMsg('staffMsg');
-              try {
-                const res = await callApi('/api/admin/staff_set', { id: item.id, action: 'disable' });
-                renderStaffList(res.staff);
-              } catch (err) {
-                showMsg('staffMsg', err.message);
-              }
-            });
-          } else {
-            showConfirm('恢復工作人員確認', `確定要恢復「${item.name}」的權限嗎？`, async () => {
-              hideMsg('staffMsg');
-              try {
-                const res = await callApi('/api/admin/staff_set', { id: item.id, action: 'enable' });
-                renderStaffList(res.staff);
-              } catch (err) {
-                showMsg('staffMsg', err.message);
-              }
-            });
-          }
-        });
-        actionsDiv.appendChild(toggleBtn);
-
-        // 改角色按鈕
-        const roleBtn = document.createElement('button');
-        roleBtn.type = 'button';
-        roleBtn.className = 'btn btn-secondary staff-role';
-        const nextRole = (item.role === 'admin' ? 'judge' : 'admin');
-        const nextRoleLabel = (nextRole === 'admin' ? '主辦' : '裁判');
-        roleBtn.textContent = `改為${nextRoleLabel}`;
-        roleBtn.addEventListener('click', () => {
-          showConfirm('變更角色確認', `確定要將「${item.name}」的角色變更為${nextRoleLabel}嗎？`, async () => {
-            hideMsg('staffMsg');
-            try {
-              const res = await callApi('/api/admin/staff_set', { id: item.id, action: 'set_role', role: nextRole });
-              renderStaffList(res.staff);
-            } catch (err) {
-              showMsg('staffMsg', err.message);
-            }
-          });
-        });
-        actionsDiv.appendChild(roleBtn);
-
-        // 重設 PIN 按鈕
-        const pinResetBtn = document.createElement('button');
-        pinResetBtn.type = 'button';
-        pinResetBtn.className = 'btn btn-secondary staff-pinreset';
-        pinResetBtn.textContent = '重設 PIN';
-        pinResetBtn.addEventListener('click', () => {
-          showConfirm('重設 PIN 碼確認', `確定要重設「${item.name}」的 PIN 碼嗎？舊 PIN 將立即失效。`, async () => {
-            hideMsg('staffMsg');
-            try {
-              const res = await callApi('/api/admin/staff_pin_reset', { id: item.id });
-              showNewPin(res.pin);
-              await fetchStaffList();
-            } catch (err) {
-              showMsg('staffMsg', err.message);
-            }
-          });
-        });
-        actionsDiv.appendChild(pinResetBtn);
-
-        // 移除按鈕
-        const removeBtn = document.createElement('button');
-        removeBtn.type = 'button';
-        removeBtn.className = 'btn btn-danger staff-remove';
-        removeBtn.textContent = '移除';
-        removeBtn.addEventListener('click', () => {
-          showConfirm('移除工作人員確認', `確定要移除「${item.name}」嗎？移除後將刪除此工作人員紀錄。`, async () => {
-            hideMsg('staffMsg');
-            try {
-              const res = await callApi('/api/admin/staff_set', { id: item.id, action: 'remove' });
-              renderStaffList(res.staff);
-            } catch (err) {
-              showMsg('staffMsg', err.message);
-            }
-          });
-        });
-        actionsDiv.appendChild(removeBtn);
-
-        rowEl.appendChild(actionsDiv);
-        container.appendChild(rowEl);
-      }
-    }
-
-    function showNewPin(pin) {
-      const pinEl = document.getElementById('staffPinShow');
-      const boxEl = document.getElementById('staffPinBox');
-      if (pinEl) {
-        pinEl.textContent = pin;
-      }
-      if (boxEl) {
-        boxEl.style.display = 'block';
-      }
-    }
-
-    function handleStaffPinDone() {
-      const pinEl = document.getElementById('staffPinShow');
-      if (pinEl) pinEl.textContent = '';
-      const boxEl = document.getElementById('staffPinBox');
-      if (boxEl) boxEl.style.display = 'none';
-    }
-
-    async function handleAddStaff() {
-      const btn = document.getElementById('staffAddBtn');
-      if (isAddingStaff || (btn && btn.disabled)) return;
-      hideMsg('staffMsg');
-      const nameInput = document.getElementById('staffAddName');
-      const roleSelect = document.getElementById('staffAddRole');
-      const name = (nameInput ? nameInput.value : '').trim();
-      const role = (roleSelect ? roleSelect.value : 'judge');
-
-      if (!name) {
-        showMsg('staffMsg', '請輸入工作人員姓名');
-        return;
-      }
-
-      isAddingStaff = true;
-      const origText = btn ? btn.textContent : '';
-      if (btn) {
-        btn.disabled = true;
-        btn.textContent = '新增中…';
-      }
-
-      try {
-        const res = await callApi('/api/admin/staff_add', { name, role });
-        if (nameInput) nameInput.value = '';
-        showNewPin(res.pin);
-        if (res.staff) {
-          renderStaffList(res.staff);
-        } else {
-          await fetchStaffList();
-        }
-      } catch (err) {
-        showMsg('staffMsg', err.message);
-      } finally {
-        isAddingStaff = false;
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = origText;
-        }
-      }
-    }
 
     // ------------------------------------------------ 現場報到與名單 (PROJECT.md 10 第八輪任務)
+    function renderCheckinPanelMode() {
+      const isCardCheckin = !!(snapshotData && snapshotData.checkin && snapshotData.kind !== 'bracket');
+      const cardContainer = document.getElementById('adminCardCheckinContainer');
+      const listContainer = document.getElementById('adminListCheckinContainer');
+      const checkinRefreshBtn = document.getElementById('checkinRefresh');
+      const checkinDesc = document.getElementById('checkinDesc');
+
+      if (!cardContainer) return;
+
+      if (isCardCheckin) {
+        cardContainer.style.display = 'block';
+        const ck = snapshotData.checkin;
+        const approvedCount = (ck.players && ck.players.length) || (ck.divs && ck.divs[0] && ck.divs[0].approved) || 0;
+        const approvedCountEl = document.getElementById('adminCardApprovedCount');
+        if (approvedCountEl) approvedCountEl.textContent = approvedCount;
+
+        const countEl = document.getElementById('checkinCount');
+        if (countEl) {
+          countEl.textContent = `通過人數 ${approvedCount} 人`;
+        }
+
+        const startBtn = document.getElementById('adminCkStart');
+        const doneBadge = document.getElementById('adminCkStartDoneBadge');
+        const statusBadge = document.getElementById('adminCardCheckinStatus');
+
+        if (ck.open) {
+          if (statusBadge) {
+            statusBadge.textContent = '報到中（開放抽號）';
+            statusBadge.style.background = '#065f46';
+            statusBadge.style.color = '#6ee7b7';
+          }
+          if (startBtn) startBtn.style.display = 'inline-flex';
+          if (doneBadge) doneBadge.style.display = 'none';
+          if (checkinRefreshBtn) checkinRefreshBtn.style.display = 'none';
+          if (listContainer) listContainer.style.display = 'none';
+          if (checkinDesc) checkinDesc.textContent = '目前為現場抽號碼牌報到階段。選手在檢錄台抽取號碼牌並完成審核後，主辦按「開賽」建立名單。';
+        } else {
+          // 已開賽
+          if (statusBadge) {
+            statusBadge.textContent = '已開賽';
+            statusBadge.style.background = '#065f46';
+            statusBadge.style.color = '#6ee7b7';
+          }
+          if (startBtn) startBtn.style.display = 'none';
+          if (doneBadge) doneBadge.style.display = 'inline-block';
+          if (checkinRefreshBtn) checkinRefreshBtn.style.display = 'none';
+          if (listContainer) {
+            listContainer.style.display = 'block';
+            const markGroup = document.getElementById('checkinMarkId') ? document.getElementById('checkinMarkId').closest('.form-group') : null;
+            if (markGroup) markGroup.style.display = 'none';
+            const listHeader = document.getElementById('checkinListHeader');
+            if (listHeader) listHeader.style.display = 'none';
+            const checkinList = document.getElementById('checkinList');
+            if (checkinList) checkinList.style.display = 'none';
+            const noDeckSection = document.getElementById('noDeckSection');
+            if (noDeckSection) noDeckSection.style.display = 'none';
+          }
+          if (checkinDesc) checkinDesc.textContent = '已開賽。若有現場追加報名選手，可使用下方現場報名。';
+        }
+      } else {
+        // 一般名單報到模式
+        cardContainer.style.display = 'none';
+        if (checkinRefreshBtn) checkinRefreshBtn.style.display = '';
+        if (listContainer) {
+          listContainer.style.display = 'block';
+          const markGroup = document.getElementById('checkinMarkId') ? document.getElementById('checkinMarkId').closest('.form-group') : null;
+          if (markGroup) markGroup.style.display = '';
+          const listHeader = document.getElementById('checkinListHeader');
+          if (listHeader) listHeader.style.display = 'flex';
+          const checkinList = document.getElementById('checkinList');
+          if (checkinList) checkinList.style.display = '';
+        }
+        if (checkinDesc) checkinDesc.textContent = '第一輪配對公布前為報到階段。未報到的選手不會排入第 1 輪配對（自動標為退賽）。';
+      }
+    }
+
+    async function handleAdminCkStart() {
+      const btn = document.getElementById('adminCkStart');
+      if (btn && btn.disabled) return;
+      hideMsg('checkinMsg');
+
+      try {
+        const previewRes = await callApi('/api/admin/start', { dry_run: true });
+        const playersCount = previewRes.players !== undefined ? previewRes.players : 0;
+        const noShow = previewRes.no_show;
+        const ck = snapshotData && snapshotData.checkin;
+        const allZeroApproved = ck && Array.isArray(ck.divs) && ck.divs.length > 0 && ck.divs.every(d => (d.approved || 0) === 0);
+
+        let confirmMsg = '';
+        if (Array.isArray(noShow)) {
+          if (noShow.length > 0) {
+            const noShowNames = noShow.map(p => `${p.name} (${p.id})`).join('、');
+            confirmMsg = `未報到選手（開賽時將被移除，共 ${noShow.length} 人）：\n${noShowNames}\n\n確定以此名單（共 ${playersCount} 人）建立賽程並開賽嗎？`;
+          } else if (allZeroApproved) {
+            confirmMsg = `目前沒有人報到，將以全部名單（共 ${playersCount} 人）開賽。\n\n確定以此名單建立賽程並正式開賽嗎？`;
+          } else {
+            confirmMsg = `所有選手皆已完成報到（共 ${playersCount} 人）。\n\n確定以此名單建立賽程並正式開賽嗎？`;
+          }
+        } else {
+          confirmMsg = `目前通過 ${playersCount} 人，確定要以此名單開賽嗎？開賽後將正式建立選手名單並進入第 1 輪。`;
+        }
+
+        const ok = await confirmDialog({
+          title: '開賽確認',
+          message: confirmMsg,
+          yes: '確認開賽',
+          no: '取消',
+          danger: true
+        });
+        if (!ok) return;
+
+        btn.disabled = true;
+        btn.textContent = '開賽中…';
+        const res = await callApi('/api/admin/start', {});
+        showMsg('checkinMsg', `已開賽！共建立 ${res.players || playersCount} 名選手`, false);
+        await fetchData();
+        renderSummary();
+      } catch (err) {
+        showMsg('checkinMsg', err.message || '開賽失敗');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = '開賽';
+        }
+      }
+    }
+
     async function fetchCheckinList() {
       if (!staffPin) return;
+      if (snapshotData && snapshotData.checkin && snapshotData.kind !== 'bracket') {
+        renderCheckinPanelMode();
+        return;
+      }
       hideMsg('checkinMsg');
       try {
         const res = await callApi('/api/staff/checkin_list', {});
@@ -2527,6 +2340,8 @@
       hideMsg('proposeMsg');
       const noShowEl = document.getElementById('noShowNotice');
       if (noShowEl) noShowEl.style.display = 'none';
+      const ctlRenote = document.getElementById('ctlRenumberNote');
+      if (ctlRenote) ctlRenote.style.display = 'none';
 
       isProposing = true;
       const origText = btn ? btn.textContent : '';
@@ -2562,6 +2377,32 @@
 
     // 渲染配對提案表格
     function renderProposalTable(proposal) {
+      // 處理第二階段達門檻晉級提示區塊 (DATA-CONTRACT 10.9)
+      const p2Box = document.getElementById('phase2Box');
+      const p2Header = document.getElementById('phase2BoxHeader');
+      const p2OutList = document.getElementById('phase2OutList');
+      if (p2Box) {
+        if (proposal && proposal.phase2) {
+          const p2 = proposal.phase2;
+          if (p2Header) {
+            p2Header.textContent = `第二階段：${p2.qualified} 人晉級、${p2.out} 人沒達 ${p2.min_points} 分`;
+          }
+          if (p2OutList) {
+            const outPlayers = Array.isArray(proposal.phase_out) ? proposal.phase_out : [];
+            if (outPlayers.length > 0) {
+              p2OutList.innerHTML = `<div style="font-weight: 700; margin-bottom: 4px; color: var(--text-sub);">未晉級名單：</div>` +
+                outPlayers.map(p => `<div style="padding: 2px 0;">• <strong>${escapeHtml(p.name)}</strong>（${escapeHtml(p.id)}）· 累計 ${p.points} 分</div>`).join('');
+            } else {
+              p2OutList.innerHTML = '';
+            }
+          }
+          p2Box.style.display = 'block';
+        } else {
+          p2Box.style.display = 'none';
+          if (p2OutList) p2OutList.innerHTML = '';
+        }
+      }
+
       const tbody = document.getElementById('proposalTableBody');
       if (!proposal || !proposal.tables || proposal.tables.length === 0) {
         tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-sub); padding: 16px;">目前尚無配對提案</td></tr>';
@@ -2854,6 +2695,10 @@
             await callApi('/api/admin/publish', { proposal_id: currentProposal.proposal_id });
             currentProposal = null;
             updatePublishBtnState();
+            const ctlRenote = document.getElementById('ctlRenumberNote');
+            if (ctlRenote) ctlRenote.style.display = 'none';
+            const p2Box = document.getElementById('phase2Box');
+            if (p2Box) p2Box.style.display = 'none';
             document.getElementById('proposalTableBody').innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--success); padding: 16px;">配對已正式公布！</td></tr>';
             showMsg('proposeMsg', '配對已正式公布！', false);
             await fetchData();
@@ -2961,118 +2806,561 @@
       }
     }
 
-    // 結束整場賽事（危險操作）
-    function handleFinishClick() {
-      hideMsg('finishMsg');
-      showConfirm('結束賽事確認', '確定要結束整場賽事嗎？此操作將賽事狀態設為已結束（done）。', async () => {
-        try {
-          await callApi('/api/admin/finish', {});
-          showMsg('finishMsg', '賽事已正式結束', false);
-          await fetchData();
-        } catch (err) {
-          showMsg('finishMsg', err.message);
+
+
+    // 渲染驗牌抽查結果表格 (PROJECT.md 第十一輪任務, DATA-CONTRACT 6.2)
+    function renderAdminDeckSampleResult(res, listEl) {
+      const sampleTables = (res && Array.isArray(res.tables)) ? res.tables : [];
+      if (sampleTables.length === 0) {
+        listEl.innerHTML = `
+          <div style="padding: 12px; color: var(--text-sub); text-align: center;">
+            第 ${res.round || 1} 輪驗牌抽查（抽查比例：${res.percent || 10}%）：目前尚無需抽查的對戰桌次
+          </div>`;
+        return;
+      }
+
+      let html = `
+        <div style="padding: 8px 12px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 6px; margin-bottom: 10px; font-size: 0.88rem; font-weight: 700; color: #38bdf8;">
+          第 ${res.round} 輪驗牌抽查名單（抽查比例：${res.percent}%，共抽查 ${sampleTables.length} 桌）
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th style="width: 20%;">桌號</th>
+              <th style="width: 40%;">選手 1</th>
+              <th style="width: 40%;">選手 2</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      function formatSamplePlayer(p) {
+        if (!p) return '<span style="color: var(--text-sub);">-</span>';
+        const deckStatus = p.has_decklist
+          ? '<span style="color: #34d399; font-weight: 600;">已登錄牌表</span>'
+          : '<span style="color: #f87171; font-weight: 600;">未登錄牌表</span>';
+        const checkStatus = p.checked
+          ? '<span style="color: #38bdf8; font-weight: 700;">已驗過</span>'
+          : '<span style="color: var(--text-sub);">未驗牌</span>';
+        return `<div><strong>${escapeHtml(p.id)}</strong> ${escapeHtml(p.name)}</div>
+                <div style="font-size: 0.8rem; margin-top: 3px;">${deckStatus} · ${checkStatus}</div>`;
+      }
+
+      for (const tb of sampleTables) {
+        const p1 = (tb.players && tb.players[0]) ? tb.players[0] : null;
+        const p2 = (tb.players && tb.players[1]) ? tb.players[1] : null;
+
+        html += `
+          <tr>
+            <td style="font-weight: 800; font-size: 1.05rem; color: #fbbf24;">第 ${tb.table} 桌</td>
+            <td>${formatSamplePlayer(p1)}</td>
+            <td>${formatSamplePlayer(p2)}</td>
+          </tr>
+        `;
+      }
+
+      html += `
+          </tbody>
+        </table>
+      `;
+
+      listEl.innerHTML = html;
+    }
+
+    // ------------------------------------------------ 報分設定與桌子控制 (DATA-CONTRACT 10.8)
+    function formatWhoText(who) {
+      if (!Array.isArray(who) || who.length === 0) return '僅主辦可以報';
+      const j = who.includes('judge');
+      const p = who.includes('player');
+      if (j && p) return '裁判、選手皆可報';
+      if (j) return '僅裁判可以報';
+      if (p) return '僅選手可以報';
+      return '僅主辦可以報';
+    }
+
+    function startCtlAutoRefresh() {
+      if (ctlAutoRefreshTimer) clearInterval(ctlAutoRefreshTimer);
+      ctlAutoRefreshTimer = setInterval(() => {
+        if (staffPin && snapshotData && snapshotData.event && snapshotData.event.mode !== 'A') {
+          fetchPolicyView();
+        }
+      }, 12000);
+    }
+
+    function stopCtlAutoRefresh() {
+      if (ctlAutoRefreshTimer) {
+        clearInterval(ctlAutoRefreshTimer);
+        ctlAutoRefreshTimer = null;
+      }
+    }
+
+    async function fetchPolicyView() {
+      if (!staffPin) return;
+      if (snapshotData && snapshotData.event && snapshotData.event.mode === 'A') {
+        const ctlPanel = document.getElementById('ctlPanel');
+        if (ctlPanel) ctlPanel.style.display = 'none';
+        stopCtlAutoRefresh();
+        return;
+      }
+
+      try {
+        const res = await callApi('/api/admin/policy_view', {});
+        lastPolicyViewData = res;
+        renderPolicyView(res);
+        const ctlPanel = document.getElementById('ctlPanel');
+        if (ctlPanel) ctlPanel.style.display = 'block';
+      } catch (err) {
+        if (err && (err.status === 409 || err.code === 'not_allowed')) {
+          const ctlPanel = document.getElementById('ctlPanel');
+          if (ctlPanel) ctlPanel.style.display = 'none';
+          stopCtlAutoRefresh();
+        }
+      }
+    }
+
+    function renderPolicyView(res) {
+      if (!res) return;
+
+      // 1. 全場設定渲染（若 isAllDirty 為 true 則不覆蓋目前 checkbox）
+      const allPolicy = (res.layers && res.layers.all) || null;
+      const hasAllSetting = Boolean(allPolicy && Array.isArray(allPolicy.who));
+      const clearBtn = document.getElementById('ctlAllClear');
+      if (clearBtn) {
+        clearBtn.style.display = hasAllSetting ? 'inline-block' : 'none';
+      }
+
+      if (!isAllDirty) {
+        const judgeChk = document.getElementById('ctlAllJudge');
+        const playerChk = document.getElementById('ctlAllPlayer');
+        if (judgeChk && playerChk) {
+          if (hasAllSetting) {
+            judgeChk.checked = allPolicy.who.includes('judge');
+            playerChk.checked = allPolicy.who.includes('player');
+          } else {
+            // 預設全場皆可報
+            judgeChk.checked = true;
+            playerChk.checked = true;
+          }
+        }
+      }
+
+      // 2. 停用清單渲染
+      renderHeldList(res.held_tables || []);
+
+      // 3. 每一桌清單渲染
+      renderTablesList(res.effective || [], res.layers);
+    }
+
+    function renderHeldList(heldTables) {
+      const container = document.getElementById('ctlHeldList');
+      if (!container) return;
+
+      if (!Array.isArray(heldTables) || heldTables.length === 0) {
+        container.innerHTML = '<span style="font-size: 0.85rem; color: var(--text-sub);">無停用桌號</span>';
+        return;
+      }
+
+      container.innerHTML = heldTables.map(tbl => `
+        <div data-table="${tbl}" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 6px;">
+          <span style="font-size: 0.85rem; font-weight: 700; color: #fca5a5;">第 ${tbl} 桌</span>
+          <button type="button" class="btn btn-secondary ctl-open" style="min-height: 44px; min-width: 44px; padding: 4px 8px; font-size: 0.8rem;">恢復</button>
+        </div>
+      `).join('');
+
+      container.querySelectorAll('.ctl-open').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const parent = e.target.closest('[data-table]');
+          if (!parent) return;
+          const tbl = parseInt(parent.dataset.table, 10);
+          await handleTableAction('open', tbl);
+        });
+      });
+    }
+
+    async function handleTableAction(act, table) {
+      hideMsg('ctlMsg');
+      const tbl = parseInt(table, 10);
+      if (isNaN(tbl) || tbl <= 0) {
+        showMsg('ctlMsg', '請輸入正確的桌號');
+        return;
+      }
+
+      const isHold = (act === 'hold');
+      const confirmTitle = isHold ? '停用桌號確認' : '恢復桌號確認';
+      const confirmMsg = isHold
+        ? `確定停用第 ${tbl} 桌？停用的桌號下一輪起會跳過；已公布的這一輪不動。`
+        : `確定恢復第 ${tbl} 桌？`;
+
+      const ok = await confirmDialog({
+        title: confirmTitle,
+        message: confirmMsg,
+        yes: isHold ? '確認停用' : '確認恢復',
+        no: '取消',
+        danger: isHold
+      });
+
+      if (!ok) return;
+
+      try {
+        const res = await callApi('/api/admin/table', { act, table: tbl });
+        if (res.proposal) {
+          currentProposal = res.proposal;
+          renderProposalTable(currentProposal);
+          updatePublishBtnState();
+          const noteEl = document.getElementById('ctlRenumberNote');
+          if (noteEl) noteEl.style.display = 'block';
+        }
+        const input = document.getElementById('ctlHoldTable');
+        if (input) input.value = '';
+        showMsg('ctlMsg', `第 ${tbl} 桌已${isHold ? '停用' : '恢復'}`, false);
+        await fetchPolicyView();
+      } catch (err) {
+        showMsg('ctlMsg', err.message);
+      }
+    }
+
+    function renderTablesList(effectiveList, layers) {
+      const container = document.getElementById('ctlTables');
+      if (!container) return;
+
+      if (!Array.isArray(effectiveList) || effectiveList.length === 0) {
+        container.innerHTML = '<div class="empty-state-sm">目前無桌次報分資料</div>';
+        return;
+      }
+
+      container.innerHTML = effectiveList.map(eff => {
+        const tbl = eff.table;
+        const isDirty = dirtyTables.has(tbl);
+        let judgeChecked, playerChecked;
+        if (isDirty && dirtyTableValues.has(tbl)) {
+          const dv = dirtyTableValues.get(tbl);
+          judgeChecked = dv.judge;
+          playerChecked = dv.player;
+        } else {
+          const who = Array.isArray(eff.who) ? eff.who : [];
+          judgeChecked = who.includes('judge');
+          playerChecked = who.includes('player');
+        }
+
+        let fromText = '系統預設';
+        if (eff.who_from === 'table') fromText = '單獨設定';
+        else if (eff.who_from === 'all') fromText = '全場設定';
+
+        const whoText = formatWhoText(eff.who);
+        const heldBadge = eff.held
+          ? '<span class="badge ctl-held" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">停用中</span>'
+          : '';
+
+        const hasTableLayer = Boolean(layers && layers.table && layers.table[String(tbl)]);
+        const isTableFrom = (eff.who_from === 'table') || hasTableLayer;
+
+        return `
+          <div class="ctl-row" data-table="${tbl}">
+            <div class="ctl-row-info">
+              <strong style="font-size: 0.95rem; min-width: 60px;">第 ${tbl} 桌</strong>
+              ${heldBadge}
+              <span class="ctl-from" style="font-size: 0.8rem; color: var(--text-sub);">來源：${escapeHtml(fromText)}（目前：${escapeHtml(whoText)}）</span>
+            </div>
+            <div class="ctl-row-actions">
+              <label style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.85rem; cursor: pointer; min-height: 44px;">
+                <input type="checkbox" class="ctl-judge" ${judgeChecked ? 'checked' : ''} style="width: 16px; height: 16px;">
+                <span>裁判</span>
+              </label>
+              <label style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.85rem; cursor: pointer; min-height: 44px;">
+                <input type="checkbox" class="ctl-player" ${playerChecked ? 'checked' : ''} style="width: 16px; height: 16px;">
+                <span>選手</span>
+              </label>
+              <button type="button" class="btn btn-primary ctl-save" style="min-width: 60px; padding: 4px 10px; font-size: 0.82rem;">儲存</button>
+              <button type="button" class="btn btn-secondary ctl-clear" style="min-width: 110px; padding: 4px 10px; font-size: 0.82rem; ${isTableFrom ? '' : 'display: none;'}">清除，跟回上一層</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // 綁定每一列事件
+      container.querySelectorAll('.ctl-row').forEach(row => {
+        const tbl = parseInt(row.dataset.table, 10);
+        const judgeChk = row.querySelector('.ctl-judge');
+        const playerChk = row.querySelector('.ctl-player');
+        const saveBtn = row.querySelector('.ctl-save');
+        const clearBtn = row.querySelector('.ctl-clear');
+
+        const markDirty = () => {
+          dirtyTables.add(tbl);
+          dirtyTableValues.set(tbl, {
+            judge: judgeChk.checked,
+            player: playerChk.checked
+          });
+        };
+
+        if (judgeChk) judgeChk.addEventListener('change', markDirty);
+        if (playerChk) playerChk.addEventListener('change', markDirty);
+
+        if (saveBtn) {
+          saveBtn.addEventListener('click', async () => {
+            hideMsg('ctlMsg');
+            const who = [];
+            if (judgeChk.checked) who.push('judge');
+            if (playerChk.checked) who.push('player');
+
+            const ok = await confirmDialog({
+              title: '桌次報分設定確認',
+              message: `確定將第 ${tbl} 桌報分設定改為：${formatWhoText(who)}？`,
+              yes: '確認儲存',
+              no: '取消',
+              danger: false
+            });
+            if (!ok) return;
+
+            try {
+              const res = await callApi('/api/admin/policy', {
+                scope: 'table',
+                table: tbl,
+                who: who
+              });
+              dirtyTables.delete(tbl);
+              dirtyTableValues.delete(tbl);
+              lastPolicyViewData = res;
+              renderPolicyView(res);
+              showMsg('ctlMsg', `第 ${tbl} 桌報分設定已儲存`, false);
+            } catch (err) {
+              showMsg('ctlMsg', err.message);
+            }
+          });
+        }
+
+        if (clearBtn) {
+          clearBtn.addEventListener('click', async () => {
+            hideMsg('ctlMsg');
+            const ok = await confirmDialog({
+              title: '清除桌次設定確認',
+              message: `確定清除第 ${tbl} 桌單獨設定，跟回上一層？`,
+              yes: '確認清除',
+              no: '取消',
+              danger: true
+            });
+            if (!ok) return;
+
+            try {
+              const res = await callApi('/api/admin/policy', {
+                scope: 'table',
+                table: tbl,
+                clear: true
+              });
+              dirtyTables.delete(tbl);
+              dirtyTableValues.delete(tbl);
+              lastPolicyViewData = res;
+              renderPolicyView(res);
+              showMsg('ctlMsg', `第 ${tbl} 桌設定已清除，跟回上一層`, false);
+            } catch (err) {
+              showMsg('ctlMsg', err.message);
+            }
+          });
         }
       });
     }
 
-    // 產生驗牌抽查名單 (PROJECT.md 第十一輪任務, DATA-CONTRACT 6.2)
-    async function handleDeckSample() {
-      hideMsg('deckSampleMsg');
-      const listEl = document.getElementById('deckSampleList');
+    async function handleAllPolicySave() {
+      hideMsg('ctlMsg');
+      const judgeChk = document.getElementById('ctlAllJudge');
+      const playerChk = document.getElementById('ctlAllPlayer');
+      const who = [];
+      if (judgeChk && judgeChk.checked) who.push('judge');
+      if (playerChk && playerChk.checked) who.push('player');
+
+      const ok = await confirmDialog({
+        title: '全場報分設定確認',
+        message: `確定將全場報分設定改為：${formatWhoText(who)}？`,
+        yes: '確認儲存',
+        no: '取消',
+        danger: false
+      });
+      if (!ok) return;
+
       try {
-        const res = await callApi('/api/admin/deck_check_sample', {});
-        const sampleTables = res.tables || [];
-        if (sampleTables.length === 0) {
-          listEl.innerHTML = `
-            <div style="padding: 12px; color: var(--text-sub); text-align: center;">
-              第 ${res.round || 1} 輪驗牌抽查（抽查比例：${res.percent || 10}%）：目前尚無需抽查的對戰桌次
-            </div>`;
-          return;
-        }
-
-        let html = `
-          <div style="padding: 8px 12px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 6px; margin-bottom: 10px; font-size: 0.88rem; font-weight: 700; color: #38bdf8;">
-            第 ${res.round} 輪驗牌抽查名單（抽查比例：${res.percent}%，共抽查 ${sampleTables.length} 桌）
-          </div>
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th style="width: 20%;">桌號</th>
-                <th style="width: 40%;">選手 1</th>
-                <th style="width: 40%;">選手 2</th>
-              </tr>
-            </thead>
-            <tbody>
-        `;
-
-        function formatSamplePlayer(p) {
-          if (!p) return '<span style="color: var(--text-sub);">-</span>';
-          const deckStatus = p.has_decklist
-            ? '<span style="color: #34d399; font-weight: 600;">已登錄牌表</span>'
-            : '<span style="color: #f87171; font-weight: 600;">未登錄牌表</span>';
-          const checkStatus = p.checked
-            ? '<span style="color: #38bdf8; font-weight: 700;">已驗過</span>'
-            : '<span style="color: var(--text-sub);">未驗牌</span>';
-          return `<div><strong>${escapeHtml(p.id)}</strong> ${escapeHtml(p.name)}</div>
-                  <div style="font-size: 0.8rem; margin-top: 3px;">${deckStatus} · ${checkStatus}</div>`;
-        }
-
-        for (const tb of sampleTables) {
-          const p1 = (tb.players && tb.players[0]) ? tb.players[0] : null;
-          const p2 = (tb.players && tb.players[1]) ? tb.players[1] : null;
-
-          html += `
-            <tr>
-              <td style="font-weight: 800; font-size: 1.05rem; color: #fbbf24;">第 ${tb.table} 桌</td>
-              <td>${formatSamplePlayer(p1)}</td>
-              <td>${formatSamplePlayer(p2)}</td>
-            </tr>
-          `;
-        }
-
-        html += `
-            </tbody>
-          </table>
-        `;
-
-        listEl.innerHTML = html;
-        showMsg('deckSampleMsg', `已成功抽出第 ${res.round} 輪驗牌桌次（抽查比例 ${res.percent}%）`, false);
+        const res = await callApi('/api/admin/policy', {
+          scope: 'all',
+          who: who
+        });
+        isAllDirty = false;
+        lastPolicyViewData = res;
+        renderPolicyView(res);
+        showMsg('ctlMsg', '全場報分設定已儲存', false);
       } catch (err) {
-        showMsg('deckSampleMsg', err.message);
+        showMsg('ctlMsg', err.message);
+      }
+    }
+
+    async function handleAllPolicyClear() {
+      hideMsg('ctlMsg');
+      const ok = await confirmDialog({
+        title: '清除全場設定確認',
+        message: '確定清除全場單獨設定，跟回系統預設（裁判、選手皆可報）？',
+        yes: '確認清除',
+        no: '取消',
+        danger: true
+      });
+      if (!ok) return;
+
+      try {
+        const res = await callApi('/api/admin/policy', {
+          scope: 'all',
+          clear: true
+        });
+        isAllDirty = false;
+        lastPolicyViewData = res;
+        renderPolicyView(res);
+        showMsg('ctlMsg', '全場單獨設定已清除，跟回系統預設', false);
+      } catch (err) {
+        showMsg('ctlMsg', err.message);
       }
     }
 
     // 綁定所有按鈕事件
     window.addEventListener('DOMContentLoaded', () => {
-      // 登入與登出
-      document.getElementById('staffLogin').addEventListener('click', handleLogin);
-      document.getElementById('staffLogout').addEventListener('click', handleLogout);
-      document.getElementById('staffPin').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') handleLogin();
+      // 掛載四個共用面板 (AdminPanels)
+      loginPanel = AdminPanels.mountLogin({
+        ids: {
+          section: 'loginSection',
+          pin: 'staffPin',
+          btn: 'staffLogin',
+          error: 'loginError',
+          logout: 'staffLogout'
+        },
+        storageKey: SESSION_STORAGE_KEY_STAFF_PIN,
+        onLogin: async (who) => {
+          staffPin = loginPanel.getPin();
+          window.staffPin = staffPin;
+          adminName = who.name || '示範主辦';
+          renderAuthUI();
+          renderSummary();
+          startCheckinAutoRefresh();
+          populateZonesInput(true);
+          if (healthPanel) healthPanel.start();
+          await loadExistingProposal();
+          await fetchCheckinList();
+          if (staffPanel) await staffPanel.refresh();
+          if (snapshotData && snapshotData.event && snapshotData.event.mode !== 'A') {
+            await fetchPolicyView();
+            startCtlAutoRefresh();
+          }
+        },
+        onLogout: () => {
+          stopCheckinAutoRefresh();
+          stopCtlAutoRefresh();
+          isAllDirty = false;
+          dirtyTables.clear();
+          dirtyTableValues.clear();
+          lastPolicyViewData = null;
+          const ctlPanel = document.getElementById('ctlPanel');
+          if (ctlPanel) ctlPanel.style.display = 'none';
+          const ctlRenote = document.getElementById('ctlRenumberNote');
+          if (ctlRenote) ctlRenote.style.display = 'none';
+          hideMsg('ctlMsg');
+          if (healthPanel) healthPanel.stop();
+          if (staffPanel) staffPanel.stop();
+          staffPin = null;
+          window.staffPin = null;
+          adminName = '';
+          currentProposal = null;
+          renderProposalTable(null);
+          updatePublishBtnState();
+          zonesTextInitialized = false;
+          const zonesTextEl = document.getElementById('zonesText');
+          if (zonesTextEl) zonesTextEl.value = '';
+          hideMsg('zonesMsg');
+          const countEl = document.getElementById('checkinCount');
+          if (countEl) countEl.textContent = '已報到 0 / 總數 0';
+          const listEl = document.getElementById('checkinList');
+          if (listEl) listEl.innerHTML = '<div class="empty-state-sm">請點擊「重新整理報到清單」載入選手</div>';
+          hideMsg('addPlayerResult');
+          hideMsg('checkinMsg');
+          const noShowCopyMsgEl = document.getElementById('noShowCopyMsg');
+          if (noShowCopyMsgEl) noShowCopyMsgEl.textContent = '';
+          const noDeckSection = document.getElementById('noDeckSection');
+          if (noDeckSection) noDeckSection.style.display = 'none';
+          const noDeckCountEl = document.getElementById('noDeckCount');
+          if (noDeckCountEl) noDeckCountEl.textContent = '已報到但還沒交牌表：0 人';
+          const noDeckListEl = document.getElementById('noDeckList');
+          if (noDeckListEl) noDeckListEl.innerHTML = '';
+          const noDeckCopyMsgEl = document.getElementById('noDeckCopyMsg');
+          if (noDeckCopyMsgEl) noDeckCopyMsgEl.textContent = '';
+          const noShowEl = document.getElementById('noShowNotice');
+          if (noShowEl) noShowEl.style.display = 'none';
+          lastPreviewedImportText = null;
+          lastPreviewedImportLabel = null;
+          const importConf = document.getElementById('importConfirmBtn');
+          if (importConf) importConf.disabled = true;
+          const previewEl = document.getElementById('importPreview');
+          if (previewEl) { previewEl.innerHTML = ''; previewEl.style.display = 'none'; }
+          const problemsEl = document.getElementById('importProblems');
+          if (problemsEl) { problemsEl.innerHTML = ''; problemsEl.style.display = 'none'; }
+          hideMsg('importMsg');
+
+          if (deckConfigPanel) deckConfigPanel.reset();
+          if (deckSamplePanel) deckSamplePanel.reset();
+
+          renderAuthUI();
+        }
       });
 
-      // 工作人員管理 (PROJECT.md 第三十四輪)
-      const staffRefreshBtn = document.getElementById('staffRefresh');
-      if (staffRefreshBtn) {
-        staffRefreshBtn.addEventListener('click', fetchStaffList);
-      }
-      const staffAddBtn = document.getElementById('staffAddBtn');
-      if (staffAddBtn) {
-        staffAddBtn.addEventListener('click', handleAddStaff);
-      }
-      const staffAddNameInput = document.getElementById('staffAddName');
-      if (staffAddNameInput) {
-        staffAddNameInput.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') handleAddStaff();
-        });
-      }
-      const staffPinDoneBtn = document.getElementById('staffPinDone');
-      if (staffPinDoneBtn) {
-        staffPinDoneBtn.addEventListener('click', handleStaffPinDone);
-      }
+      healthPanel = AdminPanels.mountHealth({
+        getPin: () => (loginPanel ? loginPanel.getPin() : (staffPin || '')),
+        intervalMs: 3000
+      });
+
+      staffPanel = AdminPanels.mountStaff({
+        getPin: () => (loginPanel ? loginPanel.getPin() : (staffPin || ''))
+      });
+
+      AdminPanels.mountFinish({
+        ids: { btn: 'finishBtn', msg: 'finishMsg' },
+        getPin: () => (loginPanel ? loginPanel.getPin() : (staffPin || '')),
+        onFinished: async () => {
+          await fetchData();
+        }
+      });
+
+      deckConfigPanel = AdminPanels.mountDeckConfig({
+        ids: {
+          section: 'adminDeckSection',
+          lock: 'adminDeckLock',
+          deadline: 'adminDeckDeadline',
+          clear: 'adminDeckClear',
+          save: 'adminDeckSave',
+          msg: 'adminDeckMsg'
+        },
+        getPin: () => (loginPanel ? loginPanel.getPin() : (staffPin || '')),
+        readConfig: (snap) => {
+          const c = (snap && snap.event && snap.event.checkin) || {};
+          return {
+            required: c.decklist_required,
+            lock: c.decklist_lock,
+            deadline_at: c.decklist_deadline_at
+          };
+        },
+        afterSave: async () => {
+          await fetchData();
+        }
+      });
+
+      deckSamplePanel = AdminPanels.mountDeckSample({
+        ids: {
+          btn: 'deckSampleBtn',
+          msg: 'deckSampleMsg',
+          list: 'deckSampleList'
+        },
+        getPin: () => (loginPanel ? loginPanel.getPin() : (staffPin || '')),
+        renderResult: renderAdminDeckSampleResult,
+        successText: (res) => `已成功抽出第 ${res.round} 輪驗牌桌次（抽查比例 ${res.percent}%）`
+      });
 
       // 現場報到管理 (PROJECT.md 10 第八輪任務)
       document.getElementById('checkinRefresh').addEventListener('click', fetchCheckinList);
+      const adminCkStartBtn = document.getElementById('adminCkStart');
+      if (adminCkStartBtn) {
+        adminCkStartBtn.addEventListener('click', handleAdminCkStart);
+      }
       const noShowCopyBtn = document.getElementById('noShowCopy');
       if (noShowCopyBtn) {
         noShowCopyBtn.addEventListener('click', handleNoShowCopy);
@@ -3139,9 +3427,6 @@
       document.getElementById('swapBtn').addEventListener('click', handleSwap);
       document.getElementById('publishBtn').addEventListener('click', handlePublishClick);
 
-      // 驗牌抽查名單 (PROJECT.md 第十一輪任務)
-      document.getElementById('deckSampleBtn').addEventListener('click', handleDeckSample);
-
       // 退賽與重入
       document.getElementById('dropBtn').addEventListener('click', handleDropClick);
       document.getElementById('rejoinBtn').addEventListener('click', handleRejoinClick);
@@ -3150,41 +3435,55 @@
       document.getElementById('securityRefresh').addEventListener('click', handleSecurityRefresh);
       document.getElementById('unlockAllBtn').addEventListener('click', handleUnlockAll);
 
-      // 結束賽事
-      document.getElementById('finishBtn').addEventListener('click', handleFinishClick);
-
-      // 確認彈窗按鈕
-      document.getElementById('confirmYes').addEventListener('click', async () => {
-        const action = pendingConfirmAction;
-        hideConfirm();
-        if (action) {
-          await action();
-        }
-      });
-      document.getElementById('confirmNo').addEventListener('click', hideConfirm);
-
       // 重新連線
       document.getElementById('retryBtn').addEventListener('click', fetchData);
 
+      // 報分與桌子控制 (DATA-CONTRACT 10.8)
+      const ctlAllJudgeEl = document.getElementById('ctlAllJudge');
+      if (ctlAllJudgeEl) ctlAllJudgeEl.addEventListener('change', () => { isAllDirty = true; });
+      const ctlAllPlayerEl = document.getElementById('ctlAllPlayer');
+      if (ctlAllPlayerEl) ctlAllPlayerEl.addEventListener('change', () => { isAllDirty = true; });
+      const ctlAllSaveEl = document.getElementById('ctlAllSave');
+      if (ctlAllSaveEl) ctlAllSaveEl.addEventListener('click', handleAllPolicySave);
+      const ctlAllClearEl = document.getElementById('ctlAllClear');
+      if (ctlAllClearEl) ctlAllClearEl.addEventListener('click', handleAllPolicyClear);
+      const ctlHoldBtnEl = document.getElementById('ctlHoldBtn');
+      if (ctlHoldBtnEl) {
+        ctlHoldBtnEl.addEventListener('click', () => {
+          const input = document.getElementById('ctlHoldTable');
+          handleTableAction('hold', input ? input.value : '');
+        });
+      }
+      const ctlOpenBtnEl = document.getElementById('ctlOpenBtn');
+      if (ctlOpenBtnEl) {
+        ctlOpenBtnEl.addEventListener('click', () => {
+          const input = document.getElementById('ctlHoldTable');
+          handleTableAction('open', input ? input.value : '');
+        });
+      }
+      const ctlHoldTableEl = document.getElementById('ctlHoldTable');
+      if (ctlHoldTableEl) {
+        ctlHoldTableEl.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            handleTableAction('hold', ctlHoldTableEl.value);
+          }
+        });
+      }
+
       function handleVisibilityChange() {
         if (document.visibilityState === 'hidden') {
-          if (pollTimer) {
-            clearInterval(pollTimer);
-            pollTimer = null;
-          }
           stopCheckinAutoRefresh();
-          stopHealthTimer();
+          stopCtlAutoRefresh();
         } else {
           fetchData();
           if (staffPin) {
             startCheckinAutoRefresh();
             fetchCheckinList();
-            fetchHealth();
-            startHealthTimer();
-            fetchStaffList();
-          }
-          if (!pollTimer) {
-            pollTimer = setInterval(fetchData, 5000);
+            if (staffPanel) staffPanel.refresh();
+            if (snapshotData && snapshotData.event && snapshotData.event.mode !== 'A') {
+              startCtlAutoRefresh();
+              fetchPolicyView();
+            }
           }
         }
       }
@@ -3192,10 +3491,10 @@
 
       // 初始化
       updatePrintLinks();
-      checkAutoLogin();
+      poller.start();
       fetchData();
-      pollTimer = setInterval(fetchData, 5000);
       clockTimer = setInterval(() => {
+        serverOffsetMs = poller.serverOffsetMs;
         updateClockDisplay();
         renderSummary();
         checkFreshness();

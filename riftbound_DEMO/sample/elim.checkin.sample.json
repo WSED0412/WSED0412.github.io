@@ -8,13 +8,151 @@
     "note": "",
     "api_base": "",
     "viewers": 0,
+    "judge_calls_waiting": 0,
+    "pages": [
+      {
+        "id": "player",
+        "label": "我的比賽（找桌、回報）",
+        "href": "elim-player.html",
+        "audience": "player",
+        "hint": "輸入編號或名字看下一場；登入後可以報分、叫裁判"
+      },
+      {
+        "id": "checkin",
+        "label": "報到（抽號碼牌）",
+        "href": "elim-checkin.html",
+        "audience": "player",
+        "hint": "輸入手上的卡號與名字，等檢錄台通過"
+      },
+      {
+        "id": "board",
+        "label": "全場看板",
+        "href": "elim-board.html",
+        "audience": "screen",
+        "hint": "每一區每一桌現在在打誰"
+      },
+      {
+        "id": "bracket",
+        "label": "賽程樹",
+        "href": "elim-bracket.html",
+        "audience": "screen",
+        "hint": "整棵賽程樹與名次"
+      },
+      {
+        "id": "judge",
+        "label": "裁判",
+        "href": "elim-judge.html",
+        "audience": "staff",
+        "hint": "報分、撤銷、逐分、裁判呼叫佇列"
+      },
+      {
+        "id": "call",
+        "label": "唱名",
+        "href": "elim-call.html",
+        "audience": "staff",
+        "hint": "叫剛排上桌的選手上場"
+      },
+      {
+        "id": "desk",
+        "label": "檢錄台",
+        "href": "elim-desk.html",
+        "audience": "staff",
+        "hint": "審核選手送出的卡號、開賽"
+      },
+      {
+        "id": "admin",
+        "label": "主辦控制台",
+        "href": "elim-admin.html",
+        "audience": "staff",
+        "hint": "桌子、報分設定、抽籤、系統健康"
+      },
+      {
+        "id": "print",
+        "label": "紙本備援列印",
+        "href": "elim-print.html",
+        "audience": "staff",
+        "hint": "斷網時的對戰表與結果單"
+      }
+    ],
     "format": {
       "elim_type": "single",
       "third_place": false,
       "final_size": 2,
+      "bracket_format": "elim",
       "scoring": "beyblade_x",
       "win_point": 4,
       "tables_per_div": 4
+    },
+    "game": {
+      "id": "beyblade_x",
+      "game": "beyblade_x",
+      "label": "戰鬥陀螺 X",
+      "report": {
+        "kind": "score",
+        "games_to_win": null,
+        "games_to_win_options": null,
+        "draws": false,
+        "winner_only": true,
+        "points": [
+          {
+            "key": "xtreme",
+            "label": "極限",
+            "value": 3
+          },
+          {
+            "key": "over",
+            "label": "擊飛",
+            "value": 2
+          },
+          {
+            "key": "burst",
+            "label": "爆裂",
+            "value": 2
+          },
+          {
+            "key": "spin",
+            "label": "迴轉",
+            "value": 1
+          }
+        ],
+        "win_score": 4,
+        "max_score": 6
+      },
+      "match_draw": {
+        "swiss": false,
+        "elimination": false
+      },
+      "elimination_rule": "不會和局：先拿到 4 分的人贏",
+      "timeout": null,
+      "timing": {
+        "extra_turns": 0,
+        "extra_max_sec": null,
+        "late_warn_sec": 120,
+        "late_loss_sec": 600,
+        "late_rule": null,
+        "provisional": true
+      },
+      "match_minutes": 5,
+      "pace": "live",
+      "columns": [
+        {
+          "key": "omw",
+          "label": "分差",
+          "abbr": "分差",
+          "tiebreak": 1,
+          "unit": ""
+        },
+        {
+          "key": "gw",
+          "label": "總得分",
+          "abbr": "得分",
+          "tiebreak": 2,
+          "unit": ""
+        }
+      ],
+      "deck": null,
+      "provisional": true,
+      "official": []
     }
   },
   "policy": {
@@ -85,5 +223,6 @@
         "seed": 11
       }
     ]
-  }
+  },
+  "tables_now": []
 }

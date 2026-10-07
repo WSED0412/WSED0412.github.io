@@ -5,43 +5,9 @@
   <meta name="viewport" content="width=1920, height=1080, initial-scale=1.0">
   <link rel="icon" href="data:,">
   <title>符文戰場 — OBS 疊圖</title>
+  <link rel="stylesheet" href="common.css">
   <style>
-    :root {
-      --bg: #01222F;
-      --card-bg: #013951;
-      --card-border: #0A5570;
-      --text-primary: #F9F9F9;
-      --text-secondary: #9FB8C4;
-      --accent: #EF7D00;
-      --accent-hover: #C86800;
-      --accent-text: #FF941E;
-      --warning-bg: #3E3312;
-      --warning-border: #8A6D1F;
-      --warning-text: #F2C94C;
-      --danger-bg: #4A1F1C;
-      --danger-border: #A8443C;
-      --danger-text: #ED807A;
-      --success-bg: #0A3F33;
-      --success-border: #1F7A55;
-      --success-text: #2FB574;
-      --chip-bg: #0A4A63;
-      --input-bg: #011A24;
-      --info-bg: #1B2F4A;
-      --info-border: #2F5A80;
-      --info-text: #4FA8D8;
-      --judge-bg: #2E2140;
-      --judge-border: #553C77;
-      --judge-text: #B38FE0;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
+html, body {
       -webkit-text-size-adjust: 100%;
       width: 1920px;
       height: 1080px;
@@ -53,12 +19,11 @@
       user-select: none;
     }
 
-    input, select, textarea {
+input, select, textarea {
       font-size: 1rem;
     }
 
-    /* 疊圖主容器 */
-    .overlay-container {
+.overlay-container {
       position: relative;
       width: 1920px;
       height: 1080px;
@@ -66,8 +31,7 @@
       pointer-events: none;
     }
 
-    /* 頂部賽況整合條 */
-    .top-bar {
+.top-bar {
       position: absolute;
       top: 24px;
       left: 40px;
@@ -77,14 +41,13 @@
       align-items: flex-start;
     }
 
-    .info-cluster {
+.info-cluster {
       display: flex;
       align-items: center;
       gap: 16px;
     }
 
-    /* 輪次卡片 */
-    .round-card {
+.round-card {
       background: rgba(1, 57, 81, 0.82);
       border: 2px solid var(--accent);
       border-radius: 12px;
@@ -93,7 +56,8 @@
       -webkit-backdrop-filter: blur(8px);
       backdrop-filter: blur(8px);
     }
-    #overlayRound {
+
+#overlayRound {
       font-size: 26px;
       font-weight: 900;
       color: var(--accent-text);
@@ -102,8 +66,7 @@
       white-space: nowrap;
     }
 
-    /* 計時鐘卡片 */
-    .clock-card {
+.clock-card {
       background: rgba(1, 57, 81, 0.82);
       border: 2px solid var(--card-border);
       border-radius: 12px;
@@ -112,7 +75,8 @@
       -webkit-backdrop-filter: blur(8px);
       backdrop-filter: blur(8px);
     }
-    #overlayClock {
+
+#overlayClock {
       font-size: 30px;
       font-weight: 900;
       color: var(--text-primary);
@@ -122,8 +86,7 @@
       white-space: nowrap;
     }
 
-    /* 直播桌卡片 */
-    .feature-card {
+.feature-card {
       background: rgba(1, 57, 81, 0.82);
       border: 2px solid var(--accent);
       border-radius: 14px;
@@ -133,40 +96,46 @@
       min-width: 680px;
       overflow: hidden;
     }
-    .feature-header {
+
+.feature-header {
       background: linear-gradient(90deg, #C86800, #EF7D00);
       padding: 4px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .feature-badge-title {
+
+.feature-badge-title {
       font-size: 15px;
       font-weight: 900;
       color: #141212;
       letter-spacing: 1px;
     }
-    .feature-table-title {
+
+.feature-table-title {
       font-size: 15px;
       font-weight: 800;
       color: #141212;
     }
 
-    #overlayFeature {
+#overlayFeature {
       padding: 12px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
     }
-    .player-box {
+
+.player-box {
       flex: 1;
       min-width: 0;
     }
-    .player-box.right {
+
+.player-box.right {
       text-align: right;
     }
-    .player-name-val {
+
+.player-name-val {
       font-size: 26px;
       font-weight: 900;
       color: var(--text-primary);
@@ -175,13 +144,15 @@
       text-overflow: ellipsis;
       text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
     }
-    .player-meta-val {
+
+.player-meta-val {
       font-size: 15px;
       font-weight: 700;
       color: var(--text-secondary);
       margin-top: 2px;
     }
-    .center-score-box {
+
+.center-score-box {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -189,28 +160,30 @@
       padding: 0 16px;
       flex-shrink: 0;
     }
-    .score-digits {
+
+.score-digits {
       font-size: 34px;
       font-weight: 900;
       color: var(--success-text);
       letter-spacing: 2px;
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
     }
-    .score-vs {
+
+.score-vs {
       font-size: 22px;
       font-weight: 900;
       color: var(--text-secondary);
       letter-spacing: 1px;
     }
-    .score-sub-tag {
+
+.score-sub-tag {
       font-size: 13px;
       font-weight: 800;
       color: var(--warning-text);
       margin-top: 2px;
     }
 
-    /* 底部賽事公告 */
-    .note-wrap {
+.note-wrap {
       position: absolute;
       bottom: 28px;
       left: 60px;
@@ -218,7 +191,8 @@
       display: flex;
       justify-content: center;
     }
-    #overlayNote {
+
+#overlayNote {
       background: rgba(1, 57, 81, 0.82);
       border: 2px solid var(--accent);
       border-radius: 12px;
@@ -235,13 +209,13 @@
       -webkit-backdrop-filter: blur(8px);
       backdrop-filter: blur(8px);
     }
-    .note-lead {
+
+.note-lead {
       color: var(--accent-text);
       margin-right: 10px;
     }
 
-    /* 斷線警示 */
-    #overlayDisconnected {
+#overlayDisconnected {
       position: absolute;
       top: 24px;
       left: 40px;
@@ -261,8 +235,7 @@
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
     }
 
-    /* 資料過期提示（角落小字提示） */
-    #overlayStale {
+#overlayStale {
       position: absolute;
       bottom: 12px;
       right: 20px;
@@ -280,7 +253,7 @@
       z-index: 999;
       pointer-events: none;
     }
-  </style>
+</style>
 </head>
 <body>
   <div class="overlay-container">
@@ -321,6 +294,7 @@
     </div>
   </div>
 
+  <script src="common.js"></script>
   <script>
     const CURRENT_CONTRACT_VERSION = 16;
 
@@ -331,16 +305,6 @@
     let serverOffsetMs = 0;
     let demoOffsetCalculated = false;
     let lastContentChangeTime = Date.now();
-
-    function escapeHtml(str) {
-      if (str === null || str === undefined) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
 
     function getDataSourceUrl() {
       const params = new URLSearchParams(window.location.search);

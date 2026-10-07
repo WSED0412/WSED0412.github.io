@@ -8,21 +8,34 @@ const CACHE_NAME = 'rb-offline-v1';
 
 // 計算目標網址（跟著 sw.js 所在路徑走，支援子資料夾如 /demo/web/）
 const TARGET_PAGE_URL = new URL('find-table.html', self.location).href;
+const TARGET_COMMON_URL = new URL('common.js', self.location).href;
+const TARGET_CSS_URL = new URL('common.css', self.location).href;
+const TARGET_AUTH_URL = new URL('player-auth.js', self.location).href;
+const TARGET_WIDGET_URL = new URL('report-widget.js', self.location).href;
+const TARGET_CALL_JUDGE_URL = new URL('call-judge.js', self.location).href;
 const TARGET_SNAPSHOT_URL = new URL('../snapshot.json', self.location).href;
 
-// 安裝時略過等待，並預先快取找桌頁
+// 安裝時略過等待，並預先快取找桌頁與依賴腳本
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil((async () => {
     try {
       const cache = await caches.open(CACHE_NAME);
-      const cleanUrl = TARGET_PAGE_URL;
-      const res = await fetch(cleanUrl);
-      if (res.ok && res.status === 200) {
-        await cache.put(cleanUrl, res);
-      }
+      const prefetchUrls = [TARGET_PAGE_URL, TARGET_COMMON_URL, TARGET_AUTH_URL, TARGET_WIDGET_URL, TARGET_CALL_JUDGE_URL, TARGET_CSS_URL];
+      await Promise.all(
+        prefetchUrls.map(async (url) => {
+          try {
+            const res = await fetch(url);
+            if (res.ok && res.status === 200) {
+              await cache.put(url, res);
+            }
+          } catch (e) {
+            // 離線或網路失敗時略過
+          }
+        })
+      );
     } catch (e) {
-      // 離線或網路失敗時略過
+      // 略過
     }
   })());
 });
@@ -111,6 +124,32 @@ async function handlePageFetch(event) {
   }
 }
 
+// 處理 common.js、player-auth.js、report-widget.js、call-judge.js 與 common.css 請求（限來自找桌頁，4 秒逾時）
+async function handleScriptFetch(event, cleanUrl) {
+  const isFindTable = await isClientFindTable(event);
+  if (!isFindTable) {
+    return fetch(event.request);
+  }
+
+  try {
+    const response = await fetchWithTimeout(event.request, 4000);
+    if (response.ok && response.status === 200) {
+      const cache = await caches.open(CACHE_NAME);
+      await cache.put(cleanUrl, response.clone());
+      return response;
+    }
+    const cache = await caches.open(CACHE_NAME);
+    const cached = await cache.match(cleanUrl);
+    if (cached) return cached;
+    return response;
+  } catch (err) {
+    const cache = await caches.open(CACHE_NAME);
+    const cached = await cache.match(cleanUrl);
+    if (cached) return cached;
+    throw err;
+  }
+}
+
 // 處理 snapshot.json 請求（限來自找桌頁，5 秒逾時）
 async function handleSnapshotFetch(event) {
   const isFindTable = await isClientFindTable(event);
@@ -157,14 +196,31 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 2. snapshot.json 請求（限來自找桌頁）
+  // 2. common.js、player-auth.js、report-widget.js、call-judge.js 與 common.css 請求（限來自找桌頁）
+  if (cleanHref === TARGET_CSS_URL || cleanHref === TARGET_COMMON_URL || cleanHref === TARGET_AUTH_URL || cleanHref === TARGET_WIDGET_URL || cleanHref === TARGET_CALL_JUDGE_URL) {
+    // 若 referrer 明確非找桌頁（例如大螢幕 clock.html），直接跳過不處理，不呼叫 respondWith
+    if (event.request.referrer) {
+      try {
+        const refUrl = new URL(event.request.referrer);
+        const refClean = refUrl.origin + refUrl.pathname;
+        if (refClean !== TARGET_PAGE_URL && !refClean.endsWith('/find-table.html')) {
+          return;
+        }
+      } catch (e) {}
+    }
+
+    event.respondWith(handleScriptFetch(event, cleanHref));
+    return;
+  }
+
+  // 3. snapshot.json 請求（限來自找桌頁）
   if (cleanHref === TARGET_SNAPSHOT_URL) {
     // 若 referrer 明確非找桌頁（例如大螢幕 clock.html），直接跳過不處理，不呼叫 respondWith
     if (event.request.referrer) {
       try {
         const refUrl = new URL(event.request.referrer);
         const refClean = refUrl.origin + refUrl.pathname;
-        if (refClean !== TARGET_PAGE_URL && !refUrl.pathname.endsWith('/find-table.html')) {
+        if (refClean !== TARGET_PAGE_URL && !refClean.endsWith('/find-table.html')) {
           return;
         }
       } catch (e) {}

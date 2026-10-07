@@ -5,40 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="data:,">
   <title>符文戰場 — 唱名／叫號管理</title>
+  <link rel="stylesheet" href="common.css">
   <style>
-    :root {
-      --bg: #01222F;
-      --card-bg: #013951;
-      --card-border: #0A5570;
-      --text-primary: #F9F9F9;
-      --text-secondary: #9FB8C4;
-      --accent: #EF7D00;
-      --accent-hover: #C86800;
-      --accent-text: #FF941E;
-      --warning-bg: #3E3312;
-      --warning-border: #8A6D1F;
-      --warning-text: #F2C94C;
-      --success-bg: #0A3F33;
-      --success-border: #1F7A55;
-      --success-text: #2FB574;
-      --danger-bg: #4A1F1C;
-      --danger-border: #A8443C;
-      --danger-text: #ED807A;
-      --chip-bg: #0A4A63;
-      --input-bg: #011A24;
-      --info-bg: #1B2F4A;
-      --info-border: #2F5A80;
-      --info-text: #4FA8D8;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
+html, body {
       -webkit-text-size-adjust: 100%;
       background-color: var(--bg);
       color: var(--text-primary);
@@ -50,7 +19,7 @@
       width: 100%;
     }
 
-    .container {
+.container {
       width: 100%;
       max-width: 640px;
       margin: 0 auto;
@@ -58,7 +27,7 @@
       overflow-x: hidden;
     }
 
-    header {
+header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -69,20 +38,20 @@
       gap: 10px;
     }
 
-    .page-title {
+.page-title {
       font-size: 1.25rem;
       font-weight: 800;
       color: var(--text-primary);
     }
 
-    .auth-bar {
+.auth-bar {
       display: flex;
       align-items: center;
       gap: 6px;
       flex-wrap: wrap;
     }
 
-    .div-select-bar {
+.div-select-bar {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 8px;
@@ -94,7 +63,7 @@
       gap: 10px;
     }
 
-    select, input[type="password"] {
+select, input[type="password"] {
       min-height: 44px;
       background: var(--input-bg);
       border: 1.5px solid var(--card-border);
@@ -103,12 +72,13 @@
       font-size: 16px;
       padding: 6px 12px;
     }
-    select:focus, input[type="password"]:focus {
+
+select:focus, input[type="password"]:focus {
       outline: none;
       border-color: var(--accent);
     }
 
-    .btn {
+.btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -125,21 +95,22 @@
       white-space: nowrap;
     }
 
-    .btn-primary {
+.btn-primary {
       background: var(--accent);
       color: #141212;
     }
-    .btn-primary:not(:disabled):hover {
+
+.btn-primary:not(:disabled):hover {
       background: var(--accent-hover);
     }
 
-    .btn-secondary {
+.btn-secondary {
       background: var(--chip-bg);
       border-color: var(--card-border);
       color: var(--text-primary);
     }
 
-    .section-title {
+.section-title {
       font-size: 1.05rem;
       font-weight: 800;
       color: var(--accent-text);
@@ -149,8 +120,7 @@
       justify-content: space-between;
     }
 
-    /* 唱名卡片 */
-    .ec-card {
+.ec-card {
       background: var(--card-bg);
       border: 1.5px solid var(--card-border);
       border-radius: 10px;
@@ -163,26 +133,25 @@
       transition: border-color 0.3s, background-color 0.3s;
     }
 
-    /* 新卡片醒目提示（45秒） */
-    .ec-card[data-new="true"] {
+.ec-card[data-new="true"] {
       border-color: var(--accent);
       background: rgba(239, 125, 0, 0.12);
       box-shadow: 0 0 10px rgba(239, 125, 0, 0.25);
     }
 
-    .card-top {
+.card-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .card-table-badge {
+.card-table-badge {
       font-size: 1.35rem;
       font-weight: 900;
       color: var(--accent-text);
     }
 
-    .card-wait-time {
+.card-wait-time {
       font-size: 0.9rem;
       font-weight: 700;
       color: var(--warning-text);
@@ -192,13 +161,13 @@
       border-radius: 6px;
     }
 
-    .card-label {
+.card-label {
       font-size: 0.85rem;
       color: var(--text-secondary);
       font-weight: 600;
     }
 
-    .card-players {
+.card-players {
       display: flex;
       flex-direction: column;
       gap: 4px;
@@ -207,7 +176,7 @@
       padding: 10px;
     }
 
-    .card-player-row {
+.card-player-row {
       font-size: 1.05rem;
       font-weight: 700;
       color: var(--text-primary);
@@ -217,26 +186,25 @@
       word-break: break-word;
     }
 
-    .card-player-seed {
+.card-player-seed {
       font-size: 0.8rem;
       color: var(--text-secondary);
       font-weight: 600;
     }
 
-    .card-actions {
+.card-actions {
       display: flex;
       justify-content: flex-end;
       gap: 8px;
     }
 
-    /* 已唱名卡片樣式 */
-    #ecAcked .ec-card {
+#ecAcked .ec-card {
       opacity: 0.85;
       background: rgba(1, 26, 36, 0.6);
       border-color: var(--card-border);
     }
 
-    .empty-state {
+.empty-state {
       text-align: center;
       padding: 32px 16px;
       color: var(--text-secondary);
@@ -247,19 +215,20 @@
       margin-top: 10px;
     }
 
-    .msg-box {
+.msg-box {
       padding: 10px 12px;
       border-radius: 6px;
       font-size: 0.88rem;
       margin-bottom: 12px;
       word-break: break-word;
     }
-    .msg-box.error {
+
+.msg-box.error {
       background: var(--danger-bg);
       border: 1px solid var(--danger-border);
       color: var(--danger-text);
     }
-  </style>
+</style>
 </head>
 <body>
   <div class="container">
@@ -307,6 +276,7 @@
     <div id="ecEmptyGlobal" class="empty-state" style="display: none;">目前沒有要唱名的桌</div>
   </div>
 
+  <script src="common.js"></script>
   <script src="elim-common.js"></script>
   <script>
     // 嚴格遵守：PIN 僅存放在記憶體或 sessionStorage，絕不存進 localStorage

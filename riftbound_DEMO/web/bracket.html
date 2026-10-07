@@ -5,41 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="data:,">
   <title>符文戰場 — 淘汰賽賽程</title>
+  <link rel="stylesheet" href="common.css">
   <style>
-    :root {
-      --bg: #01222F;
-      --card-bg: #013951;
-      --card-bg-alt: #012b3c;
-      --card-border: #0A5570;
-      --text-primary: #F9F9F9;
-      --text-secondary: #9FB8C4;
-      --accent: #EF7D00;
-      --accent-hover: #C86800;
-      --accent-text: #FF941E;
-      --warning-bg: #3E3312;
-      --warning-border: #8A6D1F;
-      --warning-text: #F2C94C;
-      --danger-bg: #4A1F1C;
-      --danger-border: #A8443C;
-      --danger-text: #ED807A;
-      --success-bg: #0A3F33;
-      --success-border: #1F7A55;
-      --success-text: #2FB574;
-      --winner-bg: rgba(47, 181, 116, 0.15);
-      --winner-border: #1F7A55;
-      --winner-text: #2FB574;
-      --chip-bg: #0A4A63;
-      --input-bg: #011A24;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
+html, body {
       -webkit-text-size-adjust: 100%;
       background-color: var(--bg);
       color: var(--text-primary);
@@ -51,11 +19,11 @@
       width: 100%;
     }
 
-    input, select, textarea {
+input, select, textarea {
       font-size: 1rem;
     }
 
-    .container {
+.container {
       width: 100%;
       max-width: 1100px;
       margin: 0 auto;
@@ -64,8 +32,7 @@
       overflow-x: hidden;
     }
 
-    /* 頂部橫幅通知 */
-    .banner {
+.banner {
       padding: 8px 12px;
       border-radius: 6px;
       font-size: 0.85rem;
@@ -73,33 +40,37 @@
       text-align: center;
       font-weight: 600;
     }
-    .contract-warning {
+
+.contract-warning {
       background: var(--warning-bg);
       color: var(--warning-text);
       border: 1px solid var(--warning-border);
     }
-    .stale-warning {
+
+.stale-warning {
       background: var(--danger-bg);
       color: var(--danger-text);
       border: 1px solid var(--danger-border);
     }
 
-    /* 頁頭 */
-    header {
+header {
       margin-bottom: 14px;
     }
-    .header-top {
+
+.header-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
     }
-    .header-title-group {
+
+.header-title-group {
       flex: 1;
       min-width: 180px;
     }
-    .page-title {
+
+.page-title {
       font-size: 1.15rem;
       font-weight: 800;
       color: var(--text-primary);
@@ -107,19 +78,22 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .event-name {
+
+.event-name {
       font-size: 0.8rem;
       color: var(--text-secondary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .header-nav {
+
+.header-nav {
       display: flex;
       gap: 8px;
       align-items: center;
     }
-    .nav-link {
+
+.nav-link {
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -134,12 +108,12 @@
       white-space: nowrap;
       min-height: 36px;
     }
-    .nav-link:active {
+
+.nav-link:active {
       background: rgba(239, 125, 0, 0.2);
     }
 
-    /* 冠軍橫幅 (DATA-CONTRACT 5 畫面規定第 4 條) */
-    .champion-banner {
+.champion-banner {
       background: linear-gradient(135deg, rgba(239, 125, 0, 0.25), rgba(242, 201, 76, 0.15));
       border: 2px solid var(--accent);
       border-radius: 12px;
@@ -150,15 +124,18 @@
       gap: 14px;
       box-shadow: 0 4px 16px rgba(239, 125, 0, 0.2);
     }
-    .champion-trophy {
+
+.champion-trophy {
       font-size: 2.2rem;
       line-height: 1;
     }
-    .champion-info {
+
+.champion-info {
       flex: 1;
       min-width: 0;
     }
-    .champion-badge {
+
+.champion-badge {
       font-size: 0.75rem;
       font-weight: 800;
       letter-spacing: 1px;
@@ -166,7 +143,8 @@
       text-transform: uppercase;
       margin-bottom: 2px;
     }
-    .champion-name {
+
+.champion-name {
       font-size: 1.25rem;
       font-weight: 800;
       color: var(--text-primary);
@@ -174,13 +152,13 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .champion-sub {
+
+.champion-sub {
       font-size: 0.8rem;
       color: var(--warning-text);
     }
 
-    /* 尚未進入淘汰賽提示卡片 */
-    .no-bracket-card {
+.no-bracket-card {
       background: var(--card-bg);
       border: 1px dashed var(--card-border);
       border-radius: 12px;
@@ -188,39 +166,43 @@
       text-align: center;
       margin-top: 20px;
     }
-    .no-bracket-icon {
+
+.no-bracket-icon {
       font-size: 2.5rem;
       margin-bottom: 12px;
     }
-    .no-bracket-title {
+
+.no-bracket-title {
       font-size: 1.2rem;
       font-weight: 800;
       color: var(--text-primary);
       margin-bottom: 8px;
     }
-    .no-bracket-desc {
+
+.no-bracket-desc {
       font-size: 0.9rem;
       color: var(--text-secondary);
       max-width: 440px;
       margin: 0 auto 20px;
       line-height: 1.6;
     }
-    .no-bracket-links {
+
+.no-bracket-links {
       display: flex;
       justify-content: center;
       gap: 10px;
       flex-wrap: wrap;
     }
 
-    /* 檢視切換工具列 (PROJECT.md 第 10 節) */
-    .view-controls {
+.view-controls {
       display: flex;
       justify-content: flex-end;
       align-items: center;
       gap: 10px;
       margin-bottom: 14px;
     }
-    .view-switch-group {
+
+.view-switch-group {
       display: inline-flex;
       background: var(--card-bg-alt);
       border: 1px solid var(--card-border);
@@ -228,7 +210,8 @@
       padding: 3px;
       gap: 4px;
     }
-    .btn-view {
+
+.btn-view {
       min-width: 88px;
       min-height: 44px;
       padding: 8px 16px;
@@ -246,19 +229,21 @@
       transition: all 0.15s ease;
       touch-action: manipulation;
     }
-    .btn-view[aria-pressed="true"] {
+
+.btn-view[aria-pressed="true"] {
       background: var(--accent);
       color: #141212;
       font-weight: 800;
       border-color: var(--accent);
       box-shadow: 0 2px 6px rgba(239, 125, 0, 0.3);
     }
-    .btn-view[aria-pressed="false"]:hover {
+
+.btn-view[aria-pressed="false"]:hover {
       background: rgba(255, 255, 255, 0.05);
       color: var(--text-primary);
     }
 
-    @media (max-width: 480px) {
+@media (max-width: 480px) {
       .view-controls {
         justify-content: center;
       }
@@ -270,8 +255,7 @@
       }
     }
 
-    /* 賽程樹橫向捲動框 (DATA-CONTRACT 5 畫面規定 6) */
-    .bracket-scroll-wrap {
+.bracket-scroll-wrap {
       width: 100%;
       max-width: 100%;
       overflow-x: auto;
@@ -279,50 +263,54 @@
       padding-bottom: 12px;
       box-sizing: border-box;
     }
-    .bracket-scroll-wrap::-webkit-scrollbar {
+
+.bracket-scroll-wrap::-webkit-scrollbar {
       height: 8px;
     }
-    .bracket-scroll-wrap::-webkit-scrollbar-track {
+
+.bracket-scroll-wrap::-webkit-scrollbar-track {
       background: var(--input-bg);
       border-radius: 4px;
     }
-    .bracket-scroll-wrap::-webkit-scrollbar-thumb {
+
+.bracket-scroll-wrap::-webkit-scrollbar-thumb {
       background: var(--card-border);
       border-radius: 4px;
     }
-    .bracket-scroll-wrap::-webkit-scrollbar-thumb:hover {
+
+.bracket-scroll-wrap::-webkit-scrollbar-thumb:hover {
       background: var(--accent);
     }
 
-    /* 淘汰賽容器 (#bracketTree) */
-    #bracketTree {
+#bracketTree {
       width: 100%;
       box-sizing: border-box;
     }
 
-    /* 清單檢視 (一輪一段往下排) */
-    #bracketTree[data-view="list"] {
+#bracketTree[data-view="list"] {
       display: flex;
       flex-direction: column;
       gap: 20px;
       min-width: 0;
     }
-    #bracketTree[data-view="list"] .bracket-round {
+
+#bracketTree[data-view="list"] .bracket-round {
       width: 100%;
       min-width: 0;
     }
-    #bracketTree[data-view="list"] .matches-list {
+
+#bracketTree[data-view="list"] .matches-list {
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
-    #bracketTree[data-view="list"] .bracket-connector,
+
+#bracketTree[data-view="list"] .bracket-connector,
     #bracketTree[data-view="list"] .bracket-champion {
       display: none !important;
     }
 
-    /* 賽程樹檢視 (真正的樹狀圖：三輪左右並排，垂直置中在來源之間) */
-    #bracketTree[data-view="tree"] {
+#bracketTree[data-view="tree"] {
       display: flex;
       flex-direction: row;
       align-items: stretch;
@@ -332,7 +320,8 @@
       min-height: 560px;
       padding: 10px 4px 16px;
     }
-    #bracketTree[data-view="tree"] .bracket-round {
+
+#bracketTree[data-view="tree"] .bracket-round {
       flex: 0 0 240px;
       width: 240px;
       min-width: 240px;
@@ -340,7 +329,8 @@
       flex-direction: column;
       position: relative;
     }
-    @media (min-width: 1200px) {
+
+@media (min-width: 1200px) {
       #bracketTree[data-view="tree"] {
         min-width: 100%;
       }
@@ -349,7 +339,8 @@
         max-width: 280px;
       }
     }
-    #bracketTree[data-view="tree"] .matches-list {
+
+#bracketTree[data-view="tree"] .matches-list {
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -358,8 +349,7 @@
       position: relative;
     }
 
-    /* 每一輪欄位 (.bracket-round) */
-    .bracket-round {
+.bracket-round {
       background: var(--card-bg-alt);
       border: 1px solid var(--card-border);
       border-radius: 10px;
@@ -370,7 +360,7 @@
       min-width: 0;
     }
 
-    .round-header {
+.round-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -380,12 +370,14 @@
       min-height: 42px;
       box-sizing: border-box;
     }
-    .round-label {
+
+.round-label {
       font-size: 1.05rem;
       font-weight: 800;
       color: var(--accent-text);
     }
-    .round-tag {
+
+.round-tag {
       font-size: 0.75rem;
       padding: 2px 6px;
       border-radius: 4px;
@@ -394,14 +386,12 @@
       color: var(--text-secondary);
     }
 
-    /* 比賽項目容器 (包含卡片與連線) */
-    .match-item {
+.match-item {
       position: relative;
       width: 100%;
     }
 
-    /* 比賽卡片 */
-    .match-card {
+.match-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 8px;
@@ -411,11 +401,11 @@
       width: 100%;
     }
 
-    /* 連線 (.bracket-connector) - 樹狀圖專用 */
-    .bracket-connector {
+.bracket-connector {
       display: none;
     }
-    #bracketTree[data-view="tree"] .bracket-connector {
+
+#bracketTree[data-view="tree"] .bracket-connector {
       display: block;
       position: absolute;
       pointer-events: none;
@@ -423,8 +413,7 @@
       z-index: 2;
     }
 
-    /* 上方場次連線：向右後向下 */
-    #bracketTree[data-view="tree"] .bracket-connector.connector-top {
+#bracketTree[data-view="tree"] .bracket-connector.connector-top {
       top: 50%;
       right: -24px;
       width: 24px;
@@ -434,8 +423,7 @@
       border-top-right-radius: 6px;
     }
 
-    /* 下方場次連線：向右後向上 */
-    #bracketTree[data-view="tree"] .bracket-connector.connector-bottom {
+#bracketTree[data-view="tree"] .bracket-connector.connector-bottom {
       bottom: 50%;
       right: -24px;
       width: 24px;
@@ -445,28 +433,27 @@
       border-bottom-right-radius: 6px;
     }
 
-    /* 四強輪次場次距離較遠，加長高度 */
-    #bracketTree[data-view="tree"] .bracket-round[data-round-idx="1"] .bracket-connector.connector-top {
-      height: calc(50% + 80px);
-    }
-    #bracketTree[data-view="tree"] .bracket-round[data-round-idx="1"] .bracket-connector.connector-bottom {
+#bracketTree[data-view="tree"] .bracket-round[data-round-idx="1"] .bracket-connector.connector-top {
       height: calc(50% + 80px);
     }
 
-    /* 伸進下一輪的連線 (.connector-stem) - 一路接到下一輪 .match-card，斷開 0px */
-    #bracketTree[data-view="tree"] .bracket-connector.connector-stem {
+#bracketTree[data-view="tree"] .bracket-round[data-round-idx="1"] .bracket-connector.connector-bottom {
+      height: calc(50% + 80px);
+    }
+
+#bracketTree[data-view="tree"] .bracket-connector.connector-stem {
       top: calc(100% + 21px);
       right: -62px;
       width: 38px;
       height: 2px;
       background: var(--card-border);
     }
-    #bracketTree[data-view="tree"] .bracket-round[data-round-idx="1"] .bracket-connector.connector-stem {
+
+#bracketTree[data-view="tree"] .bracket-round[data-round-idx="1"] .bracket-connector.connector-stem {
       top: calc(100% + 79px);
     }
 
-    /* 決賽到冠軍位置的水平連線 */
-    #bracketTree[data-view="tree"] .bracket-connector.connector-final {
+#bracketTree[data-view="tree"] .bracket-connector.connector-final {
       top: 50%;
       right: -62px;
       width: 62px;
@@ -474,19 +461,18 @@
       background: var(--card-border);
     }
 
-    /* 勝者晉級路徑高亮 (官方橘 --accent) */
-    #bracketTree[data-view="tree"] .bracket-connector.is-winner {
+#bracketTree[data-view="tree"] .bracket-connector.is-winner {
       border-color: var(--accent);
       z-index: 3;
     }
-    #bracketTree[data-view="tree"] .bracket-connector.connector-stem.is-winner,
+
+#bracketTree[data-view="tree"] .bracket-connector.connector-stem.is-winner,
     #bracketTree[data-view="tree"] .bracket-connector.connector-final.is-winner {
       background: var(--accent);
       box-shadow: 0 0 6px rgba(239, 125, 0, 0.4);
     }
 
-    /* 冠軍位置 (.bracket-champion) - 賽程樹最右側 */
-    .bracket-champion {
+.bracket-champion {
       background: var(--card-bg-alt);
       border: 1px solid var(--card-border);
       border-radius: 10px;
@@ -499,13 +485,15 @@
       width: 200px;
       position: relative;
     }
-    #bracketTree[data-view="tree"] .bracket-champion .matches-list {
+
+#bracketTree[data-view="tree"] .bracket-champion .matches-list {
       display: flex;
       flex-direction: column;
       justify-content: space-around;
       flex: 1;
     }
-    .champion-box {
+
+.champion-box {
       background: var(--card-bg);
       border: 2px solid var(--card-border);
       border-radius: 8px;
@@ -519,24 +507,27 @@
       position: relative;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
-    .bracket-champion.has-champion .champion-box {
+
+.bracket-champion.has-champion .champion-box {
       border-color: var(--accent);
       background: linear-gradient(135deg, rgba(239, 125, 0, 0.18), rgba(242, 201, 76, 0.12));
       box-shadow: 0 4px 16px rgba(239, 125, 0, 0.25);
     }
 
-    .champion-trophy-icon {
+.champion-trophy-icon {
       font-size: 2.2rem;
       line-height: 1;
     }
-    .champion-slot-title {
+
+.champion-slot-title {
       font-size: 0.8rem;
       font-weight: 700;
       color: var(--warning-text);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-    .champion-slot-name {
+
+.champion-slot-name {
       font-size: 1.1rem;
       font-weight: 800;
       color: var(--text-primary);
@@ -545,15 +536,18 @@
       white-space: nowrap;
       max-width: 100%;
     }
-    .bracket-champion.has-champion .champion-slot-name {
+
+.bracket-champion.has-champion .champion-slot-name {
       color: var(--accent-text);
     }
-    .champion-slot-id {
+
+.champion-slot-id {
       font-size: 0.75rem;
       color: var(--text-secondary);
       font-weight: 600;
     }
-    .match-header {
+
+.match-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -563,25 +557,29 @@
       font-size: 0.75rem;
       color: var(--text-secondary);
     }
-    .match-table {
+
+.match-table {
       font-weight: 700;
       color: var(--accent-text);
     }
-    .match-status-badge {
+
+.match-status-badge {
       font-weight: 600;
     }
-    .match-status-badge.live {
+
+.match-status-badge.live {
       color: var(--accent-text);
     }
-    .match-status-badge.done {
+
+.match-status-badge.done {
       color: var(--success-text);
     }
-    .match-status-badge.bye {
+
+.match-status-badge.bye {
       color: var(--warning-text);
     }
 
-    /* 選手列 */
-    .player-row {
+.player-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -591,14 +589,17 @@
       transition: background 0.15s ease;
       min-height: 38px;
     }
-    .player-row:last-child {
+
+.player-row:last-child {
       border-bottom: none;
     }
-    .player-row.is-winner {
+
+.player-row.is-winner {
       background: var(--winner-bg);
       border-left: 3px solid var(--winner-border);
     }
-    .player-info {
+
+.player-info {
       display: flex;
       align-items: center;
       gap: 6px;
@@ -606,7 +607,8 @@
       min-width: 0;
       overflow: hidden;
     }
-    .seed-tag {
+
+.seed-tag {
       font-size: 0.7rem;
       font-weight: 700;
       padding: 1px 5px;
@@ -616,11 +618,13 @@
       border: 1px solid var(--card-border);
       flex-shrink: 0;
     }
-    .player-row.is-winner .seed-tag {
+
+.player-row.is-winner .seed-tag {
       border-color: var(--winner-border);
       color: var(--winner-text);
     }
-    .player-name-text {
+
+.player-name-text {
       font-weight: 600;
       color: var(--text-primary);
       overflow: hidden;
@@ -628,27 +632,31 @@
       white-space: nowrap;
       flex: 1;
     }
-    .player-row.is-winner .player-name-text {
+
+.player-row.is-winner .player-name-text {
       color: var(--winner-text);
       font-weight: 800;
     }
-    .player-empty-text {
+
+.player-empty-text {
       color: var(--text-secondary);
       font-style: italic;
     }
-    .player-score {
+
+.player-score {
       font-weight: 800;
       font-size: 0.95rem;
       padding-left: 8px;
       color: var(--text-secondary);
       flex-shrink: 0;
     }
-    .player-row.is-winner .player-score {
+
+.player-row.is-winner .player-score {
       color: var(--winner-text);
       font-size: 1.05rem;
     }
 
-    .walkover-note {
+.walkover-note {
       padding: 6px 10px;
       background: var(--warning-bg);
       border-top: 1px solid var(--warning-border);
@@ -658,58 +666,13 @@
       font-weight: 600;
     }
 
-    /* 尚未連上賽務系統覆蓋層 (硬性規定 1) */
-    .disconnected-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: #01222F;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      text-align: center;
-      z-index: 1000;
-    }
-    .disconnected-icon {
-      font-size: 3rem;
-      margin-bottom: 12px;
-    }
-    .disconnected-title {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: var(--danger-text);
-      margin-bottom: 8px;
-    }
-    .disconnected-desc {
-      font-size: 0.95rem;
-      color: var(--text-secondary);
-      max-width: 360px;
-      margin-bottom: 20px;
-      line-height: 1.6;
-    }
-    .btn-retry {
-      background: var(--accent);
-      color: #141212;
-      font-weight: 800;
-      padding: 10px 24px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-size: 0.95rem;
-      min-height: 44px;
-    }
-
-    footer {
+footer {
       text-align: center;
       font-size: 0.75rem;
       color: var(--text-secondary);
       margin-top: 24px;
     }
-  </style>
+</style>
 </head>
 <body>
   <div class="container">
@@ -774,19 +737,18 @@
     </footer>
   </div>
 
-  <!-- 尚未連上賽務系統畫面 (硬性規定 1) -->
-  <div class="disconnected-overlay" id="disconnectedScreen">
-    <div class="disconnected-icon">⚠️</div>
-    <div class="disconnected-title">尚未連上賽務系統</div>
-    <div class="disconnected-desc">
-      目前無法讀取賽事即時資料。<br>請確認網路連線是否正常。
-    </div>
-    <button type="button" class="btn-retry" id="retryBtn">重新連線</button>
-  </div>
-
+  <script src="common.js"></script>
+  <script src="disconnect-overlay.js"></script>
   <script>
     const CURRENT_CONTRACT_VERSION = 16;
     const VIEW_STORAGE_KEY = 'rift_bracket_view';
+
+    const disconnectOverlay = DisconnectOverlay.create({
+      id: 'disconnectedScreen',
+      retryId: 'retryBtn',
+      desc: '目前無法讀取賽事即時資料。<br>請確認網路連線是否正常。',
+      onRetry: () => fetchData()
+    });
 
     function getInitialView() {
       try {
@@ -830,16 +792,6 @@
     let serverOffsetMs = 0;
     let demoOffsetCalculated = false;
     let lastContentChangeTime = Date.now();
-
-    function escapeHtml(str) {
-      if (str === null || str === undefined) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
 
     function getDataSourceUrl() {
       const params = new URLSearchParams(window.location.search);
@@ -1174,7 +1126,7 @@
           }
         }
 
-        document.getElementById('disconnectedScreen').style.display = 'none';
+        disconnectOverlay.hide();
 
         if (text === rawJsonText) {
           return;
@@ -1195,7 +1147,7 @@
       } catch (err) {
         checkFreshness();
         if (!snapshotData) {
-          document.getElementById('disconnectedScreen').style.display = 'flex';
+          disconnectOverlay.show();
         }
       }
     }

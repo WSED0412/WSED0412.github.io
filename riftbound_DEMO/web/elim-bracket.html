@@ -5,43 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="data:,">
   <title>符文戰場 — 淘汰賽賽程樹</title>
+  <link rel="stylesheet" href="common.css">
   <style>
-    :root {
-      --bg: #01222F;
-      --card-bg: #013951;
-      --card-border: #0A5570;
-      --text-primary: #F9F9F9;
-      --text-secondary: #9FB8C4;
-      --accent: #EF7D00;
-      --accent-hover: #C86800;
-      --accent-text: #FF941E;
-      --warning-bg: #3E3312;
-      --warning-border: #8A6D1F;
-      --warning-text: #F2C94C;
-      --success-bg: #0A3F33;
-      --success-border: #1F7A55;
-      --success-text: #2FB574;
-      --danger-bg: #4A1F1C;
-      --danger-border: #A8443C;
-      --danger-text: #ED807A;
-      --chip-bg: #0A4A63;
-      --input-bg: #011A24;
-      --info-bg: #1B2F4A;
-      --info-border: #2F5A80;
-      --info-text: #4FA8D8;
-      --judge-bg: #2E2140;
-      --judge-border: #553C77;
-      --judge-text: #B38FE0;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
+html, body {
       -webkit-text-size-adjust: 100%;
       background-color: var(--bg);
       color: var(--text-primary);
@@ -53,11 +19,11 @@
       width: 100%;
     }
 
-    select {
+select {
       font-size: 1rem;
     }
 
-    .container {
+.container {
       width: 100%;
       max-width: 1600px;
       margin: 0 auto;
@@ -65,14 +31,14 @@
       overflow-x: hidden;
       box-sizing: border-box;
     }
-    @media (max-width: 480px) {
+
+@media (max-width: 480px) {
       .container {
         padding: 10px 8px 30px;
       }
     }
 
-    /* 頂部 Header */
-    header {
+header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -82,21 +48,25 @@
       flex-wrap: wrap;
       gap: 10px;
     }
-    .header-left {
+
+.header-left {
       display: flex;
       align-items: center;
       gap: 12px;
     }
-    .page-title {
+
+.page-title {
       font-size: 1.3rem;
       font-weight: 800;
       color: var(--text-primary);
     }
-    .nav-links {
+
+.nav-links {
       display: flex;
       gap: 8px;
     }
-    .nav-link {
+
+.nav-link {
       display: inline-flex;
       align-items: center;
       color: var(--accent-text);
@@ -109,8 +79,7 @@
       border: 1px solid rgba(239, 125, 0, 0.25);
     }
 
-    /* 控制列 */
-    .controls-bar {
+.controls-bar {
       display: flex;
       align-items: center;
       gap: 12px;
@@ -121,12 +90,14 @@
       border-radius: 10px;
       padding: 10px 14px;
     }
-    .control-label {
+
+.control-label {
       font-size: 0.9rem;
       font-weight: 700;
       color: var(--text-secondary);
     }
-    .select-div {
+
+.select-div {
       min-height: 44px;
       min-width: 120px;
       background: var(--input-bg);
@@ -137,12 +108,12 @@
       outline: none;
       cursor: pointer;
     }
-    .select-div:focus {
+
+.select-div:focus {
       border-color: var(--accent);
     }
 
-    /* 警示橫幅 */
-    .banner {
+.banner {
       padding: 8px 12px;
       border-radius: 8px;
       font-size: 0.85rem;
@@ -150,41 +121,43 @@
       margin-bottom: 12px;
       text-align: center;
     }
-    .stale-warning {
+
+.stale-warning {
       background: var(--danger-bg);
       border: 1px solid var(--danger-border);
       color: var(--danger-text);
     }
-    .contract-warning {
+
+.contract-warning {
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
     }
 
-    /* 樹狀結構滑動外框（手機 390 寬在此框內橫向滑動，全頁不滾動） */
-    .tree-scroll-container {
+.tree-scroll-container {
       width: 100%;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       padding-bottom: 16px;
       margin-bottom: 24px;
     }
-    .tree-sections-wrap {
+
+.tree-sections-wrap {
       display: flex;
       flex-direction: column;
       gap: 20px;
       min-width: min-content;
     }
 
-    /* 淘汰賽各大區塊（勝部、敗部、總決賽） */
-    .elim-section {
+.elim-section {
       background: var(--card-bg);
       border: 1.5px solid var(--card-border);
       border-radius: 12px;
       padding: 16px;
       min-width: 320px;
     }
-    .section-header {
+
+.section-header {
       font-size: 1.15rem;
       font-weight: 800;
       color: var(--accent-text);
@@ -196,19 +169,20 @@
       gap: 8px;
     }
 
-    /* 輪次與場次排列 */
-    .rounds-flex {
+.rounds-flex {
       display: flex;
       gap: 20px;
       align-items: flex-start;
     }
-    .round-column {
+
+.round-column {
       display: flex;
       flex-direction: column;
       gap: 12px;
       min-width: 250px;
     }
-    .round-title {
+
+.round-title {
       font-size: 0.85rem;
       font-weight: 700;
       color: var(--text-secondary);
@@ -218,8 +192,7 @@
       border-radius: 4px;
     }
 
-    /* 單一比賽卡片 */
-    .elim-match {
+.elim-match {
       background: var(--input-bg);
       border: 1.5px solid var(--card-border);
       border-radius: 10px;
@@ -230,13 +203,16 @@
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
       transition: border-color 0.15s;
     }
-    .elim-match.live {
+
+.elim-match.live {
       border-color: var(--accent);
     }
-    .elim-match.conflict {
+
+.elim-match.conflict {
       border-color: var(--danger-border);
     }
-    .match-top {
+
+.match-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -245,17 +221,18 @@
       padding-bottom: 4px;
       border-bottom: 1px solid rgba(10, 85, 112, 0.4);
     }
-    .match-label-txt {
+
+.match-label-txt {
       font-weight: 700;
       color: var(--text-primary);
     }
-    .match-table-tag {
+
+.match-table-tag {
       color: var(--accent-text);
       font-weight: 700;
     }
 
-    /* 選手列 */
-    .player-slot {
+.player-slot {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -267,13 +244,15 @@
       border: 1px solid transparent;
       color: var(--text-primary);
     }
-    .player-slot[data-winner="true"] {
+
+.player-slot[data-winner="true"] {
       background: rgba(31, 122, 85, 0.25);
       border-color: var(--success-border);
       color: var(--success-text);
       font-weight: 800;
     }
-    .player-name-wrap {
+
+.player-name-wrap {
       display: flex;
       align-items: center;
       gap: 6px;
@@ -281,18 +260,19 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .player-seed {
+
+.player-seed {
       font-size: 0.75rem;
       color: var(--text-secondary);
     }
-    .player-score {
+
+.player-score {
       font-size: 0.95rem;
       font-weight: 800;
       margin-left: 8px;
     }
 
-    /* 勝利方式標籤 */
-    .match-how-badge {
+.match-how-badge {
       font-size: 0.75rem;
       color: var(--warning-text);
       background: rgba(242, 201, 76, 0.12);
@@ -304,15 +284,15 @@
       font-weight: 700;
     }
 
-    /* 名次表 (Placements) */
-    .placements-card {
+.placements-card {
       background: var(--card-bg);
       border: 1.5px solid var(--card-border);
       border-radius: 12px;
       padding: 16px;
       margin-top: 10px;
     }
-    .placements-title {
+
+.placements-title {
       font-size: 1.15rem;
       font-weight: 800;
       color: var(--text-primary);
@@ -321,12 +301,14 @@
       align-items: center;
       gap: 8px;
     }
-    #elimPlacements {
+
+#elimPlacements {
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
-    .placement-row {
+
+.placement-row {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
       border-radius: 8px;
@@ -338,19 +320,20 @@
       justify-content: space-between;
       align-items: center;
     }
-    .placement-row[data-place="1"] {
+
+.placement-row[data-place="1"] {
       border-color: var(--accent);
       background: linear-gradient(90deg, rgba(239, 125, 0, 0.15), rgba(1, 26, 36, 0.8));
       color: var(--accent-text);
     }
 
-    /* 16 強決賽專區 */
-    #elimFinals {
+#elimFinals {
       width: 100%;
       box-sizing: border-box;
       overflow-x: hidden;
     }
-    .finals-card {
+
+.finals-card {
       background: var(--card-bg);
       border: 1.5px solid var(--card-border);
       border-radius: 12px;
@@ -360,7 +343,8 @@
       overflow-x: hidden;
       width: 100%;
     }
-    .finals-card-title {
+
+.finals-card-title {
       font-size: 1.15rem;
       font-weight: 800;
       color: var(--accent-text);
@@ -369,26 +353,30 @@
       align-items: center;
       gap: 8px;
     }
-    .finals-groups-grid {
+
+.finals-groups-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 12px;
       width: 100%;
       box-sizing: border-box;
     }
-    .placement-matches-grid {
+
+.placement-matches-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 12px;
       width: 100%;
       box-sizing: border-box;
     }
-    @media (max-width: 600px) {
+
+@media (max-width: 600px) {
       .finals-groups-grid, .placement-matches-grid {
         grid-template-columns: 1fr;
       }
     }
-    .group-top-bar {
+
+.group-top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -396,12 +384,14 @@
       padding-bottom: 4px;
       border-bottom: 1px solid rgba(10, 85, 112, 0.4);
     }
-    .group-name-title {
+
+.group-name-title {
       font-size: 1rem;
       font-weight: 800;
       color: var(--accent-text);
     }
-    .group-lot-badge {
+
+.group-lot-badge {
       font-size: 0.75rem;
       font-weight: 700;
       color: var(--warning-text);
@@ -410,24 +400,7 @@
       padding: 2px 6px;
       border-radius: 4px;
     }
-
-    /* 斷網覆蓋畫面 */
-    .disconnected-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: var(--bg);
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      text-align: center;
-      z-index: 2000;
-    }
-  </style>
+</style>
 </head>
 <body>
   <div class="container">
@@ -475,29 +448,30 @@
     <div id="elimFinals" style="display: none; width: 100%; margin-top: 24px; box-sizing: border-box; overflow-x: hidden;"></div>
   </div>
 
-  <!-- 尚未連上賽務主機畫面 -->
-  <div class="disconnected-overlay" id="elimDisconnectedScreen">
-    <div style="font-size: 3rem; margin-bottom: 12px;">⚠️</div>
-    <div style="font-size: 1.4rem; font-weight: 800; color: var(--danger-text); margin-bottom: 8px;">尚未連上賽務系統</div>
-    <div style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px;">請確認主機是否已啟動，或稍候自動重連。</div>
-    <button type="button" class="nav-link" onclick="window.poller && window.poller.fetchOnce()">重新連線</button>
-  </div>
-
+  <script src="common.js"></script>
+  <script src="disconnect-overlay.js"></script>
   <script src="elim-common.js"></script>
   <script>
     let currentData = null;
     let selectedDiv = 'A';
 
+    const disconnectOverlay = DisconnectOverlay.create({
+      id: 'elimDisconnectedScreen',
+      retryId: 'elimRetryBtn',
+      desc: '請確認主機是否已啟動，或稍候自動重連。',
+      onRetry: () => { if (window.poller) window.poller.fetchOnce(); }
+    });
+
     const poller = new ElimPoller({
       onData: (snapshot) => {
+        disconnectOverlay.hide();
         currentData = snapshot;
         updateDivOptions(snapshot);
         renderBracket(snapshot);
       },
       onError: (err) => {
         if (!currentData) {
-          const dis = document.getElementById('elimDisconnectedScreen');
-          if (dis) dis.style.display = 'flex';
+          disconnectOverlay.show();
         }
       },
       interval: 5000
@@ -510,6 +484,16 @@
         renderBracket(currentData);
       }
     });
+
+    function getPointTypeName(type) {
+      const typeLabels = {
+        xtreme: '極限',
+        over: '擊飛',
+        burst: '爆裂',
+        spin: '迴轉'
+      };
+      return typeLabels[type] || '爆裂';
+    }
 
     function updateDivOptions(snapshot) {
       if (!snapshot || !snapshot.divisions) return;
@@ -566,6 +550,151 @@
         });
       }
 
+      const isRoundRobin = (snapshot.event && snapshot.event.format && snapshot.event.format.bracket_format === 'round_robin')
+        || (divData.matches && divData.matches.some(m => m.bracket === 'R' || m.kind === 'drr'));
+
+      if (isRoundRobin) {
+        container.style.minWidth = '0';
+        container.style.width = '100%';
+        let rrHtml = '';
+        const standings = divData.standings || [];
+        const rrRound = divData.rr_round;
+
+        rrHtml += `<div class="elim-rr" data-div="${escapeHtml(divData.div)}" style="background: var(--card-bg); border: 1.5px solid var(--card-border); border-radius: 12px; padding: 14px; margin-bottom: 20px; box-sizing: border-box; width: 100%; max-width: 100%;">`;
+        rrHtml += `  <div class="section-header" style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">`;
+        rrHtml += `    <span>${escapeHtml(divData.div)} 區 循環賽即時戰績</span>`;
+        if (rrRound) {
+          rrHtml += `    <span style="font-size: 0.9rem; color: var(--accent-text);">第 ${rrRound} 輪</span>`;
+        }
+        rrHtml += `  </div>`;
+        rrHtml += `  <div style="width: 100%; overflow-x: auto;">`;
+        rrHtml += `    <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">`;
+        rrHtml += `      <thead><tr style="border-bottom: 1px solid var(--card-border); color: var(--text-secondary); text-align: left;">`;
+        rrHtml += `        <th style="padding: 6px 4px;">名次</th><th style="padding: 6px 4px;">選手</th><th style="padding: 6px 4px; text-align: center;">勝</th><th style="padding: 6px 4px; text-align: center;">敗</th><th style="padding: 6px 4px; text-align: right;">分差</th><th style="padding: 6px 4px; text-align: right;">總得分</th><th style="padding: 6px 4px;">狀態</th>`;
+        rrHtml += `      </tr></thead>`;
+        rrHtml += `      <tbody>`;
+        for (const st of standings) {
+          const pid = escapeHtml(st.id);
+          const pName = escapeHtml(st.name || st.id);
+          const rank = st.rank;
+          const w = st.w != null ? st.w : 0;
+          const l = st.l != null ? st.l : 0;
+          const diff = st.diff != null ? st.diff : 0;
+          const diffStr = diff > 0 ? `+${diff}` : `${diff}`;
+          const pf = st.pf != null ? st.pf : 0;
+          const tieNote = (st.tie && st.tie !== 0) ? '<span style="color: var(--warning-text); font-size: 0.8rem;">同分，待抽籤</span>' : '';
+          rrHtml += `      <tr data-player="${pid}" style="border-bottom: 1px solid rgba(255,255,255,0.05);">`;
+          rrHtml += `        <td style="padding: 6px 4px;">第 ${rank} 名</td>`;
+          rrHtml += `        <td style="padding: 6px 4px; font-weight: 700;">${pName}</td>`;
+          rrHtml += `        <td style="padding: 6px 4px; text-align: center;">${w}</td>`;
+          rrHtml += `        <td style="padding: 6px 4px; text-align: center;">${l}</td>`;
+          rrHtml += `        <td style="padding: 6px 4px; text-align: right;">${diffStr}</td>`;
+          rrHtml += `        <td style="padding: 6px 4px; text-align: right;">${pf}</td>`;
+          rrHtml += `        <td style="padding: 6px 4px;">${tieNote}</td>`;
+          rrHtml += `      </tr>`;
+        }
+        rrHtml += `      </tbody>`;
+        rrHtml += `    </table>`;
+        rrHtml += `  </div>`;
+        rrHtml += `</div>`;
+
+        // 循環賽場次列表
+        const rrMatches = (divData.matches || []).filter(m => m.state !== 'bye');
+        const roundMap = {};
+        for (const m of rrMatches) {
+          const rNum = m.round != null ? m.round : 0;
+          if (!roundMap[rNum]) roundMap[rNum] = [];
+          roundMap[rNum].push(m);
+        }
+        const roundKeys = Object.keys(roundMap).map(Number).sort((a, b) => a - b);
+        
+        rrHtml += `<div class="rr-matches-wrap" style="width: 100%; box-sizing: border-box;">`;
+        rrHtml += `  <div class="rounds-flex" style="display: flex; flex-direction: column; gap: 16px; width: 100%;">`;
+        for (const rKey of roundKeys) {
+          const matchesInRound = roundMap[rKey];
+          const roundLabel = matchesInRound[0].label || `循環賽第 ${rKey + 1} 輪`;
+          rrHtml += `    <div class="round-column" style="width: 100%; min-width: 0; max-width: 100%;">`;
+          rrHtml += `      <div class="round-title" style="margin-bottom: 8px; font-weight: 800; color: var(--accent-text);">${escapeHtml(roundLabel)}</div>`;
+          for (const m of matchesInRound) {
+            const isComplete = m.state === 'complete';
+            const isLive = m.state === 'open' && m.table !== null;
+            const isConflict = m.report_state === 'conflict';
+            let matchCardClass = 'elim-match';
+            if (isConflict) matchCardClass += ' conflict';
+            else if (isLive) matchCardClass += ' live';
+            
+            rrHtml += `      <div class="${matchCardClass}" data-match="${escapeHtml(m.id)}" style="max-width: 100%; box-sizing: border-box; margin-bottom: 10px;">`;
+            rrHtml += `        <div class="match-top">`;
+            rrHtml += `          <span class="match-label-txt">${escapeHtml(m.label || m.id)}</span>`;
+            if (m.table !== null) {
+              rrHtml += `          <span class="match-table-tag">第 ${m.table} 桌</span>`;
+            } else if (m.state === 'open') {
+              rrHtml += `          <span style="color:var(--text-secondary);">等桌中</span>`;
+            }
+            rrHtml += `        </div>`;
+
+            // P1
+            const p1Id = m.p1 ? m.p1.id : '';
+            const p1Name = m.p1 ? escapeHtml(m.p1.name) : '待定';
+            const p1Seed = m.p1 && m.p1.seed != null ? `(${escapeHtml(m.p1.seed)})` : '';
+            const isP1Winner = isComplete && m.winner === p1Id;
+            const p1Score = (m.score && m.score[0] != null) ? m.score[0] : '';
+            rrHtml += `        <div class="player-slot" data-player="${escapeHtml(p1Id)}"${isP1Winner ? ' data-winner="true"' : ''}>`;
+            rrHtml += `          <div class="player-name-wrap"><span>${p1Name}</span>${p1Seed ? `<span class="player-seed">${p1Seed}</span>` : ''}</div>`;
+            if (p1Score !== '') rrHtml += `          <span class="player-score">${p1Score}</span>`;
+            rrHtml += `        </div>`;
+
+            // P2
+            const p2Id = m.p2 ? m.p2.id : '';
+            const p2Name = m.p2 ? escapeHtml(m.p2.name) : '待定';
+            const p2Seed = m.p2 && m.p2.seed != null ? `(${escapeHtml(m.p2.seed)})` : '';
+            const isP2Winner = isComplete && m.winner === p2Id;
+            const p2Score = (m.score && m.score[1] != null) ? m.score[1] : '';
+            rrHtml += `        <div class="player-slot" data-player="${escapeHtml(p2Id)}"${isP2Winner ? ' data-winner="true"' : ''}>`;
+            rrHtml += `          <div class="player-name-wrap"><span>${p2Name}</span>${p2Seed ? `<span class="player-seed">${p2Seed}</span>` : ''}</div>`;
+            if (p2Score !== '') rrHtml += `          <span class="player-score">${p2Score}</span>`;
+            rrHtml += `        </div>`;
+
+            // 逐分勝利方式 (爆裂、極限、擊飛、迴轉)
+            if (isComplete && m.how === 'points') {
+              let winTypeText = '爆裂';
+              if (m.points && m.points.length > 0) {
+                const lastPt = m.points[m.points.length - 1];
+                winTypeText = getPointTypeName(lastPt.type);
+              }
+              rrHtml += `        <div class="match-how-badge">勝利方式：${escapeHtml(winTypeText)}</div>`;
+            }
+
+            rrHtml += `      </div>`;
+          }
+          rrHtml += `    </div>`;
+        }
+        rrHtml += `  </div>`;
+        rrHtml += `</div>`;
+
+        container.innerHTML = rrHtml;
+
+        // 渲染名次榜 (Placements)
+        const placementsCard = document.getElementById('placementsContainer');
+        const placementsList = document.getElementById('elimPlacements');
+        if (divData.placements && Array.isArray(divData.placements) && divData.placements.length > 0) {
+          let phtml = '';
+          for (const item of divData.placements) {
+            const pObj = playerMap[item.id] || { id: item.id, name: item.id };
+            phtml += `<div class="placement-row" data-place="${escapeHtml(item.place)}">`;
+            phtml += `  <span>第 ${escapeHtml(item.place)} 名 · ${escapeHtml(pObj.name)} (${escapeHtml(item.id)})</span>`;
+            phtml += `</div>`;
+          }
+          placementsList.innerHTML = phtml;
+          placementsCard.style.display = 'block';
+        } else {
+          placementsList.innerHTML = '';
+          placementsCard.style.display = 'none';
+        }
+        return;
+      }
+
+      container.style.minWidth = '';
       const isDoubleElim = (snapshot.event && snapshot.event.format && snapshot.event.format.elim_type === 'double')
         || (divData.matches && divData.matches.some(m => m.bracket === 'L' || m.bracket === 'F'));
 

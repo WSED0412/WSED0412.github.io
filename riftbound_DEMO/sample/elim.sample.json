@@ -8,13 +8,137 @@
     "note": "",
     "api_base": "",
     "viewers": 0,
+    "judge_calls_waiting": 0,
+    "pages": [
+      {
+        "id": "player",
+        "label": "我的比賽（找桌、回報）",
+        "href": "elim-player.html",
+        "audience": "player",
+        "hint": "輸入編號或名字看下一場；登入後可以報分、叫裁判"
+      },
+      {
+        "id": "board",
+        "label": "全場看板",
+        "href": "elim-board.html",
+        "audience": "screen",
+        "hint": "每一區每一桌現在在打誰"
+      },
+      {
+        "id": "bracket",
+        "label": "賽程樹",
+        "href": "elim-bracket.html",
+        "audience": "screen",
+        "hint": "整棵賽程樹與名次"
+      },
+      {
+        "id": "judge",
+        "label": "裁判",
+        "href": "elim-judge.html",
+        "audience": "staff",
+        "hint": "報分、撤銷、逐分、裁判呼叫佇列"
+      },
+      {
+        "id": "call",
+        "label": "唱名",
+        "href": "elim-call.html",
+        "audience": "staff",
+        "hint": "叫剛排上桌的選手上場"
+      },
+      {
+        "id": "admin",
+        "label": "主辦控制台",
+        "href": "elim-admin.html",
+        "audience": "staff",
+        "hint": "桌子、報分設定、抽籤、系統健康"
+      },
+      {
+        "id": "print",
+        "label": "紙本備援列印",
+        "href": "elim-print.html",
+        "audience": "staff",
+        "hint": "斷網時的對戰表與結果單"
+      }
+    ],
     "format": {
       "elim_type": "double",
       "third_place": false,
       "final_size": 2,
+      "bracket_format": "elim",
       "scoring": "beyblade_x",
       "win_point": 4,
       "tables_per_div": 4
+    },
+    "game": {
+      "id": "beyblade_x",
+      "game": "beyblade_x",
+      "label": "戰鬥陀螺 X",
+      "report": {
+        "kind": "score",
+        "games_to_win": null,
+        "games_to_win_options": null,
+        "draws": false,
+        "winner_only": true,
+        "points": [
+          {
+            "key": "xtreme",
+            "label": "極限",
+            "value": 3
+          },
+          {
+            "key": "over",
+            "label": "擊飛",
+            "value": 2
+          },
+          {
+            "key": "burst",
+            "label": "爆裂",
+            "value": 2
+          },
+          {
+            "key": "spin",
+            "label": "迴轉",
+            "value": 1
+          }
+        ],
+        "win_score": 4,
+        "max_score": 6
+      },
+      "match_draw": {
+        "swiss": false,
+        "elimination": false
+      },
+      "elimination_rule": "不會和局：先拿到 4 分的人贏",
+      "timeout": null,
+      "timing": {
+        "extra_turns": 0,
+        "extra_max_sec": null,
+        "late_warn_sec": 120,
+        "late_loss_sec": 600,
+        "late_rule": null,
+        "provisional": true
+      },
+      "match_minutes": 5,
+      "pace": "live",
+      "columns": [
+        {
+          "key": "omw",
+          "label": "分差",
+          "abbr": "分差",
+          "tiebreak": 1,
+          "unit": ""
+        },
+        {
+          "key": "gw",
+          "label": "總得分",
+          "abbr": "得分",
+          "tiebreak": 2,
+          "unit": ""
+        }
+      ],
+      "deck": null,
+      "provisional": true,
+      "official": []
     }
   },
   "policy": {
@@ -152,6 +276,7 @@
             "seed": 1
           },
           "p2": null,
+          "judge_call": null,
           "state": "bye",
           "table": null,
           "report_state": null,
@@ -191,6 +316,7 @@
             "name": "Leo",
             "seed": 9
           },
+          "judge_call": null,
           "state": "complete",
           "table": null,
           "report_state": null,
@@ -246,6 +372,7 @@
             "name": "白熊",
             "seed": 13
           },
+          "judge_call": null,
           "state": "complete",
           "table": null,
           "report_state": null,
@@ -288,6 +415,7 @@
             "name": "Yuki",
             "seed": 12
           },
+          "judge_call": null,
           "state": "complete",
           "table": null,
           "report_state": null,
@@ -326,6 +454,7 @@
             "seed": 2
           },
           "p2": null,
+          "judge_call": null,
           "state": "bye",
           "table": null,
           "report_state": null,
@@ -365,6 +494,7 @@
             "name": "小雨",
             "seed": 10
           },
+          "judge_call": null,
           "state": "complete",
           "table": null,
           "report_state": null,
@@ -403,6 +533,7 @@
             "seed": 3
           },
           "p2": null,
+          "judge_call": null,
           "state": "bye",
           "table": null,
           "report_state": null,
@@ -442,6 +573,7 @@
             "name": "鐵牛",
             "seed": 11
           },
+          "judge_call": null,
           "state": "complete",
           "table": null,
           "report_state": null,
@@ -493,6 +625,7 @@
             "name": "Leo",
             "seed": 9
           },
+          "judge_call": null,
           "state": "bye",
           "table": null,
           "report_state": null,
@@ -529,6 +662,7 @@
             "name": "老王",
             "seed": 5
           },
+          "judge_call": null,
           "state": "complete",
           "table": null,
           "report_state": null,
@@ -564,6 +698,7 @@
             "name": "小雨",
             "seed": 10
           },
+          "judge_call": null,
           "state": "bye",
           "table": null,
           "report_state": null,
@@ -596,6 +731,7 @@
             "name": "鐵牛",
             "seed": 11
           },
+          "judge_call": null,
           "state": "bye",
           "table": null,
           "report_state": null,
@@ -632,6 +768,7 @@
             "name": "阿哲",
             "seed": 8
           },
+          "judge_call": null,
           "state": "complete",
           "table": null,
           "report_state": null,
@@ -674,6 +811,7 @@
             "name": "Yuki",
             "seed": 12
           },
+          "judge_call": null,
           "state": "open",
           "table": 4,
           "report_state": "none",
@@ -713,6 +851,7 @@
             "name": "夜貓",
             "seed": 7
           },
+          "judge_call": null,
           "state": "open",
           "table": 1,
           "report_state": "none",
@@ -760,6 +899,7 @@
             "name": "Miya",
             "seed": 6
           },
+          "judge_call": null,
           "state": "open",
           "table": 3,
           "report_state": "none",
@@ -799,6 +939,7 @@
             "name": "阿翔",
             "seed": 1
           },
+          "judge_call": null,
           "state": "open",
           "table": 2,
           "report_state": "none",
@@ -831,6 +972,7 @@
             "seed": 13
           },
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -863,6 +1005,7 @@
             "seed": 10
           },
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -895,6 +1038,7 @@
             "seed": 11
           },
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -923,6 +1067,7 @@
           "label": "敗部第 3 輪",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -951,6 +1096,7 @@
           "label": "敗部第 3 輪",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -983,6 +1129,7 @@
             "seed": 8
           },
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -1014,6 +1161,7 @@
           "label": "勝部四強",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -1045,6 +1193,7 @@
           "label": "敗部第 4 輪",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -1073,6 +1222,7 @@
           "label": "敗部第 4 輪",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -1101,6 +1251,7 @@
           "label": "敗部第 5 輪",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -1129,6 +1280,7 @@
           "label": "勝部決賽",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -1160,6 +1312,7 @@
           "label": "敗部第 6 輪",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -1188,6 +1341,7 @@
           "label": "總決賽",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -1213,6 +1367,7 @@
           "label": "總決賽（重置）",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -1233,6 +1388,8 @@
       "winners": [],
       "losers": [],
       "placements": null,
+      "standings": null,
+      "rr_round": null,
       "progress": {
         "total": 25,
         "done": 7
@@ -1351,6 +1508,7 @@
             "seed": 1
           },
           "p2": null,
+          "judge_call": null,
           "state": "bye",
           "table": null,
           "report_state": null,
@@ -1390,6 +1548,7 @@
             "name": "Rex",
             "seed": 9
           },
+          "judge_call": null,
           "state": "open",
           "table": 1,
           "report_state": "pending",
@@ -1425,6 +1584,7 @@
             "seed": 4
           },
           "p2": null,
+          "judge_call": null,
           "state": "bye",
           "table": null,
           "report_state": null,
@@ -1460,6 +1620,7 @@
             "seed": 5
           },
           "p2": null,
+          "judge_call": null,
           "state": "bye",
           "table": null,
           "report_state": null,
@@ -1495,6 +1656,7 @@
             "seed": 2
           },
           "p2": null,
+          "judge_call": null,
           "state": "bye",
           "table": null,
           "report_state": null,
@@ -1530,6 +1692,7 @@
             "seed": 7
           },
           "p2": null,
+          "judge_call": null,
           "state": "bye",
           "table": null,
           "report_state": null,
@@ -1565,6 +1728,7 @@
             "seed": 3
           },
           "p2": null,
+          "judge_call": null,
           "state": "bye",
           "table": null,
           "report_state": null,
@@ -1600,6 +1764,7 @@
             "seed": 6
           },
           "p2": null,
+          "judge_call": null,
           "state": "bye",
           "table": null,
           "report_state": null,
@@ -1631,6 +1796,7 @@
           "label": "敗部第 1 輪",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -1659,6 +1825,7 @@
           "label": "敗部第 1 輪",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "bye",
           "table": null,
           "report_state": null,
@@ -1687,6 +1854,7 @@
           "label": "敗部第 1 輪",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "bye",
           "table": null,
           "report_state": null,
@@ -1715,6 +1883,7 @@
           "label": "敗部第 1 輪",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "bye",
           "table": null,
           "report_state": null,
@@ -1747,6 +1916,7 @@
             "seed": 1
           },
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -1786,6 +1956,7 @@
             "name": "小虎",
             "seed": 5
           },
+          "judge_call": null,
           "state": "open",
           "table": 2,
           "report_state": "conflict",
@@ -1825,6 +1996,7 @@
             "name": "大雄",
             "seed": 7
           },
+          "judge_call": null,
           "state": "complete",
           "table": null,
           "report_state": null,
@@ -1864,6 +2036,7 @@
             "name": "Momo",
             "seed": 6
           },
+          "judge_call": null,
           "state": "open",
           "table": 4,
           "report_state": "none",
@@ -1895,6 +2068,7 @@
           "label": "敗部第 2 輪",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -1923,6 +2097,7 @@
           "label": "敗部第 2 輪",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -1955,6 +2130,7 @@
             "name": "Nana",
             "seed": 2
           },
+          "judge_call": null,
           "state": "bye",
           "table": null,
           "report_state": null,
@@ -1983,6 +2159,7 @@
           "label": "敗部第 2 輪",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -2011,6 +2188,7 @@
           "label": "敗部第 3 輪",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -2043,6 +2221,7 @@
             "seed": 2
           },
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -2071,6 +2250,7 @@
           "label": "勝部四強",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -2106,6 +2286,7 @@
             "seed": 7
           },
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -2137,6 +2318,7 @@
           "label": "敗部第 4 輪",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -2165,6 +2347,7 @@
           "label": "敗部第 4 輪",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -2193,6 +2376,7 @@
           "label": "敗部第 5 輪",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -2221,6 +2405,7 @@
           "label": "勝部決賽",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -2252,6 +2437,7 @@
           "label": "敗部第 6 輪",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -2280,6 +2466,7 @@
           "label": "總決賽",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -2305,6 +2492,7 @@
           "label": "總決賽（重置）",
           "p1": null,
           "p2": null,
+          "judge_call": null,
           "state": "pending",
           "table": null,
           "report_state": null,
@@ -2325,6 +2513,8 @@
       "winners": [],
       "losers": [],
       "placements": null,
+      "standings": null,
+      "rr_round": null,
       "progress": {
         "total": 20,
         "done": 1
@@ -2332,5 +2522,231 @@
     }
   ],
   "finals": null,
-  "checkin": null
+  "checkin": null,
+  "tables_now": [
+    {
+      "match": "A-R1-M01",
+      "round": null,
+      "table": 4,
+      "div": "A",
+      "zone": null,
+      "label": "勝部八強",
+      "stage": "top_cut",
+      "feature": false,
+      "p1": {
+        "id": "A-04",
+        "name": "旋風",
+        "seed": 4
+      },
+      "p2": {
+        "id": "A-12",
+        "name": "Yuki",
+        "seed": 12
+      },
+      "state": "playing",
+      "report_state": "none",
+      "result": null,
+      "judge_call": null,
+      "late": null,
+      "live": null
+    },
+    {
+      "match": "A-R1-M02",
+      "round": null,
+      "table": 1,
+      "div": "A",
+      "zone": null,
+      "label": "勝部八強",
+      "stage": "top_cut",
+      "feature": true,
+      "p1": {
+        "id": "A-02",
+        "name": "小楓",
+        "seed": 2
+      },
+      "p2": {
+        "id": "A-07",
+        "name": "夜貓",
+        "seed": 7
+      },
+      "state": "playing",
+      "report_state": "none",
+      "result": null,
+      "judge_call": null,
+      "late": null,
+      "live": {
+        "p1": 1,
+        "p2": 2,
+        "n": 2,
+        "last": {
+          "side": "p2",
+          "type": "burst"
+        }
+      }
+    },
+    {
+      "match": "A-R1-M03",
+      "round": null,
+      "table": 3,
+      "div": "A",
+      "zone": null,
+      "label": "勝部八強",
+      "stage": "top_cut",
+      "feature": false,
+      "p1": {
+        "id": "A-03",
+        "name": "Kuro",
+        "seed": 3
+      },
+      "p2": {
+        "id": "A-06",
+        "name": "Miya",
+        "seed": 6
+      },
+      "state": "playing",
+      "report_state": "none",
+      "result": null,
+      "judge_call": null,
+      "late": null,
+      "live": null
+    },
+    {
+      "match": "A-L1-M00",
+      "round": null,
+      "table": 2,
+      "div": "A",
+      "zone": null,
+      "label": "敗部第 2 輪",
+      "stage": "top_cut",
+      "feature": false,
+      "p1": {
+        "id": "A-09",
+        "name": "Leo",
+        "seed": 9
+      },
+      "p2": {
+        "id": "A-01",
+        "name": "阿翔",
+        "seed": 1
+      },
+      "state": "playing",
+      "report_state": "none",
+      "result": null,
+      "judge_call": null,
+      "late": null,
+      "live": null
+    },
+    {
+      "match": "B-R1-M02",
+      "round": null,
+      "table": 3,
+      "div": "B",
+      "zone": null,
+      "label": "勝部八強",
+      "stage": "top_cut",
+      "feature": false,
+      "p1": {
+        "id": "B-02",
+        "name": "Nana",
+        "seed": 2
+      },
+      "p2": {
+        "id": "B-07",
+        "name": "大雄",
+        "seed": 7
+      },
+      "state": "done",
+      "report_state": null,
+      "result": {
+        "status": "confirmed",
+        "p1": null,
+        "p2": null,
+        "draws": 0,
+        "double_loss": false,
+        "winner": "B-07",
+        "display": null
+      },
+      "judge_call": null,
+      "late": null,
+      "live": null
+    },
+    {
+      "match": "B-R0-M01",
+      "round": null,
+      "table": 1,
+      "div": "B",
+      "zone": null,
+      "label": "勝部十六強",
+      "stage": "top_cut",
+      "feature": false,
+      "p1": {
+        "id": "B-08",
+        "name": "阿布",
+        "seed": 8
+      },
+      "p2": {
+        "id": "B-09",
+        "name": "Rex",
+        "seed": 9
+      },
+      "state": "playing",
+      "report_state": "pending",
+      "result": null,
+      "judge_call": null,
+      "late": null,
+      "live": null
+    },
+    {
+      "match": "B-R1-M01",
+      "round": null,
+      "table": 2,
+      "div": "B",
+      "zone": null,
+      "label": "勝部八強",
+      "stage": "top_cut",
+      "feature": false,
+      "p1": {
+        "id": "B-04",
+        "name": "可樂",
+        "seed": 4
+      },
+      "p2": {
+        "id": "B-05",
+        "name": "小虎",
+        "seed": 5
+      },
+      "state": "playing",
+      "report_state": "conflict",
+      "result": null,
+      "judge_call": null,
+      "late": null,
+      "live": null
+    },
+    {
+      "match": "B-R1-M03",
+      "round": null,
+      "table": 4,
+      "div": "B",
+      "zone": null,
+      "label": "勝部八強",
+      "stage": "top_cut",
+      "feature": false,
+      "p1": {
+        "id": "B-03",
+        "name": "疾風",
+        "seed": 3
+      },
+      "p2": {
+        "id": "B-06",
+        "name": "Momo",
+        "seed": 6
+      },
+      "state": "playing",
+      "report_state": "none",
+      "result": null,
+      "judge_call": null,
+      "late": null,
+      "live": null
+    }
+  ]
 }

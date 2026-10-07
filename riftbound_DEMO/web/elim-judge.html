@@ -5,43 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="data:,">
   <title>符文戰場 — 淘汰賽裁判端</title>
+  <link rel="stylesheet" href="common.css">
   <style>
-    :root {
-      --bg: #01222F;
-      --card-bg: #013951;
-      --card-border: #0A5570;
-      --text-primary: #F9F9F9;
-      --text-secondary: #9FB8C4;
-      --accent: #EF7D00;
-      --accent-hover: #C86800;
-      --accent-text: #FF941E;
-      --warning-bg: #3E3312;
-      --warning-border: #8A6D1F;
-      --warning-text: #F2C94C;
-      --danger-bg: #4A1F1C;
-      --danger-border: #A8443C;
-      --danger-text: #ED807A;
-      --success-bg: #0A3F33;
-      --success-border: #1F7A55;
-      --success-text: #2FB574;
-      --chip-bg: #0A4A63;
-      --input-bg: #011A24;
-      --info-bg: #1B2F4A;
-      --info-border: #2F5A80;
-      --info-text: #4FA8D8;
-      --judge-bg: #2E2140;
-      --judge-border: #553C77;
-      --judge-text: #B38FE0;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
+html, body {
       -webkit-text-size-adjust: 100%;
       background-color: var(--bg);
       color: var(--text-primary);
@@ -53,7 +19,7 @@
       width: 100%;
     }
 
-    input, select, textarea {
+input, select, textarea {
       font-size: 1rem;
       color: var(--text-primary);
       background: var(--input-bg);
@@ -64,12 +30,12 @@
       width: 100%;
     }
 
-    input:focus, select:focus, textarea:focus {
+input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: var(--accent);
     }
 
-    .container {
+.container {
       width: 100%;
       max-width: 540px;
       margin: 0 auto;
@@ -77,20 +43,19 @@
       overflow-x: hidden;
     }
 
-    @media (max-width: 480px) {
+@media (max-width: 480px) {
       .container {
         padding: 10px 10px 30px;
       }
     }
 
-    /* 頂部導覽列 */
-    header {
+header {
       margin-bottom: 12px;
       padding-bottom: 8px;
       border-bottom: 1px solid var(--card-border);
     }
 
-    .header-top {
+.header-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -98,13 +63,13 @@
       gap: 8px;
     }
 
-    .page-title {
+.page-title {
       font-size: 1.15rem;
       font-weight: 800;
       color: var(--text-primary);
     }
 
-    .judge-badge {
+.judge-badge {
       font-size: 0.75rem;
       padding: 3px 8px;
       border-radius: 9999px;
@@ -114,15 +79,14 @@
       color: var(--judge-text);
     }
 
-    .user-bar {
+.user-bar {
       display: flex;
       align-items: center;
       gap: 10px;
       font-size: 0.88rem;
     }
 
-    /* 卡片共通 */
-    .card {
+.card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 8px;
@@ -131,7 +95,7 @@
       overflow-x: hidden;
     }
 
-    .card-title {
+.card-title {
       font-size: 1rem;
       font-weight: 700;
       color: var(--accent-text);
@@ -141,7 +105,7 @@
       justify-content: space-between;
     }
 
-    .badge {
+.badge {
       font-size: 0.75rem;
       padding: 2px 8px;
       border-radius: 9999px;
@@ -151,14 +115,13 @@
       color: var(--text-secondary);
     }
 
-    .badge.live {
+.badge.live {
       background: var(--success-bg);
       border-color: var(--success-border);
       color: var(--success-text);
     }
 
-    /* 按鈕 */
-    .btn {
+.btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -174,55 +137,55 @@
       transition: background-color 0.15s, opacity 0.15s;
     }
 
-    .btn:disabled {
+.btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
 
-    .btn-primary {
+.btn-primary {
       background: var(--accent);
       color: #fff;
     }
-    .btn-primary:not(:disabled):hover {
+
+.btn-primary:not(:disabled):hover {
       background: var(--accent-hover);
     }
 
-    .btn-secondary {
+.btn-secondary {
       background: var(--chip-bg);
       border-color: var(--card-border);
       color: var(--text-primary);
     }
 
-    .btn-danger {
+.btn-danger {
       background: var(--danger-bg);
       border-color: var(--danger-border);
       color: var(--danger-text);
     }
 
-    .btn-warning {
+.btn-warning {
       background: var(--warning-bg);
       border-color: var(--warning-border);
       color: var(--warning-text);
     }
 
-    .btn-success {
+.btn-success {
       background: var(--success-bg);
       border-color: var(--success-border);
       color: var(--success-text);
     }
 
-    .btn-block {
+.btn-block {
       width: 100%;
     }
 
-    .btn-row {
+.btn-row {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
     }
 
-    /* 訊息提示框 */
-    .msg-box {
+.msg-box {
       padding: 10px 12px;
       border-radius: 6px;
       font-size: 0.88rem;
@@ -230,26 +193,25 @@
       word-break: break-word;
     }
 
-    .msg-box.error {
+.msg-box.error {
       background: var(--danger-bg);
       border: 1px solid var(--danger-border);
       color: var(--danger-text);
     }
 
-    .msg-box.success {
+.msg-box.success {
       background: var(--success-bg);
       border: 1px solid var(--success-border);
       color: var(--success-text);
     }
 
-    .msg-box.warning {
+.msg-box.warning {
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
     }
 
-    /* 衝突清單項目 */
-    .conflict-item {
+.conflict-item {
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
@@ -265,19 +227,18 @@
       text-align: left;
     }
 
-    .conflict-item:hover {
+.conflict-item:hover {
       background: rgba(62, 51, 18, 0.6);
     }
 
-    /* 桌次按鈕清單 */
-    .tables-grid {
+.tables-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
       gap: 8px;
       margin-top: 8px;
     }
 
-    .ej-table {
+.ej-table {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
       border-radius: 6px;
@@ -293,19 +254,18 @@
       width: 100%;
     }
 
-    .ej-table:hover {
+.ej-table:hover {
       border-color: var(--accent);
     }
 
-    /* 逐分計分按鈕區 */
-    .point-grid {
+.point-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 8px;
       margin-bottom: 10px;
     }
 
-    .point-col-title {
+.point-col-title {
       font-size: 0.85rem;
       font-weight: 700;
       color: var(--accent-text);
@@ -316,7 +276,7 @@
       text-overflow: ellipsis;
     }
 
-    .ej-point {
+.ej-point {
       width: 100%;
       padding: 8px 6px;
       font-size: 0.85rem;
@@ -326,8 +286,44 @@
       min-width: 44px;
     }
 
-    /* 確認彈窗 */
-    .modal-overlay {
+.deck-check-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      min-height: 44px;
+      padding: 8px 12px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      text-align: left;
+      cursor: pointer;
+      box-sizing: border-box;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+.deck-check-row:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+.deck-check-row[aria-pressed="true"] {
+      background: var(--chip-bg);
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+.deck-section-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--accent-text);
+      margin-top: 10px;
+      margin-bottom: 4px;
+      padding-left: 2px;
+    }
+
+.modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
@@ -341,7 +337,7 @@
       padding: 16px;
     }
 
-    .modal-box {
+.modal-box {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 8px;
@@ -351,14 +347,14 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     }
 
-    .modal-title {
+.modal-title {
       font-size: 1.1rem;
       font-weight: 700;
       margin-bottom: 8px;
       color: var(--accent-text);
     }
 
-    .modal-msg {
+.modal-msg {
       font-size: 0.95rem;
       line-height: 1.5;
       margin-bottom: 16px;
@@ -366,23 +362,155 @@
       word-break: break-word;
     }
 
-    .modal-btns {
+.modal-btns {
       display: flex;
       gap: 10px;
       justify-content: flex-end;
     }
 
-    /* 選手協助按鈕尺寸與字級保證 (review.py [46]) */
-    #ejUnlock, #ejPinReset, #ejNewPinDone, #ejLogout, #ejRefreshConflicts {
+#ejUnlock, #ejPinReset, #ejNewPinDone, #ejLogout, #ejRefreshConflicts {
       min-height: 44px;
       min-width: 44px;
       box-sizing: border-box;
     }
 
-    #ejPlayerId {
+#ejPlayerId {
       font-size: 16px;
     }
-  </style>
+
+.call-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+.ej-call {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+.ej-call.call-item-waiting {
+      border-left: 4px solid var(--warning-border);
+      background: rgba(62, 51, 18, 0.2);
+    }
+
+.ej-call.call-item-taken {
+      border-left: 4px solid #3b82f6;
+      background: rgba(30, 58, 138, 0.2);
+    }
+
+.call-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+.call-table-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--accent-text);
+      cursor: pointer;
+    }
+
+.call-item-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+.call-state-badge {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-weight: 700;
+    }
+
+.call-state-badge.waiting {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+    }
+
+.call-state-badge.taken {
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid #3b82f6;
+      color: #93c5fd;
+    }
+
+.call-item-time {
+      font-size: 0.8rem;
+      color: var(--warning-text);
+      font-weight: 600;
+    }
+
+.call-item-body {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.88rem;
+      margin: 8px 0;
+    }
+
+.call-reason-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-primary);
+    }
+
+.call-reason-label {
+      font-weight: 700;
+      color: var(--warning-text);
+    }
+
+.call-note-text {
+      color: var(--text-primary);
+      background: rgba(0, 0, 0, 0.25);
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 0.84rem;
+      word-break: break-all;
+      margin-top: 2px;
+    }
+
+.call-item-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+.call-item-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+.btn-sm {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
+
+#ejRefreshCalls, .ej-call-take, .ej-call-done {
+      min-height: 44px;
+      min-width: 44px;
+      box-sizing: border-box;
+    }
+</style>
 </head>
 <body>
   <div class="container">
@@ -419,6 +547,103 @@
     <main id="ejMainSection" style="display: none;">
       <!-- 操作回饋與主機退回訊息區 -->
       <div id="ejMsg" class="msg-box error" style="display: none;"></div>
+
+      <!-- 現場報到清單區塊 (snapshot.checkin.method === 'list' 且 open) -->
+      <section class="card" id="ejCheckinSection" style="display: none;">
+        <div class="card-title">
+          <span>📋 報到清單</span>
+          <button type="button" id="ejRefreshCheckin" class="btn btn-secondary" style="min-height: 44px; min-width: 44px; padding: 4px 8px; font-size: 0.78rem;">重新整理</button>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 8px;">
+          名單報到模式：裁判可在此為到場選手代為報到或取消報到。
+        </p>
+        <div id="ejCkMsg" class="msg-box" style="display: none; margin-bottom: 8px;"></div>
+        <div id="ejCkList" style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-size: 0.88rem; color: var(--text-secondary); padding: 6px 0;">載入報到名單中...</div>
+        </div>
+      </section>
+
+      <!-- 區塊: 驗牌區 (只在 snapshot.checkin 存在且 decklist_required 為 true 時顯示) -->
+      <section class="card" id="ejDeckSection" style="display: none;">
+        <h2 class="card-title">🃏 驗牌區</h2>
+        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px;">
+          輸入選手編號載入牌表。可逐張核對卡名與張數、記錄驗牌結果或解鎖牌表。
+        </p>
+
+        <div style="margin-bottom: 12px;">
+          <label for="ejDeckPlayerId" style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">選手編號</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="ejDeckPlayerId" placeholder="例如 A-01" autocomplete="off" autocapitalize="characters" style="flex: 1;">
+            <button type="button" id="ejDeckLoadBtn" class="btn btn-primary" style="white-space: nowrap;">載入牌表</button>
+          </div>
+        </div>
+
+        <div id="ejDeckInfoBox" style="margin-bottom: 10px; display: none;">
+          <div style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 6px;" id="ejDeckPlayerMeta"></div>
+
+          <div id="ejDeckCopyRow" style="display: none; margin-bottom: 8px; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <button type="button" id="ejDeckCopy" class="btn btn-secondary" style="min-width: 130px; min-height: 44px; height: 44px;">複製牌組碼</button>
+            <span id="ejDeckCopyMsg" style="font-size: 0.82rem; color: var(--success-text); display: none;">已複製，請貼到組牌 App</span>
+          </div>
+          <div id="ejDeckTextNotice" style="display: none; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">
+            這位選手用純文字登錄，沒有牌組碼
+          </div>
+
+          <!-- 紅色 problems -->
+          <div id="ejDeckProblems" style="display: none; background: var(--danger-bg); border: 1px solid var(--danger-border); color: var(--danger-text); border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; font-size: 0.85rem; line-height: 1.4; white-space: pre-line;"></div>
+
+          <!-- 琥珀色 notes -->
+          <div id="ejDeckNotes" style="display: none; background: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning-text); border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; font-size: 0.85rem; line-height: 1.4; white-space: pre-line;"></div>
+
+          <!-- 逐張打勾核對牌組區 -->
+          <div id="ejDeckCheckRowsBox" style="display: none; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+              <span id="ejDeckCheckProgress" style="font-size: 0.9rem; font-weight: 700; color: var(--accent-text);">已核對 0 / 0 張</span>
+              <button type="button" id="ejDeckCheckReset" class="btn btn-secondary btn-sm" style="min-height: 44px; padding: 4px 12px;">清空核對</button>
+            </div>
+            <div id="ejDeckCheckList" style="display: flex; flex-direction: column; gap: 6px;"></div>
+          </div>
+
+          <div style="margin-top: 10px; margin-bottom: 6px;">
+            <button type="button" id="ejDeckViewToggle" class="btn btn-secondary btn-sm" style="min-height: 44px; padding: 4px 10px; font-size: 0.8rem;">收起列印版</button>
+          </div>
+          <pre id="ejDeckView" style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; font-size: 0.85rem; line-height: 1.4; color: #f8fafc; white-space: pre-wrap; word-break: break-word; min-height: 48px; max-height: 360px; overflow-y: auto;"></pre>
+          <div id="ejDeckCardsNotice" style="display: none; font-size: 0.78rem; color: var(--text-secondary); line-height: 1.35; margin-top: 8px; white-space: pre-line;"></div>
+        </div>
+
+        <div style="margin-top: 10px; margin-bottom: 8px;">
+          <label for="ejDeckCheckNote" style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px;">備註說明（選填，最多 40 字）</label>
+          <input type="text" id="ejDeckCheckNote" maxlength="40" placeholder="例如：主牌組少 1 張、記警告">
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+          <button type="button" id="ejDeckOk" class="btn btn-success" style="flex: 1;">驗牌通過</button>
+          <button type="button" id="ejDeckBad" class="btn btn-danger" style="flex: 1;">驗牌不通過</button>
+        </div>
+
+        <div style="padding-top: 10px; border-top: 1px dashed var(--card-border);">
+          <button type="button" id="ejDeckUnlock" class="btn btn-warning btn-block">
+            解鎖牌表（需確認）
+          </button>
+        </div>
+
+        <div id="ejDeckMsg" class="msg-box" style="display: none; margin-top: 10px;"></div>
+      </section>
+
+      <!-- 叫裁判清單區塊 (DATA-CONTRACT 7.11, PROJECT.md 第四十九輪) -->
+      <section class="card" id="ejCallsSection">
+        <div class="card-title">
+          <span>🙋 叫裁判清單</span>
+          <button type="button" id="ejRefreshCalls" class="btn btn-secondary" style="min-height: 44px; min-width: 44px; padding: 4px 8px; font-size: 0.78rem;">重新整理</button>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 8px;">
+          選手在比賽桌發出的裁判呼叫，點擊「我去處理」接手，處理完畢按「處理完了」結案。
+        </p>
+        <div id="ejCalls" class="call-list">
+          <div style="font-size: 0.88rem; color: var(--text-secondary); padding: 6px 0;">目前沒有裁判呼叫</div>
+        </div>
+        <div id="ejCallsMsg" class="msg-box" style="display: none; margin-top: 8px;"></div>
+      </section>
 
       <!-- 選手協助區塊 (PROJECT.md 第四十二輪, review.py [46]) -->
       <section class="card" id="ejPlayerAssistSection">
@@ -507,33 +732,8 @@
           <div style="font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; color: var(--accent-text);">
             最後比分：
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-            <div>
-              <label id="ejP1ScoreLabel" for="ejP1Score" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; display: block;"></label>
-              <select id="ejP1Score">
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-              </select>
-            </div>
-            <div>
-              <label id="ejP2ScoreLabel" for="ejP2Score" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; display: block;"></label>
-              <select id="ejP2Score">
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-              </select>
-            </div>
-          </div>
-          <button type="button" id="ejScoreSubmit" class="btn btn-primary btn-block">送出比分</button>
+          <div id="ejScoreWidgetContainer"></div>
+          <button type="button" id="ejScoreSubmit" class="btn btn-primary btn-block" style="margin-top: 8px;">送出比分</button>
         </div>
 
         <!-- 方式 3: 逐分計分 -->
@@ -541,22 +741,7 @@
           <div style="font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; color: var(--accent-text);">
             逐分計分（戰鬥陀螺 X 記分）：
           </div>
-          <div class="point-grid">
-            <div>
-              <div id="ejP1PointColTitle" class="point-col-title"></div>
-              <button type="button" class="btn btn-secondary ej-point" data-side="p1" data-type="xtreme">極限 (+3)</button>
-              <button type="button" class="btn btn-secondary ej-point" data-side="p1" data-type="over">擊飛 (+2)</button>
-              <button type="button" class="btn btn-secondary ej-point" data-side="p1" data-type="burst">爆裂 (+2)</button>
-              <button type="button" class="btn btn-secondary ej-point" data-side="p1" data-type="spin">迴轉 (+1)</button>
-            </div>
-            <div>
-              <div id="ejP2PointColTitle" class="point-col-title"></div>
-              <button type="button" class="btn btn-secondary ej-point" data-side="p2" data-type="xtreme">極限 (+3)</button>
-              <button type="button" class="btn btn-secondary ej-point" data-side="p2" data-type="over">擊飛 (+2)</button>
-              <button type="button" class="btn btn-secondary ej-point" data-side="p2" data-type="burst">爆裂 (+2)</button>
-              <button type="button" class="btn btn-secondary ej-point" data-side="p2" data-type="spin">迴轉 (+1)</button>
-            </div>
-          </div>
+          <div id="ejPointsWidgetContainer" style="margin-bottom: 10px;"></div>
 
           <div style="display: flex; gap: 8px; margin-bottom: 10px;">
             <button type="button" id="ejPointUndo" class="btn btn-warning" style="flex: 1;">復原最後一分</button>
@@ -589,59 +774,58 @@
     </div>
   </div>
 
+  <script src="common.js"></script>
+  <script src="admin-panels.js"></script>
   <script src="elim-common.js"></script>
   <script>
     // 嚴格遵守：PIN 僅存放在記憶體或 sessionStorage，絕不存進 localStorage
     const SESSION_KEY_PIN = 'riftbound_elim_judge_pin';
+    let auth = null;
+    let playerAssist = null;
     let staffPin = '';
     let staffRole = '';
     let staffName = '';
 
     let currentMatch = null;
     let currentPoints = [];
-    let pendingConfirmAction = null;
     let poller = null;
     let conflictTimer = null;
 
+    // 叫裁判佇列狀態 (DATA-CONTRACT 7.11, PROJECT.md 第四十九輪)
+    let currentCalls = [];
+    let lastCallFingerprint = '';
+    let callsTimer = null;
+    let callsTickTimer = null;
+    let hasInitializedCalls = false;
+    let firstSeenCallTimes = new Map();
+
     // 確認彈窗輔助函式
-    function showConfirm(title, message, onConfirmed) {
-      document.getElementById('confirmTitle').textContent = title;
-      document.getElementById('confirmMessage').textContent = message;
-      document.getElementById('confirmModal').style.display = 'flex';
-      pendingConfirmAction = onConfirmed;
+    async function showConfirm(title, message, onConfirmed) {
+      const ok = await confirmDialog({ title, message, yes: '確認送出', no: '取消', danger: true });
+      if (ok && typeof onConfirmed === 'function') {
+        await onConfirmed();
+      }
     }
 
-    document.getElementById('confirmYes').addEventListener('click', async () => {
-      document.getElementById('confirmModal').style.display = 'none';
-      if (pendingConfirmAction) {
-        const action = pendingConfirmAction;
-        pendingConfirmAction = null;
-        await action();
-      }
-    });
-
-    document.getElementById('confirmNo').addEventListener('click', () => {
-      document.getElementById('confirmModal').style.display = 'none';
-      pendingConfirmAction = null;
-    });
-
-    // 登入邏輯
-    async function doLogin(pin) {
-      const loginBtn = document.getElementById('ejLogin');
-      const loginMsg = document.getElementById('ejLoginMsg');
-      loginBtn.disabled = true;
-      loginMsg.style.display = 'none';
-
-      try {
-        const res = await callApi('/api/staff/whoami', { staff_pin: pin });
-        staffPin = pin;
-        staffRole = res.role || 'judge';
-        staffName = res.name || '示範裁判';
-        sessionStorage.setItem(SESSION_KEY_PIN, pin);
+    // 工作人員登入面板 (web/admin-panels.js)
+    auth = AdminPanels.mountLogin({
+      ids: {
+        section: 'ejLoginSection',
+        pin: 'ejPin',
+        btn: 'ejLogin',
+        error: 'ejLoginMsg',
+        logout: 'ejLogout'
+      },
+      storageKey: SESSION_KEY_PIN,
+      allowedRoles: ['judge', 'admin'],
+      onLogin: async (who) => {
+        staffPin = auth.getPin();
+        window.staffPin = staffPin;
+        staffRole = who.role || 'judge';
+        staffName = who.name || '示範裁判';
 
         document.getElementById('ejStaffName').textContent = staffName;
         document.getElementById('ejUserBar').style.display = 'flex';
-        document.getElementById('ejLoginSection').style.display = 'none';
         document.getElementById('ejMainSection').style.display = 'block';
 
         // 登入成功後開始輪詢與載入資料
@@ -657,49 +841,243 @@
         await poller.fetchOnce();
         await loadConflicts();
         startConflictPolling();
+        await loadCalls();
+        startCallsPolling();
+      },
+      onLogout: () => {
+        staffPin = '';
+        window.staffPin = '';
+        staffRole = '';
+        staffName = '';
+        if (conflictTimer) clearInterval(conflictTimer);
+        if (callsTimer) clearInterval(callsTimer);
+        if (callsTickTimer) clearInterval(callsTickTimer);
+        conflictTimer = null;
+        callsTimer = null;
+        callsTickTimer = null;
+        currentCalls = [];
+        lastCallFingerprint = '';
+        lastCkFingerprint = '';
+        if (poller) poller.stop();
+
+        document.getElementById('ejUserBar').style.display = 'none';
+        document.getElementById('ejMainSection').style.display = 'none';
+        document.getElementById('ejDetail').innerHTML = '<div style="color: var(--text-secondary); font-size: 0.9rem; text-align: center; padding: 12px 0;">請從上方點選衝突場次、桌次，或輸入場次編號以檢視詳情。</div>';
+        document.getElementById('ejActionPanel').style.display = 'none';
+
+        const ejCallsEl = document.getElementById('ejCalls');
+        if (ejCallsEl) {
+          ejCallsEl.innerHTML = '<div style="font-size: 0.88rem; color: var(--text-secondary); padding: 6px 0;">目前沒有裁判呼叫</div>';
+        }
+        hideCallsMsg();
+
+        if (playerAssist) {
+          playerAssist.clear();
+        }
+
+        const deckSec = document.getElementById('ejDeckSection');
+        if (deckSec) deckSec.style.display = 'none';
+        const deckPid = document.getElementById('ejDeckPlayerId');
+        if (deckPid) deckPid.value = '';
+        const deckInfo = document.getElementById('ejDeckInfoBox');
+        if (deckInfo) deckInfo.style.display = 'none';
+        hideEjDeckMsg();
+      }
+    });
+
+    // 叫裁判音效與輔助函式
+    function playCallSound() {
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+        const ctx = new AudioContextClass();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.25);
+      } catch (e) {}
+    }
+
+    function formatWaitTime(calledAt) {
+      const now = Date.now();
+      const sec = Math.max(0, Math.floor((now - calledAt) / 1000));
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      if (m > 0) {
+        return `${m} 分 ${s} 秒`;
+      }
+      return `${s} 秒`;
+    }
+
+    function updateCallTimes() {
+      const listEl = document.getElementById('ejCalls');
+      if (!listEl) return;
+      listEl.querySelectorAll('.call-item-time').forEach(el => {
+        const calledAt = parseInt(el.getAttribute('data-called-at'), 10);
+        if (calledAt) {
+          el.textContent = `已等 ${formatWaitTime(calledAt)}`;
+        }
+      });
+    }
+
+    function getCallFingerprint(calls) {
+      return calls.map(c => `${c.match}-${c.table}-${c.state}-${c.reason}-${c.reason_label || ''}-${c.note || ''}-${c.taken_by || ''}-${c.called_at || 0}`).join('|');
+    }
+
+    function showCallsMsg(text, isError = true) {
+      const el = document.getElementById('ejCallsMsg');
+      if (!el) return;
+      el.textContent = text;
+      el.className = isError ? 'msg-box error' : 'msg-box success';
+      el.style.display = 'block';
+    }
+
+    function hideCallsMsg() {
+      const el = document.getElementById('ejCallsMsg');
+      if (!el) return;
+      el.style.display = 'none';
+      el.textContent = '';
+    }
+
+    async function loadCalls() {
+      if (!staffPin) return;
+      try {
+        const res = await callApi('/api/staff/calls', { staff_pin: staffPin });
+        renderCallList(res.calls || []);
       } catch (err) {
-        loginMsg.textContent = err.message || '登入失敗，請確認 PIN 碼';
-        loginMsg.style.display = 'block';
-      } finally {
-        loginBtn.disabled = false;
+        if (err.status === 401) {
+          document.getElementById('ejLogout').click();
+        } else {
+          showCallsMsg(err.message || '無法載入裁判呼叫佇列');
+        }
       }
     }
 
-    document.getElementById('ejLogin').addEventListener('click', () => {
-      const pin = (document.getElementById('ejPin').value || '').trim();
-      if (!pin) {
-        const msg = document.getElementById('ejLoginMsg');
-        msg.textContent = '請輸入工作人員 PIN 碼';
-        msg.style.display = 'block';
+    function startCallsPolling() {
+      if (callsTimer) clearInterval(callsTimer);
+      if (callsTickTimer) clearInterval(callsTickTimer);
+      callsTimer = setInterval(() => {
+        if (document.visibilityState !== 'hidden') {
+          loadCalls();
+        }
+      }, 8000);
+      callsTickTimer = setInterval(updateCallTimes, 1000);
+    }
+
+    function renderCallList(calls) {
+      const listEl = document.getElementById('ejCalls');
+      if (!listEl) return;
+
+      const sortedCalls = calls.slice().sort((a, b) => {
+        if (a.state === 'waiting' && b.state !== 'waiting') return -1;
+        if (a.state !== 'waiting' && b.state === 'waiting') return 1;
+        return (a.called_at || 0) - (b.called_at || 0);
+      });
+      currentCalls = sortedCalls;
+
+      if (!sortedCalls.length) {
+        lastCallFingerprint = '';
+        listEl.innerHTML = '<div style="font-size: 0.88rem; color: var(--text-secondary); padding: 6px 0;">目前沒有裁判呼叫</div>';
         return;
       }
-      doLogin(pin);
-    });
 
-    document.getElementById('ejLogout').addEventListener('click', () => {
-      staffPin = '';
-      staffRole = '';
-      staffName = '';
-      sessionStorage.removeItem(SESSION_KEY_PIN);
-      if (conflictTimer) clearInterval(conflictTimer);
-      if (poller) poller.stop();
-
-      document.getElementById('ejUserBar').style.display = 'none';
-      document.getElementById('ejMainSection').style.display = 'none';
-      document.getElementById('ejLoginSection').style.display = 'block';
-      document.getElementById('ejPin').value = '';
-      document.getElementById('ejDetail').innerHTML = '<div style="color: var(--text-secondary); font-size: 0.9rem; text-align: center; padding: 12px 0;">請從上方點選衝突場次、桌次，或輸入場次編號以檢視詳情。</div>';
-      document.getElementById('ejActionPanel').style.display = 'none';
-
-      const pidInput = document.getElementById('ejPlayerId');
-      if (pidInput) pidInput.value = '';
-      handleNewPinDone();
-      const paMsg = document.getElementById('ejPlayerAssistMsg');
-      if (paMsg) {
-        paMsg.textContent = '';
-        paMsg.style.display = 'none';
+      const newFingerprint = getCallFingerprint(sortedCalls);
+      if (newFingerprint === lastCallFingerprint && listEl.children.length > 0 && !listEl.querySelector('div:not(.ej-call)')) {
+        updateCallTimes();
+        return;
       }
-    });
+
+      const now = Date.now();
+      let hasBrandNew = false;
+      sortedCalls.forEach(c => {
+        if (c.state === 'waiting' && !firstSeenCallTimes.has(c.match)) {
+          firstSeenCallTimes.set(c.match, now);
+          if (hasInitializedCalls) {
+            hasBrandNew = true;
+          }
+        }
+      });
+      hasInitializedCalls = true;
+      if (hasBrandNew) {
+        playCallSound();
+      }
+
+      const savedScroll = listEl.scrollTop;
+
+      listEl.innerHTML = sortedCalls.map(c => {
+        const reasonText = c.reason_label || c.reason || '規則問題';
+        const waitText = formatWaitTime(c.called_at || now);
+        const isTaken = (c.state === 'taken');
+        const tableText = (c.table !== null && c.table !== undefined) ? `第 ${c.table} 桌` : '未上桌';
+
+        let stateBadgeHtml = '';
+        if (isTaken) {
+          stateBadgeHtml = `<span class="call-state-badge taken">${c.taken_by ? `${escapeHtml(c.taken_by)} 處理中` : '裁判處理中'}</span>`;
+        } else {
+          stateBadgeHtml = `<span class="call-state-badge waiting">等候中</span>`;
+        }
+
+        const noteHtml = c.note ? `<div class="call-note-text">備註：${escapeHtml(c.note)}</div>` : '';
+        const p1Name = c.p1 ? escapeHtml(c.p1.name || c.p1.id) : '';
+        const p2Name = c.p2 ? escapeHtml(c.p2.name || c.p2.id) : '';
+        const matchVersus = (p1Name && p2Name) ? `<span>對戰：${p1Name} vs ${p2Name}</span>` : '';
+
+        let callerText = '—';
+        if (c.caller) {
+          if (typeof c.caller === 'object') {
+            const cName = c.caller.name || '';
+            const cId = c.caller.id || '';
+            if (cName && cId) {
+              callerText = `${cName}（${cId}）`;
+            } else {
+              callerText = cName || cId || '—';
+            }
+          } else {
+            callerText = String(c.caller);
+          }
+        }
+
+        return `
+          <div class="ej-call ${isTaken ? 'call-item-taken' : 'call-item-waiting'}" data-match="${escapeHtml(c.match)}">
+            <div class="call-item-header">
+              <span class="call-table-title" data-match="${escapeHtml(c.match)}">${escapeHtml(tableText)}</span>
+              <div class="call-item-badges">
+                ${stateBadgeHtml}
+                <span class="call-item-time" data-called-at="${c.called_at || 0}">已等 ${waitText}</span>
+              </div>
+            </div>
+            <div class="call-item-body">
+              <div class="call-reason-row">
+                <span>原因：</span>
+                <span class="call-reason-label">${escapeHtml(reasonText)}</span>
+              </div>
+              ${noteHtml}
+              <div class="call-item-meta">
+                ${matchVersus}
+                <span>呼叫者：${escapeHtml(callerText)}</span>
+              </div>
+            </div>
+            <div class="call-item-actions">
+              <button type="button" class="btn btn-primary btn-sm ej-call-take" data-match="${escapeHtml(c.match)}" ${isTaken ? 'disabled' : ''}>
+                ${isTaken ? '已接手' : '我去處理'}
+              </button>
+              <button type="button" class="btn btn-success btn-sm ej-call-done" data-match="${escapeHtml(c.match)}">
+                處理完了
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      listEl.scrollTop = savedScroll;
+      lastCallFingerprint = newFingerprint;
+    }
 
     // 衝突場次載入與輪詢
     async function loadConflicts() {
@@ -763,8 +1141,578 @@
     // Snapshot 資料更新回呼
     function onSnapshotUpdate(snap) {
       if (!snap) return;
+      window.elimSnapshot = snap;
       updateDivSelect(snap.divisions || []);
+      renderCheckinSection(snap);
+      renderDeckSection(snap);
       renderTables();
+      if (staffPin) {
+        loadCalls();
+      }
+    }
+
+    // 現場報到清單 (snapshot.checkin.method === 'list' 且 open)
+    let lastCkFingerprint = '';
+    let isFetchingCheckinList = false;
+
+    function renderCheckinSection(snap) {
+      const sec = document.getElementById('ejCheckinSection');
+      if (!sec) return;
+      const ck = snap.checkin;
+      if (ck && ck.method === 'list' && ck.open) {
+        sec.style.display = 'block';
+        if (staffPin) {
+          fetchElimJudgeCheckinList();
+        }
+      } else {
+        sec.style.display = 'none';
+      }
+    }
+
+    function showJudgeCkMsg(text, isError = true) {
+      const el = document.getElementById('ejCkMsg');
+      if (!el) return;
+      el.textContent = text;
+      el.className = isError ? 'msg-box error' : 'msg-box success';
+      el.style.display = 'block';
+    }
+
+    function hideJudgeCkMsg() {
+      const el = document.getElementById('ejCkMsg');
+      if (!el) return;
+      el.style.display = 'none';
+      el.textContent = '';
+    }
+
+    async function fetchElimJudgeCheckinList() {
+      if (isFetchingCheckinList || !staffPin) return;
+      isFetchingCheckinList = true;
+      try {
+        const res = await callApi('/api/staff/checkin_list', { staff_pin: staffPin });
+        renderElimJudgeCheckinList(res.rows || []);
+      } catch (err) {
+        const listEl = document.getElementById('ejCkList');
+        if (listEl) {
+          listEl.innerHTML = `<div style="font-size: 0.88rem; color: var(--danger-text); padding: 6px 0;">無法載入報到清單：${escapeHtml(err.message || '連線異常')}</div>`;
+        }
+      } finally {
+        isFetchingCheckinList = false;
+      }
+    }
+
+    function renderElimJudgeCheckinList(rows) {
+      const listEl = document.getElementById('ejCkList');
+      if (!listEl) return;
+      if (!rows.length) {
+        listEl.innerHTML = '<div style="font-size: 0.88rem; color: var(--text-secondary); padding: 6px 0;">名單內無任何選手</div>';
+        lastCkFingerprint = '';
+        return;
+      }
+
+      // 未報到的排前面
+      const sortedRows = [...rows].sort((a, b) => {
+        if (Boolean(a.checked_in) === Boolean(b.checked_in)) return 0;
+        return a.checked_in ? 1 : -1;
+      });
+
+      const snap = window.elimSnapshot;
+      const isDeckReq = Boolean(snap && snap.checkin && snap.checkin.decklist_required);
+
+      const newFingerprint = `${isDeckReq}:` + sortedRows.map(r => `${r.id || r.code || ''}:${r.name || ''}:${r.checked_in}:${r.div || ''}:${r.seed || ''}:${Boolean(r.has_decklist)}`).join('|');
+      if (newFingerprint === lastCkFingerprint) {
+        return;
+      }
+
+      const savedScroll = listEl.scrollTop;
+      listEl.innerHTML = sortedRows.map(r => {
+        const pid = r.id || r.code || '';
+        const pname = r.name || '';
+        const pdiv = r.div || '';
+        const pseed = (r.seed !== undefined && r.seed !== null) ? r.seed : (r.card || '');
+        const isChecked = Boolean(r.checked_in);
+        const hasDeck = Boolean(r.has_decklist);
+
+        const statusBadge = isChecked
+          ? '<span class="badge" style="background: var(--success-bg); border-color: var(--success-border); color: var(--success-text);">已報到</span>'
+          : '<span class="badge" style="background: var(--warning-bg); border-color: var(--warning-border); color: var(--warning-text);">未報到</span>';
+
+        const deckBadge = isDeckReq
+          ? (hasDeck
+              ? '<span class="badge" style="background: rgba(14, 165, 233, 0.15); border-color: #0284c7; color: #38bdf8;">已交牌表</span>'
+              : '<span class="badge" style="background: rgba(239, 68, 68, 0.15); border-color: var(--danger-border); color: var(--danger-text);">未交牌表</span>')
+          : '';
+
+        const actionBtn = isChecked
+          ? `<button type="button" class="btn btn-secondary btn-sm ej-ck-btn ej-ck-undo" data-pid="${escapeHtml(pid)}" data-pname="${escapeHtml(pname)}" style="border-color: var(--danger-border); color: var(--danger-text); min-height: 44px; min-width: 44px;">取消報到</button>`
+          : `<button type="button" class="btn btn-primary btn-sm ej-ck-btn ej-ck-do" data-pid="${escapeHtml(pid)}" style="min-height: 44px; min-width: 44px;">代為報到</button>`;
+
+        let metaText = '';
+        if (pdiv) metaText += `分區：${escapeHtml(pdiv)} 區`;
+        if (pseed) metaText += (metaText ? ' · ' : '') + `號碼牌：${escapeHtml(String(pseed))}`;
+
+        return `
+          <div class="table-card" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--card-border); border-radius: 6px; gap: 8px;">
+            <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+              <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                <span style="font-weight: 800; color: var(--accent-text); font-family: monospace;">${escapeHtml(pid)}</span>
+                <span style="font-weight: 700; color: var(--text-primary);">${escapeHtml(pname)}</span>
+                ${statusBadge}
+                ${deckBadge}
+              </div>
+              ${metaText ? `<div style="font-size: 0.8rem; color: var(--text-secondary);">${metaText}</div>` : ''}
+            </div>
+            <div style="flex-shrink: 0;">
+              ${actionBtn}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      listEl.scrollTop = savedScroll;
+      lastCkFingerprint = newFingerprint;
+
+      // 綁定代為報到按鈕
+      listEl.querySelectorAll('.ej-ck-do').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const pid = btn.getAttribute('data-pid');
+          if (!pid) return;
+          btn.disabled = true;
+          hideJudgeCkMsg();
+          try {
+            await callApi('/api/staff/checkin', {
+              staff_pin: staffPin,
+              player_id: pid,
+              checked_in: true
+            });
+            showJudgeCkMsg(`選手 ${pid} 已成功完成報到！`, false);
+            lastCkFingerprint = '';
+            await fetchElimJudgeCheckinList();
+          } catch (err) {
+            showJudgeCkMsg(err.message || '代為報到失敗', true);
+            btn.disabled = false;
+          }
+        });
+      });
+
+      // 綁定取消報到按鈕
+      listEl.querySelectorAll('.ej-ck-undo').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const pid = btn.getAttribute('data-pid');
+          const pname = btn.getAttribute('data-pname');
+          if (!pid) return;
+          const ok = await confirmDialog({
+            title: '取消報到確認',
+            message: `確定要取消選手 ${pname || pid} (${pid}) 的報到狀態嗎？`,
+            yes: '確認取消',
+            no: '保留報到',
+            danger: true
+          });
+          if (!ok) return;
+
+          btn.disabled = true;
+          hideJudgeCkMsg();
+          try {
+            await callApi('/api/staff/checkin', {
+              staff_pin: staffPin,
+              player_id: pid,
+              checked_in: false
+            });
+            showJudgeCkMsg(`選手 ${pname || pid} 已取消報到`, false);
+            lastCkFingerprint = '';
+            await fetchElimJudgeCheckinList();
+          } catch (err) {
+            showJudgeCkMsg(err.message || '取消報到失敗', true);
+            btn.disabled = false;
+          }
+        });
+      });
+    }
+
+    const refreshCkBtn = document.getElementById('ejRefreshCheckin');
+    if (refreshCkBtn) {
+      refreshCkBtn.addEventListener('click', () => {
+        lastCkFingerprint = '';
+        fetchElimJudgeCheckinList();
+      });
+    }
+
+    // 驗牌區邏輯 (DATA-CONTRACT 6.2～6.5, 10.4)
+    let ejCurrentLoadedDeckCode = '';
+    let ejIsDeckViewCollapsed = false;
+
+    function renderDeckSection(snap) {
+      const sec = document.getElementById('ejDeckSection');
+      if (!sec) return;
+      const isReq = Boolean(snap && snap.checkin && snap.checkin.decklist_required);
+      sec.style.display = isReq ? 'block' : 'none';
+    }
+
+    function showEjDeckMsg(text, isError = true) {
+      const el = document.getElementById('ejDeckMsg');
+      if (!el) return;
+      el.textContent = text;
+      el.className = isError ? 'msg-box error' : 'msg-box success';
+      el.style.display = 'block';
+    }
+
+    function hideEjDeckMsg() {
+      const el = document.getElementById('ejDeckMsg');
+      if (!el) return;
+      el.style.display = 'none';
+      el.textContent = '';
+    }
+
+    function renderEjDeckCheckList(rows) {
+      const boxEl = document.getElementById('ejDeckCheckRowsBox');
+      const listEl = document.getElementById('ejDeckCheckList');
+      if (!boxEl || !listEl) return;
+
+      if (!rows || !Array.isArray(rows) || rows.length === 0) {
+        boxEl.style.display = 'none';
+        listEl.innerHTML = '';
+        return;
+      }
+
+      boxEl.style.display = 'block';
+      let currentSection = null;
+      let html = '';
+      rows.forEach(r => {
+        const secLabel = r.section_label || '主牌組';
+        if (secLabel !== currentSection) {
+          currentSection = secLabel;
+          html += `<div class="deck-section-title">${escapeHtml(secLabel)}</div>`;
+        }
+        const count = r.count || 0;
+        const code = r.code ? escapeHtml(r.code) : '';
+        const name = r.name ? escapeHtml(r.name) : '';
+        const labelParts = [`${count}×`];
+        if (code) labelParts.push(code);
+        if (name) labelParts.push(name);
+        const cardLabel = labelParts.join(' ');
+
+        html += `<button type="button" class="deck-check-row" aria-pressed="false" data-count="${count}">` +
+          `<span>${cardLabel}</span>` +
+          `<span class="deck-check-state" style="font-size: 1.1rem; color: var(--accent-text); margin-left: 8px;">☐</span>` +
+          `</button>`;
+      });
+
+      listEl.innerHTML = html;
+
+      listEl.querySelectorAll('.deck-check-row').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const isPressed = btn.getAttribute('aria-pressed') === 'true';
+          const next = !isPressed;
+          btn.setAttribute('aria-pressed', next ? 'true' : 'false');
+          const stateEl = btn.querySelector('.deck-check-state');
+          if (stateEl) {
+            stateEl.textContent = next ? '☑' : '☐';
+          }
+          updateEjDeckCheckProgress();
+        });
+      });
+
+      updateEjDeckCheckProgress();
+    }
+
+    function updateEjDeckCheckProgress() {
+      const listEl = document.getElementById('ejDeckCheckList');
+      const progEl = document.getElementById('ejDeckCheckProgress');
+      if (!listEl || !progEl) return;
+      const rows = listEl.querySelectorAll('.deck-check-row');
+      let checkedCount = 0;
+      let totalCount = 0;
+      rows.forEach(r => {
+        const c = parseInt(r.getAttribute('data-count'), 10) || 0;
+        totalCount += c;
+        if (r.getAttribute('aria-pressed') === 'true') {
+          checkedCount += c;
+        }
+      });
+
+      if (totalCount > 0 && checkedCount === totalCount) {
+        progEl.textContent = `已核對 ${checkedCount} / ${totalCount} 張 · 全部核對完成`;
+      } else {
+        progEl.textContent = `已核對 ${checkedCount} / ${totalCount} 張`;
+      }
+    }
+
+    function resetEjDeckChecks() {
+      const listEl = document.getElementById('ejDeckCheckList');
+      if (!listEl) return;
+      listEl.querySelectorAll('.deck-check-row').forEach(r => {
+        r.setAttribute('aria-pressed', 'false');
+        const stateEl = r.querySelector('.deck-check-state');
+        if (stateEl) stateEl.textContent = '☐';
+      });
+      updateEjDeckCheckProgress();
+    }
+
+    function handleToggleEjDeckView() {
+      const viewEl = document.getElementById('ejDeckView');
+      const toggleBtn = document.getElementById('ejDeckViewToggle');
+      if (!viewEl || !toggleBtn) return;
+      ejIsDeckViewCollapsed = !ejIsDeckViewCollapsed;
+      if (ejIsDeckViewCollapsed) {
+        viewEl.style.display = 'none';
+        toggleBtn.textContent = '顯示列印版';
+      } else {
+        viewEl.style.display = 'block';
+        toggleBtn.textContent = '收起列印版';
+      }
+    }
+
+    // 載入選手牌表 (DATA-CONTRACT 6.2, 6.3, 6.5, 10.4)
+    async function handleEjDeckLoad() {
+      hideEjDeckMsg();
+      const pidInput = document.getElementById('ejDeckPlayerId');
+      const pid = (pidInput ? pidInput.value : '').trim().toUpperCase();
+      if (!pid) {
+        showEjDeckMsg('請輸入選手編號');
+        return;
+      }
+
+      const infoBox = document.getElementById('ejDeckInfoBox');
+      const copyBtn = document.getElementById('ejDeckCopy');
+      const copyRow = document.getElementById('ejDeckCopyRow');
+      const copyMsg = document.getElementById('ejDeckCopyMsg');
+      const textNotice = document.getElementById('ejDeckTextNotice');
+      const problemsEl = document.getElementById('ejDeckProblems');
+      const notesEl = document.getElementById('ejDeckNotes');
+      const noticeEl = document.getElementById('ejDeckCardsNotice');
+      ejCurrentLoadedDeckCode = '';
+      if (copyRow) copyRow.style.display = 'none';
+      if (copyBtn) copyBtn.style.display = 'none';
+      if (copyMsg) copyMsg.style.display = 'none';
+      if (textNotice) textNotice.style.display = 'none';
+      if (problemsEl) {
+        problemsEl.innerHTML = '';
+        problemsEl.style.display = 'none';
+      }
+      if (notesEl) {
+        notesEl.textContent = '';
+        notesEl.style.display = 'none';
+      }
+      if (noticeEl) {
+        noticeEl.textContent = '';
+        noticeEl.style.display = 'none';
+      }
+
+      try {
+        const res = await callApi('/api/staff/decklist', {
+          staff_pin: staffPin,
+          player_id: pid
+        });
+        if (infoBox) infoBox.style.display = 'block';
+
+        const viewEl = document.getElementById('ejDeckView');
+        const metaEl = document.getElementById('ejDeckPlayerMeta');
+        if (viewEl) {
+          viewEl.textContent = res.text || '';
+        }
+        if (metaEl) {
+          const playerName = (res.player && res.player.name) ? res.player.name : '';
+          const lockStatus = res.locked ? '🔒 已鎖定' : '🔓 未鎖定';
+          const formatBadge = (res.format === 'code') ? ' · 牌組碼' : ' · 純文字';
+          let breakdownInfo = '';
+          if (res.summary && res.summary.breakdown && typeof res.summary.breakdown === 'object') {
+            const b = res.summary.breakdown;
+            const bdParts = [];
+            if (typeof b.main === 'number') bdParts.push(`主牌組 ${b.main}`);
+            if (typeof b.rune === 'number') bdParts.push(`符文 ${b.rune}`);
+            if (typeof b.battlefield === 'number') bdParts.push(`戰場 ${b.battlefield}`);
+            if (typeof b.legend === 'number') bdParts.push(`傳奇 ${b.legend}`);
+            if (typeof b.unknown === 'number' && b.unknown > 0) bdParts.push(`未知 ${b.unknown}`);
+            if (bdParts.length > 0) {
+              breakdownInfo = ` · ${bdParts.join('・')}`;
+            }
+          }
+          metaEl.textContent = `選手：${pid} ${playerName} · ${lockStatus}${formatBadge}${breakdownInfo}`;
+        }
+
+        // 牌表問題 (紅色)
+        if (res.problems && Array.isArray(res.problems) && res.problems.length > 0) {
+          if (problemsEl) {
+            problemsEl.innerHTML = res.problems.map(p => `<div>⚠️ ${escapeHtml(p)}</div>`).join('');
+            problemsEl.style.display = 'block';
+          }
+        } else {
+          if (problemsEl) {
+            problemsEl.innerHTML = '';
+            problemsEl.style.display = 'none';
+          }
+        }
+
+        // 逐張打勾清單
+        renderEjDeckCheckList(res.rows || []);
+
+        if (res.cards && res.cards.notice) {
+          if (noticeEl) {
+            noticeEl.textContent = res.cards.notice;
+            noticeEl.style.display = 'block';
+          }
+        } else {
+          if (noticeEl) {
+            noticeEl.textContent = '';
+            noticeEl.style.display = 'none';
+          }
+        }
+
+        if (res.format === 'code') {
+          ejCurrentLoadedDeckCode = res.code || '';
+          if (copyRow) copyRow.style.display = 'flex';
+          if (copyBtn) copyBtn.style.display = 'inline-flex';
+          if (textNotice) textNotice.style.display = 'none';
+
+          // 琥珀色 notes
+          if (res.notes && Array.isArray(res.notes) && res.notes.length > 0) {
+            if (notesEl) {
+              notesEl.textContent = res.notes.join('\n');
+              notesEl.style.display = 'block';
+            }
+          } else {
+            if (notesEl) {
+              notesEl.textContent = '';
+              notesEl.style.display = 'none';
+            }
+          }
+        } else {
+          ejCurrentLoadedDeckCode = '';
+          if (copyRow) copyRow.style.display = 'none';
+          if (copyBtn) copyBtn.style.display = 'none';
+          if (textNotice) textNotice.style.display = 'block';
+          if (notesEl) {
+            notesEl.textContent = '';
+            notesEl.style.display = 'none';
+          }
+        }
+
+        showEjDeckMsg(`選手 ${pid} 牌表載入成功`, false);
+      } catch (err) {
+        if (infoBox) infoBox.style.display = 'none';
+        if (noticeEl) {
+          noticeEl.textContent = '';
+          noticeEl.style.display = 'none';
+        }
+        renderEjDeckCheckList([]);
+        showEjDeckMsg(err.message || '載入選手牌表失敗', true);
+      }
+    }
+
+    // 複製牌組碼
+    async function handleEjDeckCopy() {
+      if (!ejCurrentLoadedDeckCode) return;
+      const copyMsg = document.getElementById('ejDeckCopyMsg');
+      let copied = false;
+
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        try {
+          await navigator.clipboard.writeText(ejCurrentLoadedDeckCode);
+          copied = true;
+        } catch (e) {
+          copied = false;
+        }
+      }
+
+      if (!copied) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = ejCurrentLoadedDeckCode;
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          ta.style.top = '-9999px';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          ta.setSelectionRange(0, ta.value.length);
+          const ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          if (ok) copied = true;
+        } catch (e) {
+          copied = false;
+        }
+      }
+
+      if (copied) {
+        if (copyMsg) {
+          copyMsg.textContent = '已複製，請貼到組牌 App';
+          copyMsg.style.display = 'inline';
+        }
+        showEjDeckMsg('已複製，請貼到組牌 App', false);
+      } else {
+        if (copyMsg) {
+          copyMsg.textContent = '無法自動複製，請手動選取牌組碼';
+          copyMsg.style.display = 'inline';
+        }
+        showEjDeckMsg('無法自動複製，請手動選取牌組碼', true);
+      }
+    }
+
+    // 記錄驗牌結果（不合格需 confirmDialog）
+    async function handleEjDeckCheck(ok) {
+      hideEjDeckMsg();
+      const pidInput = document.getElementById('ejDeckPlayerId');
+      const pid = (pidInput ? pidInput.value : '').trim().toUpperCase();
+      if (!pid) {
+        showEjDeckMsg('請輸入選手編號');
+        return;
+      }
+      const noteInput = document.getElementById('ejDeckCheckNote');
+      const note = (noteInput ? noteInput.value : '').trim();
+
+      if (!ok) {
+        const confirmed = await confirmDialog({
+          title: '記錄驗牌不合格確認',
+          message: `確定要將選手 ${pid} 的驗牌結果記錄為「不合格」嗎？`,
+          yes: '確認不合格',
+          no: '取消',
+          danger: true
+        });
+        if (!confirmed) return;
+      }
+
+      try {
+        await callApi('/api/staff/deck_check', {
+          staff_pin: staffPin,
+          player_id: pid,
+          ok: ok,
+          note: note
+        });
+        showEjDeckMsg(`選手 ${pid} 驗牌紀錄已送出（${ok ? '通過' : '不合格'}）`, false);
+      } catch (err) {
+        showEjDeckMsg(err.message || '記錄驗牌結果失敗', true);
+      }
+    }
+
+    // 解鎖牌表（需 confirmDialog）
+    async function handleEjDeckUnlockClick() {
+      hideEjDeckMsg();
+      const pidInput = document.getElementById('ejDeckPlayerId');
+      const pid = (pidInput ? pidInput.value : '').trim().toUpperCase();
+      if (!pid) {
+        showEjDeckMsg('請輸入選手編號');
+        return;
+      }
+      const confirmed = await confirmDialog({
+        title: '解鎖牌表確認',
+        message: `確定要解鎖選手 ${pid} 的牌表嗎？解鎖後選手可重新登錄牌表。`,
+        yes: '確認解鎖',
+        no: '取消',
+        danger: true
+      });
+      if (!confirmed) return;
+
+      try {
+        await callApi('/api/staff/decklist_unlock', {
+          staff_pin: staffPin,
+          player_id: pid
+        });
+        showEjDeckMsg(`選手 ${pid} 牌表已成功解鎖，選手可重新登錄`, false);
+        // 重新載入牌表更新鎖定狀態
+        handleEjDeckLoad();
+      } catch (err) {
+        showEjDeckMsg(err.message || '解鎖牌表失敗', true);
+      }
     }
 
     function updateDivSelect(divs) {
@@ -1010,8 +1958,14 @@
       const scoreGroup = document.getElementById('ejScoreGroup');
       if (isOpen && canScore && m.p1 && m.p2) {
         scoreGroup.style.display = 'block';
-        document.getElementById('ejP1ScoreLabel').textContent = `${m.p1.name} 分數：`;
-        document.getElementById('ejP2ScoreLabel').textContent = `${m.p2.name} 分數：`;
+        const snap = window.elimSnapshot;
+        const reportCfg = (snap && snap.event && snap.event.game && snap.event.game.report) || { kind: 'score', max_score: 6 };
+        const curP1 = document.getElementById('ejP1Score') ? document.getElementById('ejP1Score').value : 0;
+        const curP2 = document.getElementById('ejP2Score') ? document.getElementById('ejP2Score').value : 0;
+        const widgetContainer = document.getElementById('ejScoreWidgetContainer');
+        if (widgetContainer && typeof buildReportWidgetHtml === 'function') {
+          widgetContainer.innerHTML = buildReportWidgetHtml(reportCfg, 'top_cut', 'elim-judge', { p1Score: curP1, p2Score: curP2 }, { p1Id: 'ejP1Score', p2Id: 'ejP2Score', p1Label: `${m.p1.name} 分數：`, p2Label: `${m.p2.name} 分數：` });
+        }
       } else {
         scoreGroup.style.display = 'none';
       }
@@ -1020,8 +1974,12 @@
       const pointsGroup = document.getElementById('ejPointsGroup');
       if (isOpen && canPoints && m.p1 && m.p2) {
         pointsGroup.style.display = 'block';
-        document.getElementById('ejP1PointColTitle').textContent = m.p1.name;
-        document.getElementById('ejP2PointColTitle').textContent = m.p2.name;
+        const snap = window.elimSnapshot;
+        const reportCfg = (snap && snap.event && snap.event.game && snap.event.game.report) || { kind: 'score', max_score: 6 };
+        const widgetContainer = document.getElementById('ejPointsWidgetContainer');
+        if (widgetContainer && typeof buildReportWidgetHtml === 'function') {
+          widgetContainer.innerHTML = buildReportWidgetHtml(reportCfg, 'top_cut', 'judge-points', {}, { p1Name: m.p1.name, p2Name: m.p2.name });
+        }
       } else {
         pointsGroup.style.display = 'none';
       }
@@ -1079,14 +2037,15 @@
       });
     });
 
-    // 逐分按鈕監聽
-    document.querySelectorAll('.ej-point').forEach(btn => {
-      btn.addEventListener('click', () => {
+    // 逐分按鈕監聽 (事件委派)
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.ej-point');
+      if (btn) {
         const side = btn.getAttribute('data-side');
         const type = btn.getAttribute('data-type');
         currentPoints.push({ side, type });
         renderPointList();
-      });
+      }
     });
 
     document.getElementById('ejPointUndo').addEventListener('click', () => {
@@ -1172,221 +2131,149 @@
     });
 
     // ================================================================
-    // 選手 PIN 協助與解鎖 (PROJECT.md 第四十二輪, review.py [46])
+    // 選手 PIN 協助與解鎖 (web/admin-panels.js)
     // ================================================================
+    playerAssist = AdminPanels.mountPlayerAssist({
+      ids: {
+        playerId: 'ejPlayerId',
+        resetBtn: 'ejPinReset',
+        unlockBtn: 'ejUnlock',
+        pinDisplay: 'ejNewPin',
+        pinDone: 'ejNewPinDone',
+        msg: 'ejPlayerAssistMsg',
+        pinBox: 'ejNewPinBox'
+      },
+      getPin: () => (auth ? auth.getPin() : (staffPin || ''))
+    });
 
-    // 從快照尋找選手姓名 (review.py [46])
-    function findPlayerName(pid) {
-      if (!pid) return '';
-      const target = String(pid).trim().toUpperCase();
-      const snap = window.elimSnapshot;
-      if (!snap) return target;
-
-      function matchId(id) {
-        if (!id) return false;
-        const s = String(id).trim().toUpperCase();
-        if (s === target) return true;
-        const m1 = s.match(/^([A-Z]+)[-_]?0*(\d+)$/);
-        const m2 = target.match(/^([A-Z]+)[-_]?0*(\d+)$/);
-        if (m1 && m2 && m1[1] === m2[1] && parseInt(m1[2], 10) === parseInt(m2[2], 10)) {
-          return true;
+    // 驗牌區按鈕事件綁定
+    const ejDeckPidInput = document.getElementById('ejDeckPlayerId');
+    if (ejDeckPidInput) {
+      ejDeckPidInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleEjDeckLoad();
         }
-        return false;
-      }
-
-      // 1. 各分區對戰與名次
-      if (Array.isArray(snap.divisions)) {
-        for (const div of snap.divisions) {
-          if (Array.isArray(div.matches)) {
-            for (const m of div.matches) {
-              if (m) {
-                if (m.p1 && matchId(m.p1.id) && m.p1.name) return m.p1.name;
-                if (m.p2 && matchId(m.p2.id) && m.p2.name) return m.p2.name;
-              }
-            }
-          }
-          if (Array.isArray(div.placements)) {
-            for (const pl of div.placements) {
-              if (pl && matchId(pl.id) && pl.name) return pl.name;
-            }
-          }
-          if (Array.isArray(div.winners)) {
-            for (const w of div.winners) {
-              if (w && matchId(w.id) && w.name) return w.name;
-            }
-          }
-          if (Array.isArray(div.losers)) {
-            for (const l of div.losers) {
-              if (l && matchId(l.id) && l.name) return l.name;
-            }
-          }
-        }
-      }
-
-      // 2. 決賽池與小組成員
-      if (snap.finals) {
-        if (snap.finals.pools) {
-          for (const poolKey of ['winners', 'losers']) {
-            const pool = snap.finals.pools[poolKey];
-            if (Array.isArray(pool)) {
-              for (const p of pool) {
-                if (p && matchId(p.id) && p.name) return p.name;
-              }
-            }
-          }
-        }
-        if (snap.finals.groups) {
-          for (const g of Object.values(snap.finals.groups)) {
-            if (g && Array.isArray(g.members)) {
-              for (const p of g.members) {
-                if (p && matchId(p.id) && p.name) return p.name;
-              }
-            }
-            if (g && Array.isArray(g.standings)) {
-              for (const p of g.standings) {
-                if (p && matchId(p.id) && p.name) return p.name;
-              }
-            }
-          }
-        }
-        if (Array.isArray(snap.finals.placements)) {
-          for (const pl of snap.finals.placements) {
-            if (pl && matchId(pl.id) && pl.name) return pl.name;
-          }
-        }
-      }
-
-      // 3. 報到名單
-      if (snap.checkin && Array.isArray(snap.checkin.players)) {
-        for (const p of snap.checkin.players) {
-          if (p && matchId(p.id) && p.name) return p.name;
-        }
-      }
-
-      return target;
+      });
+    }
+    const ejDeckLoadBtn = document.getElementById('ejDeckLoadBtn');
+    if (ejDeckLoadBtn) {
+      ejDeckLoadBtn.addEventListener('click', handleEjDeckLoad);
+    }
+    const ejDeckCopyBtn = document.getElementById('ejDeckCopy');
+    if (ejDeckCopyBtn) {
+      ejDeckCopyBtn.addEventListener('click', handleEjDeckCopy);
+    }
+    const ejDeckResetBtn = document.getElementById('ejDeckCheckReset');
+    if (ejDeckResetBtn) {
+      ejDeckResetBtn.addEventListener('click', resetEjDeckChecks);
+    }
+    const ejDeckViewToggleBtn = document.getElementById('ejDeckViewToggle');
+    if (ejDeckViewToggleBtn) {
+      ejDeckViewToggleBtn.addEventListener('click', handleToggleEjDeckView);
+    }
+    const ejDeckOkBtn = document.getElementById('ejDeckOk');
+    if (ejDeckOkBtn) {
+      ejDeckOkBtn.addEventListener('click', () => handleEjDeckCheck(true));
+    }
+    const ejDeckBadBtn = document.getElementById('ejDeckBad');
+    if (ejDeckBadBtn) {
+      ejDeckBadBtn.addEventListener('click', () => handleEjDeckCheck(false));
+    }
+    const ejDeckUnlockBtn = document.getElementById('ejDeckUnlock');
+    if (ejDeckUnlockBtn) {
+      ejDeckUnlockBtn.addEventListener('click', handleEjDeckUnlockClick);
     }
 
-    // 解鎖選手 (不必確認框，錯誤照寫主機 message)
-    async function handlePlayerUnlock() {
-      const inputEl = document.getElementById('ejPlayerId');
-      const pid = (inputEl.value || '').trim().toUpperCase();
-      const assistMsg = document.getElementById('ejPlayerAssistMsg');
-      const mainMsg = document.getElementById('ejMsg');
-      assistMsg.style.display = 'none';
-      if (mainMsg) mainMsg.style.display = 'none';
-
-      if (!pid) {
-        assistMsg.className = 'msg-box error';
-        assistMsg.textContent = '請輸入選手編號';
-        assistMsg.style.display = 'block';
-        return;
-      }
-
-      const btn = document.getElementById('ejUnlock');
-      btn.disabled = true;
-
-      try {
-        await callApi('/api/staff/player_unlock', {
-          staff_pin: staffPin,
-          player_id: pid
-        });
-        assistMsg.className = 'msg-box success';
-        assistMsg.textContent = `選手 ${pid} 已成功解鎖，可重新登入`;
-        assistMsg.style.display = 'block';
-      } catch (err) {
-        const errMsg = err.message || '解鎖失敗';
-        assistMsg.className = 'msg-box error';
-        assistMsg.textContent = errMsg;
-        assistMsg.style.display = 'block';
-        if (mainMsg) {
-          mainMsg.className = 'msg-box error';
-          mainMsg.textContent = errMsg;
-          mainMsg.style.display = 'block';
-        }
-      } finally {
-        btn.disabled = false;
-      }
+    // 叫裁判動作委派與重新整理按鈕
+    const refreshCallsBtn = document.getElementById('ejRefreshCalls');
+    if (refreshCallsBtn) {
+      refreshCallsBtn.addEventListener('click', () => {
+        hideCallsMsg();
+        loadCalls();
+      });
     }
 
-    // 重設選手 PIN (跳出確認框寫出選手姓名，確認後送出)
-    function handlePlayerPinReset() {
-      const inputEl = document.getElementById('ejPlayerId');
-      const pid = (inputEl.value || '').trim().toUpperCase();
-      const assistMsg = document.getElementById('ejPlayerAssistMsg');
-      const mainMsg = document.getElementById('ejMsg');
-      assistMsg.style.display = 'none';
-      if (mainMsg) mainMsg.style.display = 'none';
-
-      if (!pid) {
-        assistMsg.className = 'msg-box error';
-        assistMsg.textContent = '請輸入選手編號';
-        assistMsg.style.display = 'block';
-        return;
-      }
-
-      const playerName = findPlayerName(pid);
-      const targetName = (playerName && playerName !== pid) ? `${playerName}（${pid}）` : pid;
-
-      showConfirm(
-        '確認重設選手 PIN 碼',
-        `確定要為選手「${targetName}」重設 PIN 碼嗎？重設後舊 PIN 碼將立即失效。`,
-        async () => {
-          const btn = document.getElementById('ejPinReset');
-          btn.disabled = true;
-          assistMsg.style.display = 'none';
-          if (mainMsg) mainMsg.style.display = 'none';
-
+    const ejCallsEl = document.getElementById('ejCalls');
+    if (ejCallsEl) {
+      ejCallsEl.addEventListener('click', async (e) => {
+        const takeBtn = e.target.closest('.ej-call-take');
+        if (takeBtn) {
+          const mid = takeBtn.getAttribute('data-match');
+          if (!mid || takeBtn.disabled) return;
+          hideCallsMsg();
           try {
-            const res = await callApi('/api/staff/player_pin_reset', {
-              staff_pin: staffPin,
-              player_id: pid
-            });
-            showNewPlayerPin(res.pin);
+            takeBtn.disabled = true;
+            await callApi('/api/staff/call_take', { staff_pin: staffPin, match: mid });
+            showCallsMsg(`已接手場次 ${mid} 的呼叫`, false);
+            await loadCalls();
           } catch (err) {
-            const errMsg = err.message || '重設 PIN 失敗';
-            assistMsg.className = 'msg-box error';
-            assistMsg.textContent = errMsg;
-            assistMsg.style.display = 'block';
-            if (mainMsg) {
-              mainMsg.className = 'msg-box error';
-              mainMsg.textContent = errMsg;
-              mainMsg.style.display = 'block';
+            takeBtn.disabled = false;
+            showCallsMsg(err.message || '接手失敗');
+          }
+          return;
+        }
+
+        const doneBtn = e.target.closest('.ej-call-done');
+        if (doneBtn) {
+          const mid = doneBtn.getAttribute('data-match');
+          if (!mid || doneBtn.disabled) return;
+          hideCallsMsg();
+
+          const callObj = currentCalls.find(c => c.match === mid);
+          const tableText = (callObj && callObj.table !== null && callObj.table !== undefined) ? `第 ${callObj.table} 桌` : (mid || '');
+
+          const ok = await confirmDialog({
+            title: '結案確認',
+            message: `確定要將 ${tableText} 的呼叫結案嗎？`,
+            yes: '確認結案',
+            no: '取消',
+            danger: true
+          });
+
+          if (ok) {
+            try {
+              doneBtn.disabled = true;
+              await callApi('/api/staff/call_done', { staff_pin: staffPin, match: mid });
+              showCallsMsg(`${tableText} 呼叫已結案`, false);
+              await loadCalls();
+            } catch (err) {
+              doneBtn.disabled = false;
+              showCallsMsg(err.message || '結案失敗');
             }
-          } finally {
-            btn.disabled = false;
+          }
+          return;
+        }
+
+        const titleBtn = e.target.closest('.call-table-title');
+        if (titleBtn) {
+          const mid = titleBtn.getAttribute('data-match');
+          if (mid) {
+            document.getElementById('ejMatchId').value = mid;
+            loadMatch(mid);
           }
         }
-      );
+      });
     }
 
-    // 大字顯示新 PIN
-    function showNewPlayerPin(pin) {
-      const box = document.getElementById('ejNewPinBox');
-      const pinEl = document.getElementById('ejNewPin');
-      pinEl.textContent = pin;
-      box.style.display = 'block';
-    }
-
-    // 已抄下按鈕：從畫面清空並隱藏，任何地方都不存 (硬性規定)
-    function handleNewPinDone() {
-      const box = document.getElementById('ejNewPinBox');
-      const pinEl = document.getElementById('ejNewPin');
-      if (pinEl) pinEl.textContent = '';
-      if (box) box.style.display = 'none';
-    }
-
-    document.getElementById('ejUnlock').addEventListener('click', handlePlayerUnlock);
-    document.getElementById('ejPinReset').addEventListener('click', handlePlayerPinReset);
-    document.getElementById('ejNewPinDone').addEventListener('click', handleNewPinDone);
-
-    // 頁面初始化：檢查 sessionStorage 既有登入
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedPin = sessionStorage.getItem(SESSION_KEY_PIN);
-      if (savedPin) {
-        document.getElementById('ejPin').value = savedPin;
-        doLogin(savedPin);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        if (callsTimer) {
+          clearInterval(callsTimer);
+          callsTimer = null;
+        }
+        if (callsTickTimer) {
+          clearInterval(callsTickTimer);
+          callsTickTimer = null;
+        }
+      } else {
+        if (staffPin) {
+          loadCalls();
+          startCallsPolling();
+        }
       }
     });
   </script>
+  <script src="report-widget.js"></script>
 </body>
 </html>

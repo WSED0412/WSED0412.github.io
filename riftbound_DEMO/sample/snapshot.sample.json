@@ -22,7 +22,81 @@
         "name": "B 區",
         "hint": "靠牆"
       }
-    ]
+    ],
+    "game": {
+      "id": "bo3",
+      "game": "riftbound",
+      "label": "符文戰場",
+      "report": {
+        "kind": "games",
+        "games_to_win": {
+          "swiss": 2,
+          "top_cut": 2
+        },
+        "games_to_win_options": [
+          2
+        ],
+        "draws": true,
+        "winner_only": false,
+        "points": null,
+        "win_score": null,
+        "max_score": null
+      },
+      "match_draw": {
+        "swiss": true,
+        "elimination": false
+      },
+      "elimination_rule": "淘汰賽一定要分出勝負（規則 408.4）",
+      "timeout": "時間到：目前回合結束後再打 3 個回合；仍未結束時領先 2 分以上者贏該局，否則該局平手（規則 408.2）",
+      "timing": {
+        "extra_turns": 3,
+        "extra_max_sec": null,
+        "late_warn_sec": 120,
+        "late_loss_sec": 600,
+        "late_rule": "703.8",
+        "provisional": false
+      },
+      "match_minutes": 60,
+      "pace": "rounds",
+      "columns": [
+        {
+          "key": "omw",
+          "label": "對手勝率",
+          "abbr": "OMW%",
+          "tiebreak": 1,
+          "unit": "%"
+        },
+        {
+          "key": "gw",
+          "label": "自己局勝率",
+          "abbr": "GW%",
+          "tiebreak": 2,
+          "unit": "%"
+        },
+        {
+          "key": "ogw",
+          "label": "對手局勝率",
+          "abbr": "OGW%",
+          "tiebreak": 3,
+          "unit": "%"
+        }
+      ],
+      "deck": {
+        "min": 40,
+        "max": null,
+        "max_copies": 3,
+        "sideboard_max": 10
+      },
+      "provisional": true,
+      "official": [
+        {
+          "format": "swiss_topcut",
+          "pace": "rounds",
+          "label": "瑞士輪＋淘汰賽",
+          "source": "Riftbound Tournament Rules 202.2、604.1（瑞士輪建議 60 分鐘）"
+        }
+      ]
+    }
   },
   "round": {
     "number": 3,
@@ -45,6 +119,7 @@
     "ends_at": 1790395200000,
     "remaining_sec": null,
     "extra_turns": 3,
+    "extra_max_sec": null,
     "started_at": 1790391600000,
     "late_warn_sec": 120,
     "late_loss_sec": 600
@@ -308,5 +383,288 @@
     "version": "9672d555ae90",
     "label": "第 2 輪結束後"
   },
-  "bracket": null
+  "bracket": null,
+  "tables_now": [
+    {
+      "match": "R3-T1",
+      "round": 3,
+      "table": 1,
+      "div": null,
+      "zone": "A 區",
+      "label": "第 3 輪",
+      "stage": "swiss",
+      "feature": true,
+      "p1": {
+        "id": "R0010",
+        "name": "小雨",
+        "seed": null
+      },
+      "p2": {
+        "id": "R0007",
+        "name": "夜貓",
+        "seed": null
+      },
+      "state": "done",
+      "report_state": null,
+      "result": {
+        "status": "confirmed",
+        "p1": 2,
+        "p2": 1,
+        "draws": 0,
+        "double_loss": false,
+        "winner": "R0010",
+        "display": "2-1"
+      },
+      "judge_call": null,
+      "late": null,
+      "live": null
+    },
+    {
+      "match": "R3-T2",
+      "round": 3,
+      "table": 2,
+      "div": null,
+      "zone": "A 區",
+      "label": "第 3 輪",
+      "stage": "swiss",
+      "feature": false,
+      "p1": {
+        "id": "R0012",
+        "name": "Yuki",
+        "seed": null
+      },
+      "p2": {
+        "id": "R0013",
+        "name": "白熊",
+        "seed": null
+      },
+      "state": "playing",
+      "report_state": "none",
+      "result": null,
+      "judge_call": {
+        "state": "taken",
+        "called_at": 1790391780000
+      },
+      "late": null,
+      "live": null
+    },
+    {
+      "match": "R3-T3",
+      "round": 3,
+      "table": 3,
+      "div": null,
+      "zone": "A 區",
+      "label": "第 3 輪",
+      "stage": "swiss",
+      "feature": false,
+      "p1": {
+        "id": "R0002",
+        "name": "小楓",
+        "seed": null
+      },
+      "p2": {
+        "id": "R0008",
+        "name": "阿哲",
+        "seed": null
+      },
+      "state": "playing",
+      "report_state": "pending",
+      "result": {
+        "status": "pending",
+        "p1": null,
+        "p2": null,
+        "draws": null,
+        "double_loss": false,
+        "winner": null,
+        "display": null
+      },
+      "judge_call": null,
+      "late": null,
+      "live": null
+    },
+    {
+      "match": "R3-T4",
+      "round": 3,
+      "table": 4,
+      "div": null,
+      "zone": "A 區",
+      "label": "第 3 輪",
+      "stage": "swiss",
+      "feature": false,
+      "p1": {
+        "id": "R0016",
+        "name": "無名氏",
+        "seed": null
+      },
+      "p2": {
+        "id": "R0011",
+        "name": "鐵牛",
+        "seed": null
+      },
+      "state": "done",
+      "report_state": null,
+      "result": {
+        "status": "confirmed",
+        "p1": 0,
+        "p2": 2,
+        "draws": 0,
+        "double_loss": false,
+        "winner": "R0011",
+        "display": "0-2"
+      },
+      "judge_call": null,
+      "late": null,
+      "live": null
+    },
+    {
+      "match": "R3-T5",
+      "round": 3,
+      "table": 5,
+      "div": null,
+      "zone": "B 區",
+      "label": "第 3 輪",
+      "stage": "swiss",
+      "feature": false,
+      "p1": {
+        "id": "R0001",
+        "name": "阿翔",
+        "seed": null
+      },
+      "p2": {
+        "id": "R0006",
+        "name": "Miya",
+        "seed": null
+      },
+      "state": "playing",
+      "report_state": "none",
+      "result": null,
+      "judge_call": {
+        "state": "waiting",
+        "called_at": 1790391660000
+      },
+      "late": null,
+      "live": null
+    },
+    {
+      "match": "R3-T6",
+      "round": 3,
+      "table": 6,
+      "div": null,
+      "zone": "B 區",
+      "label": "第 3 輪",
+      "stage": "swiss",
+      "feature": false,
+      "p1": {
+        "id": "R0003",
+        "name": "Kuro",
+        "seed": null
+      },
+      "p2": {
+        "id": "R0004",
+        "name": "符文少女",
+        "seed": null
+      },
+      "state": "done",
+      "report_state": null,
+      "result": {
+        "status": "confirmed",
+        "p1": 1,
+        "p2": 1,
+        "draws": 1,
+        "double_loss": false,
+        "winner": null,
+        "display": "1-1-1"
+      },
+      "judge_call": null,
+      "late": null,
+      "live": null
+    },
+    {
+      "match": "R3-T7",
+      "round": 3,
+      "table": 7,
+      "div": null,
+      "zone": "B 區",
+      "label": "第 3 輪",
+      "stage": "swiss",
+      "feature": false,
+      "p1": {
+        "id": "R0015",
+        "name": "Nana",
+        "seed": null
+      },
+      "p2": {
+        "id": "R0009",
+        "name": "Leo",
+        "seed": null
+      },
+      "state": "playing",
+      "report_state": "conflict",
+      "result": {
+        "status": "conflict",
+        "p1": null,
+        "p2": null,
+        "draws": null,
+        "double_loss": false,
+        "winner": null,
+        "display": null
+      },
+      "judge_call": null,
+      "late": null,
+      "live": null
+    },
+    {
+      "match": "R3-T8",
+      "round": 3,
+      "table": 8,
+      "div": null,
+      "zone": "B 區",
+      "label": "第 3 輪",
+      "stage": "swiss",
+      "feature": false,
+      "p1": {
+        "id": "R0017",
+        "name": "可樂",
+        "seed": null
+      },
+      "p2": {
+        "id": "R0005",
+        "name": "老王",
+        "seed": null
+      },
+      "state": "playing",
+      "report_state": "none",
+      "result": null,
+      "judge_call": null,
+      "late": {
+        "players": [
+          "R0005"
+        ],
+        "marked_at": 1790391720000
+      },
+      "live": null
+    },
+    {
+      "match": "R3-BYE-R0014",
+      "round": 3,
+      "table": null,
+      "div": null,
+      "zone": null,
+      "label": "第 3 輪",
+      "stage": "swiss",
+      "feature": false,
+      "p1": {
+        "id": "R0014",
+        "name": "阿凱",
+        "seed": null
+      },
+      "p2": null,
+      "state": "bye",
+      "report_state": null,
+      "result": null,
+      "judge_call": null,
+      "late": null,
+      "live": null
+    }
+  ]
 }
