@@ -1439,6 +1439,802 @@
     return { update, reset, sample: doSample };
   }
 
+  /**
+   * 8. 緊急廣播與跑馬燈管理面板 (DATA-CONTRACT 10.12)
+   * @param {Object} options
+   *   ids: { panel?, text?, count?, levelNotice?, levelUrgent?, send?, clear?, current?, marqueeList?, marqueeAdd?, marqueeSave?, msg? }
+   *   getPin: () => string
+   *   onChange?: (res) => void
+   * @returns {{ refresh: () => Promise<void>, update: (snapshot: Object) => void, reset: () => void }}
+   */
+  function mountBroadcast(options = {}) {
+    const {
+      ids = {},
+      getPin,
+      onChange
+    } = options;
+
+    const panelId = ids.panel || 'bcPanel';
+    const textId = ids.text || 'bcText';
+    const countId = ids.count || 'bcCount';
+    const levelNoticeId = ids.levelNotice || 'bcLevelNotice';
+    const levelUrgentId = ids.levelUrgent || 'bcLevelUrgent';
+    const sendId = ids.send || 'bcSend';
+    const clearId = ids.clear || 'bcClear';
+    const currentId = ids.current || 'bcCurrent';
+    const marqueeListId = ids.marqueeList || 'bcMarqueeList';
+    const marqueeAddId = ids.marqueeAdd || 'bcMarqueeAdd';
+    const marqueeSaveId = ids.marqueeSave || 'bcMarqueeSave';
+    const msgId = ids.msg || 'bcMsg';
+
+    let isDirtyText = false;
+    let isDirtyMarquee = false;
+    let isSending = false;
+
+    const getEl = (id) => document.getElementById(id);
+
+    function showMsg(text, isError = true) {
+      const el = getEl(msgId);
+      if (!el) return;
+      el.textContent = text;
+      el.className = isError ? 'msg-box error' : 'msg-box success';
+      el.style.display = 'block';
+    }
+
+    function hideMsg() {
+      const el = getEl(msgId);
+      if (!el) return;
+      el.textContent = '';
+      el.style.display = 'none';
+    }
+
+    function updateCount() {
+      const textEl = getEl(textId);
+      const countEl = getEl(countId);
+      if (!textEl || !countEl) return;
+      const len = (textEl.value || '').length;
+      countEl.textContent = `還可以輸入 ${Math.max(0, 200 - len)} 字`;
+    }
+
+    function renderBroadcast(bc) {
+      const curEl = getEl(currentId);
+      const clearBtn = getEl(clearId);
+      if (!curEl) return;
+      if (bc && bc.text) {
+        const levelLabel = bc.level === 'urgent' ? '緊急' : '一般';
+        curEl.textContent = `目前廣播（第 ${bc.id} 則・${levelLabel}）：${bc.text}`;
+        if (clearBtn) clearBtn.disabled = false;
+      } else {
+        curEl.textContent = '目前沒有廣播';
+        if (clearBtn) clearBtn.disabled = true;
+      }
+    }
+
+    function addMarqueeRow(val = '') {
+      const listEl = getEl(marqueeListId);
+      const addBtn = getEl(marqueeAddId);
+      if (!listEl) return;
+      const currentRows = listEl.querySelectorAll('.bc-line');
+      if (currentRows.length >= 8) return;
+
+      const row = document.createElement('div');
+      row.className = 'bc-marquee-row';
+      row.style.cssText = 'display: flex; gap: 8px; align-items: center; width: 100%; margin-bottom: 6px;';
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'bc-line';
+      input.maxLength = 60;
+      input.value = val || '';
+      input.placeholder = '跑馬燈文字（最多 60 字）';
+      input.style.cssText = 'flex: 1; min-height: 44px;';
+      input.addEventListener('input', () => {
+        isDirtyMarquee = true;
+      });
+
+      const delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.className = 'bc-line-del btn btn-secondary btn-sm';
+      delBtn.textContent = '刪除';
+      delBtn.style.cssText = 'min-height: 44px; min-width: 60px;';
+      delBtn.addEventListener('click', () => {
+        row.remove();
+        isDirtyMarquee = true;
+        if (addBtn) {
+          const count = listEl.querySelectorAll('.bc-line').length;
+          addBtn.disabled = (count >= 8);
+        }
+      });
+
+      row.appendChild(input);
+      row.appendChild(delBtn);
+      listEl.appendChild(row);
+
+      if (addBtn) {
+        const count = listEl.querySelectorAll('.bc-line').length;
+        addBtn.disabled = (count >= 8);
+      }
+      return row;
+    }
+
+    function renderMarqueeLines(lines) {
+      const listEl = getEl(marqueeListId);
+      const addBtn = getEl(marqueeAddId);
+      if (!listEl) return;
+      listEl.innerHTML = '';
+      const arr = Array.isArray(lines) ? lines : [];
+      arr.forEach((line) => {
+        addMarqueeRow(line);
+      });
+      if (addBtn) {
+        const count = listEl.querySelectorAll('.bc-line').length;
+        addBtn.disabled = (count >= 8);
+      }
+    }
+
+    async function doSendBroadcast() {
+      if (isSending) return;
+      const pin = typeof getPin === 'function' ? getPin() : '';
+      if (!pin) return;
+      hideMsg();
+
+      const textEl = getEl(textId);
+      const text = (textEl ? textEl.value : '').trim();
+      if (!text) {
+        showMsg('請輸入廣播內容', true);
+        return;
+      }
+
+      const urgentRadio = getEl(levelUrgentId);
+      const level = (urgentRadio && urgentRadio.checked) ? 'urgent' : 'notice';
+
+      if (level === 'urgent') {
+        const ok = await confirmDialog({
+          title: '發送緊急廣播',
+          message: '這會在所有選手手機與大螢幕蓋住畫面，要按『知道了』才會消失。確定發送？',
+          yes: '確定發送',
+          no: '取消'
+        });
+        if (!ok) return;
+      }
+
+      isSending = true;
+      const sendBtn = getEl(sendId);
+      if (sendBtn) sendBtn.disabled = true;
+
+      try {
+        const res = await callApi('/api/admin/broadcast', {
+          staff_pin: pin,
+          text,
+          level
+        });
+        showMsg('廣播已發送', false);
+        if (textEl) {
+          textEl.value = '';
+          updateCount();
+        }
+        isDirtyText = false;
+        renderBroadcast(res.broadcast);
+        if (typeof onChange === 'function') onChange(res);
+      } catch (err) {
+        console.error('broadcast error:', err);
+        showMsg(err.message || '發送廣播失敗', true);
+      } finally {
+        isSending = false;
+        if (sendBtn) sendBtn.disabled = false;
+      }
+    }
+
+    async function doClearBroadcast() {
+      if (isSending) return;
+      const pin = typeof getPin === 'function' ? getPin() : '';
+      if (!pin) return;
+      hideMsg();
+
+      const ok = await confirmDialog({
+        title: '撤掉廣播',
+        message: '確定要撤掉目前的廣播嗎？',
+        yes: '確定撤掉',
+        no: '取消'
+      });
+      if (!ok) return;
+
+      isSending = true;
+      const clearBtn = getEl(clearId);
+      if (clearBtn) clearBtn.disabled = true;
+
+      try {
+        const res = await callApi('/api/admin/broadcast', {
+          staff_pin: pin,
+          clear: true
+        });
+        showMsg('廣播已撤掉', false);
+        renderBroadcast(res.broadcast);
+        if (typeof onChange === 'function') onChange(res);
+      } catch (err) {
+        console.error('clear broadcast error:', err);
+        showMsg(err.message || '撤掉廣播失敗', true);
+      } finally {
+        isSending = false;
+        if (clearBtn) clearBtn.disabled = false;
+      }
+    }
+
+    async function doSaveMarquee() {
+      if (isSending) return;
+      const pin = typeof getPin === 'function' ? getPin() : '';
+      if (!pin) return;
+      hideMsg();
+
+      const listEl = getEl(marqueeListId);
+      if (!listEl) return;
+      const inputs = Array.from(listEl.querySelectorAll('.bc-line'));
+      const lines = inputs.map(i => i.value.trim()).filter(Boolean);
+
+      if (lines.length === 0) {
+        const ok = await confirmDialog({
+          title: '清除跑馬燈',
+          message: '這會清除所有跑馬燈文字',
+          yes: '確定清除',
+          no: '取消'
+        });
+        if (!ok) return;
+      }
+
+      isSending = true;
+      const saveBtn = getEl(marqueeSaveId);
+      if (saveBtn) saveBtn.disabled = true;
+
+      try {
+        const res = await callApi('/api/admin/marquee', {
+          staff_pin: pin,
+          lines
+        });
+        showMsg('跑馬燈已儲存', false);
+        isDirtyMarquee = false;
+        renderMarqueeLines(res.marquee);
+        if (typeof onChange === 'function') onChange(res);
+      } catch (err) {
+        console.error('save marquee error:', err);
+        showMsg(err.message || '儲存跑馬燈失敗', true);
+      } finally {
+        isSending = false;
+        if (saveBtn) saveBtn.disabled = false;
+      }
+    }
+
+    async function refresh() {
+      const pin = typeof getPin === 'function' ? getPin() : '';
+      const panelEl = getEl(panelId);
+      if (!pin) {
+        if (panelEl) panelEl.style.display = 'none';
+        return;
+      }
+      if (panelEl) panelEl.style.display = 'block';
+
+      try {
+        const res = await callApi('/api/admin/broadcast_view', { staff_pin: pin });
+        renderBroadcast(res.broadcast);
+        if (!isDirtyMarquee) {
+          renderMarqueeLines(res.marquee);
+        }
+      } catch (err) {
+        console.error('broadcast_view error:', err);
+      }
+    }
+
+    function update(snapshot) {
+      const pin = typeof getPin === 'function' ? getPin() : '';
+      const panelEl = getEl(panelId);
+      if (!pin) {
+        if (panelEl) panelEl.style.display = 'none';
+        return;
+      }
+      if (panelEl) panelEl.style.display = 'block';
+
+      if (snapshot && snapshot.event) {
+        renderBroadcast(snapshot.event.broadcast || null);
+        if (!isDirtyMarquee && snapshot.event.marquee !== undefined) {
+          renderMarqueeLines(snapshot.event.marquee);
+        }
+      }
+    }
+
+    function reset() {
+      isDirtyText = false;
+      isDirtyMarquee = false;
+      const textEl = getEl(textId);
+      if (textEl) {
+        textEl.value = '';
+        updateCount();
+      }
+      const listEl = getEl(marqueeListId);
+      if (listEl) listEl.innerHTML = '';
+      const panelEl = getEl(panelId);
+      if (panelEl) panelEl.style.display = 'none';
+      hideMsg();
+    }
+
+    function initListeners() {
+      const textEl = getEl(textId);
+      if (textEl) {
+        textEl.addEventListener('input', () => {
+          isDirtyText = true;
+          updateCount();
+        });
+      }
+
+      const sendBtn = getEl(sendId);
+      if (sendBtn) {
+        sendBtn.addEventListener('click', doSendBroadcast);
+      }
+
+      const clearBtn = getEl(clearId);
+      if (clearBtn) {
+        clearBtn.addEventListener('click', doClearBroadcast);
+      }
+
+      const addBtn = getEl(marqueeAddId);
+      if (addBtn) {
+        addBtn.addEventListener('click', () => {
+          const row = addMarqueeRow('');
+          isDirtyMarquee = true;
+          if (row) {
+            const inp = row.querySelector('.bc-line');
+            if (inp) inp.focus();
+          }
+        });
+      }
+
+      const saveBtn = getEl(marqueeSaveId);
+      if (saveBtn) {
+        saveBtn.addEventListener('click', doSaveMarquee);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initListeners);
+    } else {
+      initListeners();
+    }
+
+    return { refresh, update, reset };
+  }
+
+  /**
+   * 9. 判罰紀錄面板 (DATA-CONTRACT 10.11)
+   * @param {Object} options
+   *   ids: { panel?, player?, kind?, rule?, note?, submit?, summary?, list?, msg? }
+   *   getPin: () => string
+   * @returns {{ fetchPenalties: (silent?: boolean) => Promise<void>, reset: () => void, update: () => void }}
+   */
+  function mountPenalty(options = {}) {
+    const {
+      ids = {},
+      getPin
+    } = options;
+
+    const panelId = ids.panel || 'pnPanel';
+    const playerId = ids.player || 'pnPlayer';
+    const kindId = ids.kind || 'pnKind';
+    const ruleId = ids.rule || 'pnRule';
+    const noteId = ids.note || 'pnNote';
+    const submitId = ids.submit || 'pnSubmit';
+    const summaryId = ids.summary || 'pnSummary';
+    const listId = ids.list || 'pnList';
+    const msgId = ids.msg || 'pnMsg';
+
+    const knownPlayers = new Map();
+    let cachedKinds = [];
+    const kindLabels = new Map();
+    let activeFilterPlayer = '';
+    let isSubmitting = false;
+
+    const getEl = (id) => document.getElementById(id);
+
+    function showMsg(text, isError = true) {
+      const el = getEl(msgId);
+      if (!el) return;
+      el.textContent = text;
+      el.className = isError ? 'msg-box error' : 'msg-box success';
+      el.style.display = 'block';
+    }
+
+    function hideMsg() {
+      const el = getEl(msgId);
+      if (!el) return;
+      el.textContent = '';
+      el.style.display = 'none';
+    }
+
+    function populateKinds(kinds) {
+      const kindEl = getEl(kindId);
+      if (!kindEl) return;
+      if (kindEl.options && kindEl.options.length > 0) return;
+      kindEl.innerHTML = '';
+      kinds.forEach((k) => {
+        const opt = document.createElement('option');
+        opt.value = k.kind;
+        opt.textContent = k.label;
+        if (k.kind === 'warning' || k.label === '警告') opt.selected = true;
+        kindEl.appendChild(opt);
+      });
+    }
+
+    function renderSummary(summaryData) {
+      const sumEl = getEl(summaryId);
+      if (!sumEl) return;
+      sumEl.innerHTML = '';
+
+      let items = [];
+      if (Array.isArray(summaryData)) {
+        items = summaryData;
+      } else if (summaryData && typeof summaryData === 'object' && summaryData.player) {
+        items = (summaryData.total > 0) ? [summaryData] : [];
+      }
+
+      if (items.length === 0) {
+        sumEl.textContent = '目前沒有判罰紀錄';
+        return;
+      }
+
+      items.forEach((item) => {
+        if (item.player && item.player.id && item.player.name) {
+          knownPlayers.set(item.player.id, item.player.name);
+        }
+        const countsArr = [];
+        const counts = item.counts || {};
+        for (const [k, c] of Object.entries(counts)) {
+          if (c > 0) {
+            const lbl = kindLabels.get(k) || k;
+            countsArr.push(`${lbl} ×${c}`);
+          }
+        }
+        const countsText = countsArr.join(' ');
+        const isRepeat = (item.total >= 2);
+
+        const row = document.createElement('div');
+        row.className = `pn-sum-row ${isRepeat ? 'pn-repeat' : ''}`;
+        row.setAttribute('data-player', item.player.id);
+        row.style.cssText = `
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 8px 10px;
+          margin-bottom: 6px;
+          border-radius: 6px;
+          background: ${isRepeat ? 'var(--warning-bg)' : 'var(--input-bg)'};
+          border: 1px solid ${isRepeat ? 'var(--warning-border)' : 'var(--panel-border)'};
+          color: ${isRepeat ? 'var(--warning-text)' : 'var(--text-main)'};
+          flex-wrap: wrap;
+          gap: 6px;
+        `;
+
+        row.innerHTML = `
+          <span style="font-weight: 700;">${escapeHtml(item.player.name)}（${escapeHtml(item.player.id)}）</span>
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span style="font-size: 0.85rem;">${escapeHtml(countsText)}</span>
+            ${isRepeat ? `<span class="badge" style="background: var(--warning-border); color: #fff; font-weight: 800; font-size: 0.75rem; padding: 2px 6px; border-radius: 4px;">累計 ${item.total} 次</span>` : ''}
+          </div>
+        `;
+        sumEl.appendChild(row);
+      });
+    }
+
+    function renderList(entries) {
+      const listEl = getEl(listId);
+      if (!listEl) return;
+      listEl.innerHTML = '';
+
+      const arr = Array.isArray(entries) ? entries : [];
+      if (arr.length === 0) {
+        listEl.innerHTML = '<div class="empty-state-sm">目前沒有紀錄</div>';
+        return;
+      }
+
+      arr.forEach((e) => {
+        if (e.player && e.player.id && e.player.name) {
+          knownPlayers.set(e.player.id, e.player.name);
+        }
+      });
+
+      const displayEntries = arr.slice(0, 30);
+      displayEntries.forEach((entry) => {
+        const isVoided = Boolean(entry.voided);
+        const timeStr = formatTimeHHMM(entry.at);
+        const kindLabel = entry.kind_label || kindLabels.get(entry.kind) || entry.kind;
+
+        const row = document.createElement('div');
+        row.className = `pn-row ${isVoided ? 'pn-voided' : ''}`;
+        row.setAttribute('data-id', entry.id);
+        row.style.cssText = `
+          padding: 8px 10px;
+          margin-bottom: 6px;
+          border-radius: 6px;
+          background: var(--input-bg);
+          border: 1px solid var(--panel-border);
+          font-size: 0.85rem;
+          line-height: 1.4;
+          ${isVoided ? 'opacity: 0.6; text-decoration: line-through;' : ''}
+        `;
+
+        let voidInfo = '';
+        if (isVoided) {
+          const vReason = entry.voided.reason ? `${entry.voided.reason}，` : '';
+          voidInfo = `<span style="color: var(--danger-text); font-weight: 700; text-decoration: none; margin-left: 6px;">[已作廢（${escapeHtml(vReason)}${escapeHtml(entry.voided.by)}）]</span>`;
+        }
+
+        const extra = [];
+        if (entry.rule) extra.push(`條號：${escapeHtml(entry.rule)}`);
+        if (entry.note) extra.push(`備註：${escapeHtml(entry.note)}`);
+        const extraText = extra.length > 0 ? ` · ${extra.join(' · ')}` : '';
+
+        row.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
+            <div>
+              <span style="color: var(--text-sub); font-size: 0.8rem;">${escapeHtml(timeStr)}</span>
+              <strong style="margin-left: 4px; color: var(--accent-text);">${escapeHtml(entry.player.name)}（${escapeHtml(entry.player.id)}）</strong>
+              <span style="margin-left: 6px; font-weight: 700;">${escapeHtml(kindLabel)}</span>
+              ${extraText}
+              <span style="color: var(--text-sub); margin-left: 6px;">by ${escapeHtml(entry.by)}</span>
+              ${voidInfo}
+            </div>
+            ${!isVoided ? `<button type="button" class="pn-void btn btn-secondary btn-sm" data-id="${escapeHtml(entry.id)}" style="min-height: 36px; padding: 2px 10px; font-size: 0.8rem;">作廢</button>` : ''}
+          </div>
+        `;
+
+        const voidBtn = row.querySelector('.pn-void');
+        if (voidBtn) {
+          voidBtn.addEventListener('click', () => promptVoid(entry.id));
+        }
+
+        listEl.appendChild(row);
+      });
+
+      if (arr.length > 30) {
+        const moreDiv = document.createElement('div');
+        moreDiv.className = 'empty-state-sm';
+        moreDiv.style.cssText = 'text-align: center; color: var(--text-sub); margin-top: 6px; font-size: 0.82rem;';
+        moreDiv.textContent = `還有 ${arr.length - 30} 筆，輸入選手編號可以只看那位`;
+        listEl.appendChild(moreDiv);
+      }
+    }
+
+    function showVoidModal(penaltyId) {
+      return new Promise((resolve) => {
+        let modal = document.getElementById('pnVoidModal');
+        if (!modal) {
+          modal = document.createElement('div');
+          modal.id = 'pnVoidModal';
+          modal.className = 'modal-overlay';
+          modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.75); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 99999; box-sizing: border-box;';
+          modal.innerHTML = `
+            <div class="modal-box" style="background: var(--card-bg); border: 2px solid var(--danger-border); border-radius: 12px; max-width: 340px; width: 100%; padding: 16px; box-sizing: border-box; color: var(--text-primary);">
+              <div class="modal-title" style="font-size: 1.1rem; font-weight: 800; color: var(--danger-text); margin-bottom: 8px; text-align: center;">作廢判罰紀錄</div>
+              <div style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 10px;" id="pnVoidPromptText">請輸入作廢原因（選填，最多 40 字）：</div>
+              <input type="text" id="pnVoidReason" maxlength="40" placeholder="例如：記錯選手、雙方已和解" class="input-text" style="width: 100%; min-height: 44px; margin-bottom: 14px; box-sizing: border-box;">
+              <div class="modal-btns" style="display: flex; justify-content: center; gap: 10px;">
+                <button type="button" id="pnVoidConfirm" class="btn btn-danger" style="color: #fff; min-height: 44px; min-width: 80px; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 700;">確定作廢</button>
+                <button type="button" id="pnVoidCancel" class="btn btn-secondary" style="min-height: 44px; min-width: 80px; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 700;">取消</button>
+              </div>
+            </div>
+          `;
+          document.body.appendChild(modal);
+        }
+        const reasonInput = document.getElementById('pnVoidReason');
+        const confirmBtn = document.getElementById('pnVoidConfirm');
+        const cancelBtn = document.getElementById('pnVoidCancel');
+        const promptText = document.getElementById('pnVoidPromptText');
+        if (promptText) promptText.textContent = `作廢編號 ${penaltyId}，請輸入原因（可空白）：`;
+        if (reasonInput) reasonInput.value = '';
+
+        modal.style.display = 'flex';
+        if (confirmBtn) confirmBtn.disabled = false;
+        if (cancelBtn) cancelBtn.disabled = false;
+        if (reasonInput) {
+          try { reasonInput.focus(); } catch (e) {}
+        }
+
+        function cleanUp() {
+          modal.style.display = 'none';
+          confirmBtn.onclick = null;
+          cancelBtn.onclick = null;
+        }
+
+        confirmBtn.onclick = () => {
+          confirmBtn.disabled = true;
+          const val = (reasonInput ? reasonInput.value : '').trim();
+          cleanUp();
+          resolve(val);
+        };
+        cancelBtn.onclick = () => {
+          cleanUp();
+          resolve(null);
+        };
+      });
+    }
+
+    async function promptVoid(penaltyId) {
+      const pin = typeof getPin === 'function' ? getPin() : '';
+      if (!pin) return;
+      hideMsg();
+
+      const reason = await showVoidModal(penaltyId);
+      if (reason === null) return;
+
+      try {
+        await callApi('/api/staff/penalty_void', {
+          staff_pin: pin,
+          id: penaltyId,
+          reason: reason
+        });
+        showMsg('判罰已作廢', false);
+        await fetchPenalties(true);
+      } catch (err) {
+        console.error('penalty_void error:', err);
+        showMsg(err.message || '作廢失敗', true);
+      }
+    }
+
+    async function fetchPenalties(silent = false) {
+      const pin = typeof getPin === 'function' ? getPin() : '';
+      const panelEl = getEl(panelId);
+      if (!pin) {
+        if (panelEl) panelEl.style.display = 'none';
+        return;
+      }
+      if (panelEl) panelEl.style.display = 'block';
+
+      const reqBody = { staff_pin: pin };
+      if (activeFilterPlayer) {
+        reqBody.player_id = activeFilterPlayer;
+      }
+
+      try {
+        const res = await callApi('/api/staff/penalties', reqBody);
+        if (res.kinds && Array.isArray(res.kinds)) {
+          cachedKinds = res.kinds;
+          cachedKinds.forEach(k => kindLabels.set(k.kind, k.label));
+          populateKinds(res.kinds);
+        }
+        renderSummary(res.summary);
+        renderList(res.entries);
+      } catch (err) {
+        console.error('fetchPenalties error:', err);
+        if (!silent) {
+          showMsg(err.message || '讀取判罰紀錄失敗', true);
+        }
+      }
+    }
+
+    async function doSubmitPenalty() {
+      if (isSubmitting) return;
+      const pin = typeof getPin === 'function' ? getPin() : '';
+      if (!pin) return;
+      hideMsg();
+
+      const playerEl = getEl(playerId);
+      const kindEl = getEl(kindId);
+      const ruleEl = getEl(ruleId);
+      const noteEl = getEl(noteId);
+
+      const pid = (playerEl ? playerEl.value : '').trim().toUpperCase();
+      if (!pid) {
+        showMsg('請輸入選手編號', true);
+        return;
+      }
+      const kindVal = kindEl ? kindEl.value : 'warning';
+      const ruleVal = (ruleEl ? ruleEl.value : '').trim();
+      const noteVal = (noteEl ? noteEl.value : '').trim();
+
+      const playerName = knownPlayers.get(pid);
+      const playerDesc = playerName ? `${playerName}（${pid}）` : pid;
+      const kindLabel = kindLabels.get(kindVal) || (kindEl ? kindEl.options[kindEl.selectedIndex]?.text : kindVal);
+
+      const ok = await confirmDialog({
+        title: '確認判罰記錄',
+        message: `記錄 ${playerDesc} 一次 ${kindLabel}？`,
+        yes: '確定記錄',
+        no: '取消'
+      });
+      if (!ok) return;
+
+      isSubmitting = true;
+      const submitBtn = getEl(submitId);
+      if (submitBtn) submitBtn.disabled = true;
+
+      try {
+        await callApi('/api/staff/penalty_add', {
+          staff_pin: pin,
+          player_id: pid,
+          kind: kindVal,
+          rule: ruleVal,
+          note: noteVal
+        });
+        showMsg('已記錄判罰', false);
+        if (ruleEl) ruleEl.value = '';
+        if (noteEl) noteEl.value = '';
+        await fetchPenalties(true);
+      } catch (err) {
+        console.error('penalty_add error:', err);
+        showMsg(err.message || '記錄判罰失敗', true);
+      } finally {
+        isSubmitting = false;
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    }
+
+    function handlePlayerFilter() {
+      const playerEl = getEl(playerId);
+      const val = (playerEl ? playerEl.value : '').trim().toUpperCase();
+      if (val !== activeFilterPlayer) {
+        activeFilterPlayer = val;
+        fetchPenalties(false);
+      }
+    }
+
+    function reset() {
+      activeFilterPlayer = '';
+      const playerEl = getEl(playerId);
+      if (playerEl) playerEl.value = '';
+      const ruleEl = getEl(ruleId);
+      if (ruleEl) ruleEl.value = '';
+      const noteEl = getEl(noteId);
+      if (noteEl) noteEl.value = '';
+      const sumEl = getEl(summaryId);
+      if (sumEl) sumEl.textContent = '目前沒有判罰紀錄';
+      const listEl = getEl(listId);
+      if (listEl) listEl.innerHTML = '';
+      const panelEl = getEl(panelId);
+      if (panelEl) panelEl.style.display = 'none';
+      hideMsg();
+    }
+
+    function initListeners() {
+      const playerEl = getEl(playerId);
+      if (playerEl) {
+        playerEl.addEventListener('input', () => {
+          playerEl.value = playerEl.value.toUpperCase();
+        });
+        playerEl.addEventListener('blur', handlePlayerFilter);
+        playerEl.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            handlePlayerFilter();
+          }
+        });
+      }
+
+      const submitBtn = getEl(submitId);
+      if (submitBtn) {
+        submitBtn.addEventListener('click', doSubmitPenalty);
+      }
+    }
+
+    // 每 30 秒自動重新載入一次列表
+    const pollInterval = setInterval(() => {
+      const pin = typeof getPin === 'function' ? getPin() : '';
+      if (pin && document.visibilityState !== 'hidden') {
+        fetchPenalties(true);
+      }
+    }, 30000);
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        const pin = typeof getPin === 'function' ? getPin() : '';
+        if (pin) fetchPenalties(true);
+      }
+    });
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initListeners);
+    } else {
+      initListeners();
+    }
+
+    return { fetchPenalties, reset, update: () => {} };
+  }
+
   window.AdminPanels = {
     mountLogin,
     mountHealth,
@@ -1447,9 +2243,12 @@
     mountPlayerAssist,
     mountDeckConfig,
     mountDeckSample,
+    mountBroadcast,
+    mountPenalty,
     msToDateTimeLocalTW,
     dateTimeLocalToMsTW,
     formatDateTimeTW
   };
 
 })(window);
+

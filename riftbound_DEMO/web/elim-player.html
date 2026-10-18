@@ -6,6 +6,7 @@
   <link rel="icon" href="data:,">
   <title>符文戰場 — 淘汰賽選手端</title>
   <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="../brand.css">
   <style>
 html, body {
       -webkit-text-size-adjust: 100%;
@@ -115,6 +116,14 @@ header {
       color: var(--danger-text);
     }
 
+.net-hint {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      line-height: 1.4;
+      font-weight: normal;
+    }
+
 .contract-warning {
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
@@ -176,7 +185,7 @@ header {
 
 .btn-primary {
       background: var(--accent);
-      color: #141212;
+      color: var(--on-accent, #141212);
     }
 
 .btn-primary:active {
@@ -418,7 +427,7 @@ header {
 .btn-reason.active {
       background: var(--accent);
       border-color: var(--accent);
-      color: #141212;
+      color: var(--on-accent, #141212);
       font-weight: 700;
     }
 
@@ -573,6 +582,7 @@ header {
     <!-- 警示橫幅 -->
     <div id="elimStaleWarning" class="banner stale-warning" style="display: none;">
       已超過 90 秒未收到新賽況，可能連線中斷或主機暫停
+      <div class="net-hint">可以先看會場的大螢幕或牆上的配對表，或直接問裁判</div>
     </div>
     <div id="elimContractWarning" class="banner contract-warning" style="display: none;">
       系統版本已有更新，請重新整理頁面
@@ -715,6 +725,8 @@ header {
         <button type="button" id="elimCallCancel" class="btn btn-secondary btn-call-cancel" style="display: none;">取消呼叫裁判</button>
         <div id="elimCallError" class="msg-text msg-danger" style="display: none; text-align: center;"></div>
       </div>
+
+      <div id="matchHistory" style="margin-top: 14px;"></div>
     </section>
   </div>
 
@@ -746,14 +758,19 @@ header {
   <div class="disconnected-overlay" id="elimDisconnectedScreen">
     <div style="font-size: 3rem; margin-bottom: 12px;">⚠️</div>
     <div style="font-size: 1.4rem; font-weight: 800; color: var(--danger-text); margin-bottom: 8px;">尚未連上賽務主機</div>
-    <div style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px;">請確認主機是否已啟動，或稍候自動重連。</div>
+    <div style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px;">
+      請確認主機是否已啟動，或稍候自動重連。
+      <div class="net-hint">可以先看會場的大螢幕或牆上的配對表，或直接問裁判</div>
+    </div>
     <button type="button" class="btn btn-primary" onclick="window.poller && window.poller.fetchOnce()">重新連線</button>
   </div>
 
   <script src="common.js"></script>
+  <script src="match-history.js"></script>
   <script src="player-auth.js"></script>
   <script src="call-judge.js"></script>
   <script src="elim-common.js"></script>
+  <script src="broadcast.js"></script>
   <script>
     let loggedPlayerId = null;
     let loggedPin = null;
@@ -787,6 +804,8 @@ header {
         CallJudge.update({ judge_call: null, canCall: false });
         document.getElementById('elimActiveCard').style.display = 'none';
         document.getElementById('elimLoginCard').style.display = 'block';
+        const mh = document.getElementById('matchHistory');
+        if (mh) mh.innerHTML = '';
         const pinIn = document.getElementById('elimPin');
         if (pinIn) pinIn.value = '';
         const idIn = document.getElementById('elimId');
@@ -817,6 +836,9 @@ header {
     const poller = new ElimPoller({
       onData: (snapshot) => {
         renderHeader(snapshot);
+        if (window.BroadcastDisplay) {
+          BroadcastDisplay.update(snapshot, { marquee: false });
+        }
         if (playerAuth.get()) {
           refreshPlayerMeSilently();
         }
@@ -1145,6 +1167,24 @@ header {
         judge_call: data.judge_call,
         canCall: isSeated
       });
+
+      // 對戰紀錄 (DATA-CONTRACT 10.18)
+      if (window.MatchHistory && player && player.id) {
+        const snap = window.elimSnapshot;
+        const apiBase = (snap && snap.event && typeof snap.event.api_base === 'string')
+          ? snap.event.api_base
+          : '';
+        MatchHistory.render('matchHistory', player.id, {
+          api_base: apiBase,
+          onSelectOpponent: (oppId) => {
+            const inEl = document.getElementById('elimSearch');
+            if (inEl) {
+              inEl.value = oppId;
+              performSearch();
+            }
+          }
+        });
+      }
     }
 
     // 4. 報分動作與確認視窗

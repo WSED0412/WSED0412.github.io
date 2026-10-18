@@ -6,6 +6,7 @@
   <link rel="icon" href="data:,">
   <title>賽事設定精靈 — 符文戰場 / 寶可夢 / 戰鬥陀螺</title>
   <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="../brand.css">
   <style>
 html, body {
       width: 100%;
@@ -388,7 +389,7 @@ header {
 
 .btn-accent {
       background: var(--accent);
-      color: #fff;
+      color: var(--on-accent, #fff);
       border-color: var(--accent);
     }
 
@@ -649,6 +650,14 @@ header {
                 <option value="32">32 強 (32 人)</option>
             </select>
         </div>
+        <div class="form-group" id="tableOrderGroup" hidden style="display: none;">
+            <label for="tableOrderSelect" class="form-label">桌號怎麼發</label>
+            <select id="tableOrderSelect" class="input-select">
+                <option value="pairing">照配對順序（預設）</option>
+                <option value="rank">依名次，直播桌放排名最高的對戰</option>
+            </select>
+            <div class="form-hint">只改桌號，不改誰對誰。</div>
+        </div>
         <div class="form-group" id="twoPhaseGroup" style="display: none;">
             <label class="checkbox-label">
                 <input type="checkbox" id="cfgTwoPhase">
@@ -760,6 +769,49 @@ header {
                 <label for="setupCardMax" class="form-label">每區號碼牌最大號（2～1024）</label>
                 <input type="number" id="setupCardMax" class="input-text" value="128" min="2" max="1024">
             </div>
+        </div>
+
+        <!-- 賽事主視覺區塊 -->
+        <div class="form-group" id="brandSection" style="margin-top: 18px; padding: 14px 16px; background: rgba(1, 26, 36, 0.6); border: 1px solid var(--card-border); border-radius: 8px;">
+          <div style="font-size: 0.95rem; font-weight: 800; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+            <span>🎨 賽事主視覺（選填）</span>
+          </div>
+
+          <!-- 主題色 -->
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label for="setupBrandColorText" class="form-label">主題色</label>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+              <input type="color" id="setupBrandColorPicker" value="#EF7D00" title="選擇主題色" style="width: 44px; height: 44px; padding: 2px; border: 1px solid var(--card-border); border-radius: 6px; background: var(--input-bg); cursor: pointer; box-sizing: border-box;">
+              <input type="text" id="setupBrandColorText" class="input-text" placeholder="#RRGGBB" maxlength="7" style="width: 110px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; text-transform: uppercase;">
+              <button type="button" id="brandColorPreviewBtn" class="btn" style="min-height: 44px; padding: 0 16px; cursor: default; border: 1px solid var(--card-border); background: transparent; color: var(--text-secondary); font-weight: 700;" tabindex="-1">按鈕預覽</button>
+              <button type="button" id="setupBrandColorClear" class="btn btn-secondary" style="min-height: 44px; padding: 0 12px; font-size: 0.85rem;" title="清除主題色">清除</button>
+            </div>
+            <div id="setupBrandColorError" class="form-hint" style="display: none; color: var(--danger-text); margin-top: 4px;">顏色格式請輸入 #RRGGBB 或 #RGB（例如 #EF7D00）</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px;">
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">建議色：</span>
+              <button type="button" class="brand-color-preset" data-color="#EF7D00" title="經典橘 #EF7D00" aria-label="經典橘 #EF7D00" style="background: #EF7D00; width: 44px; height: 44px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.3); cursor: pointer;"></button>
+              <button type="button" class="brand-color-preset" data-color="#0284C7" title="賽事藍 #0284C7" aria-label="賽事藍 #0284C7" style="background: #0284C7; width: 44px; height: 44px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.3); cursor: pointer;"></button>
+              <button type="button" class="brand-color-preset" data-color="#10B981" title="翡翠綠 #10B981" aria-label="翡翠綠 #10B981" style="background: #10B981; width: 44px; height: 44px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.3); cursor: pointer;"></button>
+              <button type="button" class="brand-color-preset" data-color="#EC4899" title="熱情粉 #EC4899" aria-label="熱情粉 #EC4899" style="background: #EC4899; width: 44px; height: 44px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.3); cursor: pointer;"></button>
+              <button type="button" class="brand-color-preset" data-color="#8B5CF6" title="星空紫 #8B5CF6" aria-label="星空紫 #8B5CF6" style="background: #8B5CF6; width: 44px; height: 44px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.3); cursor: pointer;"></button>
+              <button type="button" class="brand-color-preset" data-color="#EAB308" title="活力金 #EAB308" aria-label="活力金 #EAB308" style="background: #EAB308; width: 44px; height: 44px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.3); cursor: pointer;"></button>
+            </div>
+            <div class="form-hint" style="margin-top: 6px;">主題色會套用到全站頁面與直播疊圖。</div>
+          </div>
+
+          <!-- 副標 -->
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label for="setupBrandSubtitle" class="form-label">副標</label>
+            <input type="text" id="setupBrandSubtitle" class="input-text" placeholder="最多 30 字，例如：春季爭霸賽 / 總決賽" maxlength="30">
+            <div class="form-hint">副標會顯示在直播疊圖與轉播畫面上。</div>
+          </div>
+
+          <!-- 場地 -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="setupBrandVenue" class="form-label">場地</label>
+            <input type="text" id="setupBrandVenue" class="input-text" placeholder="最多 30 字，例如：台北市立體育館" maxlength="30">
+            <div class="form-hint">場地名稱會顯示在直播疊圖與轉播畫面上。</div>
+          </div>
         </div>
 
         <!-- 名單區塊 -->
@@ -879,6 +931,61 @@ header {
         return 'B';
       }
       return currentVal || 'B';
+    }
+
+    function getCurrentKind() {
+      const paceEl = document.getElementById('setupPace');
+      const pace = paceEl ? paceEl.value : '';
+      if (pace === 'live') return 'bracket';
+      if (pace === 'rounds') return 'swiss';
+      if (currentTemplateId) {
+        const tpl = templatesData.find(t => t.id === currentTemplateId);
+        if (tpl && tpl.config && tpl.config.kind) {
+          return tpl.config.kind;
+        }
+      }
+      const gameSelect = document.getElementById('setupGame');
+      const g = gameSelect ? gameSelect.value : '';
+      const formatSelect = document.getElementById('setupFormat');
+      const format = formatSelect ? formatSelect.value : '';
+      const bracket_fmts = ['single_elim', 'double_elim', 'finals16'];
+      if (bracket_fmts.includes(format) || isGameDefaultBracket(g)) {
+        return 'bracket';
+      }
+      return 'swiss';
+    }
+
+    function getCurrentMode() {
+      const gameSelect = document.getElementById('setupGame');
+      const g = gameSelect ? gameSelect.value : '';
+      const modeSelect = document.getElementById('setupMode');
+      const modeVal = modeSelect ? modeSelect.value : 'B';
+      return getEffectiveMode(g, modeVal);
+    }
+
+    function getCurrentFormat() {
+      const formatSelect = document.getElementById('setupFormat');
+      return formatSelect ? formatSelect.value : '';
+    }
+
+    function isTableOrderEligible() {
+      const kind = getCurrentKind();
+      const mode = getCurrentMode();
+      const format = getCurrentFormat();
+      return kind === 'swiss' && mode === 'B' && format === 'swiss_topcut';
+    }
+
+    function updateTableOrderVisibility() {
+      const group = document.getElementById('tableOrderGroup');
+      if (!group) return;
+      const isEligible = isTableOrderEligible();
+      group.hidden = !isEligible;
+      group.style.display = isEligible ? 'block' : 'none';
+      if (isEligible) {
+        group.removeAttribute('hidden');
+      } else {
+        group.setAttribute('hidden', '');
+      }
     }
 
     let templatesData = [];
@@ -1028,6 +1135,10 @@ header {
       const rVal = (cfg.rounds !== null && cfg.rounds !== undefined) ? cfg.rounds : '';
       document.getElementById('setupRounds').value = rVal;
       document.getElementById('setupTopCut').value = (cfg.top_cut !== null && cfg.top_cut !== undefined) ? String(cfg.top_cut) : '';
+      const tableOrderSelect = document.getElementById('tableOrderSelect');
+      if (tableOrderSelect) {
+        tableOrderSelect.value = 'pairing';
+      }
       document.getElementById('setupRoundMin').value = cfg.round_min || caps.default_round_min || 60;
       document.getElementById('setupDecklist').checked = !!cfg.decklist_required;
       const lockSelect = document.getElementById('setupDecklistLock');
@@ -1098,8 +1209,101 @@ header {
       // Step 4: 再次刷新 axes 與報到方式欄位（帶入範本的 roster_source）
       refreshAxesOptions(tplRosterSource);
 
+      resetBrandFields();
+
       document.getElementById('setupFormSection').style.display = 'block';
       schedulePreview(true);
+    }
+
+    function parseHexToRgb(text) {
+      const m = /^#?([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.exec((text || '').trim());
+      if (!m) return null;
+      let h = m[1];
+      if (h.length === 3) {
+        h = h.split('').map(c => c + c).join('');
+      }
+      return {
+        r: parseInt(h.slice(0, 2), 16),
+        g: parseInt(h.slice(2, 4), 16),
+        b: parseInt(h.slice(4, 6), 16),
+        hex: '#' + h.toUpperCase()
+      };
+    }
+
+    function getWcagLuminance(r, g, b) {
+      const ch = (v) => {
+        v = v / 255;
+        return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+      };
+      return 0.2126 * ch(r) + 0.7152 * ch(g) + 0.0722 * ch(b);
+    }
+
+    function getWcagContrast(lum1, lum2) {
+      const hi = Math.max(lum1, lum2);
+      const lo = Math.min(lum1, lum2);
+      return (hi + 0.05) / (lo + 0.05);
+    }
+
+    function pickContrastTextColor(rgb) {
+      const bgLum = getWcagLuminance(rgb.r, rgb.g, rgb.b);
+      const darkLum = getWcagLuminance(20, 18, 18); // #141212
+      const lightLum = 1.0;                         // #FFFFFF
+      const darkContrast = getWcagContrast(bgLum, darkLum);
+      const lightContrast = getWcagContrast(bgLum, lightLum);
+      return darkContrast >= lightContrast ? '#141212' : '#FFFFFF';
+    }
+
+    function updateColorPreview() {
+      const textInput = document.getElementById('setupBrandColorText');
+      const colorPicker = document.getElementById('setupBrandColorPicker');
+      const previewBtn = document.getElementById('brandColorPreviewBtn');
+      const errorEl = document.getElementById('setupBrandColorError');
+      if (!textInput || !previewBtn) return;
+      const val = (textInput.value || '').trim();
+
+      if (!val) {
+        if (errorEl) errorEl.style.display = 'none';
+        previewBtn.style.backgroundColor = 'transparent';
+        previewBtn.style.borderColor = 'var(--card-border)';
+        previewBtn.style.color = 'var(--text-secondary)';
+        previewBtn.textContent = '按鈕預覽';
+        return;
+      }
+
+      const parsed = parseHexToRgb(val);
+      if (!parsed) {
+        if (errorEl) {
+          errorEl.textContent = '顏色格式請輸入 #RRGGBB 或 #RGB（例如 #EF7D00）';
+          errorEl.style.display = 'block';
+        }
+        previewBtn.style.backgroundColor = 'transparent';
+        previewBtn.style.borderColor = 'var(--danger-border)';
+        previewBtn.style.color = 'var(--danger-text)';
+        previewBtn.textContent = '格式不合';
+        return;
+      }
+
+      if (errorEl) errorEl.style.display = 'none';
+      if (colorPicker) colorPicker.value = parsed.hex.toLowerCase();
+      const textColor = pickContrastTextColor(parsed);
+      previewBtn.style.backgroundColor = parsed.hex;
+      previewBtn.style.borderColor = parsed.hex;
+      previewBtn.style.color = textColor;
+      previewBtn.textContent = '按鈕預覽';
+    }
+
+    function resetBrandFields() {
+      const colorText = document.getElementById('setupBrandColorText');
+      const colorPicker = document.getElementById('setupBrandColorPicker');
+      const subtitle = document.getElementById('setupBrandSubtitle');
+      const venue = document.getElementById('setupBrandVenue');
+      const errorEl = document.getElementById('setupBrandColorError');
+      if (colorText) colorText.value = '';
+      if (colorPicker) colorPicker.value = '#EF7D00';
+      if (subtitle) subtitle.value = '';
+      if (venue) venue.value = '';
+      if (errorEl) errorEl.style.display = 'none';
+      updateColorPreview();
     }
 
     function buildCurrentPayload() {
@@ -1129,7 +1333,12 @@ header {
       
       const topVal = document.getElementById('setupTopCut').value;
       config.top_cut = (topVal === '' ? null : (parseInt(topVal, 10) || 0));
-      
+
+      if (isTableOrderEligible()) {
+        const orderEl = document.getElementById('tableOrderSelect');
+        config.table_order = (orderEl && orderEl.value === 'rank') ? 'rank' : 'pairing';
+      }
+
       config.round_min = parseInt(document.getElementById('setupRoundMin').value, 10) || 60;
       
       config.elim = document.getElementById('setupElim').value || 'single';
@@ -1200,6 +1409,33 @@ header {
         config.phase2_points = p2PtsVal ? parseInt(p2PtsVal, 10) : null;
         const p2RoundsVal = document.getElementById('cfgPhase2Rounds').value.trim();
         config.phase2_rounds = p2RoundsVal ? parseInt(p2RoundsVal, 10) : null;
+      }
+
+      // 賽事主視覺（DATA-CONTRACT 第 8 節 config.brand、10.17）
+      const brand = {};
+      const colorTextEl = document.getElementById('setupBrandColorText');
+      const colorTextVal = (colorTextEl ? colorTextEl.value : '').trim();
+      if (colorTextVal) {
+        const parsedColor = parseHexToRgb(colorTextVal);
+        if (parsedColor) {
+          brand.primary = parsedColor.hex;
+        }
+      }
+
+      const subEl = document.getElementById('setupBrandSubtitle');
+      const subVal = (subEl ? subEl.value : '').trim();
+      if (subVal) {
+        brand.subtitle = subVal.slice(0, 30);
+      }
+
+      const venueEl = document.getElementById('setupBrandVenue');
+      const venueVal = (venueEl ? venueEl.value : '').trim();
+      if (venueVal) {
+        brand.venue = venueVal.slice(0, 30);
+      }
+
+      if (Object.keys(brand).length > 0) {
+        config.brand = brand;
       }
 
       const rosterText = document.getElementById('setupRoster').value || '';
@@ -1515,11 +1751,21 @@ header {
       // 重畫報到方式區塊（內部會呼叫 updateDecklistOptionState）
       refreshCheckinMethod(desiredRosterSource);
       updateDecklistOptionState();
+      updateTableOrderVisibility();
     }
 
-    document.getElementById('setupGame').addEventListener('change', () => { refreshAxesOptions(); schedulePreview(); });
+    document.getElementById('setupGame').addEventListener('change', () => {
+      const orderEl = document.getElementById('tableOrderSelect');
+      if (orderEl) orderEl.value = 'pairing';
+      resetBrandFields();
+      refreshAxesOptions();
+      schedulePreview();
+    });
     document.getElementById('setupFormat').addEventListener('change', () => { refreshAxesOptions(); schedulePreview(); });
-    document.getElementById('setupPace').addEventListener('change', schedulePreview);
+    document.getElementById('setupPace').addEventListener('change', () => {
+      updateTableOrderVisibility();
+      schedulePreview();
+    });
     document.getElementById('setupDivision').addEventListener('change', schedulePreview);
 
     function schedulePreview(immediate = false) {
@@ -1811,6 +2057,8 @@ header {
       // 立即渲染靜態預設範本
       renderTemplates();
       updateDecklistOptionState();
+      updateTableOrderVisibility();
+      resetBrandFields();
 
       // 向後端請求正式範本資料
       fetchTemplates();
@@ -1818,6 +2066,57 @@ header {
       // 表單輸入事件監聽
       document.getElementById('setupName').addEventListener('input', () => schedulePreview());
       document.getElementById('setupExpected').addEventListener('input', () => schedulePreview());
+
+      // 賽事主視覺欄位監聽
+      const colorPicker = document.getElementById('setupBrandColorPicker');
+      const colorText = document.getElementById('setupBrandColorText');
+      const clearBtn = document.getElementById('setupBrandColorClear');
+
+      if (colorPicker && colorText) {
+        const onPicker = () => {
+          colorText.value = colorPicker.value.toUpperCase();
+          updateColorPreview();
+          schedulePreview();
+        };
+        colorPicker.addEventListener('input', onPicker);
+        colorPicker.addEventListener('change', onPicker);
+
+        colorText.addEventListener('input', () => {
+          updateColorPreview();
+          schedulePreview();
+        });
+      }
+
+      if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+          if (colorText) colorText.value = '';
+          if (colorPicker) colorPicker.value = '#EF7D00';
+          updateColorPreview();
+          schedulePreview();
+        });
+      }
+
+      document.querySelectorAll('.brand-color-preset').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const color = btn.getAttribute('data-color');
+          if (colorText && colorPicker) {
+            colorText.value = color;
+            colorPicker.value = color;
+            updateColorPreview();
+            schedulePreview();
+          }
+        });
+      });
+
+      const subtitleInput = document.getElementById('setupBrandSubtitle');
+      if (subtitleInput) {
+        subtitleInput.addEventListener('input', () => schedulePreview());
+      }
+
+      const venueInput = document.getElementById('setupBrandVenue');
+      if (venueInput) {
+        venueInput.addEventListener('input', () => schedulePreview());
+      }
 
       // 符文戰場欄位監聽
       document.getElementById('setupFormat').addEventListener('change', () => {
@@ -1830,6 +2129,10 @@ header {
       });
       document.getElementById('setupRounds').addEventListener('input', () => schedulePreview());
       document.getElementById('setupTopCut').addEventListener('change', () => schedulePreview());
+      const tableOrderEl = document.getElementById('tableOrderSelect');
+      if (tableOrderEl) {
+        tableOrderEl.addEventListener('change', () => schedulePreview());
+      }
       document.getElementById('setupRoundMin').addEventListener('input', () => schedulePreview());
       document.getElementById('setupDecklist').addEventListener('change', () => {
         updateDecklistOptionState();

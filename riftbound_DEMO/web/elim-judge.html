@@ -6,6 +6,7 @@
   <link rel="icon" href="data:,">
   <title>符文戰場 — 淘汰賽裁判端</title>
   <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="../brand.css">
   <style>
 html, body {
       -webkit-text-size-adjust: 100%;
@@ -144,7 +145,7 @@ header {
 
 .btn-primary {
       background: var(--accent);
-      color: #fff;
+      color: var(--on-accent, #fff);
     }
 
 .btn-primary:not(:disabled):hover {
@@ -759,7 +760,52 @@ header {
           <button type="button" id="ejVoid" class="btn btn-danger btn-block">撤銷此場比賽結果（回退至可打）</button>
         </div>
       </section>
+
+      <!-- 區塊: 判罰紀錄 (DATA-CONTRACT 10.11) -->
+      <section class="card" id="pnPanel">
+        <h2 class="card-title">⚖️ 判罰紀錄</h2>
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 10px;">
+          這裡只是紀錄，不會自動處罰；要判局敗／場敗請用上面的成績判定。判罰紀錄不會公開，選手看不到。
+        </p>
+
+        <div style="margin-bottom: 10px;">
+          <label for="pnPlayer" style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">選手編號</label>
+          <input type="text" id="pnPlayer" placeholder="例如 A-01" style="text-transform: uppercase;">
+        </div>
+
+        <div style="margin-bottom: 10px;">
+          <label for="pnKind" style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">種類</label>
+          <select id="pnKind"></select>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+          <label for="pnRule" style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">規則條號（選填，最多 20 字）</label>
+          <input type="text" id="pnRule" maxlength="20" placeholder="例如 703.8">
+        </div>
+
+        <div style="margin-bottom: 10px;">
+          <label for="pnNote" style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">備註（選填，最多 60 字）</label>
+          <input type="text" id="pnNote" maxlength="60" placeholder="最多 60 字">
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <button type="button" id="pnSubmit" class="btn btn-primary btn-block">記錄判罰</button>
+        </div>
+
+        <div id="pnMsg" class="msg-box" style="display: none; margin-bottom: 12px;"></div>
+
+        <div style="margin-bottom: 14px;">
+          <div style="font-size: 0.9rem; font-weight: 700; color: var(--accent-text); margin-bottom: 6px;">📊 累計判罰</div>
+          <div id="pnSummary" style="font-size: 0.88rem;">目前沒有判罰紀錄</div>
+        </div>
+
+        <div>
+          <div style="font-size: 0.9rem; font-weight: 700; color: var(--accent-text); margin-bottom: 6px;">📜 最近紀錄</div>
+          <div id="pnList" style="font-size: 0.85rem;"></div>
+        </div>
+      </section>
     </main>
+
   </div>
 
   <!-- 操作確認彈窗（包含 confirmYes 與 confirmNo） -->
@@ -782,6 +828,7 @@ header {
     const SESSION_KEY_PIN = 'riftbound_elim_judge_pin';
     let auth = null;
     let playerAssist = null;
+    let penaltyPanel = null;
     let staffPin = '';
     let staffRole = '';
     let staffName = '';
@@ -839,6 +886,7 @@ header {
           poller.start();
         }
         await poller.fetchOnce();
+        if (penaltyPanel) penaltyPanel.fetchPenalties();
         await loadConflicts();
         startConflictPolling();
         await loadCalls();
@@ -882,8 +930,25 @@ header {
         const deckInfo = document.getElementById('ejDeckInfoBox');
         if (deckInfo) deckInfo.style.display = 'none';
         hideEjDeckMsg();
+        if (penaltyPanel) penaltyPanel.reset();
       }
     });
+
+    penaltyPanel = AdminPanels.mountPenalty({
+      ids: {
+        panel: 'pnPanel',
+        player: 'pnPlayer',
+        kind: 'pnKind',
+        rule: 'pnRule',
+        note: 'pnNote',
+        submit: 'pnSubmit',
+        summary: 'pnSummary',
+        list: 'pnList',
+        msg: 'pnMsg'
+      },
+      getPin: () => (auth ? auth.getPin() : (staffPin || ''))
+    });
+
 
     // 叫裁判音效與輔助函式
     function playCallSound() {

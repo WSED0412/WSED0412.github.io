@@ -6,6 +6,7 @@
   <link rel="icon" href="data:,">
   <title>符文戰場 — 桌況儀表板</title>
   <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="../brand.css">
   <style>
 html, body {
       -webkit-text-size-adjust: 100%;
@@ -98,6 +99,14 @@ header {
       border: 1px solid var(--danger-border);
     }
 
+.net-hint {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      line-height: 1.4;
+      font-weight: normal;
+    }
+
 .summary-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -171,7 +180,7 @@ header {
 
 .filter-chip.active {
       background: var(--accent);
-      color: #141212;
+      color: var(--on-accent, #141212);
       border-color: var(--accent);
       font-weight: 800;
     }
@@ -688,6 +697,7 @@ footer {
 
   <script src="common.js"></script>
   <script src="disconnect-overlay.js"></script>
+  <script src="broadcast.js"></script>
   <script>
     const CURRENT_CONTRACT_VERSION = 16;
     let snapshotData = null;
@@ -703,6 +713,14 @@ footer {
       desc: '桌況儀表板目前無法讀取賽事即時資料。<br>請確認主機服務狀態或網路連線，連線恢復後將自動載入。',
       onRetry: () => fetchData()
     });
+
+    const tbDcoDesc = disconnectOverlay.element.querySelector('.dco-desc');
+    if (tbDcoDesc) {
+      const hint = document.createElement('div');
+      hint.className = 'net-hint';
+      hint.textContent = '可以先看會場的大螢幕或牆上的配對表，或直接問裁判';
+      tbDcoDesc.appendChild(hint);
+    }
 
     // 取得資料來源 URL (DATA-CONTRACT 1.10: 固定 ../snapshot.json，僅接受固定的 demo 參數)
     function getDataSourceUrl() {
@@ -734,6 +752,9 @@ footer {
         console.warn('桌況資料讀取失敗:', err);
         if (!snapshotData) {
           disconnectOverlay.show();
+          if (window.BroadcastDisplay) {
+            BroadcastDisplay.update(null, { marquee: true });
+          }
         }
       }
     });
@@ -756,7 +777,7 @@ footer {
       const diffMs = Date.now() - lastContentChangeTime;
       if (diffMs > 90000) {
         const mins = Math.max(1, Math.floor(diffMs / 60000));
-        staleEl.textContent = `資料已 ${mins} 分鐘沒更新，請留意現場廣播`;
+        staleEl.innerHTML = `資料已 ${mins} 分鐘沒更新，請留意現場廣播<div class="net-hint">可以先看會場的大螢幕或牆上的配對表，或直接問裁判</div>`;
         staleEl.style.display = 'block';
       } else {
         staleEl.style.display = 'none';
@@ -770,6 +791,9 @@ footer {
       renderVersionWarning();
       renderRoundHeader();
       renderTablesAndSummary();
+      if (window.BroadcastDisplay) {
+        BroadcastDisplay.update(snapshotData, { marquee: true });
+      }
     }
 
     // 檢查版本號 (DATA-CONTRACT 1.1)

@@ -44,6 +44,18 @@
     },
     {
       "rank": 4,
+      "id": "R0013",
+      "name": "白熊",
+      "points": 3,
+      "record": "1-0-0",
+      "omw": 33.33,
+      "gw": 100.0,
+      "ogw": 33.33,
+      "dropped": false,
+      "tied_by_lot": true
+    },
+    {
+      "rank": 5,
       "id": "R0001",
       "name": "阿翔",
       "points": 3,
@@ -51,18 +63,6 @@
       "omw": 33.33,
       "gw": 66.67,
       "ogw": 33.33,
-      "dropped": false,
-      "tied_by_lot": false
-    },
-    {
-      "rank": 5,
-      "id": "R0013",
-      "name": "白熊",
-      "points": 3,
-      "record": "1-0-0",
-      "omw": 0.0,
-      "gw": 100.0,
-      "ogw": 0.0,
       "dropped": false,
       "tied_by_lot": false
     },
@@ -211,5 +211,5 @@
       "tied_by_lot": false
     }
   ],
-  "version": "4079de1391b0"
+  "version": "bc456cc13749"
 }

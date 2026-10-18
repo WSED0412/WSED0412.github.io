@@ -6,6 +6,7 @@
   <link rel="icon" href="data:,">
   <title>選手頁</title>
   <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="../brand.css">
   <style>
 html, body {
       -webkit-text-size-adjust: 100%;
@@ -185,7 +186,7 @@ header {
 
 .btn-primary {
       background: var(--accent);
-      color: #141212;
+      color: var(--on-accent, #141212);
     }
 
 .btn-primary:active:not(:disabled) {
@@ -559,7 +560,7 @@ header {
 .btn-same-opp {
       width: 100%;
       background: var(--accent);
-      color: #141212;
+      color: var(--on-accent, #141212);
       font-size: 0.95rem;
       font-weight: 800;
       border-radius: 6px;
@@ -783,6 +784,86 @@ header {
       flex: 1;
       min-height: 44px;
     }
+
+.watch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 48px;
+      padding: 8px 12px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+
+.watch-row-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+.watch-row-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+.watch-row-name {
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      word-break: break-all;
+    }
+
+.watch-row-id {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent-text);
+      font-family: monospace;
+    }
+
+.watch-row-status {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.35;
+      word-break: break-all;
+    }
+
+.watch-remove {
+      flex-shrink: 0;
+      min-height: 44px;
+      min-width: 44px;
+      height: 44px;
+      padding: 0 12px;
+      background: transparent;
+      color: var(--danger-text);
+      border: 1px solid var(--danger-border);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+
+.watch-remove:hover, .watch-remove:active {
+      background: var(--danger-bg);
+    }
+
+.net-hint {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      line-height: 1.4;
+      font-weight: normal;
+    }
 </style>
 </head>
 <body>
@@ -843,6 +924,24 @@ header {
         <div class="tip-box">請輸入選手編號或姓名進行查詢</div>
       </div>
     </section>
+
+    <!-- 關注選手區塊 -->
+    <section class="card" id="watchBlock">
+      <div class="card-title">
+        <span>⭐ 我關注的選手</span>
+        <span id="watchCountText" style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">0 / 10 位</span>
+      </div>
+      <div class="search-row" style="margin-bottom: 8px;">
+        <input type="text" id="watchAdd" class="input-text" placeholder="編號或名字" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <button type="button" id="watchAddBtn" class="btn btn-primary" style="white-space: nowrap; min-width: 68px;">關注</button>
+      </div>
+      <div id="watchMsg" class="msg-box" style="display: none; margin-bottom: 8px;"></div>
+      <div id="watchCands" style="display: none; margin-bottom: 10px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 10px;">
+        <div style="font-size: 0.85rem; font-weight: 700; color: var(--accent-text); margin-bottom: 6px;">找到多位選手，請選擇：</div>
+        <div id="watchCandsList" style="display: flex; flex-direction: column; gap: 6px;"></div>
+      </div>
+      <div id="watchList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+    </section>
   </div>
 
   <!-- 共通確認彈窗結構（common.js confirmDialog 元件使用） -->
@@ -859,10 +958,12 @@ header {
 
   <!-- 載入共用模組 -->
   <script src="common.js"></script>
+  <script src="match-history.js"></script>
   <script src="player-auth.js"></script>
   <script src="call-judge.js"></script>
   <script src="disconnect-overlay.js"></script>
   <script src="report-widget.js"></script>
+  <script src="broadcast.js"></script>
 
   <script>
     'use strict';
@@ -871,7 +972,7 @@ header {
      * =========================================================================
      * 符文戰場賽事系統 — 選手頁小試點 (web/play.html)
      * 同一份程式同時支援「整輪賽事（瑞士輪／淘汰賽）」與「邊打邊排桌（戰鬥陀螺）」。
-     * 核心依賴 DATA-CONTRACT 10.1 snapshot.tables_now 與 10.2 統一 match 場次編號。
+     * 核心依賴 DATA-CONTRACT 10.1 tables-now.json（tables_now）與 10.2 統一 match 場次編號。
      * =========================================================================
      */
 
@@ -959,6 +1060,14 @@ header {
       }
     });
 
+    const plDcoDesc = disconnectOverlay.element.querySelector('.dco-desc');
+    if (plDcoDesc) {
+      const hint = document.createElement('div');
+      hint.className = 'net-hint';
+      hint.textContent = '可以先看會場的大螢幕或牆上的配對表，或直接問裁判';
+      plDcoDesc.appendChild(hint);
+    }
+
     // 叫裁判模組掛載
     const callJudgeInstance = CallJudge.mount({
       ids: {
@@ -1008,11 +1117,28 @@ header {
       url: '../snapshot.json',
       interval: 5000,
       pauseInBackground: true,
-      onData: (data) => {
+      onData: async (data) => {
+        // tables_now 不在 snapshot 裡，另放 ../tables-now.json（DATA-CONTRACT 10.1）：讀不到就沿用上一份
+        if (!Array.isArray(data.tables_now)) {
+          try {
+            const r = await fetch('../tables-now.json', { cache: 'no-store' });
+            if (r.ok) {
+              const tn = await r.json();
+              if (tn && Array.isArray(tn.tables_now)) data.tables_now = tn.tables_now;
+            }
+          } catch (e) { /* 沿用上一份 */ }
+          if (!Array.isArray(data.tables_now) && snapshotData && Array.isArray(snapshotData.tables_now)) {
+            data.tables_now = snapshotData.tables_now;
+          }
+        }
         snapshotData = data;
         window.snapshotData = data;
         disconnectOverlay.hide();
         renderHeader(data.event);
+        if (window.BroadcastDisplay) {
+          BroadcastDisplay.update(data, { marquee: false });
+        }
+        renderWatchBlock();
         if (playerAuth.get()) {
           refreshPlayerMeSilently();
         } else {
@@ -1023,6 +1149,22 @@ header {
         console.error('輪詢讀取失敗:', err);
         if (!snapshotData) {
           disconnectOverlay.show();
+          if (window.BroadcastDisplay) {
+            BroadcastDisplay.update(null, { marquee: false });
+          }
+        }
+      },
+      onStale: (isStale, mins) => {
+        const staleEl = document.getElementById('staleBanner');
+        if (staleEl && isStale && document.visibilityState !== 'hidden') {
+          setTimeout(() => {
+            if (!staleEl.querySelector('.net-hint')) {
+              const hint = document.createElement('div');
+              hint.className = 'net-hint';
+              hint.textContent = '可以先看會場的大螢幕或牆上的配對表，或直接問裁判';
+              staleEl.appendChild(hint);
+            }
+          }, 0);
         }
       }
     });
@@ -1373,11 +1515,25 @@ header {
         CallJudge.update({ judge_call: null, canCall: false });
         if (p2Target && p2Target.decided === true && p2Target.qualified === false) {
           lastRenderFingerprint = `phase2out-${currentTargetId}-${JSON.stringify(p2Target)}`;
-          resultEl.innerHTML = `<div id="plPhase2Note" class="phase2-note-box">你沒有進第二階段（累計 ${p2Target.points} 分，門檻 ${p2Target.min_points} 分）</div>`;
+          resultEl.innerHTML = `
+            <div id="plPhase2Note" class="phase2-note-box">你沒有進第二階段（累計 ${p2Target.points} 分，門檻 ${p2Target.min_points} 分）</div>
+            ${isTargetSelf ? '<div id="matchHistory" style="margin-top: 14px;"></div>' : ''}
+          `;
+          if (isTargetSelf && window.MatchHistory && typeof MatchHistory.render === 'function') {
+            const apiBase = (snapshotData && snapshotData.event && typeof snapshotData.event.api_base === 'string') ? snapshotData.event.api_base : '';
+            MatchHistory.render('matchHistory', auth.player_id, { api_base: apiBase });
+          }
           return;
         }
         lastRenderFingerprint = `notfound-${currentTargetId}`;
-        resultEl.innerHTML = '<div id="plNotFound" class="not-found-box">這一輪沒有找到這位選手</div>';
+        resultEl.innerHTML = `
+          <div id="plNotFound" class="not-found-box">這一輪沒有找到這位選手</div>
+          ${isTargetSelf ? '<div id="matchHistory" style="margin-top: 14px;"></div>' : ''}
+        `;
+        if (isTargetSelf && window.MatchHistory && typeof MatchHistory.render === 'function') {
+          const apiBase = (snapshotData && snapshotData.event && typeof snapshotData.event.api_base === 'string') ? snapshotData.event.api_base : '';
+          MatchHistory.render('matchHistory', auth.player_id, { api_base: apiBase });
+        }
         return;
       }
 
@@ -1546,7 +1702,17 @@ header {
           ${reportPanelHtml}
           ${callSectionHtml}
         </div>
+        ${isSelfView ? '<div id="matchHistory" style="margin-top: 14px;"></div>' : ''}
       `;
+
+      if (isSelfView && window.MatchHistory && typeof MatchHistory.render === 'function') {
+        const apiBase = (snapshotData && snapshotData.event && typeof snapshotData.event.api_base === 'string')
+          ? snapshotData.event.api_base
+          : '';
+        MatchHistory.render('matchHistory', selfPlayer.id, {
+          api_base: apiBase
+        });
+      }
 
       // 綁定回報面板相關事件
       if (isSelfView) {
@@ -1971,6 +2137,358 @@ header {
       }
     }
 
+    // ------------------------------------------------ 選手關注清單 (DATA-CONTRACT-SHARED, PROJECT.md 第六十七輪)
+    const STORAGE_KEY_WATCHLIST = 'riftbound_watchlist';
+    let watchKnownNamesMap = new Map();
+    let lastWatchEventName = '';
+
+    function getWatchList() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_WATCHLIST);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          return parsed.map(x => String(x).trim().toUpperCase()).filter(Boolean);
+        }
+        return [];
+      } catch (e) {
+        return window._inMemWatchList || [];
+      }
+    }
+
+    function saveWatchList(ids) {
+      try {
+        localStorage.setItem(STORAGE_KEY_WATCHLIST, JSON.stringify(ids));
+      } catch (e) {
+        window._inMemWatchList = ids.slice();
+      }
+    }
+
+    function showWatchMsg(msg, isError = false) {
+      const el = document.getElementById('watchMsg');
+      if (!el) return;
+      el.textContent = msg;
+      el.className = `msg-box ${isError ? 'msg-error' : 'msg-success'}`;
+      el.style.display = 'block';
+    }
+
+    function hideWatchMsg() {
+      const el = document.getElementById('watchMsg');
+      if (el) {
+        el.style.display = 'none';
+        el.textContent = '';
+      }
+    }
+
+    function hideWatchCands() {
+      const el = document.getElementById('watchCands');
+      if (el) el.style.display = 'none';
+      const list = document.getElementById('watchCandsList');
+      if (list) list.innerHTML = '';
+    }
+
+    function addWatchPlayer(id, name) {
+      const upperId = String(id).trim().toUpperCase();
+      const ids = getWatchList();
+      if (ids.includes(upperId)) {
+        hideWatchMsg();
+        hideWatchCands();
+        const inEl = document.getElementById('watchAdd');
+        if (inEl) inEl.value = '';
+        return;
+      }
+      if (ids.length >= 10) {
+        showWatchMsg('最多關注 10 位，請先移除一位', true);
+        return;
+      }
+      ids.push(upperId);
+      saveWatchList(ids);
+      if (name) {
+        watchKnownNamesMap.set(upperId, name);
+      }
+      hideWatchMsg();
+      hideWatchCands();
+      const inEl = document.getElementById('watchAdd');
+      if (inEl) inEl.value = '';
+      renderWatchList();
+    }
+
+    function removeWatchPlayer(id) {
+      const upperId = String(id).trim().toUpperCase();
+      let ids = getWatchList();
+      ids = ids.filter(x => x !== upperId);
+      saveWatchList(ids);
+      hideWatchMsg();
+      hideWatchCands();
+      renderWatchList();
+    }
+
+    function renderWatchBlock() {
+      const currentEventName = (snapshotData && snapshotData.event && snapshotData.event.name) || '';
+      if (currentEventName && lastWatchEventName && currentEventName !== lastWatchEventName) {
+        watchKnownNamesMap.clear();
+      }
+      if (currentEventName) {
+        lastWatchEventName = currentEventName;
+      }
+
+      if (snapshotData && Array.isArray(snapshotData.tables_now)) {
+        for (const t of snapshotData.tables_now) {
+          if (t.p1 && t.p1.id) watchKnownNamesMap.set(t.p1.id.toUpperCase(), t.p1.name);
+          if (t.p2 && t.p2.id) watchKnownNamesMap.set(t.p2.id.toUpperCase(), t.p2.name);
+        }
+      }
+      if (snapshotData && Array.isArray(snapshotData.pairings)) {
+        for (const p of snapshotData.pairings) {
+          if (p.p1 && p.p1.id && !watchKnownNamesMap.has(p.p1.id.toUpperCase())) watchKnownNamesMap.set(p.p1.id.toUpperCase(), p.p1.name);
+          if (p.p2 && p.p2.id && !watchKnownNamesMap.has(p.p2.id.toUpperCase())) watchKnownNamesMap.set(p.p2.id.toUpperCase(), p.p2.name);
+        }
+      }
+
+      renderWatchList();
+    }
+
+    function renderWatchList() {
+      const listEl = document.getElementById('watchList');
+      if (!listEl) return;
+      const countEl = document.getElementById('watchCountText');
+
+      const ids = getWatchList();
+      if (countEl) {
+        countEl.textContent = `${ids.length} / 10 位`;
+      }
+
+      if (ids.length === 0) {
+        listEl.innerHTML = '<div class="empty-state-sm" style="text-align: center; padding: 12px; color: var(--text-secondary);">尚未關注任何選手</div>';
+        return;
+      }
+
+      const isUnpublished = Boolean(snapshotData && snapshotData.round && snapshotData.round.published === false);
+
+      let html = '';
+      for (const id of ids) {
+        let foundEntry = null;
+        let isP1 = false;
+
+        if (snapshotData && Array.isArray(snapshotData.tables_now)) {
+          for (const t of snapshotData.tables_now) {
+            if (t.p1 && t.p1.id && t.p1.id.toUpperCase() === id) {
+              foundEntry = t;
+              isP1 = true;
+              break;
+            }
+            if (t.p2 && t.p2.id && t.p2.id.toUpperCase() === id) {
+              foundEntry = t;
+              isP1 = false;
+              break;
+            }
+          }
+        }
+
+        if (!foundEntry && snapshotData && Array.isArray(snapshotData.pairings)) {
+          for (const p of snapshotData.pairings) {
+            if (p.p1 && p.p1.id && p.p1.id.toUpperCase() === id) {
+              foundEntry = p;
+              isP1 = true;
+              break;
+            }
+            if (p.p2 && p.p2.id && p.p2.id.toUpperCase() === id) {
+              foundEntry = p;
+              isP1 = false;
+              break;
+            }
+          }
+        }
+
+        let displayName = watchKnownNamesMap.get(id) || id;
+        let statusText = '';
+        let isMissing = false;
+
+        if (foundEntry) {
+          const self = isP1 ? foundEntry.p1 : foundEntry.p2;
+          const opp = isP1 ? foundEntry.p2 : foundEntry.p1;
+          if (self && self.name) {
+            displayName = self.name;
+            watchKnownNamesMap.set(id, self.name);
+          }
+
+          if (isUnpublished) {
+            statusText = '配對產生中';
+          } else if (foundEntry.state === 'bye' || (foundEntry.table === null && !foundEntry.p2)) {
+            statusText = '本輪輪空';
+          } else if (foundEntry.state === 'waiting') {
+            statusText = '等桌中';
+          } else if (foundEntry.state === 'done' || (foundEntry.result && foundEntry.result.status === 'confirmed')) {
+            const res = foundEntry.result;
+            const tblPart = (foundEntry.table !== null && foundEntry.table !== undefined) ? `第 ${foundEntry.table} 桌 · ` : '';
+            const oppPart = `對手 ${opp ? opp.name : '待定'} · `;
+            if (res && res.double_loss) {
+              statusText = `${tblPart}${oppPart}雙方判負`;
+            } else {
+              let displayRes = '';
+              if (res && res.display) {
+                displayRes = res.display;
+              } else if (res && (res.p1_games != null || res.p1 != null || res.p1_wins != null)) {
+                const myW = isP1 ? (res.p1_games ?? res.p1 ?? res.p1_wins ?? 0) : (res.p2_games ?? res.p2 ?? res.p2_wins ?? 0);
+                const oppW = isP1 ? (res.p2_games ?? res.p2 ?? res.p2_wins ?? 0) : (res.p1_games ?? res.p1 ?? res.p1_wins ?? 0);
+                const d = res.draws ?? 0;
+                displayRes = `${myW}-${oppW}` + (d > 0 ? `（${d}和）` : '');
+              } else if (res && res.winner) {
+                const winPlayer = (foundEntry.p1 && foundEntry.p1.id === res.winner) ? foundEntry.p1 : ((foundEntry.p2 && foundEntry.p2.id === res.winner) ? foundEntry.p2 : null);
+                displayRes = winPlayer ? `${winPlayer.name} 勝` : `${res.winner} 勝`;
+              } else {
+                displayRes = '已完成';
+              }
+              statusText = `${tblPart}${oppPart}比賽結果：${displayRes}`;
+            }
+          } else if (foundEntry.report_state === 'pending' || (foundEntry.result && foundEntry.result.status === 'pending')) {
+            const tblPart = (foundEntry.table !== null && foundEntry.table !== undefined) ? `第 ${foundEntry.table} 桌 · ` : '';
+            statusText = `${tblPart}對手 ${opp ? opp.name : '待定'} · 回報中`;
+          } else if (foundEntry.report_state === 'conflict' || (foundEntry.result && foundEntry.result.status === 'conflict')) {
+            const tblPart = (foundEntry.table !== null && foundEntry.table !== undefined) ? `第 ${foundEntry.table} 桌 · ` : '';
+            statusText = `${tblPart}對手 ${opp ? opp.name : '待定'} · 裁判處理中`;
+          } else if (foundEntry.table !== null && foundEntry.table !== undefined) {
+            statusText = `第 ${foundEntry.table} 桌 · 對手 ${opp ? opp.name : '待定'}`;
+          } else {
+            statusText = '等桌中';
+          }
+        } else {
+          if (watchKnownNamesMap.has(id)) {
+            displayName = watchKnownNamesMap.get(id);
+            statusText = isUnpublished ? '配對產生中' : '已出局或未排入本輪';
+          } else {
+            displayName = '（找不到這位選手）';
+            statusText = '（找不到這位選手）';
+            isMissing = true;
+          }
+        }
+
+        const removeAria = isMissing ? `移除 ${id}` : `移除 ${displayName}`;
+
+        html += `
+          <div class="watch-row" data-id="${escapeHtml(id)}">
+            <div class="watch-row-info">
+              <div class="watch-row-top">
+                <span class="watch-row-name">${escapeHtml(displayName)}</span>
+                <span class="watch-row-id">${escapeHtml(id)}</span>
+              </div>
+              <div class="watch-row-status">${escapeHtml(statusText)}</div>
+            </div>
+            <button type="button" class="watch-remove" data-id="${escapeHtml(id)}" aria-label="${escapeHtml(removeAria)}">移除</button>
+          </div>
+        `;
+      }
+
+      listEl.innerHTML = html;
+    }
+
+    function handleWatchAddAction() {
+      const inEl = document.getElementById('watchAdd');
+      const q = (inEl ? inEl.value : '').trim();
+      if (!q) return;
+      hideWatchMsg();
+      hideWatchCands();
+
+      const ids = getWatchList();
+      if (ids.length >= 10) {
+        showWatchMsg('最多關注 10 位，請先移除一位', true);
+        return;
+      }
+
+      const qLower = q.toLowerCase();
+      const playersMap = new Map();
+
+      if (snapshotData && Array.isArray(snapshotData.tables_now)) {
+        for (const t of snapshotData.tables_now) {
+          if (t.p1 && t.p1.id) playersMap.set(t.p1.id.toUpperCase(), t.p1);
+          if (t.p2 && t.p2.id) playersMap.set(t.p2.id.toUpperCase(), t.p2);
+        }
+      }
+      if (snapshotData && Array.isArray(snapshotData.pairings)) {
+        for (const p of snapshotData.pairings) {
+          if (p.p1 && p.p1.id && !playersMap.has(p.p1.id.toUpperCase())) playersMap.set(p.p1.id.toUpperCase(), p.p1);
+          if (p.p2 && p.p2.id && !playersMap.has(p.p2.id.toUpperCase())) playersMap.set(p.p2.id.toUpperCase(), p.p2);
+        }
+      }
+
+      const allPlayers = Array.from(playersMap.values());
+      const exactMatches = allPlayers.filter(p => {
+        const id = (p.id || '').toLowerCase();
+        const name = (p.name || '').toLowerCase();
+        return id === qLower || name === qLower;
+      });
+
+      let candidates = [];
+      if (exactMatches.length === 1) {
+        candidates = exactMatches;
+      } else if (exactMatches.length > 1) {
+        candidates = exactMatches;
+      } else {
+        const partialMatches = allPlayers.filter(p => {
+          const id = (p.id || '').toLowerCase();
+          const name = (p.name || '').toLowerCase();
+          return id.includes(qLower) || name.includes(qLower);
+        });
+        candidates = partialMatches;
+      }
+
+      if (candidates.length === 0) {
+        showWatchMsg('查無這位選手', true);
+        return;
+      }
+
+      if (candidates.length === 1) {
+        addWatchPlayer(candidates[0].id, candidates[0].name);
+        return;
+      }
+
+      const candsBox = document.getElementById('watchCands');
+      const candsList = document.getElementById('watchCandsList');
+      if (candsBox && candsList) {
+        candsList.innerHTML = candidates.map(c => `
+          <button type="button" class="btn btn-secondary watch-cand-btn" data-id="${escapeHtml(c.id)}" data-name="${escapeHtml(c.name)}" style="min-height: 44px; display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 12px; font-size: 0.95rem;">
+            <span><strong>${escapeHtml(c.name)}</strong></span>
+            <span style="font-family: monospace; color: var(--accent-text); font-weight: 700;">${escapeHtml(c.id)}</span>
+          </button>
+        `).join('');
+        candsBox.style.display = 'block';
+      }
+    }
+
+    function initWatchBlock() {
+      const addBtn = document.getElementById('watchAddBtn');
+      if (addBtn) addBtn.addEventListener('click', handleWatchAddAction);
+
+      const addInput = document.getElementById('watchAdd');
+      if (addInput) {
+        addInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') handleWatchAddAction();
+        });
+      }
+
+      const candsList = document.getElementById('watchCandsList');
+      if (candsList) {
+        candsList.addEventListener('click', (e) => {
+          const btn = e.target.closest('.watch-cand-btn');
+          if (btn && btn.dataset.id) {
+            addWatchPlayer(btn.dataset.id, btn.dataset.name || '');
+          }
+        });
+      }
+
+      const listEl = document.getElementById('watchList');
+      if (listEl) {
+        listEl.addEventListener('click', (e) => {
+          const btn = e.target.closest('.watch-remove');
+          if (btn && btn.dataset.id) {
+            removeWatchPlayer(btn.dataset.id);
+          }
+        });
+      }
+
+      renderWatchBlock();
+    }
+
     // 事件監聽初始化
     document.addEventListener('DOMContentLoaded', () => {
       // 搜尋按鈕
@@ -2048,6 +2566,20 @@ header {
       }
 
       // 啟動輪詢與身分恢復
+      const staleEl = document.getElementById('staleBanner');
+      if (staleEl) {
+        const obs = new MutationObserver(() => {
+          if (staleEl.style.display !== 'none' && !staleEl.querySelector('.net-hint')) {
+            const hint = document.createElement('div');
+            hint.className = 'net-hint';
+            hint.textContent = '可以先看會場的大螢幕或牆上的配對表，或直接問裁判';
+            staleEl.appendChild(hint);
+          }
+        });
+        obs.observe(staleEl, { childList: true });
+      }
+
+      initWatchBlock();
       poller.fetchOnce();
       poller.start();
       playerAuth.restore();

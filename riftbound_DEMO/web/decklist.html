@@ -6,6 +6,7 @@
   <link rel="icon" href="data:,">
   <title>符文戰場 — 牌表登錄</title>
   <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="../brand.css">
   <style>
 html, body {
       -webkit-text-size-adjust: 100%;
@@ -203,7 +204,7 @@ header {
 
 .btn-primary {
       background: var(--accent);
-      color: #141212;
+      color: var(--on-accent, #141212);
     }
 
 .btn-primary:active {
@@ -684,14 +685,16 @@ footer {
       }
 
       const text = getDeadlineNoticeText(currentDecklist);
-      if (noticeEl) {
-        noticeEl.textContent = text;
-        noticeEl.style.display = 'block';
-      }
       const doneNoteEl = document.getElementById('decklistDoneDeadlineNote');
       if (doneNoteEl) {
         doneNoteEl.textContent = text;
         doneNoteEl.style.display = 'block';
+      }
+      // 完成畫面裡已經看得到同一行（doneNote）時，上面那一行就不重複顯示
+      const doneNoteShown = !!doneNoteEl && doneNoteEl.offsetParent !== null;
+      if (noticeEl) {
+        noticeEl.textContent = text;
+        noticeEl.style.display = doneNoteShown ? 'none' : 'block';
       }
     }
 
@@ -1268,6 +1271,7 @@ footer {
           editBtn.addEventListener('click', () => {
             doneEl.style.display = 'none';
             if (formEl) formEl.style.display = 'block';
+            updateDeadlineNotice();
             const textInput = document.getElementById('decklistText');
             if (textInput) textInput.value = '';
             const codeInput = document.getElementById('decklistCode');

@@ -6,6 +6,7 @@
   <link rel="icon" href="data:,">
   <title>符文戰場 — 淘汰賽主辦控制台</title>
   <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="../brand.css">
   <style>
 html, body {
       -webkit-text-size-adjust: 100%;
@@ -128,7 +129,7 @@ header {
 
 .btn-primary {
       background: var(--accent);
-      color: #fff;
+      color: var(--on-accent, #fff);
     }
 
 .btn-primary:not(:disabled):hover {
@@ -468,6 +469,41 @@ header {
         </div>
       </section>
 
+      <!-- 區塊: 重發全部選手 PIN (DATA-CONTRACT-SHARED 10.13) -->
+      <section class="card" id="pinsReissueBlock" style="display: none;">
+        <h2 class="card-title">🔑 重發全部選手 PIN</h2>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">
+          賽事開賽前，主辦可重新發行所有選手的 PIN 碼。舊的 PIN 碼將立即失效。
+        </p>
+        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+          <button type="button" id="pinsReissueBtn" class="btn btn-warning" style="min-height: 44px;">重發全部選手 PIN</button>
+        </div>
+        <div id="pinsReissueMsg" class="msg-box" style="display: none;"></div>
+
+        <!-- 結果區 (預設隱藏，按已抄下清空) -->
+        <div id="pinsReissueBox" style="display: none; margin-top: 14px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: 6px; padding: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+            <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-text);">新選手 PIN 清單（只顯示這一次，請立即抄下或下載）：</div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button type="button" id="pinsReissueCsv" class="btn btn-primary btn-sm" style="min-height: 44px;">下載 CSV (player-pins.csv)</button>
+              <button type="button" id="pinsReissueDone" class="btn btn-secondary btn-sm" style="min-height: 44px;">已抄下</button>
+            </div>
+          </div>
+          <div style="max-height: 280px; overflow-y: auto;">
+            <table class="ea-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
+              <thead>
+                <tr style="border-bottom: 1px solid var(--card-border); color: var(--text-secondary);">
+                  <th style="padding: 8px; width: 25%;">選手編號</th>
+                  <th style="padding: 8px; width: 45%;">姓名</th>
+                  <th style="padding: 8px; width: 30%;">新 PIN</th>
+                </tr>
+              </thead>
+              <tbody id="pinsReissueList"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       <!-- 區塊: 牌表鎖定方式與截止時間 (DATA-CONTRACT 10.5) -->
       <section class="card" id="eaDeckSection" style="display: none;">
         <h2 class="card-title">牌表鎖定方式與截止時間</h2>
@@ -520,8 +556,58 @@ header {
         <div id="eaDeckSampleList"></div>
       </section>
 
+      <!-- 區塊: 廣播與跑馬燈 (DATA-CONTRACT 10.12) -->
+      <section class="card" id="bcPanel">
+        <h2 class="card-title">📢 廣播與跑馬燈</h2>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">
+          發送全場緊急廣播或編輯大螢幕與觀眾端跑馬燈輪播文字。
+        </p>
+
+        <!-- 廣播輸入 -->
+        <div style="margin-bottom: 12px;">
+          <label for="bcText" style="font-size: 0.88rem; font-weight: 700; display: block; margin-bottom: 4px;">廣播內容（最多 200 字）</label>
+          <textarea id="bcText" maxlength="200" rows="3" placeholder="請輸入廣播訊息..." style="width: 100%; min-height: 80px;"></textarea>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 0.85rem; color: var(--text-secondary); flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; gap: 14px; align-items: center;">
+              <label style="display: inline-flex; align-items: center; gap: 4px; cursor: pointer;">
+                <input type="radio" name="bcLevel" id="bcLevelNotice" value="notice" checked style="width: auto; min-height: auto;">
+                <span>一般</span>
+              </label>
+              <label style="display: inline-flex; align-items: center; gap: 4px; cursor: pointer;">
+                <input type="radio" name="bcLevel" id="bcLevelUrgent" value="urgent" style="width: auto; min-height: auto;">
+                <span>緊急</span>
+              </label>
+            </div>
+            <span id="bcCount">還可以輸入 200 字</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
+          <button type="button" id="bcSend" class="btn btn-primary" style="flex: 2; min-width: 120px;">發送廣播</button>
+          <button type="button" id="bcClear" class="btn btn-warning" style="flex: 1; min-width: 100px;" disabled>撤掉廣播</button>
+        </div>
+
+        <div style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: 6px; padding: 10px 12px; margin-bottom: 14px; font-size: 0.88rem;">
+          <div style="font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">目前廣播狀態：</div>
+          <div id="bcCurrent" style="color: var(--text-primary); word-break: break-all;">目前沒有廣播</div>
+        </div>
+
+        <!-- 跑馬燈 -->
+        <div style="padding-top: 12px; border-top: 1px dashed var(--card-border);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+            <div style="font-size: 0.92rem; font-weight: 700; color: var(--accent-text);">跑馬燈文字（最多 8 行，每行 60 字）</div>
+            <button type="button" id="bcMarqueeAdd" class="btn btn-secondary btn-sm" style="min-height: 44px;">新增一行</button>
+          </div>
+          <div id="bcMarqueeList" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;"></div>
+          <button type="button" id="bcMarqueeSave" class="btn btn-primary btn-block">儲存跑馬燈</button>
+        </div>
+
+        <div id="bcMsg" class="msg-box" style="display: none; margin-top: 10px;"></div>
+      </section>
+
       <!-- 區塊 1: 桌次管理與控制 -->
       <section class="card">
+
         <h2 class="card-title">桌次管理與即時控制</h2>
         <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px;">
           <label for="eaDiv" style="font-size: 0.88rem; font-weight: 700; white-space: nowrap;">選擇分區：</label>
@@ -795,6 +881,7 @@ header {
     let staffPanel = null;
     let deckConfigPanel = null;
     let deckSamplePanel = null;
+    let broadcastPanel = null;
 
     // 確認彈窗輔助函式
     async function showConfirm(title, message, onConfirmed) {
@@ -810,11 +897,28 @@ header {
       window.elimSnapshot = snap;
       updateDivDropdowns(snap.divisions || []);
       renderCheckinSection(snap);
+      renderPinsReissue(snap);
       if (deckConfigPanel) deckConfigPanel.update(snap);
       if (deckSamplePanel) deckSamplePanel.update(snap);
+      if (broadcastPanel) broadcastPanel.update(snap);
       renderTables();
       renderFinals(snap);
     }
+
+    // 重發全部選手 PIN (DATA-CONTRACT-SHARED 10.13)
+    let currentReissuedPlayers = null;
+    function renderPinsReissue(snap) {
+      const block = document.getElementById('pinsReissueBlock');
+      if (!block) return;
+      const event = (snap && snap.event) || {};
+      // 區塊整個比賽期間都顯示（賽事 event.status === 'done' 結束後才隱藏）
+      if (!snap || event.status === 'done') {
+        block.style.display = 'none';
+      } else {
+        block.style.display = 'block';
+      }
+    }
+
 
     // 報到管理（名單報到模式：snapshot.checkin.method === 'list' 且 open）
     function renderCheckinSection(snap) {
@@ -1983,6 +2087,7 @@ header {
           await refreshPolicyView();
           if (healthPanel) healthPanel.start();
           if (staffPanel) await staffPanel.refresh();
+          if (broadcastPanel) broadcastPanel.refresh();
         },
         onLogout: () => {
           staffPin = '';
@@ -2021,7 +2126,9 @@ header {
           if (deckRow) deckRow.style.display = 'none';
           if (deckConfigPanel) deckConfigPanel.reset();
           if (deckSamplePanel) deckSamplePanel.reset();
+          if (broadcastPanel) broadcastPanel.reset();
         }
+
       });
 
       healthPanel = AdminPanels.mountHealth({
@@ -2083,13 +2190,142 @@ header {
         successText: (res) => `已成功抽出驗牌場次（共 ${(res.tables || []).length} 場，抽查比例 ${res.percent}%）`,
         emptyText: (res) => `抽查完成（抽查比例 ${res.percent}%）：無符合之場次`
       });
+
+      broadcastPanel = AdminPanels.mountBroadcast({
+        ids: {
+          panel: 'bcPanel',
+          text: 'bcText',
+          count: 'bcCount',
+          levelNotice: 'bcLevelNotice',
+          levelUrgent: 'bcLevelUrgent',
+          send: 'bcSend',
+          clear: 'bcClear',
+          current: 'bcCurrent',
+          marqueeList: 'bcMarqueeList',
+          marqueeAdd: 'bcMarqueeAdd',
+          marqueeSave: 'bcMarqueeSave',
+          msg: 'bcMsg'
+        },
+        getPin: () => (loginPanel ? loginPanel.getPin() : (staffPin || '')),
+        onChange: async () => {
+          if (poller) await poller.fetchOnce();
+        }
+      });
+
+      function initPinsReissue() {
+        const pinsReissueBtn = document.getElementById('pinsReissueBtn');
+        const pinsReissueMsg = document.getElementById('pinsReissueMsg');
+        const pinsReissueBox = document.getElementById('pinsReissueBox');
+        const pinsReissueList = document.getElementById('pinsReissueList');
+        const pinsReissueCsv = document.getElementById('pinsReissueCsv');
+        const pinsReissueDone = document.getElementById('pinsReissueDone');
+        if (!pinsReissueBtn) return;
+
+        pinsReissueBtn.addEventListener('click', async () => {
+          if (pinsReissueMsg) pinsReissueMsg.style.display = 'none';
+          const snap = window.elimSnapshot;
+          const isStarted = Boolean(snap && snap.event && snap.event.status !== 'before');
+
+          const dialogOpts = isStarted ? {
+            title: '比賽進行中：重發全部選手 PIN',
+            message: '所有選手會馬上被登出，要拿新 PIN 才能繼續報分；已經送出的回報、成績都不受影響。確定要全部換新嗎？',
+            yes: '確定全部換新',
+            no: '取消'
+          } : {
+            title: '重發全部選手 PIN',
+            message: '所有選手的 PIN 都會換新，舊的立刻失效，已經發出去的報到單要作廢重印。確定嗎？',
+            yes: '確定換新',
+            no: '取消'
+          };
+
+          const ok = await confirmDialog(dialogOpts);
+          if (!ok) return;
+
+          pinsReissueBtn.disabled = true;
+          pinsReissueBtn.textContent = '重發中…';
+
+          try {
+            const currentPin = (loginPanel ? loginPanel.getPin() : (staffPin || ''));
+            const payload = { staff_pin: currentPin };
+            if (isStarted) {
+              payload.confirm_started = true;
+            }
+            const res = await callApi('/api/admin/pins_reissue', payload);
+            const players = res.players || [];
+            currentReissuedPlayers = players;
+
+            let html = '';
+            players.forEach(p => {
+              html += `<tr>
+                <td style="padding: 8px;"><strong>${escapeHtml(p.id)}</strong></td>
+                <td style="padding: 8px;">${escapeHtml(p.name)}</td>
+                <td style="padding: 8px;"><span style="font-family: monospace; font-size: 1.1rem; font-weight: 700; color: #34d399;">${escapeHtml(p.pin)}</span></td>
+              </tr>`;
+            });
+            if (pinsReissueList) pinsReissueList.innerHTML = html;
+            if (pinsReissueBox) pinsReissueBox.style.display = 'block';
+            if (pinsReissueMsg) {
+              pinsReissueMsg.className = 'msg-box success';
+              let successText = `已成功重發 ${players.length} 位選手的 PIN 碼。`;
+              if (isStarted) {
+                successText += '所有選手需要用新 PIN 重新登入；請用印出的新清單或口頭通知';
+              }
+              pinsReissueMsg.textContent = successText;
+              pinsReissueMsg.style.display = 'block';
+            }
+          } catch (err) {
+            if (pinsReissueMsg) {
+              pinsReissueMsg.className = 'msg-box error';
+              pinsReissueMsg.textContent = err.message || '重發失敗';
+              pinsReissueMsg.style.display = 'block';
+            }
+          } finally {
+            pinsReissueBtn.disabled = false;
+            pinsReissueBtn.textContent = '重發全部選手 PIN';
+          }
+        });
+
+        if (pinsReissueCsv) {
+          pinsReissueCsv.addEventListener('click', () => {
+            if (!currentReissuedPlayers || !currentReissuedPlayers.length) return;
+            let csvContent = '\uFEFFid,name,pin\r\n';
+            currentReissuedPlayers.forEach(p => {
+              const id = (p.id || '').replace(/"/g, '""');
+              const name = (p.name || '').replace(/"/g, '""');
+              const pin = (p.pin || '').replace(/"/g, '""');
+              csvContent += `"${id}","${name}","${pin}"\r\n`;
+            });
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'player-pins.csv';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 10000);
+          });
+        }
+
+        if (pinsReissueDone) {
+          pinsReissueDone.addEventListener('click', () => {
+            if (pinsReissueList) pinsReissueList.innerHTML = '';
+            if (pinsReissueBox) pinsReissueBox.style.display = 'none';
+            currentReissuedPlayers = null;
+          });
+        }
+      }
+
+      initPinsReissue();
     });
 
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState !== 'hidden' && staffPin) {
         if (staffPanel) staffPanel.refresh();
+        if (broadcastPanel) broadcastPanel.refresh();
       }
     });
+
   </script>
 </body>
 </html>

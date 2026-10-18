@@ -6,6 +6,7 @@
   <link rel="icon" href="data:,">
   <title>符文戰場 — 淘汰賽全場看板</title>
   <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="../brand.css">
   <style>
 html, body {
       -webkit-text-size-adjust: 100%;
@@ -380,6 +381,7 @@ header {
   <script src="common.js"></script>
   <script src="disconnect-overlay.js"></script>
   <script src="elim-common.js"></script>
+  <script src="broadcast.js"></script>
   <script>
     let currentData = null;
 
@@ -395,10 +397,16 @@ header {
         disconnectOverlay.hide();
         currentData = snapshot;
         renderBoard(snapshot);
+        if (window.BroadcastDisplay) {
+          BroadcastDisplay.update(snapshot, { marquee: true });
+        }
       },
       onError: (err) => {
         if (!currentData) {
           disconnectOverlay.show();
+          if (window.BroadcastDisplay) {
+            BroadcastDisplay.update(null, { marquee: true });
+          }
         }
       },
       interval: 5000,

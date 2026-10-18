@@ -18,6 +18,13 @@
         "hint": "輸入編號或名字看下一場；登入後可以報分、叫裁判"
       },
       {
+        "id": "play",
+        "label": "新版選手頁（試用）",
+        "href": "play.html",
+        "audience": "player",
+        "hint": "新版的找桌與回報頁，兩種賽事共用；有問題請改用上面那一個"
+      },
+      {
         "id": "checkin",
         "label": "報到（抽號碼牌）",
         "href": "elim-checkin.html",

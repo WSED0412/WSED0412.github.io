@@ -6,6 +6,7 @@
   <link rel="icon" href="data:,">
   <title>符文戰場 — 找桌系統</title>
   <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="../brand.css">
   <style>
 html, body {
       -webkit-text-size-adjust: 100%;
@@ -84,6 +85,14 @@ body[data-offline="true"] .status-badge {
       color: var(--warning-text) !important;
     }
 
+body[data-offline="true"] #watchBlock {
+      border-color: var(--warning-border);
+    }
+
+body[data-offline="true"] .watch-row {
+      border-color: var(--warning-border);
+    }
+
 .header-nav {
       display: flex;
       justify-content: flex-end;
@@ -131,6 +140,14 @@ body[data-offline="true"] .status-badge {
       margin-bottom: 12px;
       text-align: center;
       border: 1px solid var(--danger-border);
+    }
+
+.net-hint {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      line-height: 1.4;
+      font-weight: normal;
     }
 
 .offline-banner {
@@ -187,6 +204,16 @@ body[data-offline="true"] .bye-card {
       border-color: var(--warning-border);
       filter: grayscale(1);
       opacity: 0.95;
+    }
+
+body[data-offline="true"] #watchBlock {
+      border-color: var(--warning-border);
+      filter: grayscale(1);
+      opacity: 0.95;
+    }
+
+body[data-offline="true"] #watchBlock .watch-row-status {
+      color: var(--warning-text);
     }
 
 body[data-offline="true"] .offline-tag {
@@ -351,7 +378,7 @@ body[data-offline="true"] .offline-tag {
       height: 48px;
       padding: 0 18px;
       background: var(--accent);
-      color: #141212;
+      color: var(--on-accent, #141212);
       font-size: 1rem;
       font-weight: 700;
       border: none;
@@ -433,6 +460,87 @@ body[data-offline="true"] .offline-tag {
       justify-content: space-between;
       align-items: center;
       min-height: 44px;
+    }
+
+#watchBlock {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+      box-sizing: border-box;
+    }
+
+.watch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 48px;
+      padding: 8px 12px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+
+.watch-row-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+.watch-row-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+.watch-row-name {
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      word-break: break-all;
+    }
+
+.watch-row-id {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent-text);
+      font-family: monospace;
+    }
+
+.watch-row-status {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.35;
+      word-break: break-all;
+    }
+
+.watch-remove {
+      flex-shrink: 0;
+      min-height: 44px;
+      min-width: 44px;
+      height: 44px;
+      padding: 0 12px;
+      background: transparent;
+      color: var(--danger-text);
+      border: 1px solid var(--danger-border);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+
+.watch-remove:hover, .watch-remove:active {
+      background: var(--danger-bg);
     }
 
 .candidate-btn:last-child {
@@ -795,7 +903,7 @@ body[data-offline="true"] .offline-tag {
 
 .btn-retry {
       background: var(--accent);
-      color: #141212;
+      color: var(--on-accent, #141212);
       font-weight: 700;
       padding: 12px 28px;
       border-radius: 8px;
@@ -815,7 +923,7 @@ body[data-offline="true"] .offline-tag {
       width: 100%;
       height: 48px;
       background: var(--accent);
-      color: #141212;
+      color: var(--on-accent, #141212);
       font-weight: 800;
       font-size: 1rem;
       border: none;
@@ -896,7 +1004,7 @@ body[data-offline="true"] .offline-tag {
       height: 44px;
       padding: 0 18px;
       background: var(--accent);
-      color: #141212;
+      color: var(--on-accent, #141212);
       font-weight: 700;
       border: none;
       border-radius: 6px;
@@ -1006,7 +1114,7 @@ body[data-offline="true"] .offline-tag {
       width: 100%;
       height: 42px;
       background: var(--accent);
-      color: #141212;
+      color: var(--on-accent, #141212);
       font-weight: 700;
       font-size: 0.9rem;
       border: none;
@@ -1057,7 +1165,7 @@ body[data-offline="true"] .offline-tag {
       width: 100%;
       height: 46px;
       background: var(--accent);
-      color: #141212;
+      color: var(--on-accent, #141212);
       font-size: 1rem;
       font-weight: 800;
       border: none;
@@ -1158,7 +1266,7 @@ body[data-offline="true"] .offline-tag {
       width: 100%;
       height: 44px;
       background: var(--accent);
-      color: #141212;
+      color: var(--on-accent, #141212);
       font-size: 0.95rem;
       font-weight: 800;
       border: none;
@@ -1295,7 +1403,7 @@ body[data-offline="true"] .offline-tag {
       flex: 1;
       height: 44px;
       background: var(--accent);
-      color: #141212;
+      color: var(--on-accent, #141212);
       font-weight: 800;
       border: none;
       border-radius: 6px;
@@ -1454,6 +1562,37 @@ footer {
       請在上方輸入您的選手編號（如 R0010）或顯示名稱查詢桌次
     </div>
 
+    <!-- 我關注的選手區塊 (PROJECT.md 第六十七輪) -->
+    <section class="card" id="watchBlock" style="margin-bottom: 14px;">
+      <div class="card-title" style="font-size: 1rem; font-weight: 800; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+        <span>👀 我關注的選手</span>
+        <span id="watchCountText" style="font-size: 0.8rem; color: var(--text-secondary); font-weight: normal;"></span>
+      </div>
+      <div style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px;">
+        追蹤朋友或對手所在桌次與戰況（最多 10 位）
+      </div>
+
+      <!-- 加入關注輸入列 -->
+      <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+        <input type="text" id="watchAdd" class="input-text" placeholder="編號或名字" autocomplete="off" autocapitalize="off" spellcheck="false" style="flex: 1; min-height: 44px;">
+        <button type="button" id="watchAddBtn" class="btn btn-primary" style="flex-shrink: 0; min-height: 44px; min-width: 68px; padding: 0 14px;">加入</button>
+      </div>
+
+      <!-- 候選人清單（同名多位時） -->
+      <div id="watchCands" style="display: none; margin-bottom: 10px; padding: 10px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px;">
+        <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">找到多位同名選手，請點選加入：</div>
+        <div id="watchCandsList" style="display: flex; flex-direction: column; gap: 6px;"></div>
+      </div>
+
+      <!-- 提示訊息 -->
+      <div id="watchMsg" class="msg-box" style="display: none; margin-bottom: 10px;"></div>
+
+      <!-- 關注選手清單 -->
+      <div id="watchList" style="display: flex; flex-direction: column; gap: 8px;">
+        <div class="empty-state-sm" style="text-align: center; padding: 12px; color: var(--text-secondary);">尚未關注任何選手</div>
+      </div>
+    </section>
+
     <!-- 全部桌次清單 (選用查看) -->
     <div id="allPairingsSection" style="display: none;">
       <button type="button" class="all-pairings-toggle" id="toggleAllPairingsBtn">
@@ -1501,13 +1640,16 @@ footer {
     <div class="disconnected-title">尚未連上賽務系統</div>
     <div class="disconnected-desc">
       目前無法讀取賽事即時資料。<br>請確認網路連線是否正常，若賽事伺服器更換中請稍候片刻。
+      <div class="net-hint">可以先看會場的大螢幕或牆上的配對表，或直接問裁判</div>
     </div>
     <button type="button" class="btn-retry" id="retryBtn">重新連線</button>
   </div>
 
   <script src="common.js"></script>
+  <script src="match-history.js"></script>
   <script src="player-auth.js"></script>
   <script src="call-judge.js"></script>
+  <script src="broadcast.js"></script>
   <script>
     if ('serviceWorker' in navigator && window.isSecureContext) {
       navigator.serviceWorker.register('sw.js').catch(() => {});
@@ -1622,6 +1764,7 @@ footer {
               renderMatchCard(currentMatchedPairing, currentIsP1);
             }
             renderReportCard();
+            renderPlayerMatchHistory(authPlayerId);
           }
         } else {
           lastMatchCardFingerprint = '';
@@ -1629,6 +1772,7 @@ footer {
             renderMatchCard(currentMatchedPairing, currentIsP1);
           }
           renderReportCard();
+          renderPlayerMatchHistory(authPlayerId);
         }
       },
       onLogout: () => {
@@ -1846,7 +1990,7 @@ footer {
       const diffMs = Date.now() - lastContentChangeTime;
       if (diffMs > 90000) {
         const mins = Math.max(1, Math.floor(diffMs / 60000));
-        staleEl.textContent = `資料已 ${mins} 分鐘沒更新，請留意現場廣播`;
+        staleEl.innerHTML = `資料已 ${mins} 分鐘沒更新，請留意現場廣播<div class="net-hint">可以先看會場的大螢幕或牆上的配對表，或直接問裁判</div>`;
         staleEl.style.display = 'block';
       } else {
         staleEl.style.display = 'none';
@@ -1893,6 +2037,10 @@ footer {
       renderQueryFromInput();
       renderAllPairings();
       renderLateReminder();
+      renderWatchBlock();
+      if (window.BroadcastDisplay) {
+        BroadcastDisplay.update(snapshotData, { marquee: false });
+      }
     }
 
     // 檢查版本號 (DATA-CONTRACT 1.1)
@@ -2400,8 +2548,10 @@ footer {
         resultSection.innerHTML = `
           <div class="result-card-wrap">
             <div id="phase2Note" class="phase2-note-box">你沒有進第二階段（累計 ${p2Data.points} 分，門檻 ${p2Data.min_points} 分）</div>
+            <div id="matchHistory" style="margin-top: 12px;"></div>
           </div>
         `;
+        renderPlayerMatchHistory(loggedInId);
         return;
       }
 
@@ -2424,7 +2574,9 @@ footer {
             <div>選手編號「<strong>${escapeHtml(query)}</strong>」你這一輪沒有排入（可能是未報到或已退賽），請到裁判桌確認。</div>
           </div>
           ${publicNoteHtml}
+          <div id="matchHistory" style="margin-top: 12px;"></div>
         `;
+        renderPlayerMatchHistory(query.trim().toUpperCase());
       } else {
         resultSection.innerHTML = `
           <div class="empty-state">
@@ -2459,6 +2611,37 @@ footer {
       const p2Fp = (currentPlayerMeData && currentPlayerMeData.phase2) ? JSON.stringify(currentPlayerMeData.phase2) : '';
 
       return `${roundStr}|${matchedPairing.table}|${matchedPairing.zone || ''}|${matchedPairing.feature ? 1 : 0}|${isP1 ? 1 : 0}|${p1Str}|${p2Str}|${endsAt}|${extStr}|${resStr}|${repEnabled}|${authStr}|${repStr}|${jcStr}|${p2Fp}|${isOfflineMode ? 1 : 0}`;
+    }
+
+    // 渲染選手對戰紀錄 (DATA-CONTRACT 10.18)
+    function renderPlayerMatchHistory(pid) {
+      const container = document.getElementById('matchHistory');
+      if (!container) return;
+      if (isOfflineMode || (document.body && document.body.getAttribute('data-offline') === 'true')) {
+        container.innerHTML = '';
+        container.style.display = 'none';
+        return;
+      }
+      if (!window.MatchHistory || typeof MatchHistory.render !== 'function') return;
+      if (!pid) {
+        container.innerHTML = '';
+        container.style.display = 'none';
+        return;
+      }
+      const apiBase = (snapshotData && snapshotData.event && typeof snapshotData.event.api_base === 'string')
+        ? snapshotData.event.api_base
+        : '';
+      MatchHistory.render(container, pid, {
+        api_base: apiBase,
+        onSelectOpponent: (oppId) => {
+          const inEl = document.getElementById('searchInput');
+          if (inEl) {
+            inEl.value = oppId;
+            saveQuery(oppId);
+            renderQueryFromInput(true);
+          }
+        }
+      });
     }
 
     // 渲染單一對戰卡片
@@ -2501,8 +2684,10 @@ footer {
                 請留意下一輪的公布時間與現場廣播。
               </div>
             </div>
+            <div id="matchHistory" style="margin-top: 12px;"></div>
           </div>
         `;
+        renderPlayerMatchHistory(matchedPairing.p1.id);
         return;
       }
 
@@ -2666,10 +2851,12 @@ footer {
             <!-- 成績回報卡 (DATA-CONTRACT 3.2) -->
             <div id="reportCardArea"></div>
           </div>
+          <div id="matchHistory" style="margin-top: 12px;"></div>
         </div>
       `;
 
       renderReportCard(preservedPinVal, isPinFocused, pinSelStart, pinSelEnd, preservedPinError, isPinErrorVisible);
+      renderPlayerMatchHistory(selfPlayer.id);
     }
 
     // 渲染成績回報卡 (DATA-CONTRACT 3.1, 3.2)
@@ -3464,6 +3651,324 @@ footer {
       renderQueryFromInput(true);
     }
 
+    // ------------------------------------------------ 關注選手 (PROJECT.md 第六十七輪)
+    const WATCH_STORAGE_KEY = 'riftbound_watchlist';
+    let watchKnownNamesMap = new Map();
+    let watchMemoryList = [];
+    let lastWatchEventName = '';
+
+    function getWatchList() {
+      try {
+        const raw = localStorage.getItem(WATCH_STORAGE_KEY);
+        if (raw) {
+          const arr = JSON.parse(raw);
+          if (Array.isArray(arr)) {
+            return arr.filter(x => typeof x === 'string' && x.trim()).map(x => x.trim().toUpperCase());
+          }
+        }
+      } catch (e) {
+        return watchMemoryList.slice();     // localStorage 不能用：只存在這個分頁的記憶體裡
+      }
+      return [];
+    }
+
+    function saveWatchList(ids) {
+      watchMemoryList = ids.slice();
+      try {
+        localStorage.setItem(WATCH_STORAGE_KEY, JSON.stringify(ids));
+      } catch (e) {}
+    }
+
+    function showWatchMsg(msg, isError = true) {
+      const el = document.getElementById('watchMsg');
+      if (!el) return;
+      el.textContent = msg;
+      el.className = `msg-box ${isError ? 'error' : 'success'}`;
+      el.style.display = 'block';
+    }
+
+    function hideWatchMsg() {
+      const el = document.getElementById('watchMsg');
+      if (!el) return;
+      el.textContent = '';
+      el.style.display = 'none';
+    }
+
+    function hideWatchCands() {
+      const box = document.getElementById('watchCands');
+      if (box) box.style.display = 'none';
+      const list = document.getElementById('watchCandsList');
+      if (list) list.innerHTML = '';
+    }
+
+    function addWatchPlayer(id, name) {
+      const ids = getWatchList();
+      if (ids.length >= 10) {
+        showWatchMsg('最多關注 10 位，請先移除一位', true);
+        return;
+      }
+      const upperId = id.toUpperCase();
+      if (ids.includes(upperId)) {
+        showWatchMsg('已在關注名單中', false);
+        return;
+      }
+      ids.push(upperId);
+      saveWatchList(ids);
+      if (name) {
+        watchKnownNamesMap.set(upperId, name);
+      }
+      hideWatchMsg();
+      hideWatchCands();
+      const inEl = document.getElementById('watchAdd');
+      if (inEl) inEl.value = '';
+      renderWatchList();
+    }
+
+    function removeWatchPlayer(id) {
+      const upperId = id.toUpperCase();
+      let ids = getWatchList();
+      ids = ids.filter(x => x !== upperId);
+      saveWatchList(ids);
+      hideWatchMsg();
+      hideWatchCands();
+      renderWatchList();
+    }
+
+    function renderWatchBlock() {
+      // 換賽事檢查（event.name 變了清空 knownNamesMap）
+      const currentEventName = (snapshotData && snapshotData.event && snapshotData.event.name) || '';
+      if (currentEventName && lastWatchEventName && currentEventName !== lastWatchEventName) {
+        watchKnownNamesMap.clear();
+      }
+      if (currentEventName) {
+        lastWatchEventName = currentEventName;
+      }
+
+      // 預先收集本輪已知的選手名稱
+      if (snapshotData && Array.isArray(snapshotData.pairings)) {
+        for (const p of snapshotData.pairings) {
+          if (p.p1 && p.p1.id) watchKnownNamesMap.set(p.p1.id.toUpperCase(), p.p1.name);
+          if (p.p2 && p.p2.id) watchKnownNamesMap.set(p.p2.id.toUpperCase(), p.p2.name);
+        }
+      }
+
+      renderWatchList();
+    }
+
+    function renderWatchList() {
+      const listEl = document.getElementById('watchList');
+      if (!listEl) return;
+      const countEl = document.getElementById('watchCountText');
+
+      const ids = getWatchList();
+      if (countEl) {
+        countEl.textContent = `${ids.length} / 10 位`;
+      }
+
+      if (ids.length === 0) {
+        listEl.innerHTML = '<div class="empty-state-sm" style="text-align: center; padding: 12px; color: var(--text-secondary);">尚未關注任何選手</div>';
+        return;
+      }
+
+      const isUnpublished = Boolean(snapshotData && snapshotData.round && snapshotData.round.published === false);
+
+      let html = '';
+      for (const id of ids) {
+        let foundPair = null;
+        let isP1 = false;
+        if (snapshotData && Array.isArray(snapshotData.pairings)) {
+          for (const p of snapshotData.pairings) {
+            if (p.p1 && p.p1.id && p.p1.id.toUpperCase() === id) {
+              foundPair = p;
+              isP1 = true;
+              break;
+            }
+            if (p.p2 && p.p2.id && p.p2.id.toUpperCase() === id) {
+              foundPair = p;
+              isP1 = false;
+              break;
+            }
+          }
+        }
+
+        let displayName = watchKnownNamesMap.get(id) || id;
+        let statusText = '';
+        let isMissing = false;
+
+        if (foundPair) {
+          const self = isP1 ? foundPair.p1 : foundPair.p2;
+          const opp = isP1 ? foundPair.p2 : foundPair.p1;
+          if (self && self.name) {
+            displayName = self.name;
+            watchKnownNamesMap.set(id, self.name);
+          }
+
+          if (isUnpublished) {
+            statusText = '配對產生中';
+          } else if (foundPair.table === null || !foundPair.p2) {
+            statusText = '本輪輪空';
+          } else if (foundPair.result && foundPair.result.status === 'confirmed') {
+            if (foundPair.result.double_loss) {
+              statusText = `第 ${foundPair.table} 桌 · 對手 ${opp ? opp.name : '待定'} · 雙方判負`;
+            } else {
+              let resScore = foundPair.result.display;
+              if (!resScore) {
+                const myW = isP1 ? (foundPair.result.p1_games ?? foundPair.result.p1_wins ?? foundPair.result.p1 ?? 0) : (foundPair.result.p2_games ?? foundPair.result.p2_wins ?? foundPair.result.p2 ?? 0);
+                const oppW = isP1 ? (foundPair.result.p2_games ?? foundPair.result.p2_wins ?? foundPair.result.p2 ?? 0) : (foundPair.result.p1_games ?? foundPair.result.p1_wins ?? foundPair.result.p1 ?? 0);
+                const d = foundPair.result.draws ?? 0;
+                resScore = `${myW}-${oppW}` + (d > 0 ? `（${d}和）` : '');
+              }
+              statusText = `第 ${foundPair.table} 桌 · 對手 ${opp ? opp.name : '待定'} · 比賽結果：${resScore}`;
+            }
+          } else if (foundPair.result && foundPair.result.status === 'pending') {
+            statusText = `第 ${foundPair.table} 桌 · 對手 ${opp ? opp.name : '待定'} · 回報中`;
+          } else if (foundPair.result && foundPair.result.status === 'conflict') {
+            statusText = `第 ${foundPair.table} 桌 · 對手 ${opp ? opp.name : '待定'} · 裁判處理中`;
+          } else {
+            statusText = `第 ${foundPair.table} 桌 · 對手 ${opp ? opp.name : '待定'}`;
+          }
+
+          if (isOfflineMode && statusText && !isUnpublished) {
+            statusText += '（舊資料）';
+          }
+        } else {
+          // 未在目前配對中找到
+          if (watchKnownNamesMap.has(id)) {
+            displayName = watchKnownNamesMap.get(id);
+            statusText = isUnpublished ? '配對產生中' : '已出局或未排入本輪';
+            if (isOfflineMode && !isUnpublished) {
+              statusText += '（舊資料）';
+            }
+          } else {
+            // 名單中完全無此編號（換賽事或無此選手）
+            displayName = '（找不到這位選手）';
+            statusText = '（找不到這位選手）';
+            isMissing = true;
+          }
+        }
+
+        const removeAria = isMissing ? `移除 ${id}` : `移除 ${displayName}`;
+
+        html += `
+          <div class="watch-row" data-id="${escapeHtml(id)}">
+            <div class="watch-row-info">
+              <div class="watch-row-top">
+                <span class="watch-row-name">${escapeHtml(displayName)}</span>
+                <span class="watch-row-id">${escapeHtml(id)}</span>
+              </div>
+              <div class="watch-row-status">${escapeHtml(statusText)}</div>
+            </div>
+            <button type="button" class="watch-remove" data-id="${escapeHtml(id)}" aria-label="${escapeHtml(removeAria)}">移除</button>
+          </div>
+        `;
+      }
+
+      listEl.innerHTML = html;
+    }
+
+    function handleWatchAddAction() {
+      const inEl = document.getElementById('watchAdd');
+      const q = (inEl ? inEl.value : '').trim();
+      if (!q) return;
+      hideWatchMsg();
+      hideWatchCands();
+
+      const ids = getWatchList();
+      if (ids.length >= 10) {
+        showWatchMsg('最多關注 10 位，請先移除一位', true);
+        return;
+      }
+
+      const qLower = q.toLowerCase();
+      const playersMap = new Map();
+
+      // 從 pairings 中收集選手
+      if (snapshotData && Array.isArray(snapshotData.pairings)) {
+        for (const p of snapshotData.pairings) {
+          if (p.p1 && p.p1.id) playersMap.set(p.p1.id.toUpperCase(), p.p1);
+          if (p.p2 && p.p2.id) playersMap.set(p.p2.id.toUpperCase(), p.p2);
+        }
+      }
+
+      const allPlayers = Array.from(playersMap.values());
+      const exactMatches = allPlayers.filter(p => {
+        const id = (p.id || '').toLowerCase();
+        const name = (p.name || '').toLowerCase();
+        return id === qLower || name === qLower;
+      });
+
+      let candidates = [];
+      if (exactMatches.length === 1) {
+        candidates = exactMatches;
+      } else if (exactMatches.length > 1) {
+        candidates = exactMatches;
+      } else {
+        const partialMatches = allPlayers.filter(p => {
+          const id = (p.id || '').toLowerCase();
+          const name = (p.name || '').toLowerCase();
+          return id.includes(qLower) || name.includes(qLower);
+        });
+        candidates = partialMatches;
+      }
+
+      if (candidates.length === 0) {
+        showWatchMsg('查無這位選手', true);
+        return;
+      }
+
+      if (candidates.length === 1) {
+        addWatchPlayer(candidates[0].id, candidates[0].name);
+        return;
+      }
+
+      // 多位同名或部分符合：列出候選人
+      const candsBox = document.getElementById('watchCands');
+      const candsList = document.getElementById('watchCandsList');
+      if (candsBox && candsList) {
+        candsList.innerHTML = candidates.map(c => `
+          <button type="button" class="btn btn-secondary watch-cand-btn" data-id="${escapeHtml(c.id)}" data-name="${escapeHtml(c.name)}" style="min-height: 44px; display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 12px; font-size: 0.95rem;">
+            <span><strong>${escapeHtml(c.name)}</strong></span>
+            <span style="font-family: monospace; color: var(--accent-text); font-weight: 700;">${escapeHtml(c.id)}</span>
+          </button>
+        `).join('');
+        candsBox.style.display = 'block';
+      }
+    }
+
+    function initWatchBlock() {
+      const addBtn = document.getElementById('watchAddBtn');
+      if (addBtn) addBtn.addEventListener('click', handleWatchAddAction);
+
+      const addInput = document.getElementById('watchAdd');
+      if (addInput) {
+        addInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') handleWatchAddAction();
+        });
+      }
+
+      const candsList = document.getElementById('watchCandsList');
+      if (candsList) {
+        candsList.addEventListener('click', (e) => {
+          const btn = e.target.closest('.watch-cand-btn');
+          if (btn && btn.dataset.id) {
+            addWatchPlayer(btn.dataset.id, btn.dataset.name || '');
+          }
+        });
+      }
+
+      const listEl = document.getElementById('watchList');
+      if (listEl) {
+        listEl.addEventListener('click', (e) => {
+          const btn = e.target.closest('.watch-remove');
+          if (btn && btn.dataset.id) {
+            removeWatchPlayer(btn.dataset.id);
+          }
+        });
+      }
+
+      renderWatchBlock();
+    }
+
     // 初始化與事件綁定
     window.addEventListener('DOMContentLoaded', () => {
       const searchInput = document.getElementById('searchInput');
@@ -3606,7 +4111,7 @@ footer {
         }
       }
       document.addEventListener('visibilitychange', handleVisibilityChange);
-
+      initWatchBlock();
       updateStandingsLink();
       fetchData();
       pollTimer = setInterval(fetchData, 5000);

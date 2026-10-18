@@ -6,6 +6,7 @@
   <link rel="icon" href="data:,">
   <title>符文戰場 — 主辦控制台</title>
   <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="../brand.css">
   <style>
 html, body {
       -webkit-text-size-adjust: 100%;
@@ -298,7 +299,7 @@ header {
 
 .btn-primary {
       background: var(--accent);
-      color: #141212;
+      color: var(--on-accent, #141212);
       border-color: var(--accent);
     }
 
@@ -309,7 +310,7 @@ header {
 
 .btn-accent {
       background: var(--accent);
-      color: #141212;
+      color: var(--on-accent, #141212);
       border-color: var(--accent);
     }
 
@@ -543,6 +544,36 @@ button[data-next="true"]:hover {
       padding: 8px 0;
     }
 
+.bd-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 44px;
+      padding: 6px 12px;
+      border-bottom: 1px solid var(--card-border);
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s ease;
+      box-sizing: border-box;
+    }
+
+.bd-row:last-child {
+      border-bottom: none;
+    }
+
+.bd-row:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+.bd-check {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      min-height: 20px;
+      flex: none;
+      cursor: pointer;
+    }
+
 .health-problem {
       padding: 10px 14px;
       border-radius: 8px;
@@ -619,6 +650,20 @@ button[data-next="true"]:hover {
       width: 100%;
       padding: 20px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+.void-blocked-table {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 8px;
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid var(--danger-border);
+      border-radius: 4px;
+      color: var(--danger-text);
+      font-size: 0.85rem;
+      font-weight: 700;
+      line-height: 1.2;
     }
 
 .modal-title {
@@ -732,7 +777,15 @@ button[data-next="true"]:hover {
         <span>📢 公告：</span>
         <span id="summaryNoteText"></span>
       </div>
+
+      <!-- 作廢這一輪並重排 (DATA-CONTRACT 10.10) -->
+      <div id="roundVoidBlock" style="display: none; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--panel-border); align-items: center; gap: 10px; flex-wrap: wrap;">
+        <button type="button" id="roundVoidBtn" class="btn btn-danger btn-sm" style="min-height: 44px; color: #fff;">作廢這一輪並重排</button>
+        <span id="roundVoidWhy" style="font-size: 0.85rem; color: var(--warning-text); font-weight: 600;"></span>
+        <div id="roundVoidMsg" class="msg-box" style="display: none; width: 100%; margin-top: 6px;"></div>
+      </div>
     </section>
+
 
     <!-- 登入區塊（未驗證或登出時顯示） -->
     <section id="loginSection" class="admin-card">
@@ -894,6 +947,41 @@ button[data-next="true"]:hover {
         </div>
       </section>
 
+      <!-- 區塊: 重發全部選手 PIN (DATA-CONTRACT-SHARED 10.13) -->
+      <section class="admin-card" id="pinsReissueBlock" style="display: none;">
+        <h2 class="card-title">🔑 重發全部選手 PIN</h2>
+        <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px;">
+          第一輪配對公布前，主辦可重新發行所有選手的 PIN 碼。舊的 PIN 碼將立即失效。
+        </p>
+        <div class="form-row" style="margin-bottom: 12px;">
+          <button type="button" id="pinsReissueBtn" class="btn btn-warning" style="min-height: 44px;">重發全部選手 PIN</button>
+        </div>
+        <div id="pinsReissueMsg" class="msg-box" style="display: none;"></div>
+
+        <!-- 結果區 (預設隱藏，按已抄下清空) -->
+        <div id="pinsReissueBox" style="display: none; margin-top: 14px; background: var(--input-bg); border: 1px solid var(--panel-border); border-radius: 8px; padding: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+            <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-text);">新選手 PIN 清單（只顯示這一次，請立即抄下或下載）：</div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button type="button" id="pinsReissueCsv" class="btn btn-primary btn-sm" style="min-height: 44px;">下載 CSV (player-pins.csv)</button>
+              <button type="button" id="pinsReissueDone" class="btn btn-secondary btn-sm" style="min-height: 44px;">已抄下</button>
+            </div>
+          </div>
+          <div class="table-wrap" style="max-height: 280px; overflow-y: auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th style="width: 25%;">選手編號</th>
+                  <th style="width: 45%;">姓名</th>
+                  <th style="width: 30%;">新 PIN</th>
+                </tr>
+              </thead>
+              <tbody id="pinsReissueList"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       <!-- 區塊: 牌表鎖定方式與截止時間 (DATA-CONTRACT 10.5) -->
       <section class="admin-card" id="adminDeckSection" style="display: none;">
         <h2 class="card-title">📝 牌表鎖定方式與截止時間</h2>
@@ -983,6 +1071,55 @@ button[data-next="true"]:hover {
         </div>
 
         <div id="scheduleMsg" class="msg-box" style="display: none;"></div>
+      </section>
+
+      <!-- 區塊: 廣播與跑馬燈 (DATA-CONTRACT 10.12) -->
+      <section class="admin-card" id="bcPanel">
+        <h2 class="card-title">📢 廣播與跑馬燈</h2>
+        <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px;">
+          發送全場緊急廣播或編輯大螢幕與觀眾端跑馬燈輪播文字。
+        </p>
+
+        <!-- 廣播輸入 -->
+        <div class="form-group">
+          <label for="bcText" class="form-label">廣播內容（最多 200 字）</label>
+          <textarea id="bcText" maxlength="200" rows="3" class="input-text" placeholder="請輸入廣播訊息..." style="width: 100%; min-height: 80px; resize: vertical;"></textarea>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 0.85rem; color: var(--text-secondary); flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; gap: 14px; align-items: center;">
+              <label style="display: inline-flex; align-items: center; gap: 4px; cursor: pointer;">
+                <input type="radio" name="bcLevel" id="bcLevelNotice" value="notice" checked>
+                <span>一般</span>
+              </label>
+              <label style="display: inline-flex; align-items: center; gap: 4px; cursor: pointer;">
+                <input type="radio" name="bcLevel" id="bcLevelUrgent" value="urgent">
+                <span>緊急</span>
+              </label>
+            </div>
+            <span id="bcCount">還可以輸入 200 字</span>
+          </div>
+        </div>
+
+        <div class="form-row" style="margin-bottom: 12px;">
+          <button type="button" id="bcSend" class="btn btn-primary">發送廣播</button>
+          <button type="button" id="bcClear" class="btn btn-warning" disabled>撤掉廣播</button>
+        </div>
+
+        <div style="background: var(--input-bg); border: 1px solid var(--panel-border); border-radius: 8px; padding: 10px 12px; margin-bottom: 14px; font-size: 0.88rem;">
+          <div style="font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">目前廣播狀態：</div>
+          <div id="bcCurrent" style="color: var(--text-primary); word-break: break-all;">目前沒有廣播</div>
+        </div>
+
+        <!-- 跑馬燈 -->
+        <div style="padding-top: 12px; border-top: 1px dashed var(--panel-border);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+            <div style="font-size: 0.92rem; font-weight: 700; color: var(--accent-text);">跑馬燈文字（最多 8 行，每行 60 字）</div>
+            <button type="button" id="bcMarqueeAdd" class="btn btn-secondary btn-sm" style="min-height: 44px;">新增一行</button>
+          </div>
+          <div id="bcMarqueeList" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;"></div>
+          <button type="button" id="bcMarqueeSave" class="btn btn-primary" style="width: 100%;">儲存跑馬燈</button>
+        </div>
+
+        <div id="bcMsg" class="msg-box" style="display: none; margin-top: 10px;"></div>
       </section>
 
       <!-- 區塊: 桌號分區設定 (DATA-CONTRACT 1.18, PROJECT.md 第二十七輪) -->
@@ -1206,6 +1343,45 @@ button[data-next="true"]:hover {
         <div id="dropMsg" class="msg-box" style="display: none;"></div>
       </section>
 
+      <!-- 區塊: 批次退賽 (DATA-CONTRACT-SHARED 10.15) -->
+      <section class="admin-card" id="bdBlock">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+          <h2 class="card-title" style="margin-bottom: 0;">👥 批次退賽</h2>
+          <button type="button" id="bdPickAbsent" class="btn btn-secondary btn-sm" style="display: none; min-height: 44px;">勾選全部未報到的人</button>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px;">
+          第二天沒來的人可以一次退賽；請在產生下一輪配對之前完成（規則 414.3）
+        </p>
+
+        <!-- 貼上編號區塊 -->
+        <div style="margin-bottom: 14px; background: var(--input-bg); border: 1px solid var(--panel-border); border-radius: 8px; padding: 12px;">
+          <label for="bdPaste" class="form-label" style="font-weight: 700; margin-bottom: 6px;">貼上要退賽的編號（用空白、逗號、換行分隔）：</label>
+          <textarea id="bdPaste" class="input-text" rows="3" placeholder="例如 R0001 R0002, R0003" style="width: 100%; font-family: monospace; resize: vertical; margin-bottom: 8px;"></textarea>
+          <button type="button" id="bdPasteApply" class="btn btn-secondary" style="min-height: 44px;">套用貼上的編號</button>
+        </div>
+
+        <!-- 搜尋與清單控制 -->
+        <div class="form-group" style="margin-bottom: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+            <label for="bdSearch" class="form-label" style="margin-bottom: 0;">搜尋未退賽選手：</label>
+            <span id="bdSelectedCount" style="font-size: 0.88rem; font-weight: 700; color: var(--accent-text);">已選 0 位</span>
+          </div>
+          <input type="text" id="bdSearch" class="input-text" placeholder="搜尋編號或名字（不分大小寫）">
+        </div>
+
+        <!-- 選手清單 (只列未退賽選手) -->
+        <div id="bdList" style="display: flex; flex-direction: column; max-height: 360px; overflow-y: auto; border: 1px solid var(--card-border); border-radius: 8px; margin-bottom: 14px;">
+          <div class="empty-state-sm" style="text-align: center; padding: 16px;">載入選手名單中…</div>
+        </div>
+
+        <!-- 預覽並退賽動作按鈕 -->
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <button type="button" id="bdPreview" class="btn btn-danger" style="flex: 1; min-height: 44px;" disabled>預覽並退賽</button>
+        </div>
+
+        <div id="bdMsg" class="msg-box" style="display: none; margin-top: 10px;"></div>
+      </section>
+
       <!-- 區塊 5: 系統安全與解鎖 -->
       <section class="admin-card">
         <h2 class="card-title">🛡️ 系統安全與鎖定防護</h2>
@@ -1295,6 +1471,7 @@ button[data-next="true"]:hover {
     let staffPanel = null;
     let deckConfigPanel = null;
     let deckSamplePanel = null;
+    let broadcastPanel = null;
 
     // 報分設定與桌子控制狀態 (DATA-CONTRACT 10.8)
     let isAllDirty = false;
@@ -1703,8 +1880,598 @@ button[data-next="true"]:hover {
       if (deckSamplePanel) {
         deckSamplePanel.update(snapshotData);
       }
+      if (broadcastPanel) {
+        broadcastPanel.update(snapshotData);
+      }
+      renderPinsReissue();
+      renderRoundVoid();
+      const bdBlock = document.getElementById('bdBlock');
+      if (bdBlock) {
+        const isDone = (event && event.status === 'done');
+        bdBlock.style.display = (staffPin && !isDone) ? 'block' : 'none';
+      }
       updateClockDisplay();
     }
+
+    // 重發全部選手 PIN (DATA-CONTRACT-SHARED 10.13)
+    let currentReissuedPlayers = null;
+    function renderPinsReissue() {
+      const block = document.getElementById('pinsReissueBlock');
+      if (!block) return;
+      const event = (snapshotData && snapshotData.event) || {};
+      // 區塊整個比賽期間都顯示（賽事 event.status === 'done' 結束後才隱藏）
+      if (!snapshotData || event.status === 'done') {
+        block.style.display = 'none';
+      } else {
+        block.style.display = 'block';
+      }
+    }
+
+    function initPinsReissue() {
+      const pinsReissueBtn = document.getElementById('pinsReissueBtn');
+      const pinsReissueMsg = document.getElementById('pinsReissueMsg');
+      const pinsReissueBox = document.getElementById('pinsReissueBox');
+      const pinsReissueList = document.getElementById('pinsReissueList');
+      const pinsReissueCsv = document.getElementById('pinsReissueCsv');
+      const pinsReissueDone = document.getElementById('pinsReissueDone');
+      if (!pinsReissueBtn) return;
+
+      pinsReissueBtn.addEventListener('click', async () => {
+        if (pinsReissueMsg) pinsReissueMsg.style.display = 'none';
+        const isStarted = Boolean(snapshotData && snapshotData.round !== null);
+
+        const dialogOpts = isStarted ? {
+          title: '比賽進行中：重發全部選手 PIN',
+          message: '所有選手會馬上被登出，要拿新 PIN 才能繼續報分；已經送出的回報、成績都不受影響。確定要全部換新嗎？',
+          yes: '確定全部換新',
+          no: '取消'
+        } : {
+          title: '重發全部選手 PIN',
+          message: '所有選手的 PIN 都會換新，舊的立刻失效，已經發出去的報到單要作廢重印。確定嗎？',
+          yes: '確定換新',
+          no: '取消'
+        };
+
+        const ok = await confirmDialog(dialogOpts);
+        if (!ok) return;
+
+        pinsReissueBtn.disabled = true;
+        pinsReissueBtn.textContent = '重發中…';
+
+        try {
+          const payload = isStarted ? { confirm_started: true } : {};
+          const currentPin = (loginPanel ? loginPanel.getPin() : (staffPin || ''));
+          if (currentPin) payload.staff_pin = currentPin;
+
+          const res = await callApi('/api/admin/pins_reissue', payload);
+          const players = res.players || [];
+          currentReissuedPlayers = players;
+
+          let html = '';
+          players.forEach(p => {
+            html += `<tr>
+              <td><strong>${escapeHtml(p.id)}</strong></td>
+              <td>${escapeHtml(p.name)}</td>
+              <td><span style="font-family: monospace; font-size: 1.1rem; font-weight: 700; color: #34d399;">${escapeHtml(p.pin)}</span></td>
+            </tr>`;
+          });
+          if (pinsReissueList) pinsReissueList.innerHTML = html;
+          if (pinsReissueBox) pinsReissueBox.style.display = 'block';
+          if (pinsReissueMsg) {
+            pinsReissueMsg.className = 'msg-box success';
+            let successText = `已成功重發 ${players.length} 位選手的 PIN 碼。`;
+            if (isStarted) {
+              successText += '所有選手需要用新 PIN 重新登入；請用印出的新清單或口頭通知';
+            }
+            pinsReissueMsg.textContent = successText;
+            pinsReissueMsg.style.display = 'block';
+          }
+        } catch (err) {
+          if (pinsReissueMsg) {
+            pinsReissueMsg.className = 'msg-box error';
+            pinsReissueMsg.textContent = err.message || '重發失敗';
+            pinsReissueMsg.style.display = 'block';
+          }
+        } finally {
+          pinsReissueBtn.disabled = false;
+          pinsReissueBtn.textContent = '重發全部選手 PIN';
+        }
+      });
+
+      if (pinsReissueCsv) {
+        pinsReissueCsv.addEventListener('click', () => {
+          if (!currentReissuedPlayers || !currentReissuedPlayers.length) return;
+          let csvContent = '\uFEFFid,name,pin\r\n';
+          currentReissuedPlayers.forEach(p => {
+            const id = (p.id || '').replace(/"/g, '""');
+            const name = (p.name || '').replace(/"/g, '""');
+            const pin = (p.pin || '').replace(/"/g, '""');
+            csvContent += `"${id}","${name}","${pin}"\r\n`;
+          });
+          const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'player-pins.csv';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 10000);
+        });
+      }
+
+      if (pinsReissueDone) {
+        pinsReissueDone.addEventListener('click', () => {
+          if (pinsReissueList) pinsReissueList.innerHTML = '';
+          if (pinsReissueBox) pinsReissueBox.style.display = 'none';
+          currentReissuedPlayers = null;
+        });
+      }
+    }
+
+    // ------------------------------------------------ 批次退賽 (DATA-CONTRACT-SHARED 10.15)
+    let allBdPlayers = [];
+    const bdSelectedIds = new Set();
+    let isBdLoading = false;
+
+    async function loadBdPlayers() {
+      if (!staffPin) return;
+      hideMsg('bdMsg');
+      isBdLoading = true;
+      try {
+        const res = await callApi('/api/admin/players', { staff_pin: staffPin });
+        allBdPlayers = Array.isArray(res.rows) ? res.rows : [];
+        const hasAbsent = allBdPlayers.some(p => !p.dropped && p.checked_in === false);
+        const pickAbsentBtn = document.getElementById('bdPickAbsent');
+        if (pickAbsentBtn) {
+          pickAbsentBtn.style.display = hasAbsent ? 'inline-flex' : 'none';
+        }
+        renderBdList();
+        updateBdSelectionUI();
+      } catch (err) {
+        const msg = (err && err.message) ? err.message : '載入選手名單失敗';
+        showMsg('bdMsg', msg, true);
+      } finally {
+        isBdLoading = false;
+      }
+    }
+
+    function renderBdList() {
+      const listEl = document.getElementById('bdList');
+      if (!listEl) return;
+
+      const searchInput = document.getElementById('bdSearch');
+      const q = (searchInput ? searchInput.value : '').trim().toLowerCase();
+
+      const activePlayers = allBdPlayers.filter(p => !p.dropped);
+      const matched = activePlayers.filter(p => {
+        if (!q) return true;
+        const id = (p.id || '').toLowerCase();
+        const name = (p.name || '').toLowerCase();
+        return id.includes(q) || name.includes(q);
+      });
+
+      if (matched.length === 0) {
+        listEl.innerHTML = '<div class="empty-state-sm" style="text-align: center; padding: 16px;">查無符合的未退賽選手</div>';
+        return;
+      }
+
+      const toRender = matched.slice(0, 200);
+      let html = '';
+      for (const p of toRender) {
+        const isChecked = bdSelectedIds.has(p.id);
+        let statusText = '';
+        if (p.checked_in === true) {
+          statusText = '<span style="font-size: 0.8rem; padding: 2px 8px; border-radius: 4px; background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); white-space: nowrap;">已報到</span>';
+        } else if (p.checked_in === false) {
+          statusText = '<span style="font-size: 0.8rem; padding: 2px 8px; border-radius: 4px; background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); white-space: nowrap;">未報到</span>';
+        }
+
+        html += `
+          <label class="bd-row" data-id="${escapeHtml(p.id)}">
+            <input type="checkbox" class="bd-check" value="${escapeHtml(p.id)}" ${isChecked ? 'checked' : ''}>
+            <span style="font-family: monospace; font-weight: 700; min-width: 65px; color: var(--accent-text);">${escapeHtml(p.id)}</span>
+            <span style="flex: 1; font-weight: 600; word-break: break-all; color: var(--text-primary);">${escapeHtml(p.name)}</span>
+            ${statusText}
+          </label>
+        `;
+      }
+
+      if (matched.length > 200) {
+        const remaining = matched.length - 200;
+        html += `<div style="text-align: center; color: var(--text-secondary); padding: 12px; font-size: 0.85rem; font-weight: 600; background: var(--input-bg);">還有 ${remaining} 位，請用搜尋縮小</div>`;
+      }
+
+      listEl.innerHTML = html;
+    }
+
+    function updateBdSelectionUI() {
+      const countEl = document.getElementById('bdSelectedCount');
+      if (countEl) {
+        countEl.textContent = `已選 ${bdSelectedIds.size} 位`;
+      }
+      const previewBtn = document.getElementById('bdPreview');
+      if (previewBtn) {
+        previewBtn.disabled = (bdSelectedIds.size === 0);
+      }
+    }
+
+    function handleBdPickAbsent() {
+      for (const p of allBdPlayers) {
+        if (!p.dropped && p.checked_in === false) {
+          bdSelectedIds.add(p.id);
+        }
+      }
+      renderBdList();
+      updateBdSelectionUI();
+    }
+
+    function handleBdPasteApply() {
+      const pasteEl = document.getElementById('bdPaste');
+      const text = (pasteEl ? pasteEl.value : '').trim();
+      if (!text) return;
+      hideMsg('bdMsg');
+
+      const tokens = text.split(/[\s,，]+/);
+      const activeMap = new Map(allBdPlayers.filter(p => !p.dropped).map(p => [p.id.toUpperCase(), p]));
+      const allMap = new Map(allBdPlayers.map(p => [p.id.toUpperCase(), p]));
+      const unknownList = [];
+      const alreadyDroppedList = [];
+      let addedCount = 0;
+
+      for (const raw of tokens) {
+        const token = raw.trim().toUpperCase();
+        if (!token) continue;
+        if (activeMap.has(token)) {
+          if (!bdSelectedIds.has(token)) {
+            bdSelectedIds.add(token);
+            addedCount++;
+          }
+        } else if (allMap.has(token)) {
+          alreadyDroppedList.push(token);
+        } else {
+          unknownList.push(token);
+        }
+      }
+
+      const msgs = [];
+      if (addedCount > 0) {
+        msgs.push(`已將 ${addedCount} 位加入選取`);
+      }
+      if (alreadyDroppedList.length > 0) {
+        msgs.push(`以下編號已經退賽：${alreadyDroppedList.join('、')}`);
+      }
+      if (unknownList.length > 0) {
+        msgs.push(`找不到以下編號：${unknownList.join('、')}`);
+      }
+
+      if (msgs.length > 0) {
+        const isError = unknownList.length > 0 || (addedCount === 0 && alreadyDroppedList.length > 0);
+        showMsg('bdMsg', msgs.join('；'), isError);
+      }
+
+      pasteEl.value = '';
+      renderBdList();
+      updateBdSelectionUI();
+    }
+
+    async function handleBdPreview() {
+      if (bdSelectedIds.size === 0) return;
+      hideMsg('bdMsg');
+      const btn = document.getElementById('bdPreview');
+      const origText = btn ? btn.textContent : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '預覽中…';
+      }
+
+      try {
+        const ids = Array.from(bdSelectedIds);
+        const previewRes = await callApi('/api/admin/drop_many', {
+          staff_pin: staffPin,
+          player_ids: ids,
+          dry_run: true
+        });
+
+        const dropped = previewRes.dropped || [];
+        const skipped = previewRes.skipped || [];
+        const N = dropped.length;
+
+        let msg = `將退賽 ${N} 位選手：\n`;
+        if (N <= 20) {
+          msg += dropped.map(p => `${p.id} ${p.name}`).join('、');
+        } else {
+          const first20 = dropped.slice(0, 20).map(p => `${p.id} ${p.name}`).join('、');
+          const M = N - 20;
+          msg += `${first20}\n…另外 ${M} 位`;
+        }
+
+        if (skipped.length > 0) {
+          const M = skipped.length;
+          msg += `\n\n其中 ${M} 位已經退賽，略過`;
+        }
+
+        const ok = await confirmDialog({
+          title: '批次退賽確認',
+          message: msg,
+          yes: `確定退賽 ${N} 位`,
+          no: '取消'
+        });
+
+        if (!ok) {
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = origText;
+          }
+          return;
+        }
+
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = '退賽處理中…';
+        }
+
+        const finalRes = await callApi('/api/admin/drop_many', {
+          staff_pin: staffPin,
+          player_ids: ids,
+          dry_run: false
+        });
+
+        const finalDropped = finalRes.dropped || dropped;
+        const finalN = finalDropped.length;
+        bdSelectedIds.clear();
+        await loadBdPlayers();
+        currentProposal = null;
+        renderProposalTable(null);
+        updatePublishBtnState();
+        showMsg('bdMsg', `已退賽 ${finalN} 位。已產生的下一輪提案已作廢，請重新產生配對`, false);
+
+      } catch (err) {
+        const errorMsg = (err && err.message) ? err.message : '沒有送出：連不上主機，請確認網路後再按一次';
+        showMsg('bdMsg', errorMsg, true);
+      } finally {
+        updateBdSelectionUI();
+        if (btn) {
+          btn.disabled = (bdSelectedIds.size === 0);
+          btn.textContent = origText;
+        }
+      }
+    }
+
+    function resetBdBlock() {
+      allBdPlayers = [];
+      bdSelectedIds.clear();
+      hideMsg('bdMsg');
+      const pasteEl = document.getElementById('bdPaste');
+      if (pasteEl) pasteEl.value = '';
+      const searchEl = document.getElementById('bdSearch');
+      if (searchEl) searchEl.value = '';
+      const listEl = document.getElementById('bdList');
+      if (listEl) listEl.innerHTML = '<div class="empty-state-sm" style="text-align: center; padding: 16px;">請點擊登入以載入選手</div>';
+      const pickAbsentBtn = document.getElementById('bdPickAbsent');
+      if (pickAbsentBtn) pickAbsentBtn.style.display = 'none';
+      updateBdSelectionUI();
+    }
+
+    function initBdBlock() {
+      const searchEl = document.getElementById('bdSearch');
+      if (searchEl) searchEl.addEventListener('input', renderBdList);
+      const pickAbsentBtn = document.getElementById('bdPickAbsent');
+      if (pickAbsentBtn) pickAbsentBtn.addEventListener('click', handleBdPickAbsent);
+      const pasteApplyBtn = document.getElementById('bdPasteApply');
+      if (pasteApplyBtn) pasteApplyBtn.addEventListener('click', handleBdPasteApply);
+      const previewBtn = document.getElementById('bdPreview');
+      if (previewBtn) previewBtn.addEventListener('click', handleBdPreview);
+      const listEl = document.getElementById('bdList');
+      if (listEl) {
+        listEl.addEventListener('change', (e) => {
+          if (e.target && e.target.classList.contains('bd-check')) {
+            const id = e.target.value;
+            if (e.target.checked) {
+              bdSelectedIds.add(id);
+            } else {
+              bdSelectedIds.delete(id);
+            }
+            updateBdSelectionUI();
+          }
+        });
+      }
+    }
+
+    // 作廢這一輪並重排 (DATA-CONTRACT 10.10)
+    function renderRoundVoid() {
+      const block = document.getElementById('roundVoidBlock');
+      const btn = document.getElementById('roundVoidBtn');
+      const why = document.getElementById('roundVoidWhy');
+      if (!block || !btn) return;
+
+      const event = (snapshotData && snapshotData.event) || {};
+      const round = snapshotData && snapshotData.round;
+
+      // 顯示條件：snapshot.round 存在、round.published 為真，且賽事未結束 (event.status !== 'done')
+      if (!round || !round.published || event.status === 'done') {
+        block.style.display = 'none';
+        const curBlocked = document.getElementById('voidBlocked');
+        if (curBlocked) curBlocked.remove();
+        return;
+      }
+
+      block.style.display = 'flex';
+      const tablesDone = (round.progress && typeof round.progress.tables_done === 'number') ? round.progress.tables_done : 0;
+      if (tablesDone > 0) {
+        btn.disabled = true;
+        if (why) {
+          why.textContent = `已經有 ${tablesDone} 桌有結果，不能整輪作廢；要先到那幾桌撤銷`;
+          why.style.display = 'inline';
+        }
+        // 直接列出有結果的桌號（不用等到按下去被 409 擋才知道）；桌號沒變就不重畫
+        const doneTables = (Array.isArray(snapshotData.pairings) ? snapshotData.pairings : [])
+          .filter(p => p.table != null && p.result && p.result.status === 'confirmed')
+          .map(p => p.table).sort((x, y) => x - y);
+        const cur = document.getElementById('voidBlocked');
+        const key = doneTables.join(',');
+        if (doneTables.length && (!cur || cur.dataset.key !== key)) {
+          renderVoidBlocked(doneTables);
+          const nb = document.getElementById('voidBlocked');
+          if (nb) nb.dataset.key = key;
+        }
+      } else {
+        const stale = document.getElementById('voidBlocked');
+        if (stale) stale.remove();
+        btn.disabled = false;
+        if (why) {
+          why.textContent = '';
+          why.style.display = 'none';
+        }
+      }
+    }
+
+    function renderVoidBlocked(tables) {
+      const existing = document.getElementById('voidBlocked');
+      if (existing) existing.remove();
+
+      const voidMsg = document.getElementById('roundVoidMsg');
+      if (!voidMsg || !voidMsg.parentNode) return;
+
+      const block = document.createElement('div');
+      block.id = 'voidBlocked';
+      block.style.cssText = 'margin-top: 8px; padding: 12px; background: rgba(239, 68, 68, 0.12); border: 1.5px solid var(--danger-border); border-radius: 8px; width: 100%; box-sizing: border-box;';
+
+      const title = document.createElement('div');
+      title.style.cssText = 'font-size: 0.9rem; font-weight: 700; color: var(--danger-text); margin-bottom: 8px; line-height: 1.4;';
+      title.textContent = '這些桌已經有結果，請先到裁判頁逐桌撤銷';
+      block.appendChild(title);
+
+      const row = document.createElement('div');
+      row.style.cssText = 'display: flex; gap: 8px; flex-wrap: wrap; align-items: center;';
+
+      const maxCount = 40;
+      const displayTables = tables.slice(0, maxCount);
+      displayTables.forEach(t => {
+        const tag = document.createElement('span');
+        tag.className = 'void-blocked-table';
+        tag.dataset.table = String(t);
+        tag.textContent = `第 ${t} 桌`;
+        row.appendChild(tag);
+      });
+
+      if (tables.length > maxCount) {
+        const remaining = tables.length - maxCount;
+        const moreSpan = document.createElement('span');
+        moreSpan.style.cssText = 'font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;';
+        moreSpan.textContent = `…另外 ${remaining} 桌`;
+        row.appendChild(moreSpan);
+      }
+
+      const judgeLink = document.createElement('a');
+      judgeLink.href = 'judge.html';
+      judgeLink.className = 'btn btn-secondary btn-sm';
+      judgeLink.style.cssText = 'min-height: 44px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; padding: 6px 14px; font-size: 0.85rem; color: var(--text-primary); font-weight: 700;';
+      judgeLink.textContent = '前往裁判頁';
+      row.appendChild(judgeLink);
+
+      block.appendChild(row);
+
+      voidMsg.parentNode.insertBefore(block, voidMsg.nextSibling);
+    }
+
+    async function handleRoundVoidClick() {
+      const btn = document.getElementById('roundVoidBtn');
+      if (!btn || btn.disabled) return;
+      const pin = loginPanel ? loginPanel.getPin() : (staffPin || '');
+      if (!pin) return;
+
+      const round = snapshotData && snapshotData.round;
+      if (!round) return;
+      const roundNum = round.number;
+
+      // 重新預覽時移除這一塊
+      const curBlocked = document.getElementById('voidBlocked');
+      if (curBlocked) curBlocked.remove();
+
+      btn.disabled = true;
+      try {
+        const res = await callApi('/api/admin/round_void', {
+          staff_pin: pin,
+          round: roundNum,
+          dry_run: true
+        });
+
+        const preview = res.preview || {};
+        const lost = preview.lost || {};
+        const roundLabel = preview.label || round.label || `第 ${roundNum} 輪`;
+
+        const lostItems = [];
+        if (lost.reports && lost.reports > 0) {
+          lostItems.push(`${lost.reports} 位選手已回報一半（會清掉，他們要重新回報）`);
+        }
+        if (lost.judge_calls && lost.judge_calls > 0) {
+          lostItems.push(`${lost.judge_calls} 個裁判呼叫會被清掉`);
+        }
+        if (lost.lates && lost.lates > 0) {
+          lostItems.push(`${lost.lates} 個遲到標記會被清掉`);
+        }
+
+        const msgLines = [];
+        msgLines.push(`要作廢第 ${roundNum} 輪（${roundLabel}）並重新配對嗎？`);
+        if (lostItems.length > 0) {
+          msgLines.push(lostItems.join('\n'));
+        }
+        msgLines.push('計時器會回到未開始。沒報到而被標為退賽的人仍是退賽，晚到的人要先按『重新加入』再重排。');
+
+        const confirmed = await confirmDialog({
+          title: '作廢這一輪並重排',
+          message: msgLines.join('\n\n'),
+          yes: '確定作廢',
+          no: '取消',
+          danger: true
+        });
+
+        if (!confirmed) {
+          btn.disabled = false;
+          return;
+        }
+
+        await callApi('/api/admin/round_void', {
+          staff_pin: pin,
+          round: roundNum
+        });
+
+        // 成功時移除這一塊
+        const successBlocked = document.getElementById('voidBlocked');
+        if (successBlocked) successBlocked.remove();
+
+        const voidMsg = document.getElementById('roundVoidMsg');
+        if (voidMsg) {
+          voidMsg.textContent = `已作廢第 ${roundNum} 輪，可以重新產生配對`;
+          voidMsg.className = 'msg-box success';
+          voidMsg.style.display = 'block';
+        }
+
+        await fetchData();
+      } catch (err) {
+        console.error('round_void error:', err);
+        // 其他錯誤不要出現這一塊
+        const errBlocked = document.getElementById('voidBlocked');
+        if (errBlocked) errBlocked.remove();
+
+        const voidMsg = document.getElementById('roundVoidMsg');
+        if (voidMsg) {
+          voidMsg.textContent = err.message || '作廢失敗';
+          voidMsg.className = 'msg-box error';
+          voidMsg.style.display = 'block';
+        }
+
+        const tables = (err && (err.tables_with_results || (err.data && err.data.tables_with_results))) || null;
+        if (Array.isArray(tables) && tables.length > 0) {
+          renderVoidBlocked(tables);
+        }
+      } finally {
+        if (btn) btn.disabled = false;
+        renderRoundVoid();
+      }
+    }
+
 
     // 延長回合倒數計算 (DATA-CONTRACT 1.4, 1.10)
     function getExtraCountdownText(clock, serverOffsetMs) {
@@ -3239,15 +4006,20 @@ button[data-next="true"]:hover {
           if (healthPanel) healthPanel.start();
           await loadExistingProposal();
           await fetchCheckinList();
+          await loadBdPlayers();
           if (staffPanel) await staffPanel.refresh();
+          if (broadcastPanel) broadcastPanel.refresh();
+
           if (snapshotData && snapshotData.event && snapshotData.event.mode !== 'A') {
             await fetchPolicyView();
             startCtlAutoRefresh();
           }
         },
+
         onLogout: () => {
           stopCheckinAutoRefresh();
           stopCtlAutoRefresh();
+          resetBdBlock();
           isAllDirty = false;
           dirtyTables.clear();
           dirtyTableValues.clear();
@@ -3299,6 +4071,7 @@ button[data-next="true"]:hover {
 
           if (deckConfigPanel) deckConfigPanel.reset();
           if (deckSamplePanel) deckSamplePanel.reset();
+          if (broadcastPanel) broadcastPanel.reset();
 
           renderAuthUI();
         }
@@ -3354,6 +4127,28 @@ button[data-next="true"]:hover {
         renderResult: renderAdminDeckSampleResult,
         successText: (res) => `已成功抽出第 ${res.round} 輪驗牌桌次（抽查比例 ${res.percent}%）`
       });
+
+      broadcastPanel = AdminPanels.mountBroadcast({
+        ids: {
+          panel: 'bcPanel',
+          text: 'bcText',
+          count: 'bcCount',
+          levelNotice: 'bcLevelNotice',
+          levelUrgent: 'bcLevelUrgent',
+          send: 'bcSend',
+          clear: 'bcClear',
+          current: 'bcCurrent',
+          marqueeList: 'bcMarqueeList',
+          marqueeAdd: 'bcMarqueeAdd',
+          marqueeSave: 'bcMarqueeSave',
+          msg: 'bcMsg'
+        },
+        getPin: () => (loginPanel ? loginPanel.getPin() : (staffPin || '')),
+        onChange: async () => {
+          await fetchData();
+        }
+      });
+
 
       // 現場報到管理 (PROJECT.md 10 第八輪任務)
       document.getElementById('checkinRefresh').addEventListener('click', fetchCheckinList);
@@ -3470,6 +4265,11 @@ button[data-next="true"]:hover {
         });
       }
 
+      const roundVoidBtn = document.getElementById('roundVoidBtn');
+      if (roundVoidBtn) {
+        roundVoidBtn.addEventListener('click', handleRoundVoidClick);
+      }
+
       function handleVisibilityChange() {
         if (document.visibilityState === 'hidden') {
           stopCheckinAutoRefresh();
@@ -3480,6 +4280,7 @@ button[data-next="true"]:hover {
             startCheckinAutoRefresh();
             fetchCheckinList();
             if (staffPanel) staffPanel.refresh();
+            if (broadcastPanel) broadcastPanel.refresh();
             if (snapshotData && snapshotData.event && snapshotData.event.mode !== 'A') {
               startCtlAutoRefresh();
               fetchPolicyView();
@@ -3489,7 +4290,10 @@ button[data-next="true"]:hover {
       }
       document.addEventListener('visibilitychange', handleVisibilityChange);
 
+
       // 初始化
+      initPinsReissue();
+      initBdBlock();
       updatePrintLinks();
       poller.start();
       fetchData();

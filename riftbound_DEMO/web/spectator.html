@@ -6,6 +6,7 @@
   <link rel="icon" href="data:,">
   <title>符文戰場 — 觀眾端</title>
   <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="../brand.css">
   <style>
 html, body {
       -webkit-text-size-adjust: 100%;
@@ -151,6 +152,14 @@ header {
       background: var(--danger-bg);
       color: var(--danger-text);
       border: 1px solid var(--danger-border);
+    }
+
+.net-hint {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      line-height: 1.4;
+      font-weight: normal;
     }
 
 .break-banner {
@@ -399,7 +408,7 @@ header {
       height: 46px;
       padding: 0 20px;
       background: var(--accent);
-      color: #141212;
+      color: var(--on-accent, #141212);
       font-size: 0.95rem;
       font-weight: 800;
       border: none;
@@ -610,7 +619,9 @@ footer {
   </div>
 
   <script src="common.js"></script>
+  <script src="match-history.js"></script>
   <script src="disconnect-overlay.js"></script>
+  <script src="broadcast.js"></script>
   <script>
     const CURRENT_CONTRACT_VERSION = 16;
     const STORAGE_KEY_TOKEN = 'riftbound_viewer_device_token';
@@ -621,6 +632,14 @@ footer {
       desc: '目前無法讀取賽事即時資料。<br>請確認網路連線是否正常，連線恢復後將自動重新載入。',
       onRetry: () => fetchData()
     });
+
+    const specDcoDesc = disconnectOverlay.element.querySelector('.dco-desc');
+    if (specDcoDesc) {
+      const hint = document.createElement('div');
+      hint.className = 'net-hint';
+      hint.textContent = '可以先看會場的大螢幕或牆上的配對表，或直接問裁判';
+      specDcoDesc.appendChild(hint);
+    }
 
     let snapshotData = null;
     let rawJsonText = '';
@@ -716,7 +735,7 @@ footer {
       const diffMs = Date.now() - lastContentChangeTime;
       if (diffMs > 90000) {
         const mins = Math.max(1, Math.floor(diffMs / 60000));
-        staleEl.textContent = `資料已 ${mins} 分鐘沒更新，請留意現場廣播`;
+        staleEl.innerHTML = `資料已 ${mins} 分鐘沒更新，請留意現場廣播<div class="net-hint">可以先看會場的大螢幕或牆上的配對表，或直接問裁判</div>`;
         staleEl.style.display = 'block';
       } else {
         staleEl.style.display = 'none';
@@ -778,6 +797,9 @@ footer {
         checkFreshness();
         if (!snapshotData) {
           disconnectOverlay.show();
+          if (window.BroadcastDisplay) {
+            BroadcastDisplay.update(null, { marquee: true });
+          }
         }
       }
     }
@@ -816,6 +838,9 @@ footer {
       renderLiveTab();
       renderScheduleTab();
       updateClockDisplay();
+      if (window.BroadcastDisplay) {
+        BroadcastDisplay.update(snapshotData, { marquee: true });
+      }
     }
 
     function renderVersionWarning() {
@@ -1177,7 +1202,31 @@ footer {
         }
       }
 
+      const targetMatch = (matches.length === 1)
+        ? matches[0]
+        : matches.find(m => m.self.id && m.self.id.toUpperCase() === qUpper);
+
+      if (targetMatch) {
+        resHtml += `<div id="matchHistory" style="margin-top: 12px;"></div>`;
+      }
+
       resultBox.innerHTML = resHtml;
+
+      if (targetMatch && window.MatchHistory && typeof MatchHistory.render === 'function') {
+        const apiBase = (snapshotData && snapshotData.event && typeof snapshotData.event.api_base === 'string')
+          ? snapshotData.event.api_base
+          : '';
+        MatchHistory.render('matchHistory', targetMatch.self.id, {
+          api_base: apiBase,
+          onSelectOpponent: (oppId) => {
+            const inEl = document.getElementById('viewerSearch');
+            if (inEl) {
+              inEl.value = oppId;
+              handleViewerSearch();
+            }
+          }
+        });
+      }
     }
 
     // 分頁切換

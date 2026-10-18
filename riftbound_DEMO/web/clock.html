@@ -6,6 +6,7 @@
   <link rel="icon" href="data:,">
   <title>符文戰場 — 大螢幕計時鐘</title>
   <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="../brand.css">
   <style>
 html, body {
       -webkit-text-size-adjust: 100%;
@@ -127,6 +128,14 @@ header {
       border: 2px solid var(--danger-border);
     }
 
+.net-hint {
+      font-size: clamp(0.85rem, 1.2vw, 1.05rem);
+      color: var(--text-secondary);
+      margin-top: 6px;
+      line-height: 1.4;
+      font-weight: normal;
+    }
+
 .announcement-bar {
       background: var(--note-bg);
       border: 1px solid var(--note-border);
@@ -142,7 +151,7 @@ header {
 
 .announcement-tag {
       background: var(--accent);
-      color: #141212;
+      color: var(--on-accent, #141212);
       font-weight: 800;
       font-size: 0.8rem;
       padding: 2px 8px;
@@ -403,6 +412,7 @@ header {
 
   <script src="common.js"></script>
   <script src="disconnect-overlay.js"></script>
+  <script src="broadcast.js"></script>
   <script>
     const CURRENT_CONTRACT_VERSION = 16;
     let snapshotData = null;
@@ -418,6 +428,14 @@ header {
       desc: '大螢幕計時器目前無法讀取賽事即時資料。<br>請確認本機或區域網路連線，連線恢復後將自動重新載入。',
       onRetry: () => fetchData()
     });
+
+    const clockDcoDesc = disconnectOverlay.element.querySelector('.dco-desc');
+    if (clockDcoDesc) {
+      const hint = document.createElement('div');
+      hint.className = 'net-hint';
+      hint.textContent = '可以先看會場的大螢幕或牆上的配對表，或直接問裁判';
+      clockDcoDesc.appendChild(hint);
+    }
 
     // 取得資料來源 URL (DATA-CONTRACT 1.10: 固定 ../snapshot.json，僅接受固定的 demo 參數)
     function getDataSourceUrl() {
@@ -456,6 +474,9 @@ header {
         console.warn('大螢幕讀取賽事資料失敗:', err);
         if (!snapshotData) {
           disconnectOverlay.show();
+          if (window.BroadcastDisplay) {
+            BroadcastDisplay.update(null, { marquee: true });
+          }
         }
       }
     });
@@ -474,7 +495,7 @@ header {
       const diffMs = Date.now() - lastContentChangeTime;
       if (diffMs > 90000) {
         const mins = Math.max(1, Math.floor(diffMs / 60000));
-        staleEl.textContent = `資料已 ${mins} 分鐘沒更新，請留意現場廣播`;
+        staleEl.innerHTML = `資料已 ${mins} 分鐘沒更新，請留意現場廣播<div class="net-hint">可以先看會場的大螢幕或牆上的配對表，或直接問裁判</div>`;
         staleEl.style.display = 'block';
       } else {
         staleEl.style.display = 'none';
@@ -519,6 +540,9 @@ header {
       renderProgressFooter();
       updateClockDisplay();
       renderLateReminder();
+      if (window.BroadcastDisplay) {
+        BroadcastDisplay.update(snapshotData, { marquee: true });
+      }
     }
 
     // 檢查版本號 (DATA-CONTRACT 1.1)

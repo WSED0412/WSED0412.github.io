@@ -6,6 +6,7 @@
   <link rel="icon" href="data:,">
   <title>賽事入口</title>
   <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="../brand.css">
   <style>
 html, body {
       -webkit-text-size-adjust: 100%;
@@ -322,7 +323,7 @@ html, body {
       min-width: 120px;
       padding: 10px 24px;
       background: var(--accent);
-      color: #fff;
+      color: var(--on-accent, #fff);
       border: none;
       border-radius: 8px;
       font-size: 0.95rem;
@@ -340,6 +341,14 @@ html, body {
 .btn-retry:active {
       transform: scale(0.98);
     }
+
+.net-hint {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      line-height: 1.4;
+      font-weight: normal;
+    }
 </style>
 </head>
 <body>
@@ -348,7 +357,10 @@ html, body {
     <div id="startDisconnected" class="disconnected-overlay">
       <div class="disconnected-icon" aria-hidden="true">⚠️</div>
       <div class="disconnected-title">尚未連上賽務系統</div>
-      <div class="disconnected-desc">目前無法讀取賽事資料。<br>請確認賽事主機是否已啟動，或網路連線是否正常。</div>
+      <div class="disconnected-desc">
+        目前無法讀取賽事資料。<br>請確認賽事主機是否已啟動，或網路連線是否正常。
+        <div class="net-hint">可以先看會場的大螢幕或牆上的配對表，或直接問裁判</div>
+      </div>
       <button type="button" class="btn-retry" id="startRetryBtn">重新連線</button>
     </div>
 
@@ -393,6 +405,7 @@ html, body {
   </div>
 
   <script src="common.js"></script>
+  <script src="broadcast.js"></script>
   <script>
     var snapshotData = null;
     window.snapshotData = null;
@@ -564,7 +577,14 @@ html, body {
     function handleSnapshot(snapshot) {
       if (!snapshot || typeof snapshot !== 'object') {
         if (!hasLoadedData) showDisconnected();
+        if (window.BroadcastDisplay) {
+          BroadcastDisplay.update(null, { marquee: false });
+        }
         return;
+      }
+
+      if (window.BroadcastDisplay) {
+        BroadcastDisplay.update(snapshot, { marquee: false });
       }
 
       const event = snapshot.event || null;
@@ -593,12 +613,41 @@ html, body {
       onError: (err) => {
         if (!hasLoadedData) {
           showDisconnected();
+          if (window.BroadcastDisplay) {
+            BroadcastDisplay.update(null, { marquee: false });
+          }
+        }
+      },
+      onStale: (isStale, mins) => {
+        const staleEl = document.getElementById('staleBanner');
+        if (staleEl && isStale && document.visibilityState !== 'hidden') {
+          setTimeout(() => {
+            if (!staleEl.querySelector('.net-hint')) {
+              const hint = document.createElement('div');
+              hint.className = 'net-hint';
+              hint.textContent = '可以先看會場的大螢幕或牆上的配對表，或直接問裁判';
+              staleEl.appendChild(hint);
+            }
+          }, 0);
         }
       }
     });
     window.poller = poller;
 
     function init() {
+      const staleEl = document.getElementById('staleBanner');
+      if (staleEl) {
+        const obs = new MutationObserver(() => {
+          if (staleEl.style.display !== 'none' && !staleEl.querySelector('.net-hint')) {
+            const hint = document.createElement('div');
+            hint.className = 'net-hint';
+            hint.textContent = '可以先看會場的大螢幕或牆上的配對表，或直接問裁判';
+            staleEl.appendChild(hint);
+          }
+        });
+        obs.observe(staleEl, { childList: true });
+      }
+
       const retryBtn = document.getElementById('startRetryBtn');
       if (retryBtn) {
         retryBtn.addEventListener('click', () => {
