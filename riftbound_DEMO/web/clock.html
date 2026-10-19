@@ -53,12 +53,14 @@ header {
       display: flex;
       align-items: center;
       gap: 12px;
+      flex-wrap: wrap;
     }
 
 .event-title {
       font-size: clamp(1.1rem, 2vw, 1.8rem);
       font-weight: 800;
       letter-spacing: 0.5px;
+      word-break: break-word;
     }
 
 .status-badge {
@@ -318,6 +320,59 @@ header {
       color: var(--text-sub);
     }
 
+#brandLogo {
+      max-height: 96px;
+      max-width: 200px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      flex-shrink: 0;
+      display: block;
+    }
+
+#sponsorWall {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--panel-border);
+      flex-shrink: 0;
+    }
+
+#sponsorWall img {
+      max-height: 64px;
+      max-width: 160px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+@media (max-height: 750px) {
+      #brandLogo {
+        max-height: 40px;
+      }
+      #sponsorWall {
+        margin-top: 8px;
+        padding-top: 6px;
+        gap: 10px;
+      }
+      #sponsorWall img {
+        max-height: 40px;
+        max-width: 100px;
+      }
+    }
+
+@media (max-height: 600px) {
+      #sponsorWall img {
+        max-height: 32px;
+        max-width: 80px;
+      }
+    }
+
 @media (max-width: 600px) {
       .wrapper {
         padding: 10px;
@@ -328,6 +383,19 @@ header {
       }
       .progress-footer-grid {
         grid-template-columns: 1fr;
+      }
+      #brandLogo {
+        max-height: 56px;
+        max-width: 120px;
+      }
+      #sponsorWall {
+        gap: 10px;
+        margin-top: 12px;
+        padding-top: 8px;
+      }
+      #sponsorWall img {
+        max-height: 44px;
+        max-width: 110px;
       }
     }
 </style>
@@ -410,6 +478,9 @@ header {
         <div class="progress-box-sub" id="nextRoundSub">--</div>
       </div>
     </footer>
+
+    <!-- 贊助牆 (DATA-CONTRACT-SHARED 10.21) -->
+    <div id="sponsorWall" style="display: none;"></div>
   </div>
 
   <script src="common.js"></script>
@@ -532,6 +603,88 @@ header {
       banner.textContent = '';
     }
 
+    let lastClockBrandKey = null;
+    let clockLogoFailed = false;
+
+    function renderBrandAssets() {
+      const isDemo = window.location.search.includes('demo=') || new URLSearchParams(window.location.search).has('demo');
+      const event = snapshotData ? snapshotData.event : null;
+      const brandAssets = (event && event.brand_assets) ? event.brand_assets : null;
+
+      const brandKey = isDemo ? 'demo' : JSON.stringify({
+        logo: Boolean(brandAssets && brandAssets.logo === true),
+        sponsors: (brandAssets && Array.isArray(brandAssets.sponsors)) ? brandAssets.sponsors : [],
+        name: (event && event.name) || ''
+      });
+
+      if (brandKey !== lastClockBrandKey) {
+        lastClockBrandKey = brandKey;
+        clockLogoFailed = false;
+      }
+
+      // 1. 賽事標誌 #brandLogo
+      const existingLogo = document.getElementById('brandLogo');
+      const hasLogo = !isDemo && Boolean(brandAssets && brandAssets.logo === true) && !clockLogoFailed;
+
+      if (!hasLogo) {
+        if (existingLogo) existingLogo.remove();
+      } else {
+        const eventName = (event && event.name) ? String(event.name) : '賽事標誌';
+        let img = existingLogo;
+        if (!img) {
+          img = document.createElement('img');
+          img.id = 'brandLogo';
+          img.src = '/brand/logo';
+          img.onerror = function() {
+            clockLogoFailed = true;
+            this.remove();
+          };
+          const headerLeft = document.querySelector('.header-left');
+          const eventTitle = document.getElementById('eventName');
+          if (headerLeft && eventTitle) {
+            headerLeft.insertBefore(img, eventTitle);
+          } else if (headerLeft) {
+            headerLeft.appendChild(img);
+          }
+        }
+        img.setAttribute('alt', eventName);
+      }
+
+      // 2. 贊助牆 #sponsorWall
+      const sponsorWall = document.getElementById('sponsorWall');
+      if (!sponsorWall) return;
+
+      const rawSponsors = (brandAssets && Array.isArray(brandAssets.sponsors)) ? brandAssets.sponsors : [];
+      const hasSponsors = !isDemo && rawSponsors.length > 0;
+
+      if (!hasSponsors) {
+        sponsorWall.style.display = 'none';
+        sponsorWall.innerHTML = '';
+        delete sponsorWall.dataset.renderedKey;
+      } else {
+        const targetKey = JSON.stringify(rawSponsors);
+        if (sponsorWall.dataset.renderedKey !== targetKey) {
+          sponsorWall.dataset.renderedKey = targetKey;
+          sponsorWall.innerHTML = '';
+          sponsorWall.style.display = 'flex';
+
+          rawSponsors.forEach(n => {
+            const sImg = document.createElement('img');
+            sImg.src = `/brand/sponsor-${encodeURIComponent(n)}`;
+            sImg.setAttribute('alt', '贊助單位 ' + n);
+            sImg.onerror = function() {
+              const wall = this.parentNode;
+              this.remove();
+              if (wall && wall.querySelectorAll('img').length === 0) {
+                wall.style.display = 'none';
+              }
+            };
+            sponsorWall.appendChild(sImg);
+          });
+        }
+      }
+    }
+
     function renderAll() {
       if (!snapshotData) return;
 
@@ -542,6 +695,7 @@ header {
       renderProgressFooter();
       updateClockDisplay();
       renderLateReminder();
+      renderBrandAssets();
       if (window.BroadcastDisplay) {
         BroadcastDisplay.update(snapshotData, { marquee: true });
       }

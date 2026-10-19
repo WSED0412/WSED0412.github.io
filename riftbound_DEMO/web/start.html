@@ -57,6 +57,16 @@ html, body {
       margin-bottom: 8px;
     }
 
+#brandLogo {
+      max-height: 56px;
+      max-width: 120px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      flex-shrink: 0;
+      display: block;
+    }
+
 .start-event-title {
       font-size: clamp(1.25rem, 4vw, 1.6rem);
       font-weight: 800;
@@ -64,7 +74,7 @@ html, body {
       line-height: 1.3;
       word-break: break-word;
       flex: 1;
-      min-width: 160px;
+      min-width: 120px;
     }
 
 .start-status-badge {
@@ -429,6 +439,7 @@ html, body {
         name: event.name || '',
         status: event.status || '',
         note: event.note || '',
+        brand_assets: event.brand_assets || null,
         pages: (Array.isArray(event.pages) ? event.pages : []).map(p => ({
           id: p ? p.id : '',
           label: p ? p.label : '',
@@ -533,6 +544,50 @@ html, body {
       }
     }
 
+    let lastStartBrandKey = null;
+    let startLogoFailed = false;
+
+    function renderBrandLogo(event) {
+      const isDemo = window.location.search.includes('demo=') || new URLSearchParams(window.location.search).has('demo');
+      const brandAssets = (event && event.brand_assets) ? event.brand_assets : null;
+      const brandKey = isDemo ? 'demo' : JSON.stringify({
+        logo: Boolean(brandAssets && brandAssets.logo === true),
+        name: (event && event.name) || ''
+      });
+
+      if (brandKey !== lastStartBrandKey) {
+        lastStartBrandKey = brandKey;
+        startLogoFailed = false;
+      }
+
+      const existingLogo = document.getElementById('brandLogo');
+      const hasLogo = !isDemo && Boolean(brandAssets && brandAssets.logo === true) && !startLogoFailed;
+
+      if (!hasLogo) {
+        if (existingLogo) {
+          existingLogo.remove();
+        }
+        return;
+      }
+
+      const eventName = (event && event.name) ? String(event.name) : '';
+      let img = existingLogo;
+      if (!img) {
+        img = document.createElement('img');
+        img.id = 'brandLogo';
+        img.src = '/brand/logo';
+        img.onerror = function() {
+          startLogoFailed = true;
+          this.remove();
+        };
+        const nameEl = document.getElementById('startEvent');
+        if (nameEl && nameEl.parentNode) {
+          nameEl.parentNode.insertBefore(img, nameEl);
+        }
+      }
+      img.setAttribute('alt', eventName);
+    }
+
     function renderStartPage(event) {
       if (!event) {
         const nameEl = document.getElementById('startEvent');
@@ -540,10 +595,14 @@ html, body {
         updateStatusBadge('before');
         updateEventNote('');
         showEmptyPages();
+        renderBrandLogo(null);
         return;
       }
 
-      // 1. 賽事名稱
+      // 1. 賽事標誌 (DATA-CONTRACT-SHARED 10.21)
+      renderBrandLogo(event);
+
+      // 2. 賽事名稱
       const nameEl = document.getElementById('startEvent');
       if (nameEl) {
         nameEl.textContent = event.name || '';
@@ -601,8 +660,21 @@ html, body {
       renderStartPage(event);
     }
 
+    function getDataSourceUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const demo = params.get('demo');
+      if (demo === '1') {
+        return '../sample/snapshot.sample.json';
+      } else if (demo === 'break') {
+        return '../sample/snapshot.break.sample.json';
+      } else if (demo === 'topcut') {
+        return '../sample/snapshot.topcut.sample.json';
+      }
+      return '../snapshot.json';
+    }
+
     const poller = createPoller({
-      url: '../snapshot.json',
+      url: getDataSourceUrl,
       interval: 5000,
       pauseInBackground: false,
       onData: (data) => {

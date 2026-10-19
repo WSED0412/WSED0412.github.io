@@ -389,6 +389,36 @@ header {
       font-size: 16px;
     }
 
+    /* 裁判提示：淘汰賽時間到怎麼判 (DATA-CONTRACT 10.20) */
+    .judge-rule-hint {
+      display: none;
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+
+    .judge-rule-hint-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--warning-text);
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+
+    .judge-rule-hint-text {
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: var(--warning-text);
+      word-break: break-word;
+      overflow-wrap: break-word;
+      white-space: pre-wrap;
+    }
+
 .call-list {
       display: flex;
       flex-direction: column;
@@ -726,6 +756,12 @@ header {
         </div>
       </section>
 
+      <!-- 判定提示 (DATA-CONTRACT 10.20) -->
+      <div id="judgeRuleHint" class="judge-rule-hint" style="display: none;">
+        <div class="judge-rule-hint-title"></div>
+        <div class="judge-rule-hint-text"></div>
+      </div>
+
       <!-- 裁判回報／判定作業面板 -->
       <section class="card" id="ejActionPanel" style="display: none;">
         <h2 class="card-title">裁判判定與送出結果</h2>
@@ -896,6 +932,7 @@ header {
           poller.start();
         }
         await poller.fetchOnce();
+        updateJudgeRuleHint(window.elimSnapshot);
         if (penaltyPanel) penaltyPanel.fetchPenalties();
         await loadConflicts();
         startConflictPolling();
@@ -1213,6 +1250,35 @@ header {
 
     document.getElementById('ejRefreshConflicts').addEventListener('click', loadConflicts);
 
+    // 裁判提示：淘汰賽時間到怎麼判 (DATA-CONTRACT 10.20)
+    function updateJudgeRuleHint(snap) {
+      const hintEl = document.getElementById('judgeRuleHint');
+      if (!hintEl) return;
+
+      const currentSnap = snap || window.elimSnapshot;
+      const game = (currentSnap && currentSnap.event && currentSnap.event.game) ? currentSnap.event.game : null;
+      if (!game) {
+        hintEl.style.display = 'none';
+        return;
+      }
+
+      const title = '淘汰賽時間到怎麼判';
+      const ruleText = game.elimination_rule;
+
+      if (typeof ruleText !== 'string' || !ruleText.trim()) {
+        hintEl.style.display = 'none';
+        return;
+      }
+
+      const titleEl = hintEl.querySelector('.judge-rule-hint-title');
+      const textEl = hintEl.querySelector('.judge-rule-hint-text');
+
+      if (titleEl) titleEl.textContent = title;
+      if (textEl) textEl.textContent = ruleText;
+
+      hintEl.style.display = 'block';
+    }
+
     // Snapshot 資料更新回呼
     function onSnapshotUpdate(snap) {
       if (!snap) return;
@@ -1221,6 +1287,7 @@ header {
       renderCheckinSection(snap);
       renderDeckSection(snap);
       renderTables();
+      updateJudgeRuleHint(snap);
       if (staffPin) {
         loadCalls();
       }

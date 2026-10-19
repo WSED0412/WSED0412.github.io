@@ -796,6 +796,36 @@ header {
       color: var(--accent-text);
     }
 
+    /* 裁判提示：時間到怎麼判 / 淘汰賽時間到怎麼判 (DATA-CONTRACT 10.20) */
+    .judge-rule-hint {
+      display: none;
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+
+    .judge-rule-hint-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--warning-text);
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+
+    .judge-rule-hint-text {
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: var(--warning-text);
+      word-break: break-word;
+      overflow-wrap: break-word;
+      white-space: pre-wrap;
+    }
+
 .disconnected-overlay {
       position: fixed;
       top: 0;
@@ -1038,6 +1068,12 @@ header {
           <div class="empty-state-sm">請點選上方爭議桌或輸入桌號查桌</div>
         </div>
       </section>
+
+      <!-- 判定提示 (DATA-CONTRACT 10.20) -->
+      <div id="judgeRuleHint" class="judge-rule-hint" style="display: none;">
+        <div class="judge-rule-hint-title"></div>
+        <div class="judge-rule-hint-text"></div>
+      </div>
 
       <!-- 區塊 3: 裁判判定與撤銷 -->
       <section class="judge-card">
@@ -1475,6 +1511,7 @@ header {
         renderLateList();
         updateZoneFilterOptions();
         renderCheckinSection();
+        updateJudgeRuleHint();
       },
       onError: (err) => {
         if (!snapshotData) {
@@ -1485,6 +1522,43 @@ header {
 
     async function fetchData() {
       return poller.fetchOnce();
+    }
+
+    // 裁判提示：時間到怎麼判 / 淘汰賽時間到怎麼判 (DATA-CONTRACT 10.20)
+    function updateJudgeRuleHint() {
+      const hintEl = document.getElementById('judgeRuleHint');
+      if (!hintEl) return;
+
+      const game = (snapshotData && snapshotData.event && snapshotData.event.game) ? snapshotData.event.game : null;
+      if (!game) {
+        hintEl.style.display = 'none';
+        return;
+      }
+
+      const isTopCut = !!(snapshotData.round && snapshotData.round.stage === 'top_cut');
+      let title = '';
+      let ruleText = '';
+
+      if (isTopCut) {
+        title = '淘汰賽時間到怎麼判';
+        ruleText = game.elimination_rule;
+      } else {
+        title = '時間到怎麼判';
+        ruleText = game.timeout;
+      }
+
+      if (typeof ruleText !== 'string' || !ruleText.trim()) {
+        hintEl.style.display = 'none';
+        return;
+      }
+
+      const titleEl = hintEl.querySelector('.judge-rule-hint-title');
+      const textEl = hintEl.querySelector('.judge-rule-hint-text');
+
+      if (titleEl) titleEl.textContent = title;
+      if (textEl) textEl.textContent = ruleText;
+
+      hintEl.style.display = 'block';
     }
 
     // 格式版本提示
@@ -1599,6 +1673,7 @@ header {
         judgeName = res.name || '示範裁判';
         renderAuthUI();
         renderCheckinSection();
+        updateJudgeRuleHint();
         if (!(snapshotData && snapshotData.checkin)) {
           fetchJudgeCheckinList();
         }
@@ -3274,6 +3349,7 @@ header {
 
       // 初始化
       updateJudgeTargetBars(null);
+      updateJudgeRuleHint();
       poller.start();
       setInterval(updateLateTimes, 1000);
     });

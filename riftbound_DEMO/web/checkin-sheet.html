@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>報到單列印</title>
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    html, body {
+      -webkit-text-size-adjust: 100%;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: Inter, system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      min-height: 100svh;
+      overflow-x: hidden;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 12px 14px 40px;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+
+    .nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .page-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-text);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 6px;
+      background: rgba(239, 125, 0, 0.1);
+      border: 1px solid rgba(239, 125, 0, 0.25);
+      min-height: 44px;
+      min-width: 44px;
+      box-sizing: border-box;
+    }
+
+    .nav-link:hover {
+      background: rgba(239, 125, 0, 0.18);
+    }
+
+    .toolbar {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-sizing: border-box;
+    }
+
+    .toolbar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .toolbar-label {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .toolbar-hint {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .sheet-file-input {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      min-height: 44px;
+      box-sizing: border-box;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .sheet-textarea {
+      width: 100%;
+      min-height: 120px;
+      max-width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      color: var(--text-primary);
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 16px;
+      line-height: 1.4;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+
+    .sheet-textarea:focus {
+      outline: 2px solid var(--accent);
+      border-color: var(--accent);
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-top: 4px;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .btn-group {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn {
+      min-height: 44px;
+      min-width: 88px;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      box-sizing: border-box;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--on-accent, #141212);
+      border: 1px solid var(--accent);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      color: var(--on-accent, #141212);
+    }
+
+    .btn-secondary {
+      background: var(--chip-bg);
+      color: var(--text-primary);
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--card-border);
+    }
+
+    .toolbar-stats {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .sheet-count-value {
+      color: var(--accent-text);
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+
+    .sheet-problems {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+      word-break: break-word;
+    }
+
+    .problems-title {
+      font-weight: 800;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+    }
+
+    .problems-list {
+      margin: 0;
+      padding-left: 20px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .problems-list li {
+      margin-bottom: 4px;
+    }
+
+    .sheet-empty-hint {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      border: 1px dashed var(--card-border);
+      border-radius: 8px;
+      background: rgba(1, 57, 81, 0.4);
+    }
+
+    .slips-grid {
+      display: grid;
+      grid-template-columns: 100%;
+      gap: 14px;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    @media (min-width: 640px) {
+      .slips-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .slip {
+      background: var(--card-bg);
+      border: 1.5px dashed var(--card-border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      break-inside: avoid;
+      page-break-inside: avoid;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .slip-event {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 4px;
+      min-height: 1.3em;
+      word-break: break-word;
+    }
+
+    .slip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .slip-id {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--accent-text);
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    }
+
+    .slip-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      word-break: break-word;
+    }
+
+    .slip-pin-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .slip-pin-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .slip-pin {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      letter-spacing: 2px;
+    }
+
+    .slip-bottom {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      border-top: 1px solid var(--card-border);
+      padding-top: 8px;
+    }
+
+    .slip-qr {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      flex-shrink: 0;
+      background: #ffffff;
+      padding: 2px;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .slip-meta {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .slip-url {
+      font-size: 0.75rem;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      color: var(--text-secondary);
+      word-break: break-all;
+      font-weight: 600;
+    }
+
+    .slip-instruction {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      line-height: 1.25;
+    }
+
+    .slip-warning {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--warning-text);
+      line-height: 1.2;
+    }
+
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 8mm 6mm;
+      }
+
+      html, body {
+        background-color: #ffffff !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-size: 9.5pt;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .no-print,
+      .nav-bar,
+      .toolbar,
+      #sheetProblems,
+      button,
+      input,
+      textarea {
+        display: none !important;
+      }
+
+      .container {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+      }
+
+      .slips-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 3mm !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .slip {
+        border: 1.5px dashed #000000 !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        height: 65mm !important;
+        max-height: 65mm !important;
+        box-sizing: border-box !important;
+        padding: 3.5mm 4.5mm !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        overflow: hidden !important;
+        gap: 0 !important;
+      }
+
+      .slip * {
+        color: #000000 !important;
+        background: transparent !important;
+      }
+
+      .slip:nth-child(8n) {
+        break-after: page !important;
+        page-break-after: always !important;
+      }
+
+      .slip:last-child {
+        break-after: auto !important;
+        page-break-after: auto !important;
+      }
+
+      .slip-event {
+        font-size: 8pt !important;
+        font-weight: 600 !important;
+        border-bottom: 1px solid #999999 !important;
+        padding-bottom: 1mm !important;
+        margin-bottom: 1.5mm !important;
+        min-height: auto !important;
+      }
+
+      .slip-header {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: baseline !important;
+        margin-bottom: 1.5mm !important;
+      }
+
+      .slip-id {
+        font-size: 15pt !important;
+        font-weight: 800 !important;
+        font-family: monospace !important;
+      }
+
+      .slip-name {
+        font-size: 12pt !important;
+        font-weight: 700 !important;
+      }
+
+      .slip-pin-row {
+        margin-bottom: 1.5mm !important;
+        display: flex !important;
+        align-items: baseline !important;
+        gap: 2mm !important;
+      }
+
+      .slip-pin-label {
+        font-size: 9pt !important;
+        font-weight: 700 !important;
+      }
+
+      .slip-pin {
+        font-size: 16pt !important;
+        font-weight: 800 !important;
+        font-family: monospace !important;
+        letter-spacing: 2px !important;
+      }
+
+      .slip-bottom {
+        display: flex !important;
+        gap: 2.5mm !important;
+        align-items: center !important;
+        border-top: 1px solid #999999 !important;
+        padding-top: 1.5mm !important;
+      }
+
+      .slip-qr {
+        width: 24mm !important;
+        height: 24mm !important;
+        object-fit: contain !important;
+        flex-shrink: 0 !important;
+        background: transparent !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+      }
+
+      .slip-meta {
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.8mm !important;
+      }
+
+      .slip-url {
+        font-size: 7.5pt !important;
+        font-family: monospace !important;
+        word-break: break-all !important;
+        font-weight: 600 !important;
+      }
+
+      .slip-instruction {
+        font-size: 7pt !important;
+        line-height: 1.2 !important;
+      }
+
+      .slip-warning {
+        font-size: 7pt !important;
+        font-weight: 700 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="nav-bar no-print">
+      <h1 class="page-title">報到單列印</h1>
+      <a href="start.html" class="nav-link">回賽事入口</a>
+    </header>
+
+    <section class="toolbar no-print" aria-label="工具列">
+      <div class="toolbar-row">
+        <label for="sheetFile" class="toolbar-label">選擇名單檔案（player-pins.csv）</label>
+        <input type="file" id="sheetFile" class="sheet-file-input" accept=".csv,text/csv,text/plain">
+      </div>
+
+      <div class="toolbar-row">
+        <label for="sheetText" class="toolbar-label">或貼上 CSV 內容</label>
+        <span class="toolbar-hint">支援 UTF-8 BOM、含引號欄位與 id,name,pin 欄名（第一列）</span>
+        <textarea id="sheetText" class="sheet-textarea" placeholder="在此貼上 player-pins.csv 內容，例如：&#10;id,name,pin&#10;R001,小明,123456&#10;R002,小華,654321"></textarea>
+      </div>
+
+      <div class="toolbar-actions">
+        <div class="btn-group">
+          <button type="button" id="sheetPrint" class="btn btn-primary">列印</button>
+          <button type="button" id="sheetClear" class="btn btn-secondary">清除</button>
+        </div>
+        <div class="toolbar-stats">
+          人數：<span id="sheetCount" class="sheet-count-value">0</span> 位
+        </div>
+      </div>
+    </section>
+
+    <section id="sheetProblems" class="sheet-problems no-print" style="display: none;" aria-live="polite"></section>
+
+    <main id="sheetContainer" class="slips-grid">
+      <div class="sheet-empty-hint no-print">請選擇或貼上選手名單 CSV（player-pins.csv），系統將在此產生報到單以供預覽與列印。</div>
+    </main>
+  </div>
+
+  <script src="common.js"></script>
+  <script>
+    let eventName = '';
+
+    function getEntryUrl() {
+      const origin = window.location.origin;
+      if (!origin || origin === 'null') {
+        return 'http://localhost:8787/web/start.html';
+      }
+      return origin + '/web/start.html';
+    }
+
+    async function loadSnapshot() {
+      try {
+        const res = await fetch('../snapshot.json', { cache: 'no-cache' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.event && data.event.name) {
+            eventName = data.event.name;
+            document.querySelectorAll('.slip-event').forEach(el => {
+              el.textContent = eventName;
+            });
+          }
+        }
+      } catch (err) {
+        eventName = '';
+      }
+    }
+
+    function parseCSV(text) {
+      if (!text) return [];
+      if (text.charCodeAt(0) === 0xFEFF) {
+        text = text.slice(1);
+      }
+
+      const rows = [];
+      let row = [];
+      let field = '';
+      let inQuotes = false;
+      let i = 0;
+
+      while (i < text.length) {
+        const c = text[i];
+        if (inQuotes) {
+          if (c === '"') {
+            if (i + 1 < text.length && text[i + 1] === '"') {
+              field += '"';
+              i += 2;
+            } else {
+              inQuotes = false;
+              i++;
+            }
+          } else {
+            field += c;
+            i++;
+          }
+        } else {
+          if (c === '"') {
+            inQuotes = true;
+            i++;
+          } else if (c === ',') {
+            row.push(field);
+            field = '';
+            i++;
+          } else if (c === '\r') {
+            if (i + 1 < text.length && text[i + 1] === '\n') {
+              i++;
+            }
+            row.push(field);
+            rows.push(row);
+            row = [];
+            field = '';
+            i++;
+          } else if (c === '\n') {
+            row.push(field);
+            rows.push(row);
+            row = [];
+            field = '';
+            i++;
+          } else {
+            field += c;
+            i++;
+          }
+        }
+      }
+      if (field !== '' || row.length > 0) {
+        row.push(field);
+        rows.push(row);
+      }
+      return rows;
+    }
+
+    function processData(text) {
+      const rows = parseCSV(text);
+      if (!rows || rows.length === 0) {
+        clearRender();
+        return;
+      }
+
+      let startIdx = 0;
+      let idCol = 0;
+      let nameCol = 1;
+      let pinCol = 2;
+
+      const firstRowNorm = rows[0].map(c => (c || '').trim().toLowerCase());
+      const fId = firstRowNorm.indexOf('id');
+      const fName = firstRowNorm.indexOf('name');
+      const fPin = firstRowNorm.indexOf('pin');
+
+      if (fId !== -1 && fPin !== -1) {
+        startIdx = 1;
+        idCol = fId;
+        nameCol = fName !== -1 ? fName : (fId === 0 ? 1 : 0);
+        pinCol = fPin;
+      }
+
+      const validSlips = [];
+      const problems = [];
+      const seenIds = new Set();
+
+      for (let r = startIdx; r < rows.length; r++) {
+        const row = rows[r];
+        if (row.every(c => !(c || '').trim())) {
+          continue;
+        }
+
+        const rowNum = r + 1;
+        const id = (row[idCol] || '').trim();
+        const name = (row[nameCol] || '').trim();
+        const pin = (row[pinCol] || '').trim();
+
+        if (!id || !name || !pin || row.length < 3) {
+          const missing = [];
+          if (!id) missing.push('編號');
+          if (!name) missing.push('姓名');
+          if (!pin) missing.push('PIN');
+          problems.push(`第 ${rowNum} 列：缺少必要欄位（${missing.join('、')}）`);
+          continue;
+        }
+
+        if (!/^\d{6}$/.test(pin)) {
+          problems.push(`第 ${rowNum} 列（編號 ${id}）：PIN「${pin}」不是 6 位數字`);
+          continue;
+        }
+
+        if (seenIds.has(id)) {
+          problems.push(`第 ${rowNum} 列（編號 ${id}）：選手編號重複`);
+          continue;
+        }
+
+        seenIds.add(id);
+        validSlips.push({ id, name, pin });
+      }
+
+      renderResults(validSlips, problems);
+    }
+
+    function renderResults(validSlips, problems) {
+      document.getElementById('sheetCount').textContent = String(validSlips.length);
+
+      const probEl = document.getElementById('sheetProblems');
+      if (problems.length > 0) {
+        probEl.style.display = 'block';
+        probEl.innerHTML = `
+          <div class="problems-title">資料問題清單（共 ${problems.length} 列，已略過不印）：</div>
+          <ul class="problems-list">
+            ${problems.map(p => `<li>${escapeHtml(p)}</li>`).join('')}
+          </ul>
+        `;
+      } else {
+        probEl.style.display = 'none';
+        probEl.innerHTML = '';
+      }
+
+      const container = document.getElementById('sheetContainer');
+      if (validSlips.length === 0) {
+        if (problems.length > 0) {
+          container.innerHTML = '<div class="sheet-empty-hint no-print">所有輸入資料皆有問題，沒有可列印的報到單。請修正上方問題後再試。</div>';
+        } else {
+          container.innerHTML = '<div class="sheet-empty-hint no-print">請選擇或貼上選手名單 CSV（player-pins.csv），系統將在此產生報到單以供預覽與列印。</div>';
+        }
+        return;
+      }
+
+      const entryUrl = getEntryUrl();
+      const html = validSlips.map(row => `
+        <div class="slip">
+          <div class="slip-event">${escapeHtml(eventName)}</div>
+          <div class="slip-header">
+            <div class="slip-id">${escapeHtml(row.id)}</div>
+            <div class="slip-name">${escapeHtml(row.name)}</div>
+          </div>
+          <div class="slip-pin-row">
+            <span class="slip-pin-label">PIN：</span>
+            <span class="slip-pin">${escapeHtml(row.pin)}</span>
+          </div>
+          <div class="slip-bottom">
+            <img src="../qr.svg" class="slip-qr" alt="QR 碼" onerror="this.remove()">
+            <div class="slip-meta">
+              <div class="slip-url">${escapeHtml(entryUrl)}</div>
+              <div class="slip-instruction">用手機掃 QR，或輸入上面的網址，點『找桌、回報成績』，輸入編號與 PIN</div>
+              <div class="slip-warning">PIN 是你的密碼，不要給別人看</div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      container.innerHTML = html;
+    }
+
+    function clearRender() {
+      document.getElementById('sheetCount').textContent = '0';
+      const probEl = document.getElementById('sheetProblems');
+      probEl.innerHTML = '';
+      probEl.style.display = 'none';
+      document.getElementById('sheetContainer').innerHTML = '<div class="sheet-empty-hint no-print">請選擇或貼上選手名單 CSV（player-pins.csv），系統將在此產生報到單以供預覽與列印。</div>';
+    }
+
+    function clearAll() {
+      document.getElementById('sheetFile').value = '';
+      document.getElementById('sheetText').value = '';
+      clearRender();
+    }
+
+    document.getElementById('sheetFile').addEventListener('change', function(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const text = evt.target.result;
+        document.getElementById('sheetText').value = text;
+        processData(text);
+      };
+      reader.readAsText(file, 'utf-8');
+    });
+
+    document.getElementById('sheetText').addEventListener('input', function() {
+      processData(this.value);
+    });
+
+    document.getElementById('sheetText').addEventListener('change', function() {
+      processData(this.value);
+    });
+
+    document.getElementById('sheetClear').addEventListener('click', clearAll);
+
+    document.getElementById('sheetPrint').addEventListener('click', function() {
+      const count = parseInt(document.getElementById('sheetCount').textContent, 10) || 0;
+      if (count === 0) {
+        alert('目前沒有可列印的報到單，請先選擇或貼上 CSV 資料。');
+        return;
+      }
+      window.print();
+    });
+
+    loadSnapshot();
+  </script>
+</body>
+</html>
