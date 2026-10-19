@@ -345,6 +345,10 @@ header {
       padding: 18px;
       max-width: 400px;
       width: 100%;
+      max-height: calc(100vh - 32px);
+      max-height: calc(100dvh - 32px);
+      display: flex;
+      flex-direction: column;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     }
 
@@ -353,6 +357,7 @@ header {
       font-weight: 700;
       margin-bottom: 8px;
       color: var(--accent-text);
+      flex-shrink: 0;
     }
 
 .modal-msg {
@@ -361,12 +366,17 @@ header {
       margin-bottom: 16px;
       color: var(--text-primary);
       word-break: break-word;
+      overflow-y: auto;
+      flex: 1 1 auto;
+      min-height: 0;
+      -webkit-overflow-scrolling: touch;
     }
 
 .modal-btns {
       display: flex;
       gap: 10px;
       justify-content: flex-end;
+      flex-shrink: 0;
     }
 
 #ejUnlock, #ejPinReset, #ejNewPinDone, #ejLogout, #ejRefreshConflicts {

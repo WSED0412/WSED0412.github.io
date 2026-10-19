@@ -519,6 +519,10 @@ header {
       border-radius: 12px;
       max-width: 330px;
       width: 100%;
+      max-height: calc(100vh - 32px);
+      max-height: calc(100dvh - 32px);
+      display: flex;
+      flex-direction: column;
       padding: 16px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
       text-align: center;
@@ -529,6 +533,7 @@ header {
       font-weight: 800;
       color: var(--text-primary);
       margin-bottom: 8px;
+      flex-shrink: 0;
     }
 
 .modal-msg {
@@ -537,12 +542,17 @@ header {
       color: var(--accent-text);
       margin-bottom: 16px;
       line-height: 1.5;
+      overflow-y: auto;
+      flex: 1 1 auto;
+      min-height: 0;
+      -webkit-overflow-scrolling: touch;
     }
 
 .modal-btns {
       display: flex;
       justify-content: center;
       gap: 10px;
+      flex-shrink: 0;
     }
 
 .modal-btns .btn {

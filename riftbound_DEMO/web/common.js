@@ -329,10 +329,10 @@ function confirmDialog(opts = {}) {
       modal.className = 'modal-overlay';
       modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;padding:16px;z-index:99999;box-sizing:border-box;';
       modal.innerHTML = `
-        <div class="modal-box" style="background:#0b1924;border:2px solid #ef4444;border-radius:12px;max-width:340px;width:100%;padding:16px;box-sizing:border-box;color:#fff;text-align:center;">
-          <div id="confirmTitle" class="modal-title" style="font-size:1.1rem;font-weight:800;color:#f87171;margin-bottom:8px;"></div>
-          <div id="confirmMessage" class="modal-msg" style="font-size:0.9rem;color:#e2e8f0;margin-bottom:14px;line-height:1.4;white-space:pre-line;"></div>
-          <div class="modal-btns" style="display:flex;justify-content:center;gap:10px;">
+        <div class="modal-box" style="background:#0b1924;border:2px solid #ef4444;border-radius:12px;max-width:340px;width:100%;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);display:flex;flex-direction:column;padding:16px;box-sizing:border-box;color:#fff;text-align:center;">
+          <div id="confirmTitle" class="modal-title" style="font-size:1.1rem;font-weight:800;color:#f87171;margin-bottom:8px;flex-shrink:0;"></div>
+          <div id="confirmMessage" class="modal-msg" style="font-size:0.9rem;color:#e2e8f0;margin-bottom:14px;line-height:1.4;white-space:pre-line;overflow-y:auto;flex:1 1 auto;min-height:0;-webkit-overflow-scrolling:touch;"></div>
+          <div class="modal-btns" style="display:flex;justify-content:center;gap:10px;flex-shrink:0;">
             <button type="button" id="confirmYes" class="btn btn-danger" style="min-height:44px;min-width:80px;height:44px;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:700;font-size:0.9rem;background:#ef4444;color:#fff;border:none;box-sizing:border-box;"></button>
             <button type="button" id="confirmNo" class="btn btn-secondary" style="min-height:44px;min-width:80px;height:44px;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:700;font-size:0.9rem;background:#334155;color:#fff;border:none;box-sizing:border-box;"></button>
           </div>

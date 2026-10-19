@@ -142,11 +142,13 @@ header {
       border-radius: 10px;
       padding: 10px 18px;
       margin-bottom: 16px;
-      font-size: clamp(0.95rem, 1.5vw, 1.2rem);
+      font-size: clamp(1.25rem, 2.4vw, 2.5rem);
       color: var(--text-primary);
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-wrap: wrap;
+      word-break: break-word;
     }
 
 .announcement-tag {
@@ -272,7 +274,7 @@ header {
     }
 
 .extra-turns-desc {
-      font-size: clamp(1rem, 1.8vw, 1.4rem);
+      font-size: clamp(1rem, 1.8vw, 2rem);
       color: var(--text-primary);
     }
 
@@ -433,7 +435,7 @@ header {
     if (clockDcoDesc) {
       const hint = document.createElement('div');
       hint.className = 'net-hint';
-      hint.textContent = '可以先看會場的大螢幕或牆上的配對表，或直接問裁判';
+      hint.textContent = '計時畫面暫時中斷，請留意現場裁判的廣播';
       clockDcoDesc.appendChild(hint);
     }
 
@@ -495,7 +497,7 @@ header {
       const diffMs = Date.now() - lastContentChangeTime;
       if (diffMs > 90000) {
         const mins = Math.max(1, Math.floor(diffMs / 60000));
-        staleEl.innerHTML = `資料已 ${mins} 分鐘沒更新，請留意現場廣播<div class="net-hint">可以先看會場的大螢幕或牆上的配對表，或直接問裁判</div>`;
+        staleEl.innerHTML = `資料已 ${mins} 分鐘沒更新，請留意現場廣播<div class="net-hint">畫面資料暫時沒有更新，請以現場裁判的廣播為準</div>`;
         staleEl.style.display = 'block';
       } else {
         staleEl.style.display = 'none';

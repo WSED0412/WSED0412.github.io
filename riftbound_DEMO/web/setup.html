@@ -527,6 +527,10 @@ header {
       border-radius: 12px;
       max-width: 440px;
       width: 100%;
+      max-height: calc(100vh - 32px);
+      max-height: calc(100dvh - 32px);
+      display: flex;
+      flex-direction: column;
       padding: 20px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
       box-sizing: border-box;
@@ -537,6 +541,7 @@ header {
       font-weight: 800;
       color: var(--danger-text);
       margin-bottom: 10px;
+      flex-shrink: 0;
     }
 
 .modal-msg {
@@ -545,12 +550,17 @@ header {
       margin-bottom: 18px;
       line-height: 1.5;
       white-space: pre-line;
+      overflow-y: auto;
+      flex: 1 1 auto;
+      min-height: 0;
+      -webkit-overflow-scrolling: touch;
     }
 
 .modal-btns {
       display: flex;
       justify-content: flex-end;
       gap: 10px;
+      flex-shrink: 0;
     }
 </style>
 </head>
@@ -858,8 +868,13 @@ header {
 
         <div class="pin-display-box">
           <div class="pin-label">主辦管理員 PIN 碼（控制台專用）</div>
-          <div id="setupAdminPin" class="pin-huge"></div>
-          <div class="pin-sub">請妥善保存，切勿外流給非主辦人員</div>
+          <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 8px 0;">
+            <div id="setupAdminPin" class="pin-huge" style="margin: 0;"></div>
+            <button type="button" id="setupAdminPinCopy" class="btn btn-secondary" style="min-height: 44px; padding: 0 16px; font-size: 0.95rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;">複製</button>
+          </div>
+          <div id="setupAdminPinWarn" style="color: var(--danger-text, #ef4444); font-size: 0.88rem; font-weight: 700; margin: 8px 0; line-height: 1.5;">⚠ 主辦 PIN 是整場賽事的最高權限，只給你自己和信任的主辦，不要貼到群組或公開的地方。</div>
+          <div id="setupAdminPinCopyFail" style="color: var(--danger-text, #ef4444); font-size: 0.85rem; font-weight: 700; margin-top: 4px; display: none;">複製失敗，請長按數字手動複製</div>
+          <div class="pin-sub" style="margin-top: 6px;">請妥善保存，切勿外流給非主辦人員</div>
         </div>
 
         <div class="success-actions">
@@ -2000,6 +2015,11 @@ header {
       const adminPinEl = document.getElementById('setupAdminPin');
       adminPinEl.textContent = data.admin_pin || '';
 
+      const copyBtn = document.getElementById('setupAdminPinCopy');
+      if (copyBtn) copyBtn.textContent = '複製';
+      const failEl = document.getElementById('setupAdminPinCopyFail');
+      if (failEl) failEl.style.display = 'none';
+
       const downloadBtn = document.getElementById('setupPinsDownload');
       if (createdPlayers.length > 0) {
         downloadBtn.style.display = 'inline-flex';
@@ -2011,6 +2031,64 @@ header {
       document.getElementById('setupFormSection').style.display = 'none';
       document.getElementById('setupSuccessSection').style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    let copyPinResetTimer = null;
+    async function copyAdminPin() {
+      const pinEl = document.getElementById('setupAdminPin');
+      const copyBtn = document.getElementById('setupAdminPinCopy');
+      const failEl = document.getElementById('setupAdminPinCopyFail');
+      const pinText = (pinEl ? pinEl.textContent : '').trim();
+      if (!pinText) return;
+
+      if (failEl) failEl.style.display = 'none';
+
+      let success = false;
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        try {
+          await navigator.clipboard.writeText(pinText);
+          success = true;
+        } catch (e) {
+          success = false;
+        }
+      }
+
+      if (!success) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = pinText;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.top = '0';
+          ta.style.left = '-9999px';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          const res = document.execCommand('copy');
+          document.body.removeChild(ta);
+          if (res) {
+            success = true;
+          }
+        } catch (e) {
+          success = false;
+        }
+      }
+
+      if (success) {
+        if (copyBtn) {
+          copyBtn.textContent = '已複製';
+          if (copyPinResetTimer) clearTimeout(copyPinResetTimer);
+          copyPinResetTimer = setTimeout(() => {
+            copyBtn.textContent = '複製';
+          }, 2000);
+        }
+      } else {
+        if (failEl) {
+          failEl.textContent = '複製失敗，請長按數字手動複製';
+          failEl.style.display = 'block';
+        }
+      }
     }
 
     function downloadPlayerPinsCsv() {
@@ -2250,6 +2328,12 @@ header {
         );
       });
 
+
+      // 複製主辦 PIN
+      const copyPinBtn = document.getElementById('setupAdminPinCopy');
+      if (copyPinBtn) {
+        copyPinBtn.addEventListener('click', copyAdminPin);
+      }
 
       // 下載選手 PIN 清單
       document.getElementById('setupPinsDownload').addEventListener('click', downloadPlayerPinsCsv);

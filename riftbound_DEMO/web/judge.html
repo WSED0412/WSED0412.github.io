@@ -654,10 +654,16 @@ header {
       border-radius: 6px;
       font-size: 1rem;
       font-weight: 700;
-      min-height: 40px;
+      min-height: 44px;
       outline: none;
       -webkit-appearance: none;
       appearance: none;
+      padding-right: 36px;
+      box-sizing: border-box;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 14px;
     }
 
 .checkbox-row {
@@ -732,6 +738,10 @@ header {
       border-radius: 12px;
       max-width: 320px;
       width: 100%;
+      max-height: calc(100vh - 32px);
+      max-height: calc(100dvh - 32px);
+      display: flex;
+      flex-direction: column;
       padding: 16px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     }
@@ -741,6 +751,7 @@ header {
       font-weight: 800;
       color: var(--danger-text);
       margin-bottom: 8px;
+      flex-shrink: 0;
     }
 
 .modal-msg {
@@ -749,12 +760,40 @@ header {
       margin-bottom: 14px;
       line-height: 1.4;
       word-break: break-all;
+      overflow-y: auto;
+      flex: 1 1 auto;
+      min-height: 0;
+      -webkit-overflow-scrolling: touch;
     }
 
 .modal-btns {
       display: flex;
       justify-content: flex-end;
       gap: 8px;
+      flex-shrink: 0;
+    }
+
+.judge-target-bar {
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.4;
+      box-sizing: border-box;
+    }
+
+.judge-target-bar.empty {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-sub);
+    }
+
+.judge-target-bar.active {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1.5px solid var(--accent-text);
+      color: var(--accent-text);
     }
 
 .disconnected-overlay {
@@ -1026,6 +1065,9 @@ header {
           <input type="text" id="resRule" maxlength="20" class="input-text" placeholder="例如：703.8.d 或 雙方遲到">
         </div>
 
+        <!-- 目前操作桌次標籤 (Item 2) -->
+        <div id="judgeTargetBar" class="judge-target-bar empty">尚未選擇操作桌次（請先在上方查桌）</div>
+
         <!-- 判定按鈕 -->
         <button type="button" id="resSubmit" class="btn btn-warning btn-block" style="margin-bottom: 12px;">
           送出判定結果（需確認）
@@ -1061,6 +1103,9 @@ header {
           <label for="extReason" class="form-label">補時原因（1～10 字）</label>
           <input type="text" id="extReason" maxlength="10" class="input-text" placeholder="例如：驗牌">
         </div>
+
+        <!-- 目前操作桌次標籤 (Item 2) -->
+        <div id="judgeTargetBarExt" class="judge-target-bar empty">尚未選擇操作桌次（請先在上方查桌）</div>
 
         <div class="form-row">
           <button type="button" id="extSubmit" class="btn btn-primary" style="flex: 1;">送出補時</button>
@@ -1411,12 +1456,21 @@ header {
         document.getElementById('disconnectedScreen').style.display = 'none';
         serverOffsetMs = poller.now() - Date.now();
         lastContentChangeTime = Date.now();
+        const prevRound = snapshotData && snapshotData.round ? snapshotData.round.number : null;
+        const newRound = data && data.round ? data.round.number : null;
         snapshotData = data;
         window.snapshotData = data;
+
+        if (prevRound !== null && newRound !== null && prevRound !== newRound) {
+          currentTable = null;
+          renderTableDetail(null);
+        }
 
         renderVersionWarning();
         if (currentTable) {
           renderTableDetail(currentTable);
+        } else {
+          updateJudgeTargetBars(null);
         }
         renderLateList();
         updateZoneFilterOptions();
@@ -2247,13 +2301,47 @@ header {
       }
     }
 
+    // 更新目前操作桌次常駐標籤 (UI/UX 改善 2)
+    function updateJudgeTargetBars(tb) {
+      const bar = document.getElementById('judgeTargetBar');
+      const barExt = document.getElementById('judgeTargetBarExt');
+      if (!tb) {
+        const emptyText = '尚未選擇操作桌次（請先在上方查桌）';
+        if (bar) {
+          bar.className = 'judge-target-bar empty';
+          bar.textContent = emptyText;
+        }
+        if (barExt) {
+          barExt.className = 'judge-target-bar empty';
+          barExt.textContent = emptyText;
+        }
+        return;
+      }
+
+      const p1Name = (tb.p1 && tb.p1.name) ? escapeHtml(tb.p1.name) : '無選手';
+      const p2Name = (tb.p2 && tb.p2.name) ? escapeHtml(tb.p2.name) : '無選手';
+      const tblStr = (tb.table !== null && tb.table !== undefined) ? escapeHtml(String(tb.table)) : '—';
+      const activeHtml = `目前操作：第 ${tblStr} 桌（${p1Name} vs ${p2Name}）`;
+
+      if (bar) {
+        bar.className = 'judge-target-bar active';
+        bar.innerHTML = activeHtml;
+      }
+      if (barExt) {
+        barExt.className = 'judge-target-bar active';
+        barExt.innerHTML = activeHtml;
+      }
+    }
+
     // 渲染桌子詳情 (PROJECT.md 硬性規定 5)
     function renderTableDetail(tb) {
       const container = document.getElementById('tableDetail');
       if (!tb) {
         container.innerHTML = '<div class="empty-state-sm">請點選上方爭議桌或輸入桌號查桌</div>';
+        updateJudgeTargetBars(null);
         return;
       }
+      updateJudgeTargetBars(tb);
 
       const p1Name = tb.p1 ? escapeHtml(tb.p1.name) : '無選手';
       const p1Id = tb.p1 ? escapeHtml(tb.p1.id) : '';
@@ -3185,6 +3273,7 @@ header {
       document.addEventListener('visibilitychange', handleVisibilityChange);
 
       // 初始化
+      updateJudgeTargetBars(null);
       poller.start();
       setInterval(updateLateTimes, 1000);
     });

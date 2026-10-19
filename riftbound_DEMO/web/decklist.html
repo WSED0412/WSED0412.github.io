@@ -265,8 +265,33 @@ header {
       max-width: 330px;
       text-align: center;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-      max-height: 92svh;
+      max-height: calc(100vh - 32px);
+      max-height: calc(100dvh - 32px);
+      display: flex;
+      flex-direction: column;
+    }
+
+.confirm-modal-title {
+      flex-shrink: 0;
+    }
+
+.confirm-outcome-text {
+      flex-shrink: 0;
+    }
+
+#decklistPreview {
       overflow-y: auto;
+      flex: 1 1 auto;
+      min-height: 0;
+      -webkit-overflow-scrolling: touch;
+    }
+
+.confirm-note {
+      flex-shrink: 0;
+    }
+
+.confirm-btns-row {
+      flex-shrink: 0;
     }
 
 .nav-links {

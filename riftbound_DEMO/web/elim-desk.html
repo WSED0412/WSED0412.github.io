@@ -326,6 +326,10 @@ input[type="text"]:focus, input[type="password"]:focus {
       border-radius: 12px;
       width: 100%;
       max-width: 420px;
+      max-height: calc(100vh - 32px);
+      max-height: calc(100dvh - 32px);
+      display: flex;
+      flex-direction: column;
       padding: 20px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
@@ -335,6 +339,7 @@ input[type="text"]:focus, input[type="password"]:focus {
       font-weight: 800;
       color: var(--accent-text);
       margin-bottom: 8px;
+      flex-shrink: 0;
     }
 
 .modal-msg {
@@ -343,12 +348,17 @@ input[type="text"]:focus, input[type="password"]:focus {
       line-height: 1.5;
       margin-bottom: 18px;
       word-break: break-word;
+      overflow-y: auto;
+      flex: 1 1 auto;
+      min-height: 0;
+      -webkit-overflow-scrolling: touch;
     }
 
 .modal-btns {
       display: flex;
       justify-content: flex-end;
       gap: 10px;
+      flex-shrink: 0;
     }
 </style>
 </head>

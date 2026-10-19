@@ -379,7 +379,7 @@ html, body {
       </header>
 
       <!-- 查無入口清單提示 -->
-      <div id="startEmpty" class="start-empty" style="display: none;">這份資料沒有入口清單</div>
+      <div id="startEmpty" class="start-empty" style="display: none;">目前還沒有可以進入的畫面，請稍候或詢問現場工作人員</div>
 
       <!-- 選手分塊 -->
       <section id="startGroupPlayer" class="start-group" style="display: none;">
@@ -400,7 +400,7 @@ html, body {
       </section>
 
       <!-- 頁面最下方小字 -->
-      <footer id="startFooter" class="start-footer">這個網址就是全場入口，QR 只要印這一個</footer>
+      <footer id="startFooter" class="start-footer">全場賽事資訊入口，建議加入書籤</footer>
     </main>
   </div>
 
@@ -494,7 +494,7 @@ html, body {
     function showEmptyPages() {
       const emptyEl = document.getElementById('startEmpty');
       if (emptyEl) {
-        emptyEl.textContent = '這份資料沒有入口清單';
+        emptyEl.textContent = '目前還沒有可以進入的畫面，請稍候或詢問現場工作人員';
         emptyEl.style.display = 'block';
       }
       const gp = document.getElementById('startGroupPlayer');

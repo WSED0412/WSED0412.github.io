@@ -648,6 +648,10 @@ button[data-next="true"]:hover {
       border-radius: 12px;
       max-width: 440px;
       width: 100%;
+      max-height: calc(100vh - 32px);
+      max-height: calc(100dvh - 32px);
+      display: flex;
+      flex-direction: column;
       padding: 20px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     }
@@ -666,11 +670,37 @@ button[data-next="true"]:hover {
       line-height: 1.2;
     }
 
+#roundVoidBlock {
+      flex-direction: column;
+      width: 100%;
+    }
+
+#roundVoidDetails {
+      width: 100%;
+    }
+
+#roundVoidDetails summary {
+      min-height: 44px;
+      line-height: 24px;
+      padding: 10px 0;
+      box-sizing: border-box;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-sub);
+      user-select: none;
+    }
+
+#roundVoidDetails summary:hover {
+      color: var(--text-primary);
+    }
+
 .modal-title {
       font-size: 1.15rem;
       font-weight: 800;
       color: var(--danger-text);
       margin-bottom: 10px;
+      flex-shrink: 0;
     }
 
 .modal-msg {
@@ -679,12 +709,17 @@ button[data-next="true"]:hover {
       margin-bottom: 18px;
       line-height: 1.5;
       white-space: pre-line;
+      overflow-y: auto;
+      flex: 1 1 auto;
+      min-height: 0;
+      -webkit-overflow-scrolling: touch;
     }
 
 .modal-btns {
       display: flex;
       justify-content: flex-end;
       gap: 10px;
+      flex-shrink: 0;
     }
 
 .disconnected-overlay {
@@ -779,9 +814,16 @@ button[data-next="true"]:hover {
       </div>
 
       <!-- 作廢這一輪並重排 (DATA-CONTRACT 10.10) -->
-      <div id="roundVoidBlock" style="display: none; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--panel-border); align-items: center; gap: 10px; flex-wrap: wrap;">
-        <button type="button" id="roundVoidBtn" class="btn btn-danger btn-sm" style="min-height: 44px; color: #fff;">作廢這一輪並重排</button>
-        <span id="roundVoidWhy" style="font-size: 0.85rem; color: var(--warning-text); font-weight: 600;"></span>
+      <div id="roundVoidBlock" style="display: none; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--panel-border); flex-direction: column; gap: 8px; width: 100%;">
+        <details id="roundVoidDetails" style="width: 100%;">
+          <summary style="min-height: 44px; line-height: 24px; padding: 10px 0; box-sizing: border-box; cursor: pointer; font-size: 0.9rem; font-weight: 600; color: var(--text-sub); user-select: none;">
+            進階操作：作廢這一輪並重排（有風險，先看預覽）
+          </summary>
+          <div style="margin-top: 8px; padding: 10px 12px; background: var(--input-bg); border: 1px solid var(--panel-border); border-radius: 8px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <button type="button" id="roundVoidBtn" class="btn btn-danger btn-sm" style="min-height: 44px; color: #fff;">作廢這一輪並重排</button>
+          </div>
+        </details>
+        <span id="roundVoidWhy" style="font-size: 0.85rem; color: var(--warning-text); font-weight: 600; display: none;"></span>
         <div id="roundVoidMsg" class="msg-box" style="display: none; width: 100%; margin-top: 6px;"></div>
       </div>
     </section>
