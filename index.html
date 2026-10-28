@@ -30,8 +30,9 @@
     --ink: #f4eefb;
     --text-body: #d2c8de;
     --muted: #a897bd;
-    --muted2: #6d5c85;
+    --muted2: #8f7fa8;
     --magenta: #e73473;
+    --magenta-fill: #d82c69;
     --magenta-glow: rgba(231, 52, 115, 0.22);
     --magenta-subtle: rgba(231, 52, 115, 0.12);
     --mint: #2ee6a8;
@@ -157,8 +158,8 @@
   }
   .langs button[aria-pressed="true"] {
     color: #fff;
-    background: var(--magenta);
-    border-color: var(--magenta);
+    background: var(--magenta-fill);
+    border-color: var(--magenta-fill);
     font-weight: 700;
   }
 
@@ -236,7 +237,7 @@
     font-size: var(--fs-base);
     line-height: 1.85;
     color: var(--text-body);
-    max-width: 44em;
+    max-width: 38em;
     margin: 0 0 18px;
   }
   .hero-narrative strong {
@@ -269,6 +270,15 @@
     font-style: normal;
     color: var(--mint);
     font-weight: 700;
+  }
+
+  /* 長文行寬：每行不超過約 80 字元 */
+  .case-summary,
+  .case-details li,
+  .field-validation-list li,
+  figcaption {
+    max-width: 40em;
+    text-wrap: pretty;
   }
 
   /* 區塊骨架 */
@@ -398,7 +408,7 @@
     line-height: 1.8;
     color: var(--text-body);
     margin: 0 0 20px;
-    max-width: 48em;
+    max-width: 40em;
   }
   .case-summary strong {
     color: var(--ink);
@@ -413,6 +423,7 @@
     gap: 10px;
   }
   .case-details li {
+    text-wrap: pretty;
     font-size: var(--fs-base);
     color: var(--text-body);
     line-height: 1.7;
