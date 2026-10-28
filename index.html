@@ -5,6 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ed — 實體賽事系統與現場直播製作</title>
 <meta name="description" content="512人規模實體賽事系統與現場直播導播。從報到、瑞士輪配對、大螢幕桌況到自動化直播疊圖，讓比賽準時打完、現場不打結。">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:title" content="Ed — 實體賽事系統與現場直播製作">
+<meta property="og:description" content="512人規模實體賽事系統與現場直播導播。從報到、瑞士輪配對、大螢幕桌況到自動化直播疊圖，讓比賽準時打完、現場不打結。">
+<meta property="og:url" content="https://wsed0412.github.io/">
+<meta property="og:image" content="https://wsed0412.github.io/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="南科贊美酒店宴會廳：兩側大螢幕顯示牌桌調度看板與賽程">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ed — 實體賽事系統與現場直播製作">
+<meta name="twitter:description" content="512人規模實體賽事系統與現場直播導播。從報到、瑞士輪配對、大螢幕桌況到自動化直播疊圖，讓比賽準時打完、現場不打結。">
+<meta name="twitter:image" content="https://wsed0412.github.io/img/og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -39,6 +52,23 @@
     -webkit-text-size-adjust: 100%;
     word-break: break-word;
     letter-spacing: 0.01em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--mint);
+    outline-offset: 3px;
+  }
+  .langs button:focus-visible,
+  #copyBtn:focus-visible {
+    outline-color: var(--magenta);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      transition: none !important;
+      animation: none !important;
+      scroll-behavior: auto !important;
+    }
   }
 
   .wrap {
@@ -109,7 +139,14 @@
     letter-spacing: 0.08em;
     cursor: pointer;
     min-height: 28px;
-    transition: all 0.15s ease;
+    position: relative;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  /* 外觀不變，點擊區擴到 44px 高 */
+  .langs button::before {
+    content: "";
+    position: absolute;
+    inset: -8px -4px;
   }
   .langs button:hover {
     color: var(--ink);
@@ -580,7 +617,7 @@
     font-weight: 700;
     border-bottom: 1px solid rgba(46, 230, 168, 0.45);
     padding-bottom: 2px;
-    transition: all 0.15s ease;
+    transition: color 0.15s ease, border-bottom-color 0.15s ease, text-shadow 0.15s ease;
   }
   .deck-link:hover {
     color: #fff;
@@ -679,7 +716,7 @@
     font-weight: 700;
     letter-spacing: 0.08em;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
   }
   #copyBtn:hover {
     border-color: var(--magenta);
@@ -916,7 +953,7 @@
       <!-- 放大會場全景 -->
       <figure class="photo-hero">
         <a href="img/venue-hall.jpg" target="_blank" rel="noopener">
-          <img src="img/venue-hall.jpg" loading="lazy" alt="南科贊美酒店宴會廳全景，兩側大螢幕與選手席">
+          <img src="img/venue-hall.jpg" loading="lazy" alt="南科贊美酒店宴會廳全景，兩側大螢幕與選手席" width="1400" height="788">
         </a>
         <figcaption>
           <span data-lang="zh">南科贊美酒店宴會廳全景：兩側大螢幕即時投影桌況與賽程，選手席與觀賽走道完整分流，512 人在一天內順暢打完全部輪次。</span>
@@ -928,7 +965,7 @@
       <div class="photo-trio-asym">
         <figure>
           <a href="img/venue-screens.jpg" target="_blank" rel="noopener">
-            <img src="img/venue-screens.jpg" loading="lazy" alt="主舞台兩側螢幕：左邊牌桌調度看板、右邊到場與賽程">
+            <img src="img/venue-screens.jpg" loading="lazy" alt="主舞台兩側螢幕：左邊牌桌調度看板、右邊到場與賽程" width="1400" height="788">
           </a>
           <figcaption>
             <span data-lang="zh">主舞台螢幕配置：左側投影四桌即時戰況與呼叫序號，右側顯示即時報到人數與賽程表。</span>
@@ -938,7 +975,7 @@
         <div class="photo-stack">
           <figure>
             <a href="img/venue-board.jpg" target="_blank" rel="noopener">
-              <img src="img/venue-board.jpg" loading="lazy" alt="大螢幕顯示到場人數、各區進度與最近戰果">
+              <img src="img/venue-board.jpg" loading="lazy" alt="大螢幕顯示到場人數、各區進度與最近戰果" width="1400" height="788">
             </a>
             <figcaption>
               <span data-lang="zh">大螢幕看板：各分區進度、報到率與最近幾場勝負輪播。</span>
@@ -947,7 +984,7 @@
           </figure>
           <figure>
             <a href="img/venue-seats.jpg" target="_blank" rel="noopener">
-              <img src="img/venue-seats.jpg" loading="lazy" alt="選手席，每張椅子都有座位編號牌">
+              <img src="img/venue-seats.jpg" loading="lazy" alt="選手席，每張椅子都有座位編號牌" width="1400" height="788">
             </a>
             <figcaption>
               <span data-lang="zh">選手席編號管理：椅背貼上專屬序號，與系統報到、帶位找人全程對齊。</span>
@@ -961,7 +998,7 @@
       <div class="photo-phones">
         <figure>
           <a href="img/zanmen-board.jpg" target="_blank" rel="noopener">
-            <img src="img/zanmen-board.jpg" loading="lazy" alt="贊鬥盃牌桌調度看板：四桌同時進行、待戰隊列與已完成場次">
+            <img src="img/zanmen-board.jpg" loading="lazy" alt="贊鬥盃牌桌調度看板：四桌同時進行、待戰隊列與已完成場次" width="1100" height="576">
           </a>
           <figcaption>
             <span data-lang="zh">牌桌調度看板：四桌同時開打，右側即時推進待戰隊列。</span>
@@ -970,7 +1007,7 @@
         </figure>
         <figure>
           <a href="img/zanmen-draw.jpg" target="_blank" rel="noopener">
-            <img src="img/zanmen-draw.jpg" loading="lazy" alt="選手抽籤與上台對戰籤表畫面">
+            <img src="img/zanmen-draw.jpg" loading="lazy" alt="選手抽籤與上台對戰籤表畫面" width="1100" height="562">
           </a>
           <figcaption>
             <span data-lang="zh">抽籤與上台顯示：清晰標示下一組登台對戰的名單。</span>
@@ -979,7 +1016,7 @@
         </figure>
         <figure>
           <a href="img/zanmen-overlay.jpg" target="_blank" rel="noopener">
-            <img src="img/zanmen-overlay.jpg" loading="lazy" alt="直播疊圖：桌號、輪次、倒數與雙方即時比分">
+            <img src="img/zanmen-overlay.jpg" loading="lazy" alt="直播疊圖：桌號、輪次、倒數與雙方即時比分" width="1100" height="575">
           </a>
           <figcaption>
             <span data-lang="zh">直播即時疊圖：桌號、輪次、選手與比分，全由賽務系統直接餵訊號。</span>
@@ -1076,7 +1113,7 @@
       <div class="photo-duo">
         <figure>
           <a href="img/board.jpg" target="_blank" rel="noopener">
-            <img src="img/board.jpg" loading="lazy" alt="主辦看的桌況板：哪幾桌還在打、補了幾分鐘、哪一桌在等裁判">
+            <img src="img/board.jpg" loading="lazy" alt="主辦看的桌況板：哪幾桌還在打、補了幾分鐘、哪一桌在等裁判" width="1100" height="619">
           </a>
           <figcaption>
             <span data-lang="zh">主辦全域桌況板：哪幾桌還在交戰、各桌補時進行了幾分鐘、哪一桌舉手等候裁判一目了然。</span>
@@ -1085,7 +1122,7 @@
         </figure>
         <figure>
           <a href="img/standings.jpg" target="_blank" rel="noopener">
-            <img src="img/standings.jpg" loading="lazy" alt="排名頁：名次、積分、戰績與三項同分指標">
+            <img src="img/standings.jpg" loading="lazy" alt="排名頁：名次、積分、戰績與三項同分指標" width="1100" height="707">
           </a>
           <figcaption>
             <span data-lang="zh">即時同分排名頁：嚴格依循官方規章的三項同分比序（OMW% 等），計算過程直接公開給選手看。</span>
@@ -1097,7 +1134,7 @@
       <!-- OBS 直播疊圖獨立寬圖 -->
       <figure class="photo-hero">
         <a href="img/overlay.jpg" target="_blank" rel="noopener">
-          <img src="img/overlay.jpg" loading="lazy" alt="OBS 疊圖：直連賽務資料庫的即時比分與對戰資訊">
+          <img src="img/overlay.jpg" loading="lazy" alt="OBS 疊圖：直連賽務資料庫的即時比分與對戰資訊" width="1100" height="619">
         </a>
         <figcaption>
           <span data-lang="zh">符文戰場 OBS 轉播疊圖：直連賽務主機，計分板、輪次、選手名稱隨對局進度自動即時切換，不需導播人工改字。</span>
@@ -1109,7 +1146,7 @@
       <div class="photo-phones">
         <figure>
           <a href="img/calls.jpg" target="_blank" rel="noopener">
-            <img src="img/calls.jpg" loading="lazy" alt="裁判手機上的呼叫佇列">
+            <img src="img/calls.jpg" loading="lazy" alt="裁判手機上的呼叫佇列" width="460" height="1179">
           </a>
           <figcaption>
             <span data-lang="zh">裁判手機呼叫佇列：等最久的桌次排在最前，裁判到場一鍵接單。</span>
@@ -1118,7 +1155,7 @@
         </figure>
         <figure>
           <a href="img/spectator.jpg" target="_blank" rel="noopener">
-            <img src="img/spectator.jpg" loading="lazy" alt="觀眾端手機畫面">
+            <img src="img/spectator.jpg" loading="lazy" alt="觀眾端手機畫面" width="460" height="997">
           </a>
           <figcaption>
             <span data-lang="zh">觀眾端手機頁面：即時查閱「現正開打」桌次、追蹤選手勝負紀錄。</span>
@@ -1127,7 +1164,7 @@
         </figure>
         <figure>
           <a href="img/checkin.jpg" target="_blank" rel="noopener">
-            <img src="img/checkin.jpg" loading="lazy" alt="選手手機上的報到完成畫面">
+            <img src="img/checkin.jpg" loading="lazy" alt="選手手機上的報到完成畫面" width="460" height="995">
           </a>
           <figcaption>
             <span data-lang="zh">選手自助報到：超大字體顯示確認名字與參賽編號，防呆核對零失誤。</span>
