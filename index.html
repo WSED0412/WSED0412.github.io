@@ -115,11 +115,10 @@
   }
   .mark span { color: var(--magenta); }
   .brand-sub {
-    font-family: var(--font-mono);
     font-size: var(--fs-xs);
     color: var(--muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    letter-spacing: 0.02em;
+
   }
   @media (max-width: 600px) {
     .brand-sub { display: none; }
@@ -210,10 +209,8 @@
     display: inline-block;
   }
   .frame-tag {
-    font-family: var(--font-mono);
     font-size: var(--fs-xs);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    letter-spacing: 0.04em;
     color: var(--magenta);
     font-weight: 700;
   }
@@ -264,12 +261,6 @@
     flex-direction: column;
     gap: 2px;
   }
-  .hero-meta-label {
-    font-size: var(--fs-xs);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted2);
-  }
   .hero-meta-val {
     color: var(--ink);
     font-size: var(--fs-sm);
@@ -288,36 +279,6 @@
   }
   @media (max-width: 640px) {
     section { padding: 48px 0; }
-  }
-
-  /* 章節編號：圓形號碼標記與大寫等寬字 */
-  .sec-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
-  .sec-circle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: var(--magenta);
-    color: #fff;
-    font-family: var(--font-mono);
-    font-size: var(--fs-sm);
-    font-weight: 700;
-    line-height: 1;
-  }
-  .sec-tag {
-    font-family: var(--font-mono);
-    font-size: var(--fs-xs);
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 600;
   }
 
   h2 {
@@ -379,13 +340,6 @@
     gap: 12px;
     margin-bottom: 10px;
   }
-  .priority-num {
-    font-family: var(--font-mono);
-    font-size: var(--fs-sm);
-    color: var(--mint);
-    font-weight: 700;
-    letter-spacing: 0.1em;
-  }
   .priority-row h3 {
     font-family: var(--font-heading);
     font-size: var(--fs-lg);
@@ -413,10 +367,8 @@
     margin-bottom: 22px;
   }
   .case-meta {
-    font-family: var(--font-mono);
     font-size: var(--fs-sm);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    letter-spacing: 0.02em;
     color: var(--muted);
     margin-bottom: 8px;
     display: flex;
@@ -571,11 +523,9 @@
     border-radius: 4px;
   }
   .field-validation-notes h4 {
-    font-family: var(--font-mono);
     font-size: var(--fs-sm);
-    letter-spacing: 0.16em;
+    letter-spacing: 0.02em;
     color: var(--mint);
-    text-transform: uppercase;
     margin: 0 0 16px;
     font-weight: 700;
   }
@@ -652,13 +602,6 @@
     border: 1px solid var(--line);
     padding: 10px 18px;
     border-radius: 4px;
-  }
-  .dc-label {
-    font-family: var(--font-mono);
-    font-size: var(--fs-xs);
-    color: var(--muted);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
   }
   .dc-logo {
     height: 17px;
@@ -783,7 +726,8 @@
           <span class="frame-tag" data-lang="en">Field Notes &amp; Systems</span>
         </div>
         <div class="frame-telemetry">
-          <span>512P / ONE-DAY VERIFIED</span>
+          <span data-lang="zh">512 人 · 一日完賽驗證</span>
+          <span data-lang="en">512P / ONE-DAY VERIFIED</span>
         </div>
       </div>
 
@@ -806,21 +750,18 @@
 
       <div class="hero-meta">
         <div class="hero-meta-item">
-          <span class="hero-meta-label">Scale</span>
           <span class="hero-meta-val">
             <span data-lang="zh">做過的規模：<em>512 人、一天打完</em></span>
             <span data-lang="en">Scale: <em>512 players, one day</em></span>
           </span>
         </div>
         <div class="hero-meta-item">
-          <span class="hero-meta-label">Hardware</span>
           <span class="hero-meta-val">
             <span data-lang="zh">現場設備：<em>一台筆電跑全場，斷電重開接得回來</em></span>
             <span data-lang="en">On site: <em>One laptop runs the whole event, and picks up after a restart</em></span>
           </span>
         </div>
         <div class="hero-meta-item">
-          <span class="hero-meta-label">Operation</span>
           <span class="hero-meta-val">
             <span data-lang="zh">分工：<em>系統與導播都是同一個人做</em></span>
             <span data-lang="en">Who does it: <em>Same person builds the system and directs the stream</em></span>
@@ -834,10 +775,6 @@
   <section>
     <div class="priorities-layout">
       <div class="priorities-intro">
-        <div class="sec-badge">
-          <span class="sec-circle">01</span>
-          <span class="sec-tag">FOCUS</span>
-        </div>
         <h2 data-lang="zh">現場在意的四件事</h2>
         <h2 data-lang="en">Four priorities on the floor</h2>
       </div>
@@ -845,7 +782,6 @@
       <div class="priorities-list">
         <div class="priority-row">
           <div class="priority-header">
-            <span class="priority-num">01</span>
             <h3 data-lang="zh">換輪不延遲</h3>
             <h3 data-lang="en">Fast round turnovers</h3>
           </div>
@@ -855,7 +791,6 @@
 
         <div class="priority-row">
           <div class="priority-header">
-            <span class="priority-num">02</span>
             <h3 data-lang="zh">服務台不塞車</h3>
             <h3 data-lang="en">Eliminate help desk crowds</h3>
           </div>
@@ -865,7 +800,6 @@
 
         <div class="priority-row">
           <div class="priority-header">
-            <span class="priority-num">03</span>
             <h3 data-lang="zh">當機斷線有防呆</h3>
             <h3 data-lang="en">Resilient floor operations</h3>
           </div>
@@ -875,7 +809,6 @@
 
         <div class="priority-row">
           <div class="priority-header">
-            <span class="priority-num">04</span>
             <h3 data-lang="zh">直播自動化疊圖</h3>
             <h3 data-lang="en">Automated stream overlays</h3>
           </div>
@@ -888,10 +821,6 @@
 
   <!-- 第二區：實戰專案（雜誌紀錄風格） -->
   <section>
-    <div class="sec-badge">
-      <span class="sec-circle">02</span>
-      <span class="sec-tag">LIVE PROJECTS</span>
-    </div>
     <h2 data-lang="zh">實戰專案紀錄</h2>
     <h2 data-lang="en">Case Studies &amp; Operations</h2>
     <p class="section-lead" data-lang="zh">實際下場跑過的大型賽事，與嚴格依照官方規章實作的競技系統。</p>
@@ -1188,10 +1117,6 @@
   <!-- 第三區：聯絡（桃紅圓形標記 03） -->
   <section class="contact-section">
     <div class="contact-box">
-      <div class="sec-badge">
-        <span class="sec-circle">03</span>
-        <span class="sec-tag">CONTACT</span>
-      </div>
       <h2 data-lang="zh">聊聊你的活動</h2>
       <h2 data-lang="en">Get in touch</h2>
       <p data-lang="zh">有卡牌大賽、實體競技要辦，或想先問問某個現場流程做不做得到，都可以直接加我聊聊。</p>
