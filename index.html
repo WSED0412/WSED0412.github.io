@@ -35,7 +35,12 @@
     --magenta-glow: rgba(231, 52, 115, 0.22);
     --magenta-subtle: rgba(231, 52, 115, 0.12);
     --mint: #2ee6a8;
-    --mint-glow: rgba(46, 230, 168, 0.2);
+    --fs-xs: 12px;
+    --fs-sm: 14px;
+    --fs-base: 16px;
+    --fs-lg: 20px;
+    --fs-h2: clamp(23px, 3.2vw, 32px);
+    --fs-display: clamp(26px, 4.2vw, 42px);
     --font-heading: 'Archivo', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --font-sans: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, "Roboto Mono", Menlo, Consolas, monospace;
@@ -47,7 +52,7 @@
     background: var(--bg);
     color: var(--text-body);
     font-family: var(--font-sans);
-    font-size: 16px;
+    font-size: var(--fs-base);
     line-height: 1.8;
     -webkit-text-size-adjust: 100%;
     word-break: break-word;
@@ -104,14 +109,14 @@
   .mark {
     font-family: var(--font-heading);
     font-weight: 900;
-    font-size: 22px;
+    font-size: var(--fs-lg);
     letter-spacing: -0.01em;
     color: var(--ink);
   }
   .mark span { color: var(--magenta); }
   .brand-sub {
     font-family: var(--font-mono);
-    font-size: 12.5px;
+    font-size: var(--fs-xs);
     color: var(--muted);
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -135,12 +140,12 @@
     border-radius: 3px;
     padding: 3px 10px;
     font-family: var(--font-mono);
-    font-size: 12.5px;
+    font-size: var(--fs-xs);
     letter-spacing: 0.08em;
     cursor: pointer;
     min-height: 28px;
     position: relative;
-    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
   }
   /* 外觀不變，點擊區擴到 44px 高 */
   .langs button::before {
@@ -156,7 +161,6 @@
     background: var(--magenta);
     border-color: var(--magenta);
     font-weight: 700;
-    box-shadow: 0 0 10px var(--magenta-glow);
   }
 
   /* Hero 轉播框：薄桃紅描邊與左右對置的手法 */
@@ -173,7 +177,7 @@
     box-shadow: 0 0 24px var(--magenta-glow);
     border-radius: 6px;
     padding: 36px 36px 32px;
-    background: linear-gradient(180deg, rgba(23, 16, 34, 0.75) 0%, rgba(10, 7, 16, 0.85) 100%);
+    background: var(--surface);
     position: relative;
   }
   @media (max-width: 640px) {
@@ -203,12 +207,11 @@
     height: 8px;
     border-radius: 50%;
     background: var(--magenta);
-    box-shadow: 0 0 8px var(--magenta);
     display: inline-block;
   }
   .frame-tag {
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: var(--fs-xs);
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--magenta);
@@ -216,7 +219,7 @@
   }
   .frame-telemetry {
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: var(--fs-xs);
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted2);
@@ -224,7 +227,7 @@
 
   h1 {
     font-family: var(--font-heading);
-    font-size: clamp(26px, 4.2vw, 42px);
+    font-size: var(--fs-display);
     font-weight: 900;
     line-height: 1.32;
     color: var(--ink);
@@ -233,7 +236,7 @@
   }
 
   .hero-narrative {
-    font-size: clamp(15.5px, 1.7vw, 17.5px);
+    font-size: var(--fs-base);
     line-height: 1.85;
     color: var(--text-body);
     max-width: 44em;
@@ -246,7 +249,7 @@
 
   .hero-meta {
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: var(--fs-sm);
     letter-spacing: 0.04em;
     color: var(--muted);
     margin-top: 24px;
@@ -262,14 +265,14 @@
     gap: 2px;
   }
   .hero-meta-label {
-    font-size: 11px;
+    font-size: var(--fs-xs);
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted2);
   }
   .hero-meta-val {
     color: var(--ink);
-    font-size: 13.5px;
+    font-size: var(--fs-sm);
       text-wrap: balance;
   }
   .hero-meta-val em {
@@ -304,14 +307,13 @@
     background: var(--magenta);
     color: #fff;
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: var(--fs-sm);
     font-weight: 700;
     line-height: 1;
-    box-shadow: 0 0 10px var(--magenta-glow);
   }
   .sec-tag {
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: var(--fs-xs);
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--muted);
@@ -320,7 +322,7 @@
 
   h2 {
     font-family: var(--font-heading);
-    font-size: clamp(23px, 3.2vw, 32px);
+    font-size: var(--fs-h2);
     line-height: 1.32;
     color: var(--ink);
     margin: 0 0 14px;
@@ -329,7 +331,7 @@
   }
 
   .section-lead {
-    font-size: 16px;
+    font-size: var(--fs-base);
     color: var(--muted);
     max-width: 40em;
     margin: 0 0 36px;
@@ -355,7 +357,7 @@
     top: 90px;
   }
   .priorities-intro p {
-    font-size: 15px;
+    font-size: var(--fs-base);
     color: var(--muted);
     line-height: 1.75;
     margin: 0;
@@ -379,14 +381,14 @@
   }
   .priority-num {
     font-family: var(--font-mono);
-    font-size: 14px;
+    font-size: var(--fs-sm);
     color: var(--mint);
     font-weight: 700;
     letter-spacing: 0.1em;
   }
   .priority-row h3 {
     font-family: var(--font-heading);
-    font-size: 19px;
+    font-size: var(--fs-lg);
     color: var(--ink);
     margin: 0;
     font-weight: 800;
@@ -394,7 +396,7 @@
   }
   .priority-row p {
     margin: 0;
-    font-size: 15px;
+    font-size: var(--fs-base);
     color: var(--text-body);
     line-height: 1.75;
   }
@@ -412,7 +414,7 @@
   }
   .case-meta {
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: var(--fs-sm);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--muted);
@@ -432,7 +434,7 @@
 
   .case-title {
     font-family: var(--font-heading);
-    font-size: clamp(22px, 3vw, 29px);
+    font-size: var(--fs-h2);
     font-weight: 900;
     color: var(--ink);
     margin: 0 0 14px;
@@ -441,7 +443,7 @@
   }
 
   .case-summary {
-    font-size: 16px;
+    font-size: var(--fs-base);
     line-height: 1.8;
     color: var(--text-body);
     margin: 0 0 20px;
@@ -460,7 +462,7 @@
     gap: 10px;
   }
   .case-details li {
-    font-size: 15px;
+    font-size: var(--fs-base);
     color: var(--text-body);
     line-height: 1.7;
     padding-left: 20px;
@@ -471,7 +473,7 @@
     position: absolute;
     left: 0;
     top: -1px;
-    font-size: 10px;
+    font-size: var(--fs-xs);
     color: var(--magenta);
   }
   .case-details strong {
@@ -490,11 +492,10 @@
     border-radius: 4px;
     overflow: hidden;
     border: 1px solid var(--line);
-    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    transition: border-color 0.18s ease;
   }
   figure a:hover {
     border-color: var(--magenta);
-    box-shadow: 0 0 16px var(--magenta-glow);
   }
   figure img {
     width: 100%;
@@ -502,7 +503,7 @@
     display: block;
   }
   figcaption {
-    font-size: 13.5px;
+    font-size: var(--fs-sm);
     color: var(--muted);
     line-height: 1.55;
     margin-top: 9px;
@@ -571,7 +572,7 @@
   }
   .field-validation-notes h4 {
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: var(--fs-sm);
     letter-spacing: 0.16em;
     color: var(--mint);
     text-transform: uppercase;
@@ -586,7 +587,7 @@
     gap: 12px;
   }
   .field-validation-list li {
-    font-size: 15px;
+    font-size: var(--fs-base);
     color: var(--text-body);
     line-height: 1.7;
   }
@@ -613,16 +614,15 @@
     gap: 8px;
     color: var(--mint);
     text-decoration: none;
-    font-size: 15px;
+    font-size: var(--fs-base);
     font-weight: 700;
     border-bottom: 1px solid rgba(46, 230, 168, 0.45);
     padding-bottom: 2px;
-    transition: color 0.15s ease, border-bottom-color 0.15s ease, text-shadow 0.15s ease;
+    transition: color 0.15s ease, border-bottom-color 0.15s ease;
   }
   .deck-link:hover {
     color: #fff;
     border-bottom-color: #fff;
-    text-shadow: 0 0 10px var(--mint-glow);
   }
 
   /* 聯絡區：紫黑底、桃紅邊框 hover、等寬 ID */
@@ -634,7 +634,7 @@
     max-width: 580px;
   }
   .contact-box p {
-    font-size: 16px;
+    font-size: var(--fs-base);
     color: var(--text-body);
     margin: 0 0 24px;
   }
@@ -655,7 +655,7 @@
   }
   .dc-label {
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: var(--fs-xs);
     color: var(--muted);
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -699,7 +699,7 @@
   }
   .dc-id {
     font-family: var(--font-mono);
-    font-size: 16.5px;
+    font-size: var(--fs-base);
     color: var(--ink);
     font-weight: 700;
     letter-spacing: 0.04em;
@@ -712,21 +712,20 @@
     border-radius: 4px;
     padding: 10px 18px;
     font-family: var(--font-mono);
-    font-size: 13.5px;
+    font-size: var(--fs-sm);
     font-weight: 700;
     letter-spacing: 0.08em;
     cursor: pointer;
-    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
   }
   #copyBtn:hover {
     border-color: var(--magenta);
     color: var(--magenta);
     background: var(--magenta-subtle);
-    box-shadow: 0 0 12px var(--magenta-glow);
   }
   #copyMsg {
     font-family: var(--font-mono);
-    font-size: 13.5px;
+    font-size: var(--fs-sm);
     letter-spacing: 0.06em;
     color: var(--mint);
   }
@@ -737,7 +736,7 @@
     border-top: 1px solid var(--line);
     color: var(--muted2);
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: var(--fs-sm);
     letter-spacing: 0.04em;
   }
   .footer-inner {
