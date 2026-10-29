@@ -24,7 +24,7 @@ body {
     }
 
 input, select, textarea {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
     }
 
 .container {
@@ -53,13 +53,13 @@ header {
     }
 
 .page-title {
-      font-size: 1.15rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 800;
       color: var(--text-main);
     }
 
 .judge-badge {
-      font-size: 0.72rem;
+      font-size: var(--fs-xs, 0.75rem);
       background: var(--judge-bg);
       color: var(--judge-text);
       border: 1px solid var(--judge-border);
@@ -75,7 +75,7 @@ header {
     }
 
 .judge-user-info {
-      font-size: 0.82rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-sub);
     }
 
@@ -86,8 +86,8 @@ header {
 
 .banner {
       padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 0.82rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       margin-bottom: 10px;
       text-align: center;
@@ -108,13 +108,13 @@ header {
 .judge-card {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 14px;
       margin-bottom: 14px;
     }
 
 .card-title {
-      font-size: 1.05rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 800;
       color: var(--text-main);
       margin-bottom: 10px;
@@ -124,7 +124,7 @@ header {
     }
 
 .card-subtitle {
-      font-size: 0.82rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       color: var(--text-sub);
       margin-bottom: 8px;
@@ -136,7 +136,7 @@ header {
 
 .form-label {
       display: block;
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: 600;
       color: var(--text-sub);
       margin-bottom: 4px;
@@ -154,8 +154,8 @@ header {
       border: 1px solid var(--card-border);
       color: var(--text-main);
       padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 1rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-base, 1rem);
       outline: none;
       min-height: 40px;
       flex: 1;
@@ -178,9 +178,9 @@ header {
       align-items: center;
       justify-content: center;
       padding: 8px 14px;
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       border: 1px solid transparent;
       cursor: pointer;
       transition: background 0.15s ease, border-color 0.15s ease;
@@ -236,32 +236,32 @@ header {
 
 .btn-warning {
       background: var(--warning-border);
-      color: #141212;
+      color: var(--on-accent);
       border-color: var(--warning-border);
     }
 
 .btn-warning:hover {
-      background: #705515;
+      background: var(--warning-hover, #705515);
     }
 
 .btn-success {
       background: var(--success-border);
-      color: #141212;
+      color: var(--on-accent);
       border-color: var(--success-border);
     }
 
 .btn-success:hover {
-      background: #175d41;
+      background: var(--success-hover, #175d41);
     }
 
 .btn-danger {
       background: var(--danger-border);
-      color: #141212;
+      color: var(--on-accent);
       border-color: var(--danger-border);
     }
 
 .btn-danger:hover {
-      background: #7f322b;
+      background: var(--danger-hover, #7f322b);
     }
 
 .btn-logout {
@@ -269,8 +269,8 @@ header {
       color: var(--text-sub);
       border: 1px solid var(--panel-border);
       padding: 4px 10px;
-      font-size: 0.78rem;
-      border-radius: 6px;
+      font-size: var(--fs-xs, 0.75rem);
+      border-radius: var(--radius-md, 6px);
       min-height: 44px;
     }
 
@@ -285,9 +285,9 @@ header {
       border: 1px solid var(--card-border);
       color: var(--text-primary);
       padding: 4px 10px;
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: 600;
-      border-radius: 4px;
+      border-radius: var(--radius-sm, 4px);
       min-height: 44px;
       cursor: pointer;
     }
@@ -306,15 +306,15 @@ header {
     }
 
 .quick-reason-label {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-sub);
     }
 
 .msg-box {
       margin-top: 10px;
       padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 0.85rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       line-height: 1.4;
       word-break: break-all;
@@ -334,7 +334,7 @@ header {
 
 .btn-sm {
       padding: 4px 10px;
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       min-height: 44px;
     }
 
@@ -352,7 +352,7 @@ header {
 .call-item {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 10px 12px;
       display: flex;
       flex-direction: column;
@@ -371,7 +371,6 @@ header {
     }
 
 .call-item.call-item-new {
-      box-shadow: 0 0 10px rgba(179, 143, 224, 0.4);
       border-color: var(--judge-text);
     }
 
@@ -384,7 +383,7 @@ header {
     }
 
 .call-table-title {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 800;
       color: var(--accent-text);
       cursor: pointer;
@@ -398,7 +397,7 @@ header {
     }
 
 .call-state-badge {
-      font-size: 0.72rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 2px 7px;
       border-radius: 9999px;
       font-weight: 700;
@@ -417,7 +416,7 @@ header {
     }
 
 .call-item-time {
-      font-size: 0.78rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--warning-text);
       font-weight: 600;
     }
@@ -426,7 +425,7 @@ header {
       display: flex;
       flex-direction: column;
       gap: 4px;
-      font-size: 0.86rem;
+      font-size: var(--fs-sm, 0.875rem);
     }
 
 .call-reason-row {
@@ -445,8 +444,8 @@ header {
       color: var(--text-primary);
       background: var(--card-bg);
       padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.82rem;
+      border-radius: var(--radius-sm, 4px);
+      font-size: var(--fs-sm, 0.875rem);
       word-break: break-all;
     }
 
@@ -454,7 +453,7 @@ header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.78rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-sub);
       margin-top: 2px;
       flex-wrap: wrap;
@@ -484,9 +483,9 @@ header {
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -505,7 +504,7 @@ header {
 .table-detail-card {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 12px 14px;
     }
 
@@ -514,8 +513,8 @@ header {
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
       padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 0.88rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       margin-bottom: 10px;
       text-align: center;
@@ -531,13 +530,13 @@ header {
     }
 
 .table-detail-title {
-      font-size: 1.15rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 800;
       color: var(--accent-text);
     }
 
 .table-badge {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 2px 8px;
       border-radius: 9999px;
       font-weight: 700;
@@ -567,7 +566,7 @@ header {
     }
 
 .table-players {
-      font-size: 1.02rem;
+      font-size: var(--fs-base, 1rem);
       color: var(--text-main);
       margin-bottom: 10px;
       padding-bottom: 8px;
@@ -582,18 +581,16 @@ header {
     }
 
 .table-reports-box {
-      font-size: 0.88rem;
+      font-size: var(--fs-sm, 0.875rem);
       line-height: 1.5;
       color: var(--text-primary);
       margin-bottom: 10px;
-      background: rgba(1, 26, 36, 0.6);
-      padding: 8px 10px;
-      border-radius: 6px;
-      border: 1px solid var(--card-border);
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--card-border);
     }
 
 .report-subtitle {
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-sub);
       font-weight: 700;
       margin-bottom: 4px;
@@ -601,8 +598,8 @@ header {
 
 .final-result {
       padding: 8px 10px;
-      border-radius: 6px;
-      font-size: 0.9rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       margin-bottom: 10px;
       line-height: 1.4;
     }
@@ -627,7 +624,7 @@ header {
     }
 
 .table-ext-box {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       padding-top: 6px;
       border-top: 1px dashed var(--card-border);
@@ -651,8 +648,8 @@ header {
       border: 1px solid var(--card-border);
       color: var(--text-main);
       padding: 8px;
-      border-radius: 6px;
-      font-size: 1rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       min-height: 44px;
       outline: none;
@@ -670,7 +667,7 @@ header {
       margin-bottom: 12px;
       background: var(--danger-bg);
       border: 1px solid var(--danger-border);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       padding: 8px 10px;
     }
 
@@ -678,14 +675,14 @@ header {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       color: var(--danger-text);
       cursor: pointer;
     }
 
 .checkbox-label input[type="checkbox"] {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       width: 18px;
       height: 18px;
       accent-color: var(--accent);
@@ -695,10 +692,10 @@ header {
 .new-pin-display {
       background: var(--success-bg);
       border: 2px solid var(--success-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 14px;
       text-align: center;
-      font-size: 1.5rem;
+      font-size: var(--fs-xl, 1.5rem);
       font-weight: 800;
       color: var(--success-text);
       letter-spacing: 2px;
@@ -708,7 +705,7 @@ header {
 
 .empty-state-sm {
       color: var(--text-sub);
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       padding: 8px 0;
       text-align: center;
     }
@@ -735,7 +732,7 @@ header {
 .modal-box {
       background: var(--card-bg);
       border: 2px solid var(--danger-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       max-width: 320px;
       width: 100%;
       max-height: calc(100vh - 32px);
@@ -747,7 +744,7 @@ header {
     }
 
 .modal-title {
-      font-size: 1.05rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 800;
       color: var(--danger-text);
       margin-bottom: 8px;
@@ -755,7 +752,7 @@ header {
     }
 
 .modal-msg {
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-primary);
       margin-bottom: 14px;
       line-height: 1.4;
@@ -776,8 +773,8 @@ header {
 .judge-target-bar {
       margin-bottom: 12px;
       padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.95rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       text-align: center;
       line-height: 1.4;
@@ -802,7 +799,7 @@ header {
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 10px 14px;
       margin-bottom: 16px;
       box-sizing: border-box;
@@ -810,7 +807,7 @@ header {
     }
 
     .judge-rule-hint-title {
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 800;
       color: var(--warning-text);
       margin-bottom: 4px;
@@ -818,7 +815,7 @@ header {
     }
 
     .judge-rule-hint-text {
-      font-size: 0.88rem;
+      font-size: var(--fs-sm, 0.875rem);
       line-height: 1.5;
       color: var(--warning-text);
       word-break: break-word;
@@ -832,7 +829,7 @@ header {
       left: 0;
       right: 0;
       bottom: 0;
-      background: #01222F;
+      background: var(--bg);
       display: none;
       flex-direction: column;
       align-items: center;
@@ -843,19 +840,19 @@ header {
     }
 
 .disconnected-icon {
-      font-size: 3rem;
+      font-size: var(--fs-3xl, 3rem);
       margin-bottom: 12px;
     }
 
 .disconnected-title {
-      font-size: 1.3rem;
+      font-size: var(--fs-lg, 1.25rem);
       font-weight: 800;
       color: var(--danger-text);
       margin-bottom: 8px;
     }
 
 .disconnected-desc {
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-sub);
       max-width: 320px;
       margin-bottom: 18px;
@@ -871,9 +868,9 @@ header {
       padding: 8px 12px;
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       color: var(--text-primary);
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       text-align: left;
       cursor: pointer;
       box-sizing: border-box;
@@ -891,7 +888,7 @@ header {
     }
 
 .deck-section-title {
-      font-size: 0.88rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       color: var(--accent-text);
       margin-top: 10px;
@@ -926,7 +923,7 @@ header {
     <!-- 登入區塊（未登入時顯示） -->
     <section id="loginSection" class="judge-card">
       <h2 class="card-title">工作人員登入</h2>
-      <p style="font-size: 0.88rem; color: var(--text-sub); margin-bottom: 12px;">
+      <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 12px;">
         請輸入裁判或主辦 PIN 碼以開始現場裁判作業。
       </p>
       <div class="form-group">
@@ -947,21 +944,21 @@ header {
         <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
           <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 200px;">
             <label for="zoneFilter" class="form-label" style="margin-bottom: 0; white-space: nowrap; font-weight: 700;">分區篩選：</label>
-            <select id="zoneFilter" class="select-input" style="flex: 1; min-height: 44px; font-size: 1rem;">
+            <select id="zoneFilter" class="select-input" style="flex: 1; min-height: 44px; font-size: var(--fs-base, 1rem);">
               <option value="">全部</option>
             </select>
           </div>
-          <div id="zoneHiddenNote" style="font-size: 0.85rem; font-weight: 700; color: var(--warning-text); display: none;"></div>
+          <div id="zoneHiddenNote" style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--warning-text); display: none;"></div>
         </div>
       </section>
 
       <!-- 區塊: 現場報到 -->
       <section class="judge-card" id="judgeCheckinSection">
-        <h2 class="card-title">📋 選手報到</h2>
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-list"/></svg> 選手報到</h2>
         
         <!-- 抽號碼牌報到區塊 (snapshot.checkin 存在時顯示) -->
         <div id="judgeDeskLinkBox" style="display: none; padding: 10px 0;">
-          <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 10px;">
+          <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 10px;">
             本賽事採用現場抽號碼牌報到，審核作業請至檢錄台處理。
           </p>
           <a id="judgeDeskLink" href="elim-desk.html" class="btn btn-primary" style="display: inline-flex; text-decoration: none;">
@@ -971,7 +968,7 @@ header {
 
         <!-- 名單報到區塊 (snapshot.checkin 不存在時顯示) -->
         <div id="judgeListCheckinBox">
-          <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 10px;">
+          <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 10px;">
             代為勾選報到或查詢名單報到狀態。
           </p>
           <div class="form-group">
@@ -992,9 +989,9 @@ header {
       <!-- 區塊: 遲到處理 (DATA-CONTRACT 1.16, PROJECT.md 第 10 節) -->
       <section class="judge-card" id="lateSection">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <h2 class="card-title" style="margin-bottom: 0;">⏰ 遲到選手處理</h2>
+          <h2 class="card-title" style="margin-bottom: 0;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-alarm"/></svg> 遲到選手處理</h2>
         </div>
-        <p style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 8px;">
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 8px;">
           本輪被標記遲到的桌次，依開賽時間倒數（規則 703.8）。
         </p>
         <div id="lateList" class="call-list">
@@ -1005,20 +1002,20 @@ header {
       <!-- 區塊 0: 裁判呼叫佇列 (DATA-CONTRACT 3.5, PROJECT.md 第 10 節) -->
       <section class="judge-card" id="judgeCallsSection">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <h2 class="card-title" style="margin-bottom: 0;">🙋 裁判呼叫佇列</h2>
-          <button type="button" id="callRefresh" class="btn btn-secondary" style="min-height: 44px; padding: 4px 10px; font-size: 0.8rem;">
+          <h2 class="card-title" style="margin-bottom: 0;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-raise-hand"/></svg> 裁判呼叫佇列</h2>
+          <button type="button" id="callRefresh" class="btn btn-secondary" style="min-height: 44px; padding: 4px 10px; font-size: var(--fs-xs, 0.75rem);">
             重新整理
           </button>
         </div>
-        <p style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 8px;">
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 8px;">
           選手在牌桌發出的裁判呼叫，每 20 秒自動更新。
         </p>
 
         <!-- 結案補時輸入 (PROJECT.md: callExtMinutes 0～30) -->
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px; background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--panel-border); flex-wrap: wrap;">
-          <label for="callExtMinutes" style="font-size: 0.85rem; color: var(--text-main); white-space: nowrap;">結案補時（分鐘）：</label>
-          <input type="number" id="callExtMinutes" class="input-number" min="0" max="30" value="0" inputmode="numeric" style="max-width: 90px; padding: 4px 8px; font-size: 1rem;" placeholder="0-30">
-          <span style="font-size: 0.78rem; color: var(--text-sub);">結案時自動補時給該桌（理由：裁判呼叫）</span>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding: 6px 0; border-bottom: 1px dashed var(--panel-border); flex-wrap: wrap;">
+          <label for="callExtMinutes" style="font-size: var(--fs-sm, 0.875rem); color: var(--text-main); white-space: nowrap;">結案補時（分鐘）：</label>
+          <input type="number" id="callExtMinutes" class="input-number" min="0" max="30" value="0" inputmode="numeric" style="max-width: 90px; padding: 4px 8px; font-size: var(--fs-base, 1rem);" placeholder="0-30">
+          <span style="font-size: var(--fs-xs, 0.75rem); color: var(--text-sub);">結案時自動補時給該桌（理由：裁判呼叫）</span>
         </div>
 
         <div id="callList" class="call-list">
@@ -1030,12 +1027,12 @@ header {
       <!-- 區塊 1: 爭議桌清單 -->
       <section class="judge-card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <h2 class="card-title" style="margin-bottom: 0;">⚡ 爭議桌處理</h2>
-          <button type="button" id="conflictRefresh" class="btn btn-secondary" style="min-height: 44px; padding: 4px 10px; font-size: 0.8rem;">
+          <h2 class="card-title" style="margin-bottom: 0;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-zap"/></svg> 爭議桌處理</h2>
+          <button type="button" id="conflictRefresh" class="btn btn-secondary" style="min-height: 44px; padding: 4px 10px; font-size: var(--fs-xs, 0.75rem);">
             重新整理
           </button>
         </div>
-        <p style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 8px;">
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 8px;">
           雙方回報不一致的桌次，每 20 秒自動更新。點擊直接打開該桌詳情。
         </p>
         <div id="conflictList" class="conflict-list">
@@ -1046,7 +1043,7 @@ header {
 
       <!-- 區塊 2: 查桌與桌況詳情 -->
       <section class="judge-card">
-        <h2 class="card-title">🔍 查桌與桌況詳情</h2>
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-search"/></svg> 查桌與桌況詳情</h2>
         <div class="form-group">
           <label for="lookupTable" class="form-label">請輸入桌號查詢</label>
           <div class="form-row">
@@ -1077,8 +1074,8 @@ header {
 
       <!-- 區塊 3: 裁判判定與撤銷 -->
       <section class="judge-card">
-        <h2 class="card-title">⚖️ 裁判判定與撤銷</h2>
-        <p style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 10px;">
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-judge"/></svg> 裁判判定與撤銷</h2>
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 10px;">
           針對目前查詢的桌次判定比分或撤銷成績。
         </p>
 
@@ -1120,7 +1117,7 @@ header {
 
       <!-- 區塊 4: 逐桌補時管理 -->
       <section class="judge-card">
-        <h2 class="card-title">⏱️ 逐桌補時管理</h2>
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-timer"/></svg> 逐桌補時管理</h2>
         
         <div class="form-group">
           <label for="extMinutes" class="form-label">補時時間（分鐘，1～30）</label>
@@ -1152,8 +1149,8 @@ header {
 
       <!-- 區塊 5: 選手協助 (PIN 重設與解鎖) -->
       <section class="judge-card">
-        <h2 class="card-title">👤 選手協助（PIN 與解鎖）</h2>
-        <p style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 10px;">
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-person"/></svg> 選手協助（PIN 與解鎖）</h2>
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 10px;">
           協助遺失 PIN 碼或遭鎖定的選手。新 PIN 碼口述給選手抄下後點擊「已抄下」，不在任何地方保存。
         </p>
 
@@ -1177,8 +1174,8 @@ header {
 
       <!-- 區塊 6: 驗牌區 (純文字牌表) -->
       <section class="judge-card">
-        <h2 class="card-title">🃏 驗牌區（純文字牌表）</h2>
-        <p style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 10px;">
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-cards"/></svg> 驗牌區（純文字牌表）</h2>
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 10px;">
           輸入選手編號載入排版好的牌表。可直接核對卡名與張數、記錄驗牌結果或解鎖牌表。
         </p>
 
@@ -1191,31 +1188,31 @@ header {
         </div>
 
         <div id="deckInfoBox" style="margin-bottom: 10px;">
-          <div style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 6px;" id="deckPlayerMeta"></div>
+          <div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 6px;" id="deckPlayerMeta"></div>
           <div id="deckCodeActionRow" style="display: none; margin-bottom: 8px; align-items: center; gap: 8px; flex-wrap: wrap;">
             <button type="button" id="deckCopyCode" class="btn btn-secondary" style="min-width: 130px; min-height: 44px; height: 44px;">複製牌組碼</button>
-            <span id="deckCopyMsg" style="font-size: 0.82rem; color: var(--success-text); display: none;">已複製，請貼到組牌 App</span>
+            <span id="deckCopyMsg" style="font-size: var(--fs-sm, 0.875rem); color: var(--success-text); display: none;">已複製，請貼到組牌 App</span>
           </div>
-          <div id="deckTextFormatNotice" style="display: none; font-size: 0.85rem; color: var(--text-sub); margin-bottom: 8px;">
+          <div id="deckTextFormatNotice" style="display: none; font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 8px;">
             這位選手用純文字登錄，沒有牌組碼
           </div>
-          <div id="deckProblems" style="display: none; background: var(--danger-bg); border: 1px solid var(--danger-border); color: var(--danger-text); border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; font-size: 0.85rem; line-height: 1.4; white-space: pre-line;"></div>
-          <div id="deckNotes" style="display: none; background: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning-text); border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; font-size: 0.85rem; line-height: 1.4; white-space: pre-line;"></div>
+          <div id="deckProblems" style="display: none; background: var(--danger-bg); border: 1px solid var(--danger-border); color: var(--danger-text); border-radius: var(--radius-md, 6px); padding: 8px 12px; margin-bottom: 8px; font-size: var(--fs-sm, 0.875rem); line-height: 1.4; white-space: pre-line;"></div>
+          <div id="deckNotes" style="display: none; background: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning-text); border-radius: var(--radius-md, 6px); padding: 8px 12px; margin-bottom: 8px; font-size: var(--fs-sm, 0.875rem); line-height: 1.4; white-space: pre-line;"></div>
 
           <!-- 逐張打勾核對牌組區 (PROJECT.md 第三十三輪, DATA-CONTRACT 6.5) -->
           <div id="deckCheckSection" style="display: none; margin-bottom: 12px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-              <span id="deckCheckProgress" style="font-size: 0.9rem; font-weight: 700; color: var(--accent-text);">已核對 0 / 0 張</span>
-              <button type="button" id="deckCheckReset" class="btn btn-secondary" style="min-height: 44px; padding: 4px 12px; font-size: 0.85rem;">清空核對</button>
+              <span id="deckCheckProgress" style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--accent-text);">已核對 0 / 0 張</span>
+              <button type="button" id="deckCheckReset" class="btn btn-secondary" style="min-height: 44px; padding: 4px 12px; font-size: var(--fs-sm, 0.875rem);">清空核對</button>
             </div>
             <div id="deckCheckList" style="display: flex; flex-direction: column; gap: 6px;"></div>
           </div>
 
           <div style="margin-top: 10px; margin-bottom: 6px;">
-            <button type="button" id="deckViewToggle" class="btn btn-secondary btn-sm" style="min-height: 44px; padding: 4px 10px; font-size: 0.8rem;">收起列印版</button>
+            <button type="button" id="deckViewToggle" class="btn btn-secondary btn-sm" style="min-height: 44px; padding: 4px 10px; font-size: var(--fs-xs, 0.75rem);">收起列印版</button>
           </div>
-          <pre id="deckView" style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; font-size: 0.85rem; line-height: 1.4; color: #f8fafc; white-space: pre-wrap; word-break: break-word; min-height: 48px; max-height: 360px; overflow-y: auto;"></pre>
-          <div id="deckCardsNotice" style="display: none; font-size: 0.78rem; color: var(--text-secondary); line-height: 1.35; margin-top: 8px; white-space: pre-line;"></div>
+          <pre id="deckView" style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: var(--radius-md, 6px); padding: 12px; font-size: var(--fs-sm, 0.875rem); line-height: 1.4; color: var(--text-primary); white-space: pre-wrap; word-break: break-word; min-height: 48px; max-height: 360px; overflow-y: auto;"></pre>
+          <div id="deckCardsNotice" style="display: none; font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary); line-height: 1.35; margin-top: 8px; white-space: pre-line;"></div>
         </div>
 
         <div class="form-group" style="margin-top: 10px;">
@@ -1239,8 +1236,8 @@ header {
 
       <!-- 區塊: 判罰紀錄 (DATA-CONTRACT 10.11) -->
       <section class="judge-card" id="pnPanel">
-        <h2 class="card-title">⚖️ 判罰紀錄</h2>
-        <p style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: 10px;">
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-judge"/></svg> 判罰紀錄</h2>
+        <p style="font-size: var(--fs-xs, 0.75rem); color: var(--text-sub); margin-bottom: 10px;">
           這裡只是紀錄，不會自動處罰；要判局敗／場敗請用上面的成績判定。判罰紀錄不會公開，選手看不到。
         </p>
 
@@ -1271,13 +1268,13 @@ header {
         <div id="pnMsg" class="msg-box" style="display: none; margin-bottom: 12px;"></div>
 
         <div style="margin-bottom: 14px;">
-          <h3 class="card-subtitle">📊 累計判罰</h3>
-          <div id="pnSummary" style="font-size: 0.88rem;">目前沒有判罰紀錄</div>
+          <h3 class="card-subtitle"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-stats"/></svg> 累計判罰</h3>
+          <div id="pnSummary" style="font-size: var(--fs-sm, 0.875rem);">目前沒有判罰紀錄</div>
         </div>
 
         <div>
-          <h3 class="card-subtitle">📜 最近紀錄</h3>
-          <div id="pnList" style="font-size: 0.85rem;"></div>
+          <h3 class="card-subtitle"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-log"/></svg> 最近紀錄</h3>
+          <div id="pnList" style="font-size: var(--fs-sm, 0.875rem);"></div>
         </div>
       </section>
 
@@ -1299,7 +1296,7 @@ header {
 
   <!-- 尚未連上賽務系統覆蓋層 (硬性規定 1) -->
   <div class="disconnected-overlay" id="disconnectedScreen">
-    <div class="disconnected-icon">⚠️</div>
+    <div class="disconnected-icon"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-warning"/></svg></div>
     <div class="disconnected-title">尚未連上賽務系統</div>
     <div class="disconnected-desc">
       目前無法讀取賽事即時資料。<br>請確認賽事主機是否已啟動，或網路連線是否正常。
@@ -2312,7 +2309,7 @@ header {
         return `
           <button type="button" class="conflict-open" data-table="${tb.table}">
             <span>第 ${tb.table} 桌 · ${p1} vs ${p2}</span>
-            <span style="font-size: 0.8rem; background: #dc2626; color: #fff; padding: 2px 6px; border-radius: 4px;">不一致</span>
+            <span style="font-size: var(--fs-xs, 0.75rem); background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); padding: 2px 6px; border-radius: var(--radius-sm, 4px);">不一致</span>
           </button>
         `;
       }).join('');
@@ -2768,7 +2765,7 @@ header {
 
         html += `<button type="button" class="deck-check-row" aria-pressed="false" data-count="${count}">` +
           `<span>${cardLabel}</span>` +
-          `<span class="deck-check-state" style="font-size: 1.1rem; color: var(--accent-text); margin-left: 8px;">☐</span>` +
+          `<span class="deck-check-state" style="font-size: var(--fs-md, 1.125rem); color: var(--accent-text); margin-left: 8px;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-box"/></svg></span>` +
           `</button>`;
       });
 
@@ -2781,7 +2778,9 @@ header {
           btn.setAttribute('aria-pressed', next ? 'true' : 'false');
           const stateEl = btn.querySelector('.deck-check-state');
           if (stateEl) {
-            stateEl.textContent = next ? '☑' : '☐';
+            stateEl.innerHTML = next
+              ? '<svg class="icon" aria-hidden="true"><use href="icons.svg#i-box-check"/></svg>'
+              : '<svg class="icon" aria-hidden="true"><use href="icons.svg#i-box"/></svg>';
           }
           updateDeckCheckProgress();
         });
@@ -2818,7 +2817,7 @@ header {
       listEl.querySelectorAll('.deck-check-row').forEach(r => {
         r.setAttribute('aria-pressed', 'false');
         const stateEl = r.querySelector('.deck-check-state');
-        if (stateEl) stateEl.textContent = '☐';
+        if (stateEl) stateEl.innerHTML = '<svg class="icon" aria-hidden="true"><use href="icons.svg#i-box"/></svg>';
       });
       updateDeckCheckProgress();
     }
@@ -2881,7 +2880,9 @@ header {
         }
         if (metaEl) {
           const playerName = (res.player && res.player.name) ? res.player.name : '';
-          const lockStatus = res.locked ? '🔒 已鎖定' : '🔓 未鎖定';
+          const lockStatus = res.locked
+            ? '<svg class="icon" aria-hidden="true"><use href="icons.svg#i-lock"/></svg> 已鎖定'
+            : '<svg class="icon" aria-hidden="true"><use href="icons.svg#i-unlock"/></svg> 未鎖定';
           const formatBadge = (res.format === 'code') ? ' · 牌組碼' : ' · 純文字';
           let breakdownInfo = '';
           if (res.summary && res.summary.breakdown && typeof res.summary.breakdown === 'object') {
@@ -2896,13 +2897,13 @@ header {
               breakdownInfo = ` · ${bdParts.join('・')}`;
             }
           }
-          metaEl.textContent = `選手：${pid} ${playerName} · ${lockStatus}${formatBadge}${breakdownInfo}`;
+          metaEl.innerHTML = `選手：${escapeHtml(pid)} ${escapeHtml(playerName)} · ${lockStatus}${formatBadge}${escapeHtml(breakdownInfo)}`;
         }
 
         // 牌表問題 (PROJECT.md 第三十三輪, DATA-CONTRACT 6.5)
         if (res.problems && Array.isArray(res.problems) && res.problems.length > 0) {
           if (problemsEl) {
-            problemsEl.innerHTML = res.problems.map(p => `<div>⚠️ ${escapeHtml(p)}</div>`).join('');
+            problemsEl.innerHTML = res.problems.map(p => `<div><svg class="icon" aria-hidden="true"><use href="icons.svg#i-warning"/></svg> ${escapeHtml(p)}</div>`).join('');
             problemsEl.style.display = 'block';
           }
         } else {
@@ -3118,11 +3119,11 @@ header {
           listEl.innerHTML = '<div class="empty-state-sm">尚無選手資料</div>';
           return;
         }
-        let html = '<div style="font-size:0.85rem; font-weight:700; margin-bottom:4px;">已報到 ' + (res.checked_in || 0) + ' / 總數 ' + (res.total || 0) + '</div>';
-        html += '<ul style="list-style:none; padding:0; margin:0; font-size:0.85rem;">';
+        let html = '<div style="font-size:var(--fs-sm, 0.875rem); font-weight:700; margin-bottom:4px;">已報到 ' + (res.checked_in || 0) + ' / 總數 ' + (res.total || 0) + '</div>';
+        html += '<ul style="list-style:none; padding:0; margin:0; font-size:var(--fs-sm, 0.875rem);">';
         for (const r of rows) {
           const statusText = r.checked_in ? '已報到' : '未報到';
-          const color = r.checked_in ? '#6ee7b7' : '#fde68a';
+          const color = r.checked_in ? 'var(--success-text)' : 'var(--warning-text)';
           html += `<li style="padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between;">` +
             `<span><strong>${escapeHtml(r.id)}</strong> ${escapeHtml(r.name)}</span>` +
             `<span style="color:${color}">${statusText}</span>` +

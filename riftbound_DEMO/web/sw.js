@@ -10,6 +10,7 @@ const CACHE_NAME = 'rb-offline-v1';
 const TARGET_PAGE_URL = new URL('find-table.html', self.location).href;
 const TARGET_COMMON_URL = new URL('common.js', self.location).href;
 const TARGET_CSS_URL = new URL('common.css', self.location).href;
+const TARGET_ICONS_URL = new URL('icons.svg', self.location).href;   // 圖示 sprite（DESIGN.md）
 const TARGET_BRAND_URL = new URL('../brand.css', self.location).href;   // 賽事主題色（SHARED 10.17）
 const TARGET_AUTH_URL = new URL('player-auth.js', self.location).href;
 const TARGET_WIDGET_URL = new URL('report-widget.js', self.location).href;
@@ -24,7 +25,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     try {
       const cache = await caches.open(CACHE_NAME);
-      const prefetchUrls = [TARGET_PAGE_URL, TARGET_COMMON_URL, TARGET_AUTH_URL, TARGET_WIDGET_URL, TARGET_CALL_JUDGE_URL, TARGET_BROADCAST_URL, TARGET_MATCH_HISTORY_URL, TARGET_CSS_URL, TARGET_BRAND_URL];
+      const prefetchUrls = [TARGET_PAGE_URL, TARGET_COMMON_URL, TARGET_AUTH_URL, TARGET_WIDGET_URL, TARGET_CALL_JUDGE_URL, TARGET_BROADCAST_URL, TARGET_MATCH_HISTORY_URL, TARGET_CSS_URL, TARGET_BRAND_URL, TARGET_ICONS_URL];
       await Promise.all(
         prefetchUrls.map(async (url) => {
           try {
@@ -127,7 +128,7 @@ async function handlePageFetch(event) {
   }
 }
 
-// 處理 common.js、player-auth.js、report-widget.js、call-judge.js、broadcast.js、match-history.js 與 common.css 請求（限來自找桌頁，4 秒逾時）
+// 處理 common.js、player-auth.js、report-widget.js、call-judge.js、broadcast.js、match-history.js、icons.svg 與 common.css 請求（限來自找桌頁，4 秒逾時）
 async function handleScriptFetch(event, cleanUrl) {
   const isFindTable = await isClientFindTable(event);
   if (!isFindTable) {
@@ -199,8 +200,8 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 2. common.js、player-auth.js、report-widget.js、call-judge.js、broadcast.js、match-history.js 與 common.css 請求（限來自找桌頁）
-  if (cleanHref === TARGET_CSS_URL || cleanHref === TARGET_BRAND_URL || cleanHref === TARGET_COMMON_URL || cleanHref === TARGET_AUTH_URL || cleanHref === TARGET_WIDGET_URL || cleanHref === TARGET_CALL_JUDGE_URL || cleanHref === TARGET_BROADCAST_URL || cleanHref === TARGET_MATCH_HISTORY_URL) {
+  // 2. common.js、player-auth.js、report-widget.js、call-judge.js、broadcast.js、match-history.js、icons.svg 與 common.css 請求（限來自找桌頁）
+  if (cleanHref === TARGET_CSS_URL || cleanHref === TARGET_ICONS_URL || cleanHref === TARGET_BRAND_URL || cleanHref === TARGET_COMMON_URL || cleanHref === TARGET_AUTH_URL || cleanHref === TARGET_WIDGET_URL || cleanHref === TARGET_CALL_JUDGE_URL || cleanHref === TARGET_BROADCAST_URL || cleanHref === TARGET_MATCH_HISTORY_URL) {
     // 若 referrer 明確非找桌頁（例如大螢幕 clock.html），直接跳過不處理，不呼叫 respondWith
     if (event.request.referrer) {
       try {

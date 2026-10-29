@@ -25,7 +25,7 @@ body {
     }
 
 input, select, textarea {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
     }
 
 .wrapper {
@@ -66,7 +66,7 @@ header {
 .status-badge {
       font-size: clamp(0.75rem, 1vw, 0.95rem);
       padding: 3px 10px;
-      border-radius: 9999px;
+      border-radius: var(--radius-full, 9999px);
       font-weight: 700;
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
@@ -95,9 +95,9 @@ header {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
       color: var(--text-sub);
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       padding: 6px 14px;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       cursor: pointer;
       min-height: 44px;
     }
@@ -112,8 +112,8 @@ header {
       color: var(--warning-text);
       border: 1px solid var(--warning-border);
       padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 0.9rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       margin-bottom: 12px;
       text-align: center;
     }
@@ -122,7 +122,7 @@ header {
       background: var(--danger-bg);
       color: var(--danger-text);
       padding: 12px 16px;
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       font-size: clamp(1rem, 2vw, 1.3rem);
       font-weight: 800;
       margin-bottom: 14px;
@@ -141,7 +141,7 @@ header {
 .announcement-bar {
       background: var(--note-bg);
       border: 1px solid var(--note-border);
-      border-radius: 10px;
+      border-radius: var(--radius-lg, 10px);
       padding: 10px 18px;
       margin-bottom: 16px;
       font-size: clamp(1.25rem, 2.4vw, 2.5rem);
@@ -157,16 +157,16 @@ header {
       background: var(--accent);
       color: var(--on-accent, #141212);
       font-weight: 800;
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 2px 8px;
-      border-radius: 4px;
+      border-radius: var(--radius-sm, 4px);
       white-space: nowrap;
     }
 
 .break-giant-banner {
-      background: linear-gradient(135deg, #3E3312, #554415);
-      border: 2px solid #8A6D1F;
-      border-radius: 16px;
+      background: var(--warning-bg);
+      border: 2px solid var(--warning-border);
+      border-radius: var(--radius-lg, 10px);
       padding: 24px;
       text-align: center;
       margin-bottom: 20px;
@@ -176,7 +176,7 @@ header {
 .break-giant-title {
       font-size: clamp(2rem, 5vw, 4.5rem);
       font-weight: 900;
-      color: #F9F9F9;
+      color: var(--text-primary);
       letter-spacing: 1px;
       line-height: 1.15;
       margin-bottom: 10px;
@@ -184,13 +184,13 @@ header {
 
 .break-giant-sub {
       font-size: clamp(1.1rem, 2vw, 1.8rem);
-      color: #F2C94C;
+      color: var(--warning-text);
       font-weight: 600;
     }
 
 .break-giant-time {
       font-size: clamp(0.85rem, 1.2vw, 1.1rem);
-      color: #9FB8C4;
+      color: var(--text-secondary);
       margin-top: 8px;
     }
 
@@ -199,7 +199,7 @@ header {
       border: 2px solid var(--warning-border);
       color: var(--warning-text);
       padding: 12px 18px;
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       font-size: clamp(1rem, 1.8vw, 1.4rem);
       font-weight: 800;
       text-align: center;
@@ -215,7 +215,7 @@ header {
       align-items: center;
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      border-radius: 20px;
+      border-radius: var(--radius-lg, 10px);
       padding: 30px 20px;
       margin-bottom: 20px;
       position: relative;
@@ -260,7 +260,7 @@ header {
 .extra-turns-banner {
       background: var(--danger-bg);
       border: 2px solid var(--danger-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 14px 24px;
       text-align: center;
       margin-top: 14px;
@@ -297,7 +297,7 @@ header {
 .progress-box {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 16px 20px;
       display: flex;
       flex-direction: column;
@@ -420,7 +420,7 @@ header {
         <div class="status-badge" id="judgeCallsBadge" style="display: none; background: var(--judge-bg); color: var(--judge-text); border: 1px solid var(--judge-border); font-weight: 700;">0 桌在等裁判</div>
       </div>
       <div class="header-right">
-        <button type="button" class="btn-fs" id="fullscreenBtn">⛶ 全螢幕</button>
+        <button type="button" class="btn-fs" id="fullscreenBtn"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-fullscreen"/></svg> 全螢幕</button>
       </div>
     </header>
 
@@ -945,7 +945,7 @@ header {
         roundLabelEl.style.display = 'none';
         clockDigitsEl.textContent = `${round.label || ('第 ' + round.number + ' 輪')} 已結束`;
         clockDigitsEl.style.fontSize = 'clamp(2.5rem, 8vw, 7rem)';
-        clockDigitsEl.style.color = '#34d399';
+        clockDigitsEl.style.color = 'var(--success-text)';
         extraTurnsBanner.style.display = 'none';
         hideExtraCountdown();
         return;

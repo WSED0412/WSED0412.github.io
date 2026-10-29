@@ -287,10 +287,10 @@
 
         const reasonLabel = jc.reason_label || jc.reason;
         const reasonHtml = reasonLabel
-          ? `<div style="font-size: 0.85rem; margin-top: 4px; color: var(--text-secondary);">原因：${escapeText(reasonLabel)}</div>`
+          ? `<div style="font-size: var(--fs-sm, 0.875rem); margin-top: 4px; color: var(--text-secondary);">原因：${escapeText(reasonLabel)}</div>`
           : '';
         const noteHtml = jc.note
-          ? `<div style="font-size: 0.85rem; margin-top: 2px; color: var(--text-secondary);">備註：${escapeText(jc.note)}</div>`
+          ? `<div style="font-size: var(--fs-sm, 0.875rem); margin-top: 2px; color: var(--text-secondary);">備註：${escapeText(jc.note)}</div>`
           : '';
 
         const titleIdAttr = (this.opts.ids && this.opts.ids.statusTitle)

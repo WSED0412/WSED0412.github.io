@@ -40,7 +40,7 @@ header {
     }
 
 .page-title {
-      font-size: 1.25rem;
+      font-size: var(--fs-lg, 1.25rem);
       font-weight: 800;
       color: var(--text-primary);
     }
@@ -55,7 +55,7 @@ header {
 .div-select-bar {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 10px 14px;
       margin-bottom: 16px;
       display: flex;
@@ -68,9 +68,9 @@ select, input[type="password"] {
       min-height: 44px;
       background: var(--input-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       color: var(--text-primary);
-      font-size: 16px;
+      font-size: var(--fs-base, 1rem);
       padding: 6px 12px;
     }
 
@@ -86,8 +86,8 @@ select:focus, input[type="password"]:focus {
       min-height: 44px;
       min-width: 44px;
       padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 0.92rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       cursor: pointer;
       border: 1px solid transparent;
@@ -112,7 +112,7 @@ select:focus, input[type="password"]:focus {
     }
 
 .section-title {
-      font-size: 1.05rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 800;
       color: var(--accent-text);
       margin: 16px 0 10px;
@@ -124,7 +124,7 @@ select:focus, input[type="password"]:focus {
 .ec-card {
       background: var(--card-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 10px;
+      border-radius: var(--radius-lg, 10px);
       padding: 14px;
       margin-bottom: 12px;
       display: flex;
@@ -137,7 +137,6 @@ select:focus, input[type="password"]:focus {
 .ec-card[data-new="true"] {
       border-color: var(--accent);
       background: rgba(239, 125, 0, 0.12);
-      box-shadow: 0 0 10px rgba(239, 125, 0, 0.25);
     }
 
 .card-top {
@@ -147,23 +146,23 @@ select:focus, input[type="password"]:focus {
     }
 
 .card-table-badge {
-      font-size: 1.35rem;
+      font-size: var(--fs-lg, 1.25rem);
       font-weight: 900;
       color: var(--accent-text);
     }
 
 .card-wait-time {
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       color: var(--warning-text);
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       padding: 3px 8px;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
     }
 
 .card-label {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       font-weight: 600;
     }
@@ -173,12 +172,12 @@ select:focus, input[type="password"]:focus {
       flex-direction: column;
       gap: 4px;
       background: var(--input-bg);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       padding: 10px;
     }
 
 .card-player-row {
-      font-size: 1.05rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       color: var(--text-primary);
       display: flex;
@@ -188,7 +187,7 @@ select:focus, input[type="password"]:focus {
     }
 
 .card-player-seed {
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       font-weight: 600;
     }
@@ -209,17 +208,17 @@ select:focus, input[type="password"]:focus {
       text-align: center;
       padding: 32px 16px;
       color: var(--text-secondary);
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       background: var(--card-bg);
       border: 1px dashed var(--card-border);
-      border-radius: 10px;
+      border-radius: var(--radius-lg, 10px);
       margin-top: 10px;
     }
 
 .msg-box {
       padding: 10px 12px;
-      border-radius: 6px;
-      font-size: 0.88rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       margin-bottom: 12px;
       word-break: break-word;
     }
@@ -241,8 +240,8 @@ select:focus, input[type="password"]:focus {
           <button type="button" id="ecLogin" class="btn btn-primary">登入</button>
         </div>
         <div id="userInfo" style="display: none; align-items: center; gap: 8px;">
-          <span id="userName" style="font-size: 0.88rem; font-weight: 700; color: var(--accent-text);"></span>
-          <button type="button" id="ecLogout" class="btn btn-secondary" style="min-height: 44px; padding: 4px 10px; font-size: 0.82rem;">登出</button>
+          <span id="userName" style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--accent-text);"></span>
+          <button type="button" id="ecLogout" class="btn btn-secondary" style="min-height: 44px; padding: 4px 10px; font-size: var(--fs-sm, 0.875rem);">登出</button>
         </div>
       </div>
     </header>
@@ -251,7 +250,7 @@ select:focus, input[type="password"]:focus {
 
     <!-- 選擇分區選單 -->
     <div class="div-select-bar">
-      <label for="ecDiv" style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">請選擇分區：</label>
+      <label for="ecDiv" style="font-size: var(--fs-base, 1rem); font-weight: 700; color: var(--text-primary);">請選擇分區：</label>
       <select id="ecDiv" style="min-width: 130px;"></select>
     </div>
 
@@ -259,7 +258,7 @@ select:focus, input[type="password"]:focus {
     <section>
       <h2 class="section-title">
         <span>待唱名桌次</span>
-        <span id="ecListBadge" style="font-size: 0.82rem; color: var(--text-secondary);"></span>
+        <span id="ecListBadge" style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary);"></span>
       </h2>
       <div id="ecList"></div>
     </section>
@@ -268,7 +267,7 @@ select:focus, input[type="password"]:focus {
     <section style="margin-top: 24px;">
       <h2 class="section-title">
         <span>已唱名・等候就座中</span>
-        <span id="ecAckedBadge" style="font-size: 0.82rem; color: var(--text-secondary);"></span>
+        <span id="ecAckedBadge" style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary);"></span>
       </h2>
       <div id="ecAcked"></div>
     </section>
@@ -461,7 +460,7 @@ select:focus, input[type="password"]:focus {
       }
 
       if (pendingMatches.length === 0) {
-        listEl.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.88rem; padding: 8px 0;">目前無未唱名桌次</div>';
+        listEl.innerHTML = '<div style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem); padding: 8px 0;">目前無未唱名桌次</div>';
       } else {
         for (const m of pendingMatches) {
           listEl.appendChild(createCardElement(m, nowMs, false));
@@ -469,7 +468,7 @@ select:focus, input[type="password"]:focus {
       }
 
       if (ackedMatches.length === 0) {
-        ackedEl.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.88rem; padding: 8px 0;">目前無已唱名桌次</div>';
+        ackedEl.innerHTML = '<div style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem); padding: 8px 0;">目前無已唱名桌次</div>';
       } else {
         for (const m of ackedMatches) {
           ackedEl.appendChild(createCardElement(m, nowMs, true));
@@ -513,7 +512,7 @@ select:focus, input[type="password"]:focus {
             <span>${p1Name}</span>
             <span class="card-player-seed">${p1Seed}</span>
           </div>
-          <div style="font-size: 0.82rem; color: var(--accent-text); font-weight: 700;">VS</div>
+          <div style="font-size: var(--fs-sm, 0.875rem); color: var(--accent-text); font-weight: 700;">VS</div>
           <div class="card-player-row">
             <span>${p2Name}</span>
             <span class="card-player-seed">${p2Seed}</span>

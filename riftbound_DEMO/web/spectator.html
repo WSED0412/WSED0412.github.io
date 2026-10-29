@@ -26,7 +26,7 @@ body {
     }
 
 input, select, textarea {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
     }
 
 .container {
@@ -52,7 +52,7 @@ header {
     }
 
 .event-title {
-      font-size: 1.15rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 800;
       color: var(--text-primary);
       white-space: nowrap;
@@ -68,7 +68,7 @@ header {
     }
 
 .status-badge {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 2px 8px;
       border-radius: 9999px;
       font-weight: 600;
@@ -94,7 +94,7 @@ header {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 2px 8px;
       border-radius: 9999px;
       font-weight: 600;
@@ -119,10 +119,10 @@ header {
       gap: 4px;
       color: var(--accent-text);
       text-decoration: none;
-      font-size: 0.825rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       padding: 4px 10px;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       background: rgba(239, 125, 0, 0.1);
       border: 1px solid rgba(239, 125, 0, 0.25);
       white-space: nowrap;
@@ -136,8 +136,8 @@ header {
 
 .banner {
       padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 0.85rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       margin-bottom: 10px;
       text-align: center;
       font-weight: 600;
@@ -156,7 +156,7 @@ header {
     }
 
 .net-hint {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       margin-top: 6px;
       line-height: 1.4;
@@ -164,24 +164,24 @@ header {
     }
 
 .break-banner {
-      background: linear-gradient(135deg, #3E3312, #554415);
-      border: 1px solid #8A6D1F;
-      color: #F9F9F9;
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--text-primary);
       padding: 12px 14px;
-      border-radius: 10px;
+      border-radius: var(--radius-lg, 10px);
       margin-bottom: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
     }
 
 .break-banner-main {
-      font-size: 1.25rem;
+      font-size: var(--fs-lg, 1.25rem);
       font-weight: 800;
       margin-bottom: 4px;
     }
 
 .break-banner-sub {
-      font-size: 0.85rem;
-      color: #F2C94C;
+      font-size: var(--fs-sm, 0.875rem);
+      color: var(--warning-text);
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
@@ -192,7 +192,7 @@ header {
       display: flex;
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 10px;
+      border-radius: var(--radius-lg, 10px);
       padding: 4px;
       margin-bottom: 14px;
       gap: 4px;
@@ -203,9 +203,9 @@ header {
       padding: 10px 4px;
       background: transparent;
       border: none;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       color: var(--text-secondary);
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       cursor: pointer;
       text-align: center;
@@ -236,14 +236,14 @@ header {
 .live-table {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 10px;
+      border-radius: var(--radius-lg, 10px);
       padding: 12px 14px;
       transition: border-color 0.2s;
     }
 
 .live-table.is-feature {
       border: 1.5px solid var(--info-border);
-      background: linear-gradient(180deg, rgba(27, 47, 74, 0.5), var(--card-bg));
+      background: var(--info-bg);
     }
 
 .live-table-header {
@@ -262,7 +262,7 @@ header {
     }
 
 .table-num {
-      font-size: 1.05rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 800;
       color: var(--accent-text);
     }
@@ -271,15 +271,15 @@ header {
       background: var(--info-bg);
       color: var(--info-text);
       border: 1px solid var(--info-border);
-      font-size: 0.7rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 1px 6px;
-      border-radius: 4px;
+      border-radius: var(--radius-sm, 4px);
       font-weight: 700;
       letter-spacing: 0.5px;
     }
 
 .live-status-badge {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: 700;
       padding: 2px 8px;
       border-radius: 9999px;
@@ -334,7 +334,7 @@ header {
     }
 
 .player-name-text {
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       color: var(--text-primary);
       overflow: hidden;
@@ -343,7 +343,7 @@ header {
     }
 
 .player-sub-text {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       margin-top: 2px;
     }
@@ -355,7 +355,7 @@ header {
     }
 
 .score-text {
-      font-size: 1.15rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 900;
       color: var(--success-text);
       letter-spacing: 1px;
@@ -363,7 +363,7 @@ header {
     }
 
 .vs-text {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       color: var(--text-secondary);
     }
@@ -371,13 +371,13 @@ header {
 .search-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 16px;
       margin-bottom: 14px;
     }
 
 .search-title {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       margin-bottom: 10px;
       color: var(--text-primary);
@@ -393,10 +393,10 @@ header {
       height: 46px;
       background: var(--input-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 0 12px;
       color: var(--text-primary);
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       outline: none;
       transition: border-color 0.2s;
     }
@@ -410,10 +410,10 @@ header {
       padding: 0 20px;
       background: var(--accent);
       color: var(--on-accent, #141212);
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 800;
       border: none;
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       cursor: pointer;
       white-space: nowrap;
     }
@@ -429,20 +429,20 @@ header {
 .search-match-card {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 14px;
       margin-bottom: 8px;
     }
 
 .search-match-title {
-      font-size: 1.05rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 800;
       color: var(--accent-text);
       margin-bottom: 6px;
     }
 
 .search-match-detail {
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-primary);
       line-height: 1.5;
     }
@@ -450,17 +450,17 @@ header {
 .not-found-card {
       background: var(--input-bg);
       border: 1px dashed var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 18px 14px;
       text-align: center;
       color: var(--text-secondary);
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
     }
 
 .schedule-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 16px;
       margin-bottom: 12px;
     }
@@ -470,7 +470,7 @@ header {
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
     }
 
 .schedule-info-row:last-child {
@@ -489,23 +489,23 @@ header {
 
 .schedule-val.highlight {
       color: var(--accent-text);
-      font-size: 1.15rem;
+      font-size: var(--fs-md, 1.125rem);
     }
 
 .schedule-note-box {
       margin-top: 12px;
       padding: 10px 12px;
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       background: rgba(1, 26, 36, 0.7);
       border: 1px dashed var(--card-border);
-      font-size: 0.875rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       line-height: 1.5;
     }
 
 footer {
       text-align: center;
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       margin-top: 24px;
     }
@@ -528,15 +528,15 @@ footer {
         <div class="header-badges">
           <div class="status-badge" id="eventStatus">賽事狀態</div>
           <div class="viewer-badge" id="viewerBadge">
-            <span>👥</span>
+            <span><svg class="icon" aria-hidden="true"><use href="icons.svg#i-people"/></svg></span>
             <span id="viewerCount">—</span>
             <span>人在線</span>
           </div>
         </div>
       </div>
       <div class="header-nav">
-        <a id="standingsLink" href="standings.html" class="nav-link">📊 查看排名</a>
-        <a id="bracketLink" href="bracket.html" class="nav-link">🏆 淘汰賽</a>
+        <a id="standingsLink" href="standings.html" class="nav-link"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-stats"/></svg> 查看排名</a>
+        <a id="bracketLink" href="bracket.html" class="nav-link"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-trophy"/></svg> 淘汰賽</a>
       </div>
     </header>
 
@@ -601,7 +601,7 @@ footer {
         </div>
         <div class="schedule-info-row" id="schedLatestEndRow" style="display: none;">
           <span class="schedule-label">本輪預估結束</span>
-          <span class="schedule-val" id="schedLatestEnd" style="font-size: 0.85rem; color: #cbd5e1;">--</span>
+          <span class="schedule-val" id="schedLatestEnd" style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary);">--</span>
         </div>
         <div class="schedule-info-row" id="schedNextRoundRow" style="display: none;">
           <span class="schedule-label">下一輪預計時間</span>
@@ -925,7 +925,7 @@ footer {
       if (!round || !round.published) {
         container.innerHTML = `
           <div class="not-found-card">
-            <div style="font-size: 1.1rem; font-weight: 800; color: #e0e7ff; margin-bottom: 6px;">配對產生中</div>
+            <div style="font-size: var(--fs-md, 1.125rem); font-weight: 800; color: var(--text-primary, #e0e7ff); margin-bottom: 6px;">配對產生中</div>
             <div>裁判正在計算本輪配對，請稍候片刻...</div>
           </div>
         `;

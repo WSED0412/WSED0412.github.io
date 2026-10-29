@@ -21,7 +21,7 @@ html, body {
     }
 
 input, select, textarea {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
     }
 
 .container {
@@ -35,8 +35,8 @@ input, select, textarea {
 
 .banner {
       padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 0.85rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       margin-bottom: 10px;
       text-align: center;
       font-weight: 600;
@@ -72,7 +72,7 @@ header {
     }
 
 .page-title {
-      font-size: 1.15rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 800;
       color: var(--text-primary);
       white-space: nowrap;
@@ -81,7 +81,7 @@ header {
     }
 
 .event-name {
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       white-space: nowrap;
       overflow: hidden;
@@ -100,10 +100,10 @@ header {
       gap: 4px;
       color: var(--accent-text);
       text-decoration: none;
-      font-size: 0.825rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       padding: 5px 10px;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       background: rgba(239, 125, 0, 0.1);
       border: 1px solid rgba(239, 125, 0, 0.25);
       white-space: nowrap;
@@ -115,19 +115,18 @@ header {
     }
 
 .champion-banner {
-      background: linear-gradient(135deg, rgba(239, 125, 0, 0.25), rgba(242, 201, 76, 0.15));
+      background: var(--card-bg);
       border: 2px solid var(--accent);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 14px 18px;
       margin-bottom: 16px;
       display: flex;
       align-items: center;
       gap: 14px;
-      box-shadow: 0 4px 16px rgba(239, 125, 0, 0.2);
     }
 
 .champion-trophy {
-      font-size: 2.2rem;
+      font-size: var(--fs-2xl, 2rem);
       line-height: 1;
     }
 
@@ -137,7 +136,7 @@ header {
     }
 
 .champion-badge {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: 800;
       letter-spacing: 1px;
       color: var(--warning-text);
@@ -146,7 +145,7 @@ header {
     }
 
 .champion-name {
-      font-size: 1.25rem;
+      font-size: var(--fs-lg, 1.25rem);
       font-weight: 800;
       color: var(--text-primary);
       overflow: hidden;
@@ -155,33 +154,33 @@ header {
     }
 
 .champion-sub {
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--warning-text);
     }
 
 .no-bracket-card {
       background: var(--card-bg);
       border: 1px dashed var(--card-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 36px 20px;
       text-align: center;
       margin-top: 20px;
     }
 
 .no-bracket-icon {
-      font-size: 2.5rem;
+      font-size: var(--fs-3xl, 3rem);
       margin-bottom: 12px;
     }
 
 .no-bracket-title {
-      font-size: 1.2rem;
+      font-size: var(--fs-lg, 1.25rem);
       font-weight: 800;
       color: var(--text-primary);
       margin-bottom: 8px;
     }
 
 .no-bracket-desc {
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       max-width: 440px;
       margin: 0 auto 20px;
@@ -207,7 +206,7 @@ header {
       display: inline-flex;
       background: var(--card-bg-alt);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 3px;
       gap: 4px;
     }
@@ -217,8 +216,8 @@ header {
       min-height: 44px;
       padding: 8px 16px;
       border: 1px solid transparent;
-      border-radius: 6px;
-      font-size: 0.9rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       color: var(--text-secondary);
       background: transparent;
@@ -236,7 +235,6 @@ header {
       color: var(--on-accent, #141212);
       font-weight: 800;
       border-color: var(--accent);
-      box-shadow: 0 2px 6px rgba(239, 125, 0, 0.3);
     }
 
 .btn-view[aria-pressed="false"]:hover {
@@ -271,12 +269,12 @@ header {
 
 .bracket-scroll-wrap::-webkit-scrollbar-track {
       background: var(--input-bg);
-      border-radius: 4px;
+      border-radius: var(--radius-sm, 4px);
     }
 
 .bracket-scroll-wrap::-webkit-scrollbar-thumb {
       background: var(--card-border);
-      border-radius: 4px;
+      border-radius: var(--radius-sm, 4px);
     }
 
 .bracket-scroll-wrap::-webkit-scrollbar-thumb:hover {
@@ -353,7 +351,7 @@ header {
 .bracket-round {
       background: var(--card-bg-alt);
       border: 1px solid var(--card-border);
-      border-radius: 10px;
+      border-radius: var(--radius-lg, 10px);
       padding: 12px;
       display: flex;
       flex-direction: column;
@@ -373,15 +371,15 @@ header {
     }
 
 .round-label {
-      font-size: 1.05rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 800;
       color: var(--accent-text);
     }
 
 .round-tag {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 2px 6px;
-      border-radius: 4px;
+      border-radius: var(--radius-sm, 4px);
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       color: var(--text-secondary);
@@ -395,7 +393,7 @@ header {
 .match-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       overflow: hidden;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
       position: relative;
@@ -421,7 +419,7 @@ header {
       height: calc(50% + 22px);
       border-top: 2px solid var(--card-border);
       border-right: 2px solid var(--card-border);
-      border-top-right-radius: 6px;
+      border-top-right-radius: var(--radius-md, 6px);
     }
 
 #bracketTree[data-view="tree"] .bracket-connector.connector-bottom {
@@ -431,7 +429,7 @@ header {
       height: calc(50% + 22px);
       border-bottom: 2px solid var(--card-border);
       border-right: 2px solid var(--card-border);
-      border-bottom-right-radius: 6px;
+      border-bottom-right-radius: var(--radius-md, 6px);
     }
 
 #bracketTree[data-view="tree"] .bracket-round[data-round-idx="1"] .bracket-connector.connector-top {
@@ -470,13 +468,12 @@ header {
 #bracketTree[data-view="tree"] .bracket-connector.connector-stem.is-winner,
     #bracketTree[data-view="tree"] .bracket-connector.connector-final.is-winner {
       background: var(--accent);
-      box-shadow: 0 0 6px rgba(239, 125, 0, 0.4);
     }
 
 .bracket-champion {
       background: var(--card-bg-alt);
       border: 1px solid var(--card-border);
-      border-radius: 10px;
+      border-radius: var(--radius-lg, 10px);
       padding: 12px;
       display: flex;
       flex-direction: column;
@@ -497,7 +494,7 @@ header {
 .champion-box {
       background: var(--card-bg);
       border: 2px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 18px 12px;
       text-align: center;
       display: flex;
@@ -511,17 +508,16 @@ header {
 
 .bracket-champion.has-champion .champion-box {
       border-color: var(--accent);
-      background: linear-gradient(135deg, rgba(239, 125, 0, 0.18), rgba(242, 201, 76, 0.12));
-      box-shadow: 0 4px 16px rgba(239, 125, 0, 0.25);
+      background: var(--card-bg);
     }
 
 .champion-trophy-icon {
-      font-size: 2.2rem;
+      font-size: var(--fs-2xl, 2rem);
       line-height: 1;
     }
 
 .champion-slot-title {
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: 700;
       color: var(--warning-text);
       text-transform: uppercase;
@@ -529,7 +525,7 @@ header {
     }
 
 .champion-slot-name {
-      font-size: 1.1rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 800;
       color: var(--text-primary);
       overflow: hidden;
@@ -543,7 +539,7 @@ header {
     }
 
 .champion-slot-id {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       font-weight: 600;
     }
@@ -555,7 +551,7 @@ header {
       padding: 6px 10px;
       background: rgba(1, 26, 36, 0.6);
       border-bottom: 1px solid var(--card-border);
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
     }
 
@@ -586,7 +582,7 @@ header {
       justify-content: space-between;
       padding: 8px 10px;
       border-bottom: 1px solid var(--card-border);
-      font-size: 0.875rem;
+      font-size: var(--fs-sm, 0.875rem);
       transition: background 0.15s ease;
       min-height: 38px;
     }
@@ -610,10 +606,10 @@ header {
     }
 
 .seed-tag {
-      font-size: 0.7rem;
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: 700;
       padding: 1px 5px;
-      border-radius: 4px;
+      border-radius: var(--radius-sm, 4px);
       background: var(--input-bg);
       color: var(--text-secondary);
       border: 1px solid var(--card-border);
@@ -646,7 +642,7 @@ header {
 
 .player-score {
       font-weight: 800;
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       padding-left: 8px;
       color: var(--text-secondary);
       flex-shrink: 0;
@@ -654,14 +650,14 @@ header {
 
 .player-row.is-winner .player-score {
       color: var(--winner-text);
-      font-size: 1.05rem;
+      font-size: var(--fs-base, 1rem);
     }
 
 .walkover-note {
       padding: 6px 10px;
       background: var(--warning-bg);
       border-top: 1px solid var(--warning-border);
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--warning-text);
       text-align: center;
       font-weight: 600;
@@ -669,7 +665,7 @@ header {
 
 footer {
       text-align: center;
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       margin-top: 24px;
     }
@@ -693,8 +689,8 @@ footer {
           <div class="event-name" id="eventName">載入中...</div>
         </div>
         <div class="header-nav">
-          <a id="findTableLink" href="find-table.html" class="nav-link">🔍 查詢桌次</a>
-          <a id="standingsLink" href="standings.html" class="nav-link">📊 查看排名</a>
+          <a id="findTableLink" href="find-table.html" class="nav-link"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-search"/></svg> 查詢桌次</a>
+          <a id="standingsLink" href="standings.html" class="nav-link"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-stats"/></svg> 查看排名</a>
         </div>
       </div>
     </header>
@@ -702,14 +698,14 @@ footer {
     <!-- 檢視切換工具列 (PROJECT.md 第 10 節) -->
     <div class="view-controls" id="viewControls">
       <div class="view-switch-group" role="group" aria-label="淘汰賽檢視模式">
-        <button type="button" id="viewList" class="btn-view" aria-pressed="false">📋 清單</button>
-        <button type="button" id="viewTree" class="btn-view" aria-pressed="false">🌲 賽程樹</button>
+        <button type="button" id="viewList" class="btn-view" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-list"/></svg> 清單</button>
+        <button type="button" id="viewTree" class="btn-view" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-bracket"/></svg> 賽程樹</button>
       </div>
     </div>
 
     <!-- 冠軍橫幅 (有 champion 時顯示) -->
     <section id="championSection" class="champion-banner" style="display: none;">
-      <div class="champion-trophy">🏆</div>
+      <div class="champion-trophy"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-trophy"/></svg></div>
       <div class="champion-info">
         <div class="champion-badge">冠軍選手</div>
         <div class="champion-name" id="championName">--</div>
@@ -719,12 +715,12 @@ footer {
 
     <!-- 還沒有淘汰賽時的說明 (DATA-CONTRACT 5) -->
     <div id="noBracketMsg" class="no-bracket-card" style="display: none;">
-      <div class="no-bracket-icon">⏳</div>
+      <div class="no-bracket-icon"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-waiting"/></svg></div>
       <div class="no-bracket-title">瑞士輪結束後才會有淘汰賽</div>
       <div class="no-bracket-desc">目前賽事仍在瑞士輪階段，淘汰賽（8 強）賽程將於瑞士輪結束後公布。</div>
       <div class="no-bracket-links">
-        <a id="noBracketFindTableLink" href="find-table.html" class="nav-link">🔍 查看桌次</a>
-        <a id="noBracketStandingsLink" href="standings.html" class="nav-link">📊 查看排名</a>
+        <a id="noBracketFindTableLink" href="find-table.html" class="nav-link"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-search"/></svg> 查看桌次</a>
+        <a id="noBracketStandingsLink" href="standings.html" class="nav-link"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-stats"/></svg> 查看排名</a>
       </div>
     </div>
 
@@ -1069,12 +1065,12 @@ footer {
       const championColHtml = `
         <div class="bracket-champion ${hasChamp ? 'has-champion' : ''}">
           <div class="round-header">
-            <div class="round-label">🏆 冠軍</div>
+            <div class="round-label"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-trophy"/></svg> 冠軍</div>
             <span class="round-tag">${hasChamp ? '已決出' : '待定'}</span>
           </div>
           <div class="matches-list">
             <div class="champion-box">
-              <div class="champion-trophy-icon">🏆</div>
+              <div class="champion-trophy-icon"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-trophy"/></svg></div>
               <div class="champion-slot-title">冠軍選手</div>
               <div class="champion-slot-name">${champSeed}${champName}</div>
               ${champId}

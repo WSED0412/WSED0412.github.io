@@ -26,7 +26,7 @@ body {
     }
 
 input:not([type="checkbox"]):not([type="radio"]), select, textarea {
-      font-size: 16px;
+      font-size: var(--fs-base, 1rem);
       box-sizing: border-box;
     }
 
@@ -70,7 +70,7 @@ header {
     }
 
 .badge-tag {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       background: rgba(239, 125, 0, 0.15);
       color: var(--accent-text);
       border: 1px solid rgba(239, 125, 0, 0.4);
@@ -84,7 +84,7 @@ header {
     }
 
 .section-title {
-      font-size: 1.15rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 800;
       color: var(--text-primary);
       margin-bottom: 6px;
@@ -94,7 +94,7 @@ header {
     }
 
 .section-desc {
-      font-size: 0.88rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       margin-bottom: 14px;
       line-height: 1.4;
@@ -103,7 +103,7 @@ header {
 .form-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 10px;
+      border-radius: var(--radius-lg, 10px);
       padding: 18px;
       box-sizing: border-box;
     }
@@ -113,14 +113,14 @@ header {
     }
 
 .game-title {
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 800;
       color: var(--accent-text);
       margin-bottom: 4px;
     }
 
 .game-note {
-      font-size: 0.82rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       margin-bottom: 8px;
     }
@@ -144,7 +144,7 @@ header {
       text-align: left;
       background: var(--card-bg);
       border: 2px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 12px 14px;
       color: var(--text-primary);
       cursor: pointer;
@@ -163,12 +163,11 @@ header {
 .setup-tpl.selected {
       border-color: var(--accent);
       background: rgba(239, 125, 0, 0.16);
-      box-shadow: 0 0 10px rgba(239, 125, 0, 0.35);
     }
 
 .tpl-title {
       font-weight: 800;
-      font-size: 0.98rem;
+      font-size: var(--fs-base, 1rem);
       color: var(--text-primary);
       margin-bottom: 4px;
     }
@@ -178,7 +177,7 @@ header {
     }
 
 .tpl-desc {
-      font-size: 0.82rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       line-height: 1.4;
     }
@@ -189,7 +188,7 @@ header {
 
 .form-label {
       display: block;
-      font-size: 0.88rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       color: var(--text-primary);
       margin-bottom: 6px;
@@ -201,7 +200,7 @@ header {
     }
 
 .form-hint {
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       margin-top: 4px;
       line-height: 1.4;
@@ -212,10 +211,10 @@ header {
       max-width: 100%;
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       color: var(--text-primary);
       padding: 10px 12px;
-      font-size: 16px;
+      font-size: var(--fs-base, 1rem);
       box-sizing: border-box;
       font-family: inherit;
     }
@@ -223,13 +222,12 @@ header {
 .input-text:focus, .input-select:focus, .textarea-box:focus {
       outline: none;
       border-color: var(--accent);
-      box-shadow: 0 0 0 2px rgba(239, 125, 0, 0.2);
     }
 
 .textarea-box {
       resize: vertical;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 14px;
+      font-size: var(--fs-sm, 0.875rem);
       line-height: 1.5;
     }
 
@@ -238,7 +236,7 @@ header {
       align-items: center;
       gap: 10px;
       cursor: pointer;
-      font-size: 0.92rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       color: var(--text-primary);
       min-height: 44px;
@@ -271,16 +269,16 @@ header {
       border: 1px solid var(--card-border);
       color: var(--text-primary);
       padding: 8px 14px;
-      border-radius: 8px;
-      font-size: 0.92rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
     }
 
 .msg-box {
       margin: 12px 0;
       padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.88rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       line-height: 1.5;
       box-sizing: border-box;
     }
@@ -328,12 +326,12 @@ header {
 .checklist-col {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 12px 14px;
     }
 
 .checklist-title {
-      font-size: 0.88rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       margin-bottom: 8px;
     }
@@ -353,7 +351,7 @@ header {
     }
 
 .checklist-items li {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-primary);
       padding: 4px 0;
       border-bottom: 1px solid rgba(10, 85, 112, 0.3);
@@ -370,9 +368,9 @@ header {
       min-height: 44px;
       min-width: 44px;
       padding: 10px 18px;
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       cursor: pointer;
       border: 1px solid transparent;
       box-sizing: border-box;
@@ -389,7 +387,7 @@ header {
 
 .btn-accent {
       background: var(--accent);
-      color: var(--on-accent, #fff);
+      color: var(--on-accent, #141212);
       border-color: var(--accent);
     }
 
@@ -398,13 +396,13 @@ header {
     }
 
 .btn-primary {
-      background: #0284c7;
-      color: #fff;
-      border-color: #0284c7;
+      background: var(--accent);
+      color: var(--on-accent, #141212);
+      border-color: var(--accent);
     }
 
 .btn-primary:hover:not(:disabled) {
-      background: #0369a1;
+      background: var(--accent-hover);
     }
 
 .btn-secondary {
@@ -419,24 +417,23 @@ header {
 
 .btn-danger {
       background: var(--danger-border);
-      color: #fff;
+      color: var(--text-primary);
       border-color: var(--danger-border);
     }
 
 .btn-danger:hover:not(:disabled) {
-      background: #8b322b;
+      background: var(--danger-hover, #8b322b);
     }
 
 .btn-create {
       width: 100%;
-      font-size: 1.05rem;
+      font-size: var(--fs-base, 1rem);
       padding: 14px;
       margin-top: 8px;
     }
 
 .success-card {
       border-color: var(--accent);
-      box-shadow: 0 0 20px rgba(239, 125, 0, 0.2);
     }
 
 .success-header {
@@ -444,7 +441,7 @@ header {
     }
 
 .success-header h2 {
-      font-size: 1.35rem;
+      font-size: var(--fs-lg, 1.25rem);
       font-weight: 800;
       color: var(--accent-text);
       margin-bottom: 8px;
@@ -455,28 +452,28 @@ header {
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
       padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.88rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       line-height: 1.5;
     }
 
 .pin-display-box {
       background: var(--input-bg);
       border: 2px dashed var(--accent);
-      border-radius: 10px;
+      border-radius: var(--radius-lg, 10px);
       padding: 20px;
       text-align: center;
       margin: 18px 0;
     }
 
 .pin-label {
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       margin-bottom: 4px;
     }
 
 .pin-huge {
-      font-size: 2.2rem;
+      font-size: var(--fs-2xl, 2rem);
       font-weight: 800;
       letter-spacing: 4px;
       color: var(--accent-text);
@@ -487,7 +484,7 @@ header {
     }
 
 .pin-sub {
-      font-size: 0.82rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
     }
 
@@ -524,7 +521,7 @@ header {
 .modal-box {
       background: var(--card-bg);
       border: 2px solid var(--danger-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       max-width: 440px;
       width: 100%;
       max-height: calc(100vh - 32px);
@@ -537,7 +534,7 @@ header {
     }
 
 .modal-title {
-      font-size: 1.15rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 800;
       color: var(--danger-text);
       margin-bottom: 10px;
@@ -545,7 +542,7 @@ header {
     }
 
 .modal-msg {
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       color: var(--text-primary);
       margin-bottom: 18px;
       line-height: 1.5;
@@ -625,7 +622,7 @@ header {
                 <span class="tpl-title" id="setupTagLabel" style="margin-bottom: 0;"></span>
             </div>
             <div class="tpl-desc" id="setupTagNote"></div>
-            <div class="tpl-desc" id="setupTagSource" style="display: none; font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;"></div>
+            <div class="tpl-desc" id="setupTagSource" style="display: none; font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary); margin-top: 4px;"></div>
         </div>
 
         <!-- 依賴於以上選項的進階欄位 (部分隱藏) -->
@@ -673,25 +670,25 @@ header {
                 <input type="checkbox" id="cfgTwoPhase">
                 <span>兩階段（達門檻晉級）</span>
             </label>
-            <div id="twoPhaseFields" style="display: none; margin-top: 10px; padding: 12px; background: rgba(1, 26, 36, 0.6); border: 1px solid var(--card-border); border-radius: 8px;">
+            <div id="twoPhaseFields" style="display: none; margin-top: 10px; padding-top: 12px; border-top: 1px dashed var(--card-border);">
                 <div style="margin-bottom: 12px;">
                     <label for="cfgPhase1Rounds" class="form-label">
                         第一階段輪數
-                        <span id="cfgPhase1Official" class="form-hint" style="display: none; font-size: 0.8rem; color: var(--accent-text); margin-left: 6px;">照官方表</span>
+                        <span id="cfgPhase1Official" class="form-hint" style="display: none; font-size: var(--fs-xs, 0.75rem); color: var(--accent-text); margin-left: 6px;">照官方表</span>
                     </label>
                     <input type="number" id="cfgPhase1Rounds" class="input-text" placeholder="留空＝照官方表" min="1" max="20">
                 </div>
                 <div style="margin-bottom: 12px;">
                     <label for="cfgPhase2Points" class="form-label">
                         晉級門檻（累計場積分）
-                        <span id="cfgPhase2Official" class="form-hint" style="display: none; font-size: 0.8rem; color: var(--accent-text); margin-left: 6px;">照官方表</span>
+                        <span id="cfgPhase2Official" class="form-hint" style="display: none; font-size: var(--fs-xs, 0.75rem); color: var(--accent-text); margin-left: 6px;">照官方表</span>
                     </label>
                     <input type="number" id="cfgPhase2Points" class="input-text" placeholder="留空＝照官方表" min="1" max="60">
                 </div>
                 <div>
                     <label for="cfgPhase2Rounds" class="form-label">
                         第二階段輪數
-                        <span id="cfgPhase2RoundsOfficial" class="form-hint" style="display: none; font-size: 0.8rem; color: var(--accent-text); margin-left: 6px;">照官方表</span>
+                        <span id="cfgPhase2RoundsOfficial" class="form-hint" style="display: none; font-size: var(--fs-xs, 0.75rem); color: var(--accent-text); margin-left: 6px;">照官方表</span>
                     </label>
                     <input type="number" id="cfgPhase2Rounds" class="input-text" placeholder="留空＝照官方表" min="1" max="20">
                 </div>
@@ -710,7 +707,7 @@ header {
                 <span>要求選手登錄牌表（第一輪開賽前送出即鎖定）</span>
             </label>
             <div id="setupDecklistHint" class="form-hint" style="display: none; color: var(--warning-text); margin-top: 4px;"></div>
-            <div id="decklistSettingsGroup" style="display: none; margin-top: 10px; padding: 12px; background: rgba(1, 26, 36, 0.6); border: 1px solid var(--card-border); border-radius: 8px;">
+            <div id="decklistSettingsGroup" style="display: none; margin-top: 10px; padding-top: 12px; border-top: 1px dashed var(--card-border);">
                 <div style="margin-bottom: 12px;">
                     <label for="setupDecklistLock" class="form-label">牌表鎖定方式</label>
                     <select id="setupDecklistLock" class="input-select">
@@ -782,29 +779,29 @@ header {
         </div>
 
         <!-- 賽事主視覺區塊 -->
-        <div class="form-group" id="brandSection" style="margin-top: 18px; padding: 14px 16px; background: rgba(1, 26, 36, 0.6); border: 1px solid var(--card-border); border-radius: 8px;">
-          <div style="font-size: 0.95rem; font-weight: 800; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
-            <span>🎨 賽事主視覺（選填）</span>
+        <div class="form-group" id="brandSection" style="margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--card-border);">
+          <div style="font-size: var(--fs-base, 1rem); font-weight: 800; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+            <span><svg class="icon" aria-hidden="true"><use href="icons.svg#i-palette"/></svg> 賽事主視覺（選填）</span>
           </div>
 
           <!-- 主題色 -->
           <div class="form-group" style="margin-bottom: 14px;">
             <label for="setupBrandColorText" class="form-label">主題色</label>
             <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
-              <input type="color" id="setupBrandColorPicker" value="#EF7D00" title="選擇主題色" style="width: 44px; height: 44px; padding: 2px; border: 1px solid var(--card-border); border-radius: 6px; background: var(--input-bg); cursor: pointer; box-sizing: border-box;">
+              <input type="color" id="setupBrandColorPicker" value="#EF7D00" title="選擇主題色" style="width: 44px; height: 44px; padding: 2px; border: 1px solid var(--card-border); border-radius: var(--radius-md, 6px); background: var(--input-bg); cursor: pointer; box-sizing: border-box;"><!-- ui-audit-ignore -->
               <input type="text" id="setupBrandColorText" class="input-text" placeholder="#RRGGBB" maxlength="7" style="width: 110px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; text-transform: uppercase;">
               <button type="button" id="brandColorPreviewBtn" class="btn" style="min-height: 44px; padding: 0 16px; cursor: default; border: 1px solid var(--card-border); background: transparent; color: var(--text-secondary); font-weight: 700;" tabindex="-1">按鈕預覽</button>
-              <button type="button" id="setupBrandColorClear" class="btn btn-secondary" style="min-height: 44px; padding: 0 12px; font-size: 0.85rem;" title="清除主題色">清除</button>
+              <button type="button" id="setupBrandColorClear" class="btn btn-secondary" style="min-height: 44px; padding: 0 12px; font-size: var(--fs-sm, 0.875rem);" title="清除主題色">清除</button>
             </div>
-            <div id="setupBrandColorError" class="form-hint" style="display: none; color: var(--danger-text); margin-top: 4px;">顏色格式請輸入 #RRGGBB 或 #RGB（例如 #EF7D00）</div>
+            <div id="setupBrandColorError" class="form-hint" style="display: none; color: var(--danger-text); margin-top: 4px;">顏色格式請輸入 #RRGGBB 或 #RGB（例如 #EF7D00）<!-- ui-audit-ignore --></div>
             <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px;">
-              <span style="font-size: 0.8rem; color: var(--text-secondary);">建議色：</span>
-              <button type="button" class="brand-color-preset" data-color="#EF7D00" title="經典橘 #EF7D00" aria-label="經典橘 #EF7D00" style="background: #EF7D00; width: 44px; height: 44px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.3); cursor: pointer;"></button>
-              <button type="button" class="brand-color-preset" data-color="#0284C7" title="賽事藍 #0284C7" aria-label="賽事藍 #0284C7" style="background: #0284C7; width: 44px; height: 44px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.3); cursor: pointer;"></button>
-              <button type="button" class="brand-color-preset" data-color="#10B981" title="翡翠綠 #10B981" aria-label="翡翠綠 #10B981" style="background: #10B981; width: 44px; height: 44px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.3); cursor: pointer;"></button>
-              <button type="button" class="brand-color-preset" data-color="#EC4899" title="熱情粉 #EC4899" aria-label="熱情粉 #EC4899" style="background: #EC4899; width: 44px; height: 44px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.3); cursor: pointer;"></button>
-              <button type="button" class="brand-color-preset" data-color="#8B5CF6" title="星空紫 #8B5CF6" aria-label="星空紫 #8B5CF6" style="background: #8B5CF6; width: 44px; height: 44px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.3); cursor: pointer;"></button>
-              <button type="button" class="brand-color-preset" data-color="#EAB308" title="活力金 #EAB308" aria-label="活力金 #EAB308" style="background: #EAB308; width: 44px; height: 44px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.3); cursor: pointer;"></button>
+              <span style="font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary);">建議色：</span>
+              <button type="button" class="brand-color-preset" data-color="#EF7D00" title="經典橘 #EF7D00" aria-label="經典橘 #EF7D00" style="background: #EF7D00; width: 44px; height: 44px; border-radius: var(--radius-md, 6px); border: 1px solid rgba(255,255,255,0.3); cursor: pointer;"></button><!-- ui-audit-ignore -->
+              <button type="button" class="brand-color-preset" data-color="#0284C7" title="賽事藍 #0284C7" aria-label="賽事藍 #0284C7" style="background: #0284C7; width: 44px; height: 44px; border-radius: var(--radius-md, 6px); border: 1px solid rgba(255,255,255,0.3); cursor: pointer;"></button><!-- ui-audit-ignore -->
+              <button type="button" class="brand-color-preset" data-color="#10B981" title="翡翠綠 #10B981" aria-label="翡翠綠 #10B981" style="background: #10B981; width: 44px; height: 44px; border-radius: var(--radius-md, 6px); border: 1px solid rgba(255,255,255,0.3); cursor: pointer;"></button><!-- ui-audit-ignore -->
+              <button type="button" class="brand-color-preset" data-color="#EC4899" title="熱情粉 #EC4899" aria-label="熱情粉 #EC4899" style="background: #EC4899; width: 44px; height: 44px; border-radius: var(--radius-md, 6px); border: 1px solid rgba(255,255,255,0.3); cursor: pointer;"></button><!-- ui-audit-ignore -->
+              <button type="button" class="brand-color-preset" data-color="#8B5CF6" title="星空紫 #8B5CF6" aria-label="星空紫 #8B5CF6" style="background: #8B5CF6; width: 44px; height: 44px; border-radius: var(--radius-md, 6px); border: 1px solid rgba(255,255,255,0.3); cursor: pointer;"></button><!-- ui-audit-ignore -->
+              <button type="button" class="brand-color-preset" data-color="#EAB308" title="活力金 #EAB308" aria-label="活力金 #EAB308" style="background: #EAB308; width: 44px; height: 44px; border-radius: var(--radius-md, 6px); border: 1px solid rgba(255,255,255,0.3); cursor: pointer;"></button><!-- ui-audit-ignore -->
             </div>
             <div class="form-hint" style="margin-top: 6px;">主題色會套用到全站頁面與直播疊圖。</div>
           </div>
@@ -844,11 +841,11 @@ header {
         <!-- 鎖定與可修改項目 -->
         <div class="checklist-container">
           <div class="checklist-col">
-            <div class="checklist-title locked">🔒 開賽後鎖定項目（不可更改）</div>
+            <div class="checklist-title locked"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-lock"/></svg> 開賽後鎖定項目（不可更改）</div>
             <div id="setupLocked" class="checklist-items"></div>
           </div>
           <div class="checklist-col">
-            <div class="checklist-title editable">✏️ 開賽後仍可微調項目</div>
+            <div class="checklist-title editable"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-edit"/></svg> 開賽後仍可微調項目</div>
             <div id="setupEditable" class="checklist-items"></div>
           </div>
         </div>
@@ -862,18 +859,18 @@ header {
     <section id="setupSuccessSection" class="setup-section" style="display: none;">
       <div class="form-card success-card">
         <div class="success-header">
-          <h2>🎉 賽事建立成功！</h2>
-          <p class="warning-callout">⚠️ 請務必立即抄下或備份以下主辦 PIN 碼與選手清單。<strong>離開此頁面後，系統將不再顯示明文 PIN 碼！</strong></p>
+          <h2><svg class="icon" aria-hidden="true"><use href="icons.svg#i-party"/></svg> 賽事建立成功！</h2>
+          <p class="warning-callout"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-warning"/></svg> 請務必立即抄下或備份以下主辦 PIN 碼與選手清單。<strong>離開此頁面後，系統將不再顯示明文 PIN 碼！</strong></p>
         </div>
 
         <div class="pin-display-box">
           <div class="pin-label">主辦管理員 PIN 碼（控制台專用）</div>
           <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 8px 0;">
             <div id="setupAdminPin" class="pin-huge" style="margin: 0;"></div>
-            <button type="button" id="setupAdminPinCopy" class="btn btn-secondary" style="min-height: 44px; padding: 0 16px; font-size: 0.95rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;">複製</button>
+            <button type="button" id="setupAdminPinCopy" class="btn btn-secondary" style="min-height: 44px; padding: 0 16px; font-size: var(--fs-base, 1rem); font-weight: 700; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;">複製</button>
           </div>
-          <div id="setupAdminPinWarn" style="color: var(--danger-text, #ef4444); font-size: 0.88rem; font-weight: 700; margin: 8px 0; line-height: 1.5;">⚠ 主辦 PIN 是整場賽事的最高權限，只給你自己和信任的主辦，不要貼到群組或公開的地方。</div>
-          <div id="setupAdminPinCopyFail" style="color: var(--danger-text, #ef4444); font-size: 0.85rem; font-weight: 700; margin-top: 4px; display: none;">複製失敗，請長按數字手動複製</div>
+          <div id="setupAdminPinWarn" style="color: var(--danger-text, #ef4444); font-size: var(--fs-sm, 0.875rem); font-weight: 700; margin: 8px 0; line-height: 1.5;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-warning"/></svg> 主辦 PIN 是整場賽事的最高權限，只給你自己和信任的主辦，不要貼到群組或公開的地方。</div>
+          <div id="setupAdminPinCopyFail" style="color: var(--danger-text, #ef4444); font-size: var(--fs-sm, 0.875rem); font-weight: 700; margin-top: 4px; display: none;">複製失敗，請長按數字手動複製</div>
           <div class="pin-sub" style="margin-top: 6px;">請妥善保存，切勿外流給非主辦人員</div>
         </div>
 
@@ -1092,7 +1089,7 @@ header {
         if (gameTpls.length === 0) continue;
 
         html += `<div class="game-group">`;
-        html += `<div class="game-title">🎮 ${escapeHtml(g.label)}</div>`;
+        html += `<div class="game-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-game"/></svg> ${escapeHtml(g.label)}</div>`;
         if (g.note) {
           html += `<div class="game-note">${escapeHtml(g.note)}</div>`;
         }
@@ -1261,11 +1258,11 @@ header {
 
     function pickContrastTextColor(rgb) {
       const bgLum = getWcagLuminance(rgb.r, rgb.g, rgb.b);
-      const darkLum = getWcagLuminance(20, 18, 18); // #141212
-      const lightLum = 1.0;                         // #FFFFFF
+      const darkLum = getWcagLuminance(20, 18, 18); // #141212 /* ui-audit-ignore */
+      const lightLum = 1.0;                         // #FFFFFF /* ui-audit-ignore */
       const darkContrast = getWcagContrast(bgLum, darkLum);
       const lightContrast = getWcagContrast(bgLum, lightLum);
-      return darkContrast >= lightContrast ? '#141212' : '#FFFFFF';
+      return darkContrast >= lightContrast ? '#141212' : '#FFFFFF'; /* ui-audit-ignore */
     }
 
     function updateColorPreview() {
@@ -1288,7 +1285,7 @@ header {
       const parsed = parseHexToRgb(val);
       if (!parsed) {
         if (errorEl) {
-          errorEl.textContent = '顏色格式請輸入 #RRGGBB 或 #RGB（例如 #EF7D00）';
+          errorEl.textContent = '顏色格式請輸入 #RRGGBB 或 #RGB（例如 #EF7D00）'; /* ui-audit-ignore */
           errorEl.style.display = 'block';
         }
         previewBtn.style.backgroundColor = 'transparent';
@@ -1314,7 +1311,7 @@ header {
       const venue = document.getElementById('setupBrandVenue');
       const errorEl = document.getElementById('setupBrandColorError');
       if (colorText) colorText.value = '';
-      if (colorPicker) colorPicker.value = '#EF7D00';
+      if (colorPicker) colorPicker.value = '#EF7D00'; /* ui-audit-ignore */
       if (subtitle) subtitle.value = '';
       if (venue) venue.value = '';
       if (errorEl) errorEl.style.display = 'none';
@@ -1847,7 +1844,11 @@ header {
         tagBox.setAttribute('data-tag', cfg.tag.kind || '');
         const badge = document.getElementById('setupTagBadge');
         badge.setAttribute('data-tag', cfg.tag.kind);
-        badge.textContent = cfg.tag.kind === 'official' ? '🏆 官方' : (cfg.tag.kind === 'common' ? '💡 常見' : '🛠️ 自訂');
+        badge.innerHTML = cfg.tag.kind === 'official'
+          ? '<svg class="icon" aria-hidden="true"><use href="icons.svg#i-trophy"/></svg> 官方'
+          : (cfg.tag.kind === 'common'
+            ? '<svg class="icon" aria-hidden="true"><use href="icons.svg#i-idea"/></svg> 常見'
+            : '<svg class="icon" aria-hidden="true"><use href="icons.svg#i-tool"/></svg> 自訂');
         document.getElementById('setupTagLabel').textContent = cfg.tag.label || '';
         document.getElementById('setupTagNote').textContent = cfg.tag.note || '';
         const sourceEl = document.getElementById('setupTagSource');
@@ -1868,7 +1869,7 @@ header {
       const warningsEl = document.getElementById('setupWarnings');
       if (Array.isArray(data.warnings) && data.warnings.length > 0) {
         warningsEl.innerHTML = `
-          <div class="problem-msg">⚠️ 注意事項</div>
+          <div class="problem-msg"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-warning"/></svg> 注意事項</div>
           <ul>
             ${data.warnings.map(w => `<li>${escapeHtml(w)}</li>`).join('')}
           </ul>
@@ -1916,12 +1917,12 @@ header {
 
       const lockedEl = document.getElementById('setupLocked');
       if (Array.isArray(data.locked) && data.locked.length > 0) {
-        lockedEl.innerHTML = `<ul>${data.locked.map(item => `<li>🔒 ${escapeHtml(item)}</li>`).join('')}</ul>`;
+        lockedEl.innerHTML = `<ul>${data.locked.map(item => `<li><svg class="icon" aria-hidden="true"><use href="icons.svg#i-lock"/></svg> ${escapeHtml(item)}</li>`).join('')}</ul>`;
       }
 
       const editableEl = document.getElementById('setupEditable');
       if (Array.isArray(data.editable) && data.editable.length > 0) {
-        editableEl.innerHTML = `<ul>${data.editable.map(item => `<li>✏️ ${escapeHtml(item)}</li>`).join('')}</ul>`;
+        editableEl.innerHTML = `<ul>${data.editable.map(item => `<li><svg class="icon" aria-hidden="true"><use href="icons.svg#i-edit"/></svg> ${escapeHtml(item)}</li>`).join('')}</ul>`;
       }
 
       // 兩階段欄位帶回預設值 (DATA-CONTRACT 10.9)
@@ -2118,17 +2119,33 @@ header {
 
       const targetUrl = createdNextUrl || 'admin.html';
 
+      // 主機切換的空檔裡，請求可能卡在半死的連線（SSH 轉接尤其常見）；沒有逾時的話
+      // 這一次 fetch 永遠不回來，後面的輪詢就再也不會發生，頁面會一直卡在「主機啟動中」
       const poll = async () => {
+        const ctl = new AbortController();
+        const timer = setTimeout(() => ctl.abort(), 3000);
         try {
-          const res = await fetch('../snapshot.json', { cache: 'no-store' });
+          const res = await fetch('../snapshot.json', { cache: 'no-store', signal: ctl.signal });
           if (res.ok) {
             window.location.href = targetUrl;
             return;
           }
         } catch (e) {}
+        finally { clearTimeout(timer); }
         setTimeout(poll, 1000);
       };
       poll();
+
+      // 備案：10 秒還沒跳轉，給一個手動連結（賽事其實已經建好了）
+      setTimeout(() => {
+        if (document.getElementById('setupGoManual')) return;
+        const a = document.createElement('a');
+        a.id = 'setupGoManual';
+        a.href = targetUrl;
+        a.textContent = '等太久了？賽事已經建好，點這裡直接開主辦頁';
+        a.style.cssText = 'display:block;margin-top:12px;font-weight:700;color:var(--accent, #f59e0b);';
+        goBtn.insertAdjacentElement('afterend', a);
+      }, 10000);
     }
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -2168,7 +2185,7 @@ header {
       if (clearBtn) {
         clearBtn.addEventListener('click', () => {
           if (colorText) colorText.value = '';
-          if (colorPicker) colorPicker.value = '#EF7D00';
+          if (colorPicker) colorPicker.value = '#EF7D00'; /* ui-audit-ignore */
           updateColorPreview();
           schedulePreview();
         });

@@ -46,15 +46,15 @@ header {
     }
 
 .board-title {
-      font-size: 1.4rem;
+      font-size: var(--fs-xl, 1.5rem);
       font-weight: 800;
       color: var(--text-primary);
     }
 
 .status-pill {
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 3px 10px;
-      border-radius: 9999px;
+      border-radius: var(--radius-full, 9999px);
       font-weight: 700;
       background: var(--success-bg);
       border: 1px solid var(--success-border);
@@ -71,18 +71,18 @@ header {
       align-items: center;
       color: var(--accent-text);
       text-decoration: none;
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       padding: 6px 12px;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       background: rgba(239, 125, 0, 0.1);
       border: 1px solid rgba(239, 125, 0, 0.25);
     }
 
 .banner {
       padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 0.85rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       margin-bottom: 12px;
       text-align: center;
@@ -109,7 +109,7 @@ header {
 .elim-div {
       background: var(--card-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 14px;
+      border-radius: var(--radius-lg, 10px);
       padding: 16px;
       overflow-x: hidden;
       min-width: 0;
@@ -125,13 +125,13 @@ header {
     }
 
 .div-title {
-      font-size: 1.25rem;
+      font-size: var(--fs-lg, 1.25rem);
       font-weight: 800;
       color: var(--accent-text);
     }
 
 .div-meta {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
     }
 
@@ -157,7 +157,7 @@ header {
 .elim-table {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 10px;
+      border-radius: var(--radius-lg, 10px);
       padding: 12px;
       display: flex;
       flex-direction: column;
@@ -186,22 +186,22 @@ header {
     }
 
 .table-num {
-      font-size: 1.05rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 800;
       color: var(--text-primary);
     }
 
 .match-label-tag {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: 700;
       padding: 2px 6px;
-      border-radius: 4px;
+      border-radius: var(--radius-sm, 4px);
       background: var(--chip-bg);
       color: var(--text-secondary);
     }
 
 .players-info {
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       color: var(--text-primary);
       margin: 4px 0 8px;
@@ -210,10 +210,10 @@ header {
     }
 
 .table-status {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       padding: 4px 8px;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       text-align: center;
     }
 
@@ -243,7 +243,7 @@ header {
 .finals-groups-section {
       background: var(--card-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 14px;
+      border-radius: var(--radius-lg, 10px);
       padding: 16px;
       margin-bottom: 24px;
       overflow-x: hidden;
@@ -267,7 +267,7 @@ header {
 .elim-group {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 10px;
+      border-radius: var(--radius-lg, 10px);
       padding: 12px;
       overflow-x: hidden;
       box-sizing: border-box;
@@ -283,41 +283,44 @@ header {
     }
 
 .group-name-title {
-      font-size: 1.1rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 800;
       color: var(--accent-text);
     }
 
 .group-lot-badge {
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: 700;
       color: var(--warning-text);
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       padding: 2px 8px;
-      border-radius: 4px;
+      border-radius: var(--radius-sm, 4px);
     }
 
 .group-player-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 6px 10px;
-      background: rgba(1, 57, 81, 0.35);
-      border-radius: 6px;
-      font-size: 0.88rem;
+      padding: 8px 4px;
+      border-bottom: 1px solid var(--card-border);
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-primary);
+    }
+
+.group-player-row:last-child {
+      border-bottom: none;
     }
 
 .elim-waiting {
       background: rgba(1, 26, 36, 0.7);
       border: 1px dashed var(--card-border);
-      border-radius: 10px;
+      border-radius: var(--radius-lg, 10px);
       padding: 12px;
     }
 
 .waiting-header {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       color: var(--text-secondary);
       margin-bottom: 8px;
@@ -335,9 +338,9 @@ header {
 .waiting-item {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       padding: 6px 10px;
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       color: var(--text-primary);
       display: inline-flex;
@@ -346,7 +349,7 @@ header {
     }
 
 .waiting-tag {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--accent-text);
       font-weight: 700;
     }
@@ -360,8 +363,8 @@ header {
         <span class="status-pill" id="boardStatusBadge">即時更新中</span>
       </div>
       <div class="nav-links">
-        <a href="elim-player.html" class="nav-link">📱 選手查桌</a>
-        <a href="elim-bracket.html" class="nav-link">🏆 賽程樹</a>
+        <a href="elim-player.html" class="nav-link"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-phone"/></svg> 選手查桌</a>
+        <a href="elim-bracket.html" class="nav-link"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-trophy"/></svg> 賽程樹</a>
       </div>
     </header>
 
@@ -442,18 +445,18 @@ header {
         const metaText = isList ? `名單共 ${escapeHtml(String(ck.total || 0))} 人` : '請抽取號碼牌後以手機送出報到';
         const unitText = isList ? '人已報到' : '人通過';
 
-        checkinHtml += `<section class="elim-checkin-section card" style="margin-bottom: 24px; padding: 16px; background: var(--card-bg); border: 1.5px solid var(--card-border); border-radius: 14px;">`;
+        checkinHtml += `<section class="elim-checkin-section card" style="margin-bottom: 24px; padding: 16px; background: var(--card-bg); border: 1.5px solid var(--card-border); border-radius: var(--radius-lg, 10px);">`;
         checkinHtml += `  <div class="div-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--card-border);">`;
-        checkinHtml += `    <div class="div-title" style="font-size: 1.25rem; font-weight: 800; color: var(--accent-text);">選手現場報到進度</div>`;
-        checkinHtml += `    <div class="div-meta" style="font-size: 0.85rem; color: var(--text-secondary);">${metaText}</div>`;
+        checkinHtml += `    <div class="div-title" style="font-size: var(--fs-lg, 1.25rem); font-weight: 800; color: var(--accent-text);">選手現場報到進度</div>`;
+        checkinHtml += `    <div class="div-meta" style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary);">${metaText}</div>`;
         checkinHtml += `  </div>`;
         checkinHtml += `  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px;">`;
         for (const cd of ckDivs) {
           const divName = escapeHtml(cd.div || 'A');
           const approved = cd.approved != null ? cd.approved : 0;
-          checkinHtml += `    <div class="elim-ck" data-div="${divName}" style="background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 16px; text-align: center;">`;
-          checkinHtml += `      <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">${divName} 區</div>`;
-          checkinHtml += `      <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-text);">${approved} <span style="font-size: 0.95rem; font-weight: 600; color: var(--text-secondary);">${unitText}</span></div>`;
+          checkinHtml += `    <div class="elim-ck" data-div="${divName}" style="background: var(--input-bg); border: 1px solid var(--card-border); border-radius: var(--radius-lg, 10px); padding: 16px; text-align: center;">`;
+          checkinHtml += `      <div style="font-size: var(--fs-md, 1.125rem); font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">${divName} 區</div>`;
+          checkinHtml += `      <div style="font-size: var(--fs-2xl, 2rem); font-weight: 800; color: var(--accent-text);">${approved} <span style="font-size: var(--fs-base, 1rem); font-weight: 600; color: var(--text-secondary);">${unitText}</span></div>`;
           checkinHtml += `    </div>`;
         }
         checkinHtml += `  </div>`;
@@ -505,7 +508,7 @@ header {
 
             finalsGroupsHtml += `        <div class="group-player-row" data-player="${pid}">`;
             finalsGroupsHtml += `          <span style="font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 8px;">第 ${rank} 名 · ${pName}</span>`;
-            finalsGroupsHtml += `          <span style="color: var(--text-secondary); font-size: 0.82rem; white-space: nowrap;">${w}勝${l}敗 · 分差 ${diffStr}</span>`;
+            finalsGroupsHtml += `          <span style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem); white-space: nowrap;">${w}勝${l}敗 · 分差 ${diffStr}</span>`;
             finalsGroupsHtml += `        </div>`;
           }
 
@@ -545,9 +548,9 @@ header {
         // 邊打邊排桌循環賽即時積分表 (DATA-CONTRACT 7.2)
         if (dv.standings && dv.standings.length > 0) {
           const rrRoundText = dv.rr_round ? ` · 循環賽第 ${dv.rr_round} 輪` : '';
-          html += `  <div class="elim-rr" data-div="${divName}" style="margin-bottom: 16px; background: rgba(0,0,0,0.2); border: 1.5px solid var(--card-border); border-radius: 10px; padding: 12px;">`;
+          html += `  <div class="elim-rr" data-div="${divName}" style="margin-bottom: 16px; background: rgba(0,0,0,0.2); border: 1.5px solid var(--card-border); border-radius: var(--radius-lg, 10px); padding: 12px;">`;
           html += `    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">`;
-          html += `      <span style="font-weight: 800; font-size: 1rem; color: var(--accent-text);">即時積分表${rrRoundText}</span>`;
+          html += `      <span style="font-weight: 800; font-size: var(--fs-base, 1rem); color: var(--accent-text);">即時積分表${rrRoundText}</span>`;
           html += `    </div>`;
           html += `    <div style="display: flex; flex-direction: column; gap: 6px;">`;
           for (const st of dv.standings) {
@@ -559,9 +562,9 @@ header {
             const diff = st.diff != null ? st.diff : 0;
             const diffStr = diff > 0 ? `+${diff}` : `${diff}`;
             const tieNote = (st.tie && st.tie !== 0) ? ' · <span style="color:var(--warning-text);">同分，待抽籤</span>' : '';
-            html += `      <div class="group-player-row" data-player="${pid}" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--input-bg); border-radius: 6px;">`;
+            html += `      <div class="group-player-row" data-player="${pid}">`;
             html += `        <span style="font-weight: 700;">第 ${rank} 名 · ${pName}</span>`;
-            html += `        <span style="color: var(--text-secondary); font-size: 0.85rem;">${w}勝${l}敗 · 分差 ${diffStr}${tieNote}</span>`;
+            html += `        <span style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem);">${w}勝${l}敗 · 分差 ${diffStr}${tieNote}</span>`;
             html += `      </div>`;
           }
           html += `    </div>`;
@@ -597,7 +600,7 @@ header {
             const p2Name = m.p2 ? escapeHtml(m.p2.name) : '待定';
             const p2Seed = m.p2 ? `(${escapeHtml(m.p2.seed)})` : '';
 
-            html += `      <div class="players-info">${p1Name} ${p1Seed} <span style="color:var(--text-secondary);font-size:0.85rem;">vs</span> ${p2Name} ${p2Seed}</div>`;
+            html += `      <div class="players-info">${p1Name} ${p1Seed} <span style="color:var(--text-secondary);font-size:var(--fs-sm, 0.875rem);">vs</span> ${p2Name} ${p2Seed}</div>`;
             if (isConflict) {
               html += `      <div class="table-status conflict">裁判處理中</div>`;
             } else {
@@ -616,7 +619,7 @@ header {
         const waitingMatches = (dv.matches || []).filter(m => m.state === 'open' && m.table === null);
         html += `  <div class="elim-waiting">`;
         html += `    <div class="waiting-header">`;
-        html += `      <span>⏳ 等桌中（快輪到了）：${waitingMatches.length} 場</span>`;
+        html += `      <span><svg class="icon" aria-hidden="true"><use href="icons.svg#i-waiting"/></svg> 等桌中（快輪到了）：${waitingMatches.length} 場</span>`;
         html += `    </div>`;
 
         if (waitingMatches.length > 0) {
@@ -633,7 +636,7 @@ header {
           }
           html += `    </div>`;
         } else {
-          html += `    <div style="font-size:0.85rem; color:var(--text-secondary);">目前沒有等待中的場次</div>`;
+          html += `    <div style="font-size:var(--fs-sm, 0.875rem); color:var(--text-secondary);">目前沒有等待中的場次</div>`;
         }
         html += `  </div>`;
 

@@ -2,6 +2,28 @@
    改主題色：改下面 :root 的變數，所有載入它的頁面一起變。頁面專屬的樣式留在各頁自己的 <style>。 */
 
 :root {
+  /* 圓角只有三階：sm 小元件（勾選框、標籤）、md 按鈕與輸入框與卡片、lg 大面板與彈窗。各頁用 var(--radius-md, 6px) 的寫法，沒載入本檔也有備援值 */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  /* 字級七階（DESIGN.md）：xs 標籤與表頭小字（不得再小）、sm 次要文字、base 內文與輸入框（手機輸入框要 >= 16px）、
+     md 小標、lg 區塊標題、xl 頁面標題、2xl 大數字、3xl 超大數字。大螢幕與倒數的 clamp() 依螢幕寬度縮放，是例外（DESIGN.md 第 4 節），不歸階 */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-md: 1.125rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.5rem;
+  --fs-2xl: 2rem;
+  --fs-3xl: 3rem;   /* 超大數字（桌號、號碼牌）*/
+  /* 間距一套尺度（4px 為基礎）：用在 padding、margin、gap */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --radius-full: 9999px;
   --bg: #01222F;
   --card-bg: #013951;
   --card-border: #0A5570;
@@ -19,6 +41,9 @@
   --success-bg: #0A3F33;
   --success-border: #1F7A55;
   --success-text: #2FB574;
+  --warning-hover: #705515;   /* 按鈕 hover 用的深一階（原本各頁寫死） */
+  --success-hover: #175d41;
+  --danger-hover: #7f322b;
   --chip-bg: #0A4A63;
   --input-bg: #011A24;
   --info-bg: #1B2F4A;
@@ -50,3 +75,18 @@
       padding: 0;
       -webkit-tap-highlight-color: transparent;
     }
+
+/* 圖示（web/icons.svg 的 sprite）：<svg class="icon" aria-hidden="true"><use href="icons.svg#i-warning"/></svg>
+   大小跟著文字（1em）、顏色吃 currentColor，所以放在哪個顏色的文字旁邊就是那個顏色。圖示旁一定要有文字或 aria-label，不能只靠圖示／顏色表示狀態 */
+.icon {
+  width: 1em;
+  height: 1em;
+  flex: none;
+  vertical-align: -0.125em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.icon-lg { width: 1.5em; height: 1.5em; }

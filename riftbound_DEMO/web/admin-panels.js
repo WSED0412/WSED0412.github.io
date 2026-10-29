@@ -458,7 +458,7 @@
       lastStaffHash = staffHash;
 
       if (!Array.isArray(staff) || staff.length === 0) {
-        listEl.innerHTML = '<div class="empty-state-sm" style="color: var(--text-secondary); font-size: 0.85rem; padding: 12px; text-align: center;">目前無工作人員名單</div>';
+        listEl.innerHTML = '<div class="empty-state-sm" style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem); padding: 12px; text-align: center;">目前無工作人員名單</div>';
         return;
       }
 
@@ -493,21 +493,21 @@
         if (isMe) {
           const meBadge = document.createElement('span');
           meBadge.className = 'badge';
-          meBadge.style.cssText = 'background: rgba(239, 125, 0, 0.2); color: var(--accent-text); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(239, 125, 0, 0.4);';
+          meBadge.style.cssText = 'background: rgba(239, 125, 0, 0.2); color: var(--accent-text); padding: 2px 8px; border-radius: var(--radius-sm, 4px); font-size: var(--fs-xs, 0.75rem); font-weight: 700; border: 1px solid rgba(239, 125, 0, 0.4);';
           meBadge.textContent = '你';
           infoDiv.appendChild(meBadge);
         }
 
         const roleBadge = document.createElement('span');
         roleBadge.className = 'badge';
-        roleBadge.style.cssText = 'background: var(--card-bg); color: var(--text-secondary); border: 1px solid var(--card-border); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600;';
+        roleBadge.style.cssText = 'background: var(--card-bg); color: var(--text-secondary); border: 1px solid var(--card-border); padding: 2px 8px; border-radius: var(--radius-sm, 4px); font-size: var(--fs-xs, 0.75rem); font-weight: 600;';
         roleBadge.textContent = roleText;
         infoDiv.appendChild(roleBadge);
 
         if (!item.active) {
           const disabledBadge = document.createElement('span');
           disabledBadge.className = 'badge';
-          disabledBadge.style.cssText = 'background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;';
+          disabledBadge.style.cssText = 'background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); padding: 2px 8px; border-radius: var(--radius-sm, 4px); font-size: var(--fs-xs, 0.75rem); font-weight: 700;';
           disabledBadge.textContent = '停用';
           infoDiv.appendChild(disabledBadge);
         }
@@ -719,7 +719,7 @@
       lastStaffHash = '';
       const listEl = getEl(listId);
       if (listEl) {
-        listEl.innerHTML = '<div class="empty-state-sm" style="color: var(--text-secondary); font-size: 0.85rem; padding: 12px; text-align: center;">請點擊「重新整理清單」載入工作人員</div>';
+        listEl.innerHTML = '<div class="empty-state-sm" style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem); padding: 12px; text-align: center;">請點擊「重新整理清單」載入工作人員</div>';
       }
       handlePinDone();
       hideStaffMsg();
@@ -1902,7 +1902,7 @@
           justify-content: space-between;
           padding: 8px 10px;
           margin-bottom: 6px;
-          border-radius: 6px;
+          border-radius: var(--radius-md, 6px);
           background: ${isRepeat ? 'var(--warning-bg)' : 'var(--input-bg)'};
           border: 1px solid ${isRepeat ? 'var(--warning-border)' : 'var(--panel-border)'};
           color: ${isRepeat ? 'var(--warning-text)' : 'var(--text-main)'};
@@ -1913,8 +1913,8 @@
         row.innerHTML = `
           <span style="font-weight: 700;">${escapeHtml(item.player.name)}（${escapeHtml(item.player.id)}）</span>
           <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-            <span style="font-size: 0.85rem;">${escapeHtml(countsText)}</span>
-            ${isRepeat ? `<span class="badge" style="background: var(--warning-border); color: #fff; font-weight: 800; font-size: 0.75rem; padding: 2px 6px; border-radius: 4px;">累計 ${item.total} 次</span>` : ''}
+            <span style="font-size: var(--fs-sm, 0.875rem);">${escapeHtml(countsText)}</span>
+            ${isRepeat ? `<span class="badge" style="background: var(--warning-border); color: var(--text-primary, #fff); font-weight: 800; font-size: var(--fs-xs, 0.75rem); padding: 2px 6px; border-radius: var(--radius-sm, 4px);">累計 ${item.total} 次</span>` : ''}
           </div>
         `;
         sumEl.appendChild(row);
@@ -1950,10 +1950,10 @@
         row.style.cssText = `
           padding: 8px 10px;
           margin-bottom: 6px;
-          border-radius: 6px;
+          border-radius: var(--radius-md, 6px);
           background: var(--input-bg);
           border: 1px solid var(--panel-border);
-          font-size: 0.85rem;
+          font-size: var(--fs-sm, 0.875rem);
           line-height: 1.4;
           ${isVoided ? 'opacity: 0.6; text-decoration: line-through;' : ''}
         `;
@@ -1972,14 +1972,14 @@
         row.innerHTML = `
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
             <div>
-              <span style="color: var(--text-sub); font-size: 0.8rem;">${escapeHtml(timeStr)}</span>
+              <span style="color: var(--text-sub); font-size: var(--fs-xs, 0.75rem);">${escapeHtml(timeStr)}</span>
               <strong style="margin-left: 4px; color: var(--accent-text);">${escapeHtml(entry.player.name)}（${escapeHtml(entry.player.id)}）</strong>
               <span style="margin-left: 6px; font-weight: 700;">${escapeHtml(kindLabel)}</span>
               ${extraText}
               <span style="color: var(--text-sub); margin-left: 6px;">by ${escapeHtml(entry.by)}</span>
               ${voidInfo}
             </div>
-            ${!isVoided ? `<button type="button" class="pn-void btn btn-secondary btn-sm" data-id="${escapeHtml(entry.id)}" style="min-height: 36px; padding: 2px 10px; font-size: 0.8rem;">作廢</button>` : ''}
+            ${!isVoided ? `<button type="button" class="pn-void btn btn-secondary btn-sm" data-id="${escapeHtml(entry.id)}" style="min-height: 36px; padding: 2px 10px; font-size: var(--fs-xs, 0.75rem);">作廢</button>` : ''}
           </div>
         `;
 
@@ -1994,7 +1994,7 @@
       if (arr.length > 30) {
         const moreDiv = document.createElement('div');
         moreDiv.className = 'empty-state-sm';
-        moreDiv.style.cssText = 'text-align: center; color: var(--text-sub); margin-top: 6px; font-size: 0.82rem;';
+        moreDiv.style.cssText = 'text-align: center; color: var(--text-sub); margin-top: 6px; font-size: var(--fs-sm, 0.875rem);';
         moreDiv.textContent = `還有 ${arr.length - 30} 筆，輸入選手編號可以只看那位`;
         listEl.appendChild(moreDiv);
       }
@@ -2009,13 +2009,13 @@
           modal.className = 'modal-overlay';
           modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.75); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 99999; box-sizing: border-box;';
           modal.innerHTML = `
-            <div class="modal-box" style="background: var(--card-bg); border: 2px solid var(--danger-border); border-radius: 12px; max-width: 340px; width: 100%; padding: 16px; box-sizing: border-box; color: var(--text-primary);">
-              <div class="modal-title" style="font-size: 1.1rem; font-weight: 800; color: var(--danger-text); margin-bottom: 8px; text-align: center;">作廢判罰紀錄</div>
-              <div style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 10px;" id="pnVoidPromptText">請輸入作廢原因（選填，最多 40 字）：</div>
+            <div class="modal-box" style="background: var(--card-bg); border: 2px solid var(--danger-border); border-radius: var(--radius-lg, 10px); max-width: 340px; width: 100%; padding: 16px; box-sizing: border-box; color: var(--text-primary);">
+              <div class="modal-title" style="font-size: var(--fs-md, 1.125rem); font-weight: 800; color: var(--danger-text); margin-bottom: 8px; text-align: center;">作廢判罰紀錄</div>
+              <div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 10px;" id="pnVoidPromptText">請輸入作廢原因（選填，最多 40 字）：</div>
               <input type="text" id="pnVoidReason" maxlength="40" placeholder="例如：記錯選手、雙方已和解" class="input-text" style="width: 100%; min-height: 44px; margin-bottom: 14px; box-sizing: border-box;">
               <div class="modal-btns" style="display: flex; justify-content: center; gap: 10px;">
-                <button type="button" id="pnVoidConfirm" class="btn btn-danger" style="color: #fff; min-height: 44px; min-width: 80px; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 700;">確定作廢</button>
-                <button type="button" id="pnVoidCancel" class="btn btn-secondary" style="min-height: 44px; min-width: 80px; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 700;">取消</button>
+                <button type="button" id="pnVoidConfirm" class="btn btn-danger" style="color: var(--on-accent, #141212); min-height: 44px; min-width: 80px; padding: 8px 16px; border-radius: var(--radius-md, 6px); cursor: pointer; font-weight: 700;">確定作廢</button>
+                <button type="button" id="pnVoidCancel" class="btn btn-secondary" style="min-height: 44px; min-width: 80px; padding: 8px 16px; border-radius: var(--radius-md, 6px); cursor: pointer; font-weight: 700;">取消</button>
               </div>
             </div>
           `;

@@ -9,7 +9,7 @@
 .dco-overlay {
   position: fixed;
   inset: 0;
-  background: #01222F;
+  background: var(--bg, #01222f);
   display: none;
   flex-direction: column;
   align-items: center;
@@ -24,13 +24,13 @@
 }
 
 .dco-icon {
-  font-size: 3.5rem;
+  font-size: var(--fs-3xl, 3rem);
   line-height: 1;
   margin-bottom: 14px;
 }
 
 .dco-title {
-  font-size: 1.5rem;
+  font-size: var(--fs-xl, 1.5rem);
   font-weight: 800;
   color: var(--danger-text, #ef4444);
   margin: 0 0 10px 0;
@@ -38,7 +38,7 @@
 }
 
 .dco-desc {
-  font-size: 1rem;
+  font-size: var(--fs-base, 1rem);
   color: var(--text-secondary, #94a3b8);
   max-width: 440px;
   margin: 0 0 20px 0;
@@ -51,11 +51,11 @@
   min-height: 44px;
   padding: 12px 28px;
   background: var(--accent, #ef7d00);
-  color: #141212;
-  font-size: 1rem;
+  color: var(--on-accent, #141212);
+  font-size: var(--fs-base, 1rem);
   font-weight: 800;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md, 6px);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -126,7 +126,7 @@
 
     const icon = document.createElement('div');
     icon.className = 'dco-icon';
-    icon.textContent = '⚠️';
+    icon.innerHTML = '<svg class="icon" aria-hidden="true"><use href="icons.svg#i-warning"/></svg>';
 
     const title = document.createElement('div');
     title.className = 'dco-title';

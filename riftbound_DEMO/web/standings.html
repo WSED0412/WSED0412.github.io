@@ -21,7 +21,7 @@ html, body {
     }
 
 input, select, textarea {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
     }
 
 .container {
@@ -35,8 +35,8 @@ input, select, textarea {
 
 .banner {
       padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 0.85rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       margin-bottom: 10px;
       text-align: center;
       font-weight: 600;
@@ -72,7 +72,7 @@ header {
     }
 
 .page-title {
-      font-size: 1.15rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 800;
       color: var(--text-primary);
       white-space: nowrap;
@@ -81,7 +81,7 @@ header {
     }
 
 .event-name {
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       white-space: nowrap;
       overflow: hidden;
@@ -94,10 +94,10 @@ header {
       gap: 4px;
       color: var(--accent-text);
       text-decoration: none;
-      font-size: 0.825rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       padding: 5px 10px;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       background: rgba(239, 125, 0, 0.1);
       border: 1px solid rgba(239, 125, 0, 0.25);
       white-space: nowrap;
@@ -111,7 +111,7 @@ header {
 .standings-header-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 12px 14px;
       margin-bottom: 12px;
     }
@@ -125,24 +125,24 @@ header {
     }
 
 .standings-label-badge {
-      font-size: 1.1rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 800;
       color: var(--accent-text);
     }
 
 .standings-meta {
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
     }
 
 .standings-note-box {
       margin-top: 8px;
       padding: 6px 10px;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       line-height: 1.4;
     }
 
@@ -161,10 +161,10 @@ header {
       height: 44px;
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       color: var(--text-primary);
       padding: 0 12px;
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       outline: none;
       min-width: 0;
     }
@@ -179,9 +179,9 @@ header {
       background: var(--accent);
       color: var(--on-accent, #141212);
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       border: none;
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       cursor: pointer;
       white-space: nowrap;
     }
@@ -192,33 +192,33 @@ header {
 
 .search-hint {
       margin-top: 6px;
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
     }
 
 .no-standings-card {
       background: var(--card-bg);
       border: 1px dashed var(--card-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 36px 16px;
       text-align: center;
       margin: 16px 0;
     }
 
 .no-standings-icon {
-      font-size: 2.5rem;
+      font-size: var(--fs-3xl, 3rem);
       margin-bottom: 10px;
     }
 
 .no-standings-title {
-      font-size: 1.25rem;
+      font-size: var(--fs-lg, 1.25rem);
       font-weight: 800;
       color: var(--text-primary);
       margin-bottom: 6px;
     }
 
 .no-standings-desc {
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       max-width: 360px;
       margin: 0 auto 16px;
@@ -230,7 +230,7 @@ header {
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       background: var(--card-bg);
       margin-bottom: 16px;
     }
@@ -239,7 +239,7 @@ header {
       width: 100%;
       border-collapse: separate;
       border-spacing: 0;
-      font-size: 0.875rem;
+      font-size: var(--fs-sm, 0.875rem);
       text-align: left;
       white-space: nowrap;
     }
@@ -247,7 +247,7 @@ header {
 #standingsTable th {
       background: var(--card-bg-alt);
       color: var(--text-secondary);
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: 700;
       padding: 8px 6px;
       border-bottom: 2px solid var(--card-border);
@@ -259,7 +259,7 @@ header {
 
 .th-sub {
       display: block;
-      font-size: 0.65rem;
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: normal;
       color: var(--text-secondary);
       margin-top: 1px;
@@ -336,7 +336,7 @@ header {
 
 .rank-num {
       font-weight: 800;
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-primary);
       line-height: 1.2;
     }
@@ -363,7 +363,7 @@ header {
       display: block;
       min-width: 0;
       max-width: 100%;
-      font-size: 0.825rem;
+      font-size: var(--fs-sm, 0.875rem);
       line-height: 1.25;
     }
 
@@ -378,7 +378,7 @@ header {
     }
 
 .player-id {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       font-variant-numeric: tabular-nums;
       line-height: 1.2;
@@ -386,10 +386,10 @@ header {
 
 .badge-lot {
       display: block;
-      font-size: 0.6rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 0 2px;
       line-height: 1.2;
-      border-radius: 3px;
+      border-radius: var(--radius-sm, 4px);
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
@@ -402,10 +402,10 @@ header {
 
 .badge-dropped {
       display: inline-block;
-      font-size: 0.6rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 0 3px;
       line-height: 1.2;
-      border-radius: 3px;
+      border-radius: var(--radius-sm, 4px);
       background: var(--danger-bg);
       border: 1px solid var(--danger-border);
       color: var(--danger-text);
@@ -415,13 +415,13 @@ header {
 
 .phase-out-badge {
       display: inline-block;
-      font-size: 0.6rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 0 3px;
       line-height: 1.2;
-      border-radius: 3px;
-      background: rgba(56, 189, 248, 0.15);
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      color: #38bdf8;
+      border-radius: var(--radius-sm, 4px);
+      background: var(--info-bg);
+      border: 1px solid var(--info-border);
+      color: var(--info-text);
       white-space: nowrap;
       font-weight: normal;
       margin-left: 4px;
@@ -454,7 +454,7 @@ header {
 
 footer {
       text-align: center;
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       margin-top: 20px;
     }
@@ -478,9 +478,9 @@ footer {
           <div class="event-name" id="eventName">載入中...</div>
         </div>
         <div style="display: flex; gap: 8px; align-items: center;">
-          <a id="findTableLink" href="find-table.html" class="nav-link">🔍 查詢桌次</a>
-          <a id="bracketLink" href="bracket.html" class="nav-link">🏆 淘汰賽</a>
-          <a id="spectatorLink" href="spectator.html" class="nav-link">📺 觀眾端</a>
+          <a id="findTableLink" href="find-table.html" class="nav-link"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-search"/></svg> 查詢桌次</a>
+          <a id="bracketLink" href="bracket.html" class="nav-link"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-trophy"/></svg> 淘汰賽</a>
+          <a id="spectatorLink" href="spectator.html" class="nav-link"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-screen"/></svg> 觀眾端</a>
         </div>
       </div>
     </header>
@@ -513,10 +513,10 @@ footer {
 
     <!-- 還沒有排名時的提示 (DATA-CONTRACT 1.11, review.py) -->
     <div id="noStandingsMsg" class="no-standings-card" style="display: none;">
-      <div class="no-standings-icon">⏳</div>
+      <div class="no-standings-icon"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-waiting"/></svg></div>
       <div class="no-standings-title">第 1 輪結束後才會有排名</div>
       <div class="no-standings-desc">目前第 1 輪尚未結束，請先查看目前桌次與對手。</div>
-      <a id="noStandingsFindTableLink" href="find-table.html" class="nav-link" style="display: inline-flex;">🔍 查看我的桌次</a>
+      <a id="noStandingsFindTableLink" href="find-table.html" class="nav-link" style="display: inline-flex;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-search"/></svg> 查看我的桌次</a>
     </div>
 
     <!-- 排名表格容器 -->

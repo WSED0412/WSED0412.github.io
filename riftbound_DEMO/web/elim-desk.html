@@ -47,16 +47,16 @@ header {
     }
 
 .header-title {
-      font-size: 1.25rem;
+      font-size: var(--fs-lg, 1.25rem);
       font-weight: 800;
       color: var(--text-primary);
     }
 
 .counts-badge {
-      font-size: 0.88rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       padding: 4px 10px;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       background: rgba(239, 125, 0, 0.15);
       border: 1px solid rgba(239, 125, 0, 0.35);
       color: var(--accent-text);
@@ -72,14 +72,14 @@ header {
 .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 10px;
+      border-radius: var(--radius-lg, 10px);
       padding: 16px 14px;
       margin-bottom: 16px;
       overflow-x: hidden;
     }
 
 .card-title {
-      font-size: 1.05rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       color: var(--accent-text);
       margin-bottom: 12px;
@@ -106,9 +106,9 @@ input[type="text"], input[type="password"] {
       min-height: 44px;
       background: var(--input-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       color: var(--text-primary);
-      font-size: 16px;
+      font-size: var(--fs-base, 1rem);
       padding: 8px 12px;
     }
 
@@ -124,8 +124,8 @@ input[type="text"]:focus, input[type="password"]:focus {
       min-height: 44px;
       min-width: 44px;
       padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 0.92rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       cursor: pointer;
       border: 1px solid transparent;
@@ -174,8 +174,8 @@ input[type="text"]:focus, input[type="password"]:focus {
 
 .msg-box {
       padding: 10px 12px;
-      border-radius: 6px;
-      font-size: 0.88rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       margin-bottom: 12px;
       word-break: break-word;
     }
@@ -189,16 +189,16 @@ input[type="text"]:focus, input[type="password"]:focus {
 .pin-banner {
       background: var(--success-bg);
       border: 1.5px solid var(--success-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 14px;
       text-align: center;
       margin-bottom: 16px;
     }
 
 .pin-number {
-      font-size: 2.2rem;
+      font-size: var(--fs-2xl, 2rem);
       font-weight: 900;
-      color: #ffffff;
+      color: var(--text-primary);
       letter-spacing: 3px;
       margin: 6px 0 10px;
     }
@@ -206,7 +206,7 @@ input[type="text"]:focus, input[type="password"]:focus {
 .ed-sub {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 12px;
       margin-bottom: 10px;
       display: flex;
@@ -223,14 +223,14 @@ input[type="text"]:focus, input[type="password"]:focus {
     }
 
 .ed-sub-card {
-      font-size: 1.35rem;
+      font-size: var(--fs-lg, 1.25rem);
       font-weight: 900;
       color: var(--accent-text);
       letter-spacing: 0.5px;
     }
 
 .ed-sub-name {
-      font-size: 1.05rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       color: var(--text-primary);
       word-break: break-word;
@@ -238,11 +238,11 @@ input[type="text"]:focus, input[type="password"]:focus {
 
 .same-card-warn {
       padding: 6px 10px;
-      border-radius: 4px;
+      border-radius: var(--radius-sm, 4px);
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
     }
 
@@ -253,16 +253,17 @@ input[type="text"]:focus, input[type="password"]:focus {
     }
 
 .ed-done {
-      background: var(--input-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      padding: 10px 12px;
-      margin-bottom: 8px;
+      border-bottom: 1px solid var(--card-border);
+      padding: 10px 4px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
+    }
+
+.ed-done:last-child {
+      border-bottom: none;
     }
 
 .ed-done-info {
@@ -272,24 +273,24 @@ input[type="text"]:focus, input[type="password"]:focus {
     }
 
 .ed-done-card {
-      font-size: 1.1rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 800;
       color: var(--accent-text);
       min-width: 65px;
     }
 
 .ed-done-name {
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 600;
       color: var(--text-primary);
       word-break: break-word;
     }
 
 .deck-badge {
-      font-size: 0.78rem;
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: 700;
       padding: 2px 8px;
-      border-radius: 9999px;
+      border-radius: var(--radius-full, 9999px);
       display: inline-block;
       white-space: nowrap;
     }
@@ -323,7 +324,7 @@ input[type="text"]:focus, input[type="password"]:focus {
 .modal-box {
       background: var(--card-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       width: 100%;
       max-width: 420px;
       max-height: calc(100vh - 32px);
@@ -335,7 +336,7 @@ input[type="text"]:focus, input[type="password"]:focus {
     }
 
 .modal-title {
-      font-size: 1.15rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 800;
       color: var(--accent-text);
       margin-bottom: 8px;
@@ -343,7 +344,7 @@ input[type="text"]:focus, input[type="password"]:focus {
     }
 
 .modal-msg {
-      font-size: 0.92rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-primary);
       line-height: 1.5;
       margin-bottom: 18px;
@@ -369,7 +370,7 @@ input[type="text"]:focus, input[type="password"]:focus {
       <h1 class="card-title">檢錄台工作人員登入</h1>
       <div id="edLoginMsg" class="msg-box error" style="display: none;"></div>
       <div style="margin-bottom: 14px;">
-        <label for="edPin" style="font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; display: block;">工作人員 PIN 碼：</label>
+        <label for="edPin" style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; margin-bottom: 4px; display: block;">工作人員 PIN 碼：</label>
         <input type="password" id="edPin" placeholder="請輸入裁判或主辦 PIN" autocomplete="off">
       </div>
       <button type="button" id="edLogin" class="btn btn-primary" style="width: 100%;">登入</button>
@@ -390,15 +391,15 @@ input[type="text"]:focus, input[type="password"]:focus {
       </header>
 
       <!-- 牌表進度 (DATA-CONTRACT 10.7) -->
-      <div id="deckProgress" style="display: none; padding: 10px 14px; margin-bottom: 12px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; font-weight: 800; color: #38bdf8; font-size: 0.95rem; text-align: center;"></div>
+      <div id="deckProgress" style="display: none; padding: 10px 14px; margin-bottom: 12px; background: var(--info-bg); border: 1px solid var(--info-border); border-radius: var(--radius-md, 6px); font-weight: 800; color: var(--info-text); font-size: var(--fs-base, 1rem); text-align: center;"></div>
 
       <div id="edMsg" class="msg-box error" style="display: none;"></div>
 
       <!-- PIN 碼顯示橫幅（僅顯示一次） -->
       <div id="edPinShowContainer" class="pin-banner" style="display: none;">
-        <div style="font-size: 0.95rem; font-weight: 700; color: #fff;">報到完成！選手 PIN 碼：</div>
+        <div style="font-size: var(--fs-base, 1rem); font-weight: 700; color: var(--text-primary);">報到完成！選手 PIN 碼：</div>
         <div id="edPinShow" class="pin-number"></div>
-        <div style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px;">請抄在號碼牌或報到單上交給選手，此號碼不再顯示</div>
+        <div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 10px;">請抄在號碼牌或報到單上交給選手，此號碼不再顯示</div>
         <button type="button" id="edPinDone" class="btn btn-primary" style="min-width: 120px;">已抄下</button>
       </div>
 
@@ -416,10 +417,10 @@ input[type="text"]:focus, input[type="password"]:focus {
       <section class="card">
         <h2 class="card-title">
           <span>待審核清單</span>
-          <span id="edPendingBadge" style="font-size: 0.85rem; color: var(--text-secondary);"></span>
+          <span id="edPendingBadge" style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary);"></span>
         </h2>
         <div id="edPending">
-          <div style="color: var(--text-secondary); font-size: 0.88rem; padding: 10px 0;">目前無待審核名單</div>
+          <div style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem); padding: 10px 0;">目前無待審核名單</div>
         </div>
       </section>
 
@@ -427,13 +428,13 @@ input[type="text"]:focus, input[type="password"]:focus {
       <section class="card">
         <div class="card-title">
           <span>已通過清單</span>
-          <span id="edApprovedBadge" style="font-size: 0.85rem; color: var(--text-secondary);"></span>
+          <span id="edApprovedBadge" style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary);"></span>
         </div>
         <div style="margin-bottom: 12px;">
           <input type="text" id="edSearch" placeholder="搜尋卡號或姓名..." autocomplete="off">
         </div>
         <div id="edApproved">
-          <div style="color: var(--text-secondary); font-size: 0.88rem; padding: 10px 0;">目前尚無已通過名單</div>
+          <div style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem); padding: 10px 0;">目前尚無已通過名單</div>
         </div>
       </section>
     </div>
@@ -583,7 +584,7 @@ input[type="text"]:focus, input[type="password"]:focus {
       document.getElementById('edPendingBadge').textContent = `共 ${pendingList.length} 筆`;
 
       if (pendingList.length === 0) {
-        pendingBox.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.88rem; padding: 10px 0;">目前無待審核名單</div>';
+        pendingBox.innerHTML = '<div style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem); padding: 10px 0;">目前無待審核名單</div>';
       } else {
         pendingBox.innerHTML = '';
         for (const sub of pendingList) {
@@ -646,7 +647,7 @@ input[type="text"]:focus, input[type="password"]:focus {
       document.getElementById('edApprovedBadge').textContent = `共 ${approvedList.length} 人`;
 
       if (approvedList.length === 0) {
-        approvedBox.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.88rem; padding: 10px 0;">目前尚無已通過名單</div>';
+        approvedBox.innerHTML = '<div style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem); padding: 10px 0;">目前尚無已通過名單</div>';
       } else {
         approvedBox.innerHTML = '';
         for (const done of approvedList) {

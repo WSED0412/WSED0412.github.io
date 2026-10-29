@@ -25,7 +25,7 @@ body {
     }
 
 input, select, textarea {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
     }
 
 .container {
@@ -42,7 +42,7 @@ header {
     }
 
 .page-title {
-      font-size: 1.4rem;
+      font-size: var(--fs-xl, 1.5rem);
       font-weight: 800;
       letter-spacing: -0.5px;
       color: var(--text-primary);
@@ -50,21 +50,21 @@ header {
     }
 
 .event-name {
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
     }
 
 .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 20px 16px;
       margin-bottom: 16px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
 .card-title {
-      font-size: 1.1rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 700;
       margin-bottom: 12px;
       color: var(--text-primary);
@@ -74,7 +74,7 @@ header {
     }
 
 .card-desc {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       margin-bottom: 16px;
       line-height: 1.5;
@@ -86,14 +86,14 @@ header {
 
 .form-label {
       display: block;
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       color: var(--text-secondary);
       margin-bottom: 6px;
     }
 
 .form-hint {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       margin-top: 4px;
     }
@@ -103,10 +103,10 @@ header {
       height: 48px;
       background: var(--input-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 0 14px;
       color: var(--text-primary);
-      font-size: 1.05rem;
+      font-size: var(--fs-base, 1rem);
       outline: none;
       transition: border-color 0.2s;
     }
@@ -119,8 +119,8 @@ header {
       width: 100%;
       height: 48px;
       border: none;
-      border-radius: 8px;
-      font-size: 1rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       cursor: pointer;
       display: inline-flex;
@@ -155,9 +155,9 @@ header {
       background: var(--accent);
       color: var(--on-accent, #141212);
       border: none;
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 10px 24px;
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       cursor: pointer;
       margin-top: 12px;
@@ -170,9 +170,9 @@ header {
     }
 
 .msg-box {
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 12px 14px;
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       margin-bottom: 16px;
       line-height: 1.4;
@@ -197,13 +197,13 @@ header {
     }
 
 .done-icon {
-      font-size: 3.5rem;
+      font-size: var(--fs-3xl, 3rem);
       margin-bottom: 12px;
       line-height: 1;
     }
 
 .done-headline {
-      font-size: 1.8rem;
+      font-size: var(--fs-2xl, 2rem);
       font-weight: 900;
       color: var(--success-text);
       margin-bottom: 16px;
@@ -211,10 +211,9 @@ header {
     }
 
 .done-info-card {
-      background: var(--input-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 16px;
+      border-top: 1px solid var(--card-border);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px 0;
       margin-bottom: 20px;
       text-align: left;
     }
@@ -224,7 +223,7 @@ header {
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
     }
 
 .done-info-row:last-child {
@@ -242,13 +241,13 @@ header {
 
 .done-info-val.highlight {
       color: var(--accent-text);
-      font-size: 1.1rem;
+      font-size: var(--fs-md, 1.125rem);
     }
 
 .nav-links {
       text-align: center;
       margin-top: 20px;
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
     }
 
 .nav-link {
@@ -262,7 +261,7 @@ header {
 
 footer {
       text-align: center;
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       margin-top: 24px;
     }
@@ -273,7 +272,7 @@ footer {
       left: 0;
       right: 0;
       bottom: 0;
-      background: #01222F;
+      background: var(--bg);
       display: none;
       flex-direction: column;
       align-items: center;
@@ -284,19 +283,19 @@ footer {
     }
 
 .disconnected-icon {
-      font-size: 3rem;
+      font-size: var(--fs-3xl, 3rem);
       margin-bottom: 12px;
     }
 
 .disconnected-title {
-      font-size: 1.4rem;
+      font-size: var(--fs-xl, 1.5rem);
       font-weight: 800;
       color: var(--danger-text);
       margin-bottom: 8px;
     }
 
 .disconnected-desc {
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       color: var(--text-secondary);
       max-width: 360px;
       margin-bottom: 20px;
@@ -319,9 +318,9 @@ footer {
       <div class="card-desc">請依照現場報到單上的編號與個人 PIN 碼完成報到。</div>
 
       <!-- 身分自動帶入提示 (PROJECT.md 第三十輪, review.py [34]) -->
-      <div id="playerAuthNote" style="display: none; margin-bottom: 16px; padding: 10px 14px; background: rgba(239, 125, 0, 0.12); border: 1.5px solid rgba(239, 125, 0, 0.35); border-radius: 8px; font-size: 0.9rem; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+      <div id="playerAuthNote" style="display: none; margin-bottom: 16px; padding: 10px 14px; background: rgba(239, 125, 0, 0.12); border: 1.5px solid rgba(239, 125, 0, 0.35); border-radius: var(--radius-md, 6px); font-size: var(--fs-sm, 0.875rem); align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
         <span id="playerAuthText" style="color: var(--accent-text); font-weight: 700;"></span>
-        <button type="button" id="playerSwitch" class="btn btn-secondary" style="width: auto; min-width: 100px; min-height: 44px; height: 44px; padding: 0 14px; font-size: 0.85rem; font-weight: 700; white-space: nowrap;">不是你？換人</button>
+        <button type="button" id="playerSwitch" class="btn btn-secondary" style="width: auto; min-width: 100px; min-height: 44px; height: 44px; padding: 0 14px; font-size: var(--fs-sm, 0.875rem); font-weight: 700; white-space: nowrap;">不是你？換人</button>
       </div>
 
       <div class="form-group">
@@ -369,7 +368,7 @@ footer {
 
     <!-- 報到完成畫面 (DATA-CONTRACT 3.2 畫面規定第 2、4 條) -->
     <section class="card done-container" id="checkinDone" style="display: none;">
-      <div class="done-icon">✅</div>
+      <div class="done-icon"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-ok"/></svg></div>
       <div class="done-headline">報到完成</div>
       
       <div class="done-info-card">
@@ -387,21 +386,21 @@ footer {
         </div>
       </div>
 
-      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">
+      <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 16px;">
         第 1 輪配對公布前，您隨時可以點擊下方按鈕修改顯示名稱。
       </p>
 
       <button type="button" id="checkinRename" class="btn btn-secondary">修改名稱</button>
 
-      <div id="decklistPrompt" style="display: none; margin-top: 18px; padding: 14px; background: rgba(239, 125, 0, 0.1); border: 1px solid rgba(239, 125, 0, 0.3); border-radius: 8px;">
-        <div style="font-weight: 700; color: var(--accent-text); margin-bottom: 6px;">📋 本場賽事需登錄純文字牌表</div>
-        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">依賽程規定，請於第 1 輪開賽前完成牌表登錄。</div>
-        <a id="decklistLink" href="decklist.html" class="btn btn-primary" style="display: inline-flex; text-decoration: none;">前往登錄牌表 ➜</a>
+      <div id="decklistPrompt" style="display: none; margin-top: 18px; padding: 14px; background: rgba(239, 125, 0, 0.1); border: 1px solid rgba(239, 125, 0, 0.3); border-radius: var(--radius-md, 6px);">
+        <div style="font-weight: 700; color: var(--accent-text); margin-bottom: 6px;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-list"/></svg> 本場賽事需登錄純文字牌表</div>
+        <div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 12px;">依賽程規定，請於第 1 輪開賽前完成牌表登錄。</div>
+        <a id="decklistLink" href="decklist.html" class="btn btn-primary" style="display: inline-flex; text-decoration: none;">前往登錄牌表 <svg class="icon" aria-hidden="true"><use href="icons.svg#i-arrow-right"/></svg></a>
       </div>
     </section>
 
     <div class="nav-links">
-      <a href="find-table.html" class="nav-link" id="findTableLink">前往查詢桌次 ➜</a>
+      <a href="find-table.html" class="nav-link" id="findTableLink">前往查詢桌次 <svg class="icon" aria-hidden="true"><use href="icons.svg#i-arrow-right"/></svg></a>
     </div>
 
     <footer>
@@ -411,7 +410,7 @@ footer {
 
   <!-- 尚未連上賽務系統畫面 -->
   <div class="disconnected-overlay" id="disconnectedScreen">
-    <div class="disconnected-icon">⚠️</div>
+    <div class="disconnected-icon"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-warning"/></svg></div>
     <div class="disconnected-title">尚未連上賽務系統</div>
     <div class="disconnected-desc">
       目前無法讀取賽事即時資料。<br>請確認網路連線是否正常。

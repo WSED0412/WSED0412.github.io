@@ -21,11 +21,11 @@ html, body {
     }
 
 input, select, textarea {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       color: var(--text-primary);
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       padding: 8px 12px;
       min-height: 44px;
       width: 100%;
@@ -65,13 +65,13 @@ header {
     }
 
 .page-title {
-      font-size: 1.15rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 800;
       color: var(--text-primary);
     }
 
 .admin-badge {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 3px 8px;
       border-radius: 9999px;
       font-weight: 700;
@@ -84,20 +84,20 @@ header {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 0.88rem;
+      font-size: var(--fs-sm, 0.875rem);
     }
 
 .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 14px;
       margin-bottom: 12px;
       overflow-x: hidden;
     }
 
 .card-title {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       color: var(--accent-text);
       margin-bottom: 8px;
@@ -113,8 +113,8 @@ header {
       min-height: 44px;
       min-width: 44px;
       padding: 8px 16px;
-      border-radius: 6px;
-      font-size: 0.95rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-base, 1rem);
       font-weight: 600;
       cursor: pointer;
       border: 1px solid transparent;
@@ -129,7 +129,7 @@ header {
 
 .btn-primary {
       background: var(--accent);
-      color: var(--on-accent, #fff);
+      color: var(--on-accent, #141212);
     }
 
 .btn-primary:not(:disabled):hover {
@@ -166,8 +166,8 @@ header {
 
 .msg-box {
       padding: 10px 12px;
-      border-radius: 6px;
-      font-size: 0.88rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       margin-bottom: 10px;
       word-break: break-word;
     }
@@ -200,7 +200,7 @@ header {
 .ea-table {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 12px;
     }
 
@@ -260,7 +260,7 @@ header {
 .modal-box {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 18px;
       max-width: 400px;
       width: 100%;
@@ -272,7 +272,7 @@ header {
     }
 
 .modal-title {
-      font-size: 1.1rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 700;
       margin-bottom: 8px;
       color: var(--accent-text);
@@ -280,7 +280,7 @@ header {
     }
 
 .modal-msg {
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       line-height: 1.5;
       margin-bottom: 16px;
       color: var(--text-primary);
@@ -301,8 +301,8 @@ header {
 
 .health-problem {
       padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.88rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       margin-top: 8px;
       line-height: 1.5;
@@ -323,7 +323,7 @@ header {
 .staff-row {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 12px 14px;
       display: flex;
       justify-content: space-between;
@@ -352,7 +352,7 @@ header {
     }
 
 .badge {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 2px 8px;
       border-radius: 9999px;
       font-weight: 600;
@@ -372,7 +372,7 @@ header {
         </div>
         <div id="eaUserBar" class="user-bar" style="display: none;">
           <span>主辦：<strong id="eaStaffName"></strong></span>
-          <button type="button" id="eaLogout" class="btn btn-secondary" style="min-height: 44px; min-width: 44px; padding: 4px 10px; font-size: 0.85rem;">登出</button>
+          <button type="button" id="eaLogout" class="btn btn-secondary" style="min-height: 44px; min-width: 44px; padding: 4px 10px; font-size: var(--fs-sm, 0.875rem);">登出</button>
         </div>
       </div>
     </header>
@@ -380,11 +380,11 @@ header {
     <!-- 登入區塊 -->
     <section id="eaLoginSection" class="card">
       <h2 class="card-title">主辦人員登入</h2>
-      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 12px;">
+      <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 12px;">
         請輸入主辦 PIN 碼以進入賽事控制台。非主辦人員（如裁判）無法使用此頁面。
       </p>
       <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px;">
-        <label for="eaPin" style="font-size: 0.88rem; font-weight: 600;">主辦 PIN 碼</label>
+        <label for="eaPin" style="font-size: var(--fs-sm, 0.875rem); font-weight: 600;">主辦 PIN 碼</label>
         <div style="display: flex; gap: 8px;">
           <input type="password" id="eaPin" placeholder="例如 admin-demo" autocomplete="off">
           <button type="button" id="eaLogin" class="btn btn-primary" style="min-width: 80px;">登入</button>
@@ -399,30 +399,30 @@ header {
       <section id="healthPanel" class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
           <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-            <h2 class="card-title" style="margin-bottom: 0;">🏥 系統健康</h2>
-            <span id="healthStatusBadge" style="font-size: 0.85rem; padding: 4px 10px; border-radius: 6px; font-weight: 700; background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border);">正常</span>
+            <h2 class="card-title" style="margin-bottom: 0;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-health"/></svg> 系統健康</h2>
+            <span id="healthStatusBadge" style="font-size: var(--fs-sm, 0.875rem); padding: 4px 10px; border-radius: var(--radius-md, 6px); font-weight: 700; background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border);">正常</span>
           </div>
-          <div style="font-size: 0.85rem; color: var(--text-secondary);">
+          <div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary);">
             版本指紋：<code id="healthVersion" style="color: var(--accent-text); font-weight: 700;"></code>
           </div>
         </div>
-        <div id="healthExtraInfo" style="margin-top: 8px; font-size: 0.82rem; color: var(--text-secondary); display: none;"></div>
+        <div id="healthExtraInfo" style="margin-top: 8px; font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); display: none;"></div>
         <div id="healthProblemsList" style="margin-top: 10px; display: none;"></div>
       </section>
 
       <!-- 區塊: 工作人員管理 (DATA-CONTRACT 3.8, PROJECT.md 第三十四/四十二輪) -->
       <section class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-          <h2 class="card-title" style="margin-bottom: 0;">👥 工作人員管理</h2>
+          <h2 class="card-title" style="margin-bottom: 0;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-people"/></svg> 工作人員管理</h2>
           <button type="button" id="staffRefresh" class="btn btn-secondary">重新整理清單</button>
         </div>
-        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 12px;">
           管理賽事工作人員身分與權限。可新增主辦或裁判、變更角色、停用／恢復帳號，或重設 PIN 碼。
         </p>
 
         <!-- 新增工作人員 -->
         <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px;">
-          <label for="staffAddName" style="font-size: 0.85rem; font-weight: 700;">新增工作人員（主機運作中可直接新增）</label>
+          <label for="staffAddName" style="font-size: var(--fs-sm, 0.875rem); font-weight: 700;">新增工作人員（主機運作中可直接新增）</label>
           <div style="display: flex; gap: 8px; flex-wrap: wrap;">
             <input type="text" id="staffAddName" maxlength="20" placeholder="姓名（例如 陀螺裁判）" style="flex: 2; min-width: 140px;">
             <select id="staffAddRole" style="flex: 1; min-width: 100px; max-width: 120px;">
@@ -435,11 +435,11 @@ header {
 
         <!-- 新 PIN 顯示區塊 (只顯示一次) -->
         <div id="staffPinBox" class="msg-box success" style="display: none; margin-bottom: 12px; padding: 14px 16px;">
-          <div style="font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; color: var(--text-primary);">
+          <div style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; margin-bottom: 6px; color: var(--text-primary);">
             新發行工作人員 PIN 碼（離開畫面後即無法再次查看，請立即抄下交給該人員）：
           </div>
           <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
-            <div id="staffPinShow" style="font-size: 1.6rem; font-weight: 800; color: #34d399; letter-spacing: 3px; font-family: monospace;"></div>
+            <div id="staffPinShow" style="font-size: var(--fs-xl, 1.5rem); font-weight: 800; color: var(--success-text); letter-spacing: 3px; font-family: monospace;"></div>
             <button type="button" id="staffPinDone" class="btn btn-primary">已抄下</button>
           </div>
         </div>
@@ -448,7 +448,7 @@ header {
 
         <!-- 工作人員清單 -->
         <div id="staffList" style="margin-top: 12px; display: flex; flex-direction: column; gap: 10px;">
-          <div style="color: var(--text-secondary); font-size: 0.85rem;">載入工作人員中...</div>
+          <div style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem);">載入工作人員中...</div>
         </div>
       </section>
 
@@ -457,19 +457,19 @@ header {
 
       <!-- 區塊: 報到管理（名單報到模式） -->
       <section class="card" id="eaCheckinSection" style="display: none;">
-        <h2 class="card-title">📋 現場報到管理（名單＋PIN）</h2>
-        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-list"/></svg> 現場報到管理（名單＋PIN）</h2>
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 12px;">
           選手登入後使用「我到了」自行報到，或由裁判代為報到。開賽時未報到者將自動從名單移除。
         </p>
-        <div style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: 6px; padding: 12px; margin-bottom: 12px;">
+        <div style="border-top: 1px dashed var(--card-border); padding: 12px 0; margin-bottom: 12px;">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-            <div style="font-size: 1.05rem; font-weight: 700;">
+            <div style="font-size: var(--fs-base, 1rem); font-weight: 700;">
               已報到 <span id="eaCkApproved" style="color: var(--accent-text); font-weight: 800;">0</span> / 名單總數 <span id="eaCkTotal">0</span> 人
             </div>
-            <div id="eaCkDivs" style="display: flex; gap: 8px; flex-wrap: wrap; font-size: 0.88rem; color: var(--text-secondary);"></div>
+            <div id="eaCkDivs" style="display: flex; gap: 8px; flex-wrap: wrap; font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary);"></div>
           </div>
           <!-- 牌表統計 (snapshot.checkin.decklist_required 時顯示) -->
-          <div id="eaCkDeckRow" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px dashed rgba(255, 255, 255, 0.1); font-size: 0.95rem; font-weight: 700; color: #38bdf8;">
+          <div id="eaCkDeckRow" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--card-border); font-size: var(--fs-base, 1rem); font-weight: 700; color: var(--info-text);">
             已登錄牌表 <span id="eaCkDecklists" style="font-weight: 800;">0</span> / 名單總數 <span id="eaCkDeckTotal">0</span>
           </div>
         </div>
@@ -481,8 +481,8 @@ header {
 
       <!-- 區塊: 重發全部選手 PIN (DATA-CONTRACT-SHARED 10.13) -->
       <section class="card" id="pinsReissueBlock" style="display: none;">
-        <h2 class="card-title">🔑 重發全部選手 PIN</h2>
-        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-key"/></svg> 重發全部選手 PIN</h2>
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 12px;">
           賽事開賽前，主辦可重新發行所有選手的 PIN 碼。舊的 PIN 碼將立即失效。
         </p>
         <div style="display: flex; gap: 8px; margin-bottom: 12px;">
@@ -491,16 +491,16 @@ header {
         <div id="pinsReissueMsg" class="msg-box" style="display: none;"></div>
 
         <!-- 結果區 (預設隱藏，按已抄下清空) -->
-        <div id="pinsReissueBox" style="display: none; margin-top: 14px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: 6px; padding: 14px;">
+        <div id="pinsReissueBox" style="display: none; margin-top: 14px; border-top: 1px dashed var(--card-border); padding-top: 14px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
-            <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-text);">新選手 PIN 清單（只顯示這一次，請立即抄下或下載）：</div>
+            <div style="font-size: var(--fs-base, 1rem); font-weight: 700; color: var(--accent-text);">新選手 PIN 清單（只顯示這一次，請立即抄下或下載）：</div>
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
               <button type="button" id="pinsReissueCsv" class="btn btn-primary btn-sm" style="min-height: 44px;">下載 CSV (player-pins.csv)</button>
               <button type="button" id="pinsReissueDone" class="btn btn-secondary btn-sm" style="min-height: 44px;">已抄下</button>
             </div>
           </div>
           <div style="max-height: 280px; overflow-y: auto;">
-            <table class="ea-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
+            <table class="ea-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: var(--fs-sm, 0.875rem);">
               <thead>
                 <tr style="border-bottom: 1px solid var(--card-border); color: var(--text-secondary);">
                   <th style="padding: 8px; width: 25%;">選手編號</th>
@@ -517,29 +517,29 @@ header {
       <!-- 區塊: 牌表鎖定方式與截止時間 (DATA-CONTRACT 10.5) -->
       <section class="card" id="eaDeckSection" style="display: none;">
         <h2 class="card-title">牌表鎖定方式與截止時間</h2>
-        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 12px;">
           設定選手牌表的鎖定模式與修改截止時刻。變更設定後將立即套用。
         </p>
 
         <div style="margin-bottom: 12px;">
-          <label for="eaDeckLock" style="font-size: 0.88rem; font-weight: 700; display: block; margin-bottom: 4px;">牌表鎖定方式</label>
+          <label for="eaDeckLock" style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; display: block; margin-bottom: 4px;">牌表鎖定方式</label>
           <select id="eaDeckLock">
             <option value="submit">送出就鎖（官方賽，規則 401.3）</option>
             <option value="deadline">截止前可以修改（店家賽）</option>
           </select>
-          <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">
+          <div style="font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary); margin-top: 4px;">
             送出就鎖：選手送出後即鎖定，要修改需由裁判解鎖（官方賽標準）<br>
             截止前可以修改：選手在截止時間前可隨時重貼牌表修改（適合店家賽）
           </div>
         </div>
 
         <div style="margin-bottom: 12px;">
-          <label for="eaDeckDeadline" style="font-size: 0.88rem; font-weight: 700; display: block; margin-bottom: 4px;">牌表截止時間（選填）</label>
+          <label for="eaDeckDeadline" style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; display: block; margin-bottom: 4px;">牌表截止時間（選填）</label>
           <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
             <input type="datetime-local" id="eaDeckDeadline" style="flex: 1; min-width: 200px;">
             <button type="button" id="eaDeckClear" class="btn btn-secondary" style="min-height: 44px; white-space: nowrap;">清除截止時間</button>
           </div>
-          <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">
+          <div style="font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary); margin-top: 4px;">
             不填＝到賽事開始為止；清除後需按「儲存」才生效。
           </div>
         </div>
@@ -553,12 +553,12 @@ header {
 
       <!-- 區塊: 抽驗牌 (只在 snapshot.checkin 存在且 decklist_required 為 true 時顯示) -->
       <section class="card" id="eaDeckSample" style="display: none;">
-        <h2 class="card-title">🎲 抽驗牌</h2>
-        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-dice"/></svg> 抽驗牌</h2>
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 12px;">
           開賽後可自第一輪對戰場次中隨機抽查指定比例之牌表進行驗牌。
         </p>
         <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap;">
-          <label for="eaDeckSamplePercent" style="font-size: 0.88rem; font-weight: 700; white-space: nowrap;">抽查比例（%）：</label>
+          <label for="eaDeckSamplePercent" style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; white-space: nowrap;">抽查比例（%）：</label>
           <input type="number" id="eaDeckSamplePercent" min="1" max="100" value="10" style="max-width: 100px;">
           <button type="button" id="eaDeckSampleBtn" class="btn btn-primary" style="white-space: nowrap; min-height: 44px; min-width: 44px;">抽驗</button>
         </div>
@@ -568,16 +568,16 @@ header {
 
       <!-- 區塊: 廣播與跑馬燈 (DATA-CONTRACT 10.12) -->
       <section class="card" id="bcPanel">
-        <h2 class="card-title">📢 廣播與跑馬燈</h2>
-        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-broadcast"/></svg> 廣播與跑馬燈</h2>
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 12px;">
           發送全場緊急廣播或編輯大螢幕與觀眾端跑馬燈輪播文字。
         </p>
 
         <!-- 廣播輸入 -->
         <div style="margin-bottom: 12px;">
-          <label for="bcText" style="font-size: 0.88rem; font-weight: 700; display: block; margin-bottom: 4px;">廣播內容（最多 200 字）</label>
+          <label for="bcText" style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; display: block; margin-bottom: 4px;">廣播內容（最多 200 字）</label>
           <textarea id="bcText" maxlength="200" rows="3" placeholder="請輸入廣播訊息..." style="width: 100%; min-height: 80px;"></textarea>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 0.85rem; color: var(--text-secondary); flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); flex-wrap: wrap; gap: 8px;">
             <div style="display: flex; gap: 14px; align-items: center;">
               <label style="display: inline-flex; align-items: center; gap: 4px; cursor: pointer;">
                 <input type="radio" name="bcLevel" id="bcLevelNotice" value="notice" checked style="width: auto; min-height: auto;">
@@ -597,7 +597,7 @@ header {
           <button type="button" id="bcClear" class="btn btn-warning" style="flex: 1; min-width: 100px;" disabled>撤掉廣播</button>
         </div>
 
-        <div style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: 6px; padding: 10px 12px; margin-bottom: 14px; font-size: 0.88rem;">
+        <div style="border-top: 1px dashed var(--card-border); padding-top: 10px; margin-bottom: 14px; font-size: var(--fs-sm, 0.875rem);">
           <div style="font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">目前廣播狀態：</div>
           <div id="bcCurrent" style="color: var(--text-primary); word-break: break-all;">目前沒有廣播</div>
         </div>
@@ -605,7 +605,7 @@ header {
         <!-- 跑馬燈 -->
         <div style="padding-top: 12px; border-top: 1px dashed var(--card-border);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-            <div style="font-size: 0.92rem; font-weight: 700; color: var(--accent-text);">跑馬燈文字（最多 8 行，每行 60 字）</div>
+            <div style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--accent-text);">跑馬燈文字（最多 8 行，每行 60 字）</div>
             <button type="button" id="bcMarqueeAdd" class="btn btn-secondary btn-sm" style="min-height: 44px;">新增一行</button>
           </div>
           <div id="bcMarqueeList" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;"></div>
@@ -620,7 +620,7 @@ header {
 
         <h2 class="card-title">桌次管理與即時控制</h2>
         <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px;">
-          <label for="eaDiv" style="font-size: 0.88rem; font-weight: 700; white-space: nowrap;">選擇分區：</label>
+          <label for="eaDiv" style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; white-space: nowrap;">選擇分區：</label>
           <select id="eaDiv">
             <option value="A">A 區</option>
             <option value="B">B 區</option>
@@ -628,12 +628,12 @@ header {
         </div>
 
         <!-- 批次與指定桌次操作 -->
-        <div style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: 6px; padding: 12px; margin-bottom: 12px;">
-          <div style="font-size: 0.88rem; font-weight: 700; margin-bottom: 8px; color: var(--accent-text);">桌次快速控制：</div>
+        <div style="border-top: 1px dashed var(--card-border); padding-top: 12px; margin-bottom: 12px;">
+          <div style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; margin-bottom: 8px; color: var(--accent-text);">桌次快速控制：</div>
           <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
             <!-- 只開前 N 桌 -->
             <div>
-              <label for="eaOnly" style="font-size: 0.82rem; color: var(--text-secondary); display: block; margin-bottom: 2px;">只開前 N 桌（其餘桌次自動停用）：</label>
+              <label for="eaOnly" style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); display: block; margin-bottom: 2px;">只開前 N 桌（其餘桌次自動停用）：</label>
               <div style="display: flex; gap: 8px;">
                 <input type="number" id="eaOnly" min="1" placeholder="桌數，例如 2" style="max-width: 140px;">
                 <button type="button" id="eaOnlyBtn" class="btn btn-secondary">設定只開 N 桌</button>
@@ -641,7 +641,7 @@ header {
             </div>
             <!-- 指定場次上桌 -->
             <div style="margin-top: 4px;">
-              <label style="font-size: 0.82rem; color: var(--text-secondary); display: block; margin-bottom: 2px;">指定某一場上某一桌：</label>
+              <label style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); display: block; margin-bottom: 2px;">指定某一場上某一桌：</label>
               <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                 <input type="text" id="eaAssignMatch" placeholder="場次編號，例如 B-R0-M00" style="flex: 2; min-width: 150px;">
                 <input type="number" id="eaAssignTable" min="1" placeholder="桌號" style="flex: 1; min-width: 70px; max-width: 100px;">
@@ -653,21 +653,21 @@ header {
 
         <!-- 桌次列表 -->
         <div id="eaTables" class="table-list">
-          <div style="color: var(--text-secondary); font-size: 0.88rem;">讀取桌況中...</div>
+          <div style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem);">讀取桌況中...</div>
         </div>
       </section>
 
       <!-- 區塊 2: 報分設定（誰可以報／可以怎樣報） -->
       <section class="card">
         <h2 class="card-title">報分規則設定</h2>
-        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px;">
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 10px;">
           設定誰可以回報與允許的計分方式。分層套用：全場 → 分區 → 單一桌次（越細越優先）。
         </p>
 
         <!-- 設定層級選單 -->
         <div style="display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 12px;">
           <div>
-            <label for="eaScope" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 2px; display: block;">設定層級 (Scope)：</label>
+            <label for="eaScope" style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; margin-bottom: 2px; display: block;">設定層級 (Scope)：</label>
             <select id="eaScope">
               <option value="all">全場（所有分區與桌次預設）</option>
               <option value="div">某一區（覆蓋指定分區）</option>
@@ -675,21 +675,21 @@ header {
             </select>
           </div>
           <div id="eaPolicyDivRow" style="display: none;">
-            <label for="eaPolicyDiv" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 2px; display: block;">指定分區：</label>
+            <label for="eaPolicyDiv" style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; margin-bottom: 2px; display: block;">指定分區：</label>
             <select id="eaPolicyDiv">
               <option value="A">A 區</option>
               <option value="B">B 區</option>
             </select>
           </div>
           <div id="eaPolicyTableRow" style="display: none;">
-            <label for="eaPolicyTable" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 2px; display: block;">指定桌號：</label>
+            <label for="eaPolicyTable" style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; margin-bottom: 2px; display: block;">指定桌號：</label>
             <input type="number" id="eaPolicyTable" min="1" value="1" placeholder="桌號，例如 1">
           </div>
         </div>
 
         <!-- 誰可以報 (who) -->
         <div style="margin-top: 10px;">
-          <div style="font-size: 0.9rem; font-weight: 700; color: var(--accent-text);">誰可以報分 (Who)：</div>
+          <div style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--accent-text);">誰可以報分 (Who)：</div>
           <div class="checkbox-group">
             <label class="checkbox-item">
               <input type="checkbox" id="eaWhoJudge" checked>
@@ -704,7 +704,7 @@ header {
 
         <!-- 可以怎樣報 (how) -->
         <div style="margin-top: 6px;">
-          <div style="font-size: 0.9rem; font-weight: 700; color: var(--accent-text);">可以怎樣報分 (How)：</div>
+          <div style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--accent-text);">可以怎樣報分 (How)：</div>
           <div class="checkbox-group">
             <label class="checkbox-item">
               <input type="checkbox" id="eaHowWinner" checked>
@@ -734,35 +734,35 @@ header {
       <!-- 區塊 3: 每一區每一桌實際套用的報分設定總覽 (.ea-eff[data-div][data-table]) -->
       <section class="card" id="eaEffectiveSection">
         <h2 class="card-title">各區各桌實際套用設定總覽</h2>
-        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 8px;">
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 8px;">
           即時顯示主機解析後的最終報分設定與其來源層級（全場／區／桌）。
         </p>
         <div id="eaEffectiveList" style="display: flex; flex-direction: column; gap: 8px;">
-          <div style="color: var(--text-secondary); font-size: 0.88rem;">讀取設定中...</div>
+          <div style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem);">讀取設定中...</div>
         </div>
       </section>
 
       <!-- 區塊: 比賽中現場加人 -->
       <section class="card" id="eaAddPlayerSection">
         <h2 class="card-title">比賽中現場加人</h2>
-        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 12px;">
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 12px;">
           比賽進行中若有現場選手補報名，系統會將新人安排在最後一個輪空位置。加入前必須先預覽確認對手與桌次影響。
         </p>
 
         <!-- 加人表單 -->
         <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px;">
           <div>
-            <label for="eaAddDiv" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 2px; display: block;">選擇加入分區：</label>
+            <label for="eaAddDiv" style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; margin-bottom: 2px; display: block;">選擇加入分區：</label>
             <select id="eaAddDiv"></select>
           </div>
 
           <div>
-            <label for="eaAddName" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 2px; display: block;">選手姓名（必填，1～20 字）：</label>
+            <label for="eaAddName" style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; margin-bottom: 2px; display: block;">選手姓名（必填，1～20 字）：</label>
             <input type="text" id="eaAddName" maxlength="20" placeholder="例如：王小明">
           </div>
 
           <div>
-            <label for="eaAddId" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 2px; display: block;">選手編號（選填，留空由系統自動指派）：</label>
+            <label for="eaAddId" style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; margin-bottom: 2px; display: block;">選手編號（選填，留空由系統自動指派）：</label>
             <input type="text" id="eaAddId" maxlength="20" placeholder="例如：A-07（留空則自動遞增）">
           </div>
 
@@ -775,10 +775,10 @@ header {
         <div id="eaAddMsg" class="msg-box error" style="display: none; margin-bottom: 10px;"></div>
 
         <!-- 預覽結果顯示區（名字用 textContent 設定以確保安全跳脫） -->
-        <div id="eaAddPreviewBox" style="display: none; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--info-border); border-radius: 6px; padding: 12px; margin-bottom: 10px; font-size: 0.9rem; white-space: pre-wrap; line-height: 1.6;"></div>
+        <div id="eaAddPreviewBox" style="display: none; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--info-border); border-radius: var(--radius-md, 6px); padding: 12px; margin-bottom: 10px; font-size: var(--fs-sm, 0.875rem); white-space: pre-wrap; line-height: 1.6;"></div>
 
         <!-- 請下桌後加入勾選（僅在對手下一場已上桌時出現） -->
-        <div id="eaAddBumpContainer" style="display: none; background: rgba(138, 109, 31, 0.15); border: 1px solid var(--warning-border); border-radius: 6px; padding: 10px; margin-bottom: 12px;">
+        <div id="eaAddBumpContainer" style="display: none; background: rgba(138, 109, 31, 0.15); border: 1px solid var(--warning-border); border-radius: var(--radius-md, 6px); padding: 10px; margin-bottom: 12px;">
           <label class="checkbox-item" style="color: var(--warning-text); font-weight: 600;">
             <input type="checkbox" id="eaAddBump">
             <span>請下桌後加入</span>
@@ -791,8 +791,8 @@ header {
         </div>
 
         <!-- 加人完成結果顯示（大字 PIN 碼，不存入任何瀏覽器儲存區） -->
-        <div id="eaAddResultContainer" style="display: none; background: var(--success-bg); border: 1px solid var(--success-border); border-radius: 6px; padding: 14px; text-align: center;">
-          <div id="eaAddResult" style="font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 10px; white-space: pre-wrap; line-height: 1.7;"></div>
+        <div id="eaAddResultContainer" style="display: none; background: var(--success-bg); border: 1px solid var(--success-border); border-radius: var(--radius-md, 6px); padding: 14px; text-align: center;">
+          <div id="eaAddResult" style="font-size: var(--fs-md, 1.125rem); font-weight: 700; color: var(--text-primary); margin-bottom: 10px; white-space: pre-wrap; line-height: 1.7;"></div>
           <button type="button" id="eaAddPinDone" class="btn btn-secondary" style="min-width: 120px;">已抄下</button>
         </div>
       </section>
@@ -801,28 +801,28 @@ header {
       <section class="card" id="eaFinalsSection" style="display: none;">
         <h2 class="card-title">16 強決賽管理</h2>
         <div id="eaFinalsGlobalMsg" class="msg-box" style="display: none;"></div>
-        <p id="eaFinalsStatus" style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;"></p>
+        <p id="eaFinalsStatus" style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 12px;"></p>
 
         <!-- 取消抽籤區塊 (#eaUndraw) -->
-        <div id="eaUndrawContainer" style="display: none; margin-bottom: 14px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: 6px; padding: 12px;">
-          <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-text); margin-bottom: 6px;">抽籤狀態：已完成抽籤</div>
-          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px;">
+        <div id="eaUndrawContainer" style="display: none; margin-bottom: 14px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: var(--radius-md, 6px); padding: 12px;">
+          <div style="font-size: var(--fs-base, 1rem); font-weight: 700; color: var(--accent-text); margin-bottom: 6px;">抽籤狀態：已完成抽籤</div>
+          <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 10px;">
             若需重新抽籤或調整，可取消抽籤回到資格賽結束狀態（若小組賽已有對戰結果則無法取消）。
           </p>
           <button type="button" id="eaUndraw" class="btn btn-danger">取消抽籤</button>
         </div>
 
         <!-- 抽籤控制面板 (#eaDrawPanel) -->
-        <div id="eaDrawPanel" style="display: none; margin-bottom: 14px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: 6px; padding: 12px;">
-          <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-text); margin-bottom: 6px;">16 強小組賽抽籤</div>
-          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 12px;">
+        <div id="eaDrawPanel" style="display: none; margin-bottom: 14px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: var(--radius-md, 6px); padding: 12px;">
+          <div style="font-size: var(--fs-base, 1rem); font-weight: 700; color: var(--accent-text); margin-bottom: 6px;">16 強小組賽抽籤</div>
+          <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 12px;">
             勝部 8 人抽 1～8 號（1～4 號為 A 組、5～8 號為 B 組）；敗部 8 人抽 1～8 號（1～4 號為 C 組、5～8 號為 D 組）。兩池 1～8 號皆不得重複。
           </p>
           <div id="eaDrawMsg" class="msg-box error" style="display: none;"></div>
 
           <!-- 勝部池 8 人 -->
           <div style="margin-bottom: 12px;">
-            <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; border-bottom: 1px solid var(--card-border); padding-bottom: 4px;">
+            <div style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--text-primary); margin-bottom: 6px; border-bottom: 1px solid var(--card-border); padding-bottom: 4px;">
               勝部池 (Winners) 8 位選手：
             </div>
             <div id="eaWinnersPool" style="display: flex; flex-direction: column; gap: 8px;"></div>
@@ -830,7 +830,7 @@ header {
 
           <!-- 敗部池 8 人 -->
           <div style="margin-bottom: 14px;">
-            <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; border-bottom: 1px solid var(--card-border); padding-bottom: 4px;">
+            <div style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--text-primary); margin-bottom: 6px; border-bottom: 1px solid var(--card-border); padding-bottom: 4px;">
               敗部池 (Losers) 8 位選手：
             </div>
             <div id="eaLosersPool" style="display: flex; flex-direction: column; gap: 8px;"></div>
@@ -851,8 +851,8 @@ header {
       <section class="card" style="margin-top: 20px; border-color: rgba(168, 68, 60, 0.4);">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
           <div>
-            <div style="font-weight: 700; color: var(--danger-text); font-size: 0.95rem;">結束賽事</div>
-            <div style="font-size: 0.82rem; color: var(--text-secondary);">賽事結束後將鎖定為已結束狀態，不可再修改或回報成績。</div>
+            <div style="font-weight: 700; color: var(--danger-text); font-size: var(--fs-base, 1rem);">結束賽事</div>
+            <div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary);">賽事結束後將鎖定為已結束狀態，不可再修改或回報成績。</div>
           </div>
           <button type="button" id="eaFinish" class="btn btn-secondary" style="border-color: var(--danger-border); color: var(--danger-text);">結束賽事</button>
         </div>
@@ -1081,9 +1081,9 @@ header {
       function formatDeckSamplePlayer(p) {
         if (!p) return '<span style="color: var(--text-secondary);">—</span>';
         const nameStr = escapeHtml(p.name || '');
-        const idStr = p.id ? ` <span style="font-size: 0.8rem; font-family: monospace; color: var(--text-secondary);">(${escapeHtml(p.id)})</span>` : '';
+        const idStr = p.id ? ` <span style="font-size: var(--fs-xs, 0.75rem); font-family: monospace; color: var(--text-secondary);">(${escapeHtml(p.id)})</span>` : '';
         const deckStr = p.has_decklist
-          ? '<span class="badge" style="background: rgba(14, 165, 233, 0.15); border: 1px solid #0284c7; color: #38bdf8;">有牌表</span>'
+          ? '<span class="badge" style="background: var(--info-bg); border: 1px solid var(--info-border); color: var(--info-text);">有牌表</span>'
           : '<span class="badge" style="background: var(--danger-bg); border: 1px solid var(--danger-border); color: var(--danger-text);">沒牌表</span>';
         const checkedStr = p.checked
           ? '<span class="badge" style="background: var(--success-bg); border: 1px solid var(--success-border); color: var(--success-text);">已驗</span>'
@@ -1097,7 +1097,7 @@ header {
       }
 
       let html = `
-        <div style="padding: 8px 12px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 6px; margin-bottom: 10px; font-size: 0.88rem; font-weight: 700; color: #38bdf8;">
+        <div style="padding: 8px 12px; background: var(--info-bg); border: 1px solid var(--info-border); border-radius: var(--radius-md, 6px); margin-bottom: 10px; font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--info-text);">
           驗牌抽查名單（抽查比例：${res.percent || 10}%，共抽查 ${sampleTables.length} 場）
         </div>
         <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -1110,12 +1110,12 @@ header {
         const p2 = (tb.players && tb.players[1]) ? tb.players[1] : null;
 
         html += `
-          <div class="table-card" style="display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: 6px;">
+          <div class="table-card" style="display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: var(--radius-md, 6px);">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 6px;">
               <div>
-                <span style="font-size: 0.82rem; color: var(--text-secondary);">場次編號：</span>
+                <span style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary);">場次編號：</span>
                 <span style="font-weight: 800; font-family: monospace; color: var(--accent-text);">${escapeHtml(matchLabel)}</span>
-                ${tableLabel ? `<span style="font-size: 0.82rem; color: var(--text-secondary); margin-left: 6px;">${escapeHtml(tableLabel)}</span>` : ''}
+                ${tableLabel ? `<span style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-left: 6px;">${escapeHtml(tableLabel)}</span>` : ''}
               </div>
             </div>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
@@ -1179,7 +1179,7 @@ header {
       const container = document.getElementById('eaTables');
 
       if (!divData || !divData.tables || !divData.tables.length) {
-        container.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.88rem;">此分區目前沒有配置桌次。</div>';
+        container.innerHTML = '<div style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem);">此分區目前沒有配置桌次。</div>';
         return;
       }
 
@@ -1208,10 +1208,10 @@ header {
                 ${isHold ? '暫停使用' : (t.match ? '比賽中' : '空桌')}
               </span>
             </div>
-            <div style="font-size: 0.9rem; margin-bottom: 2px;">
+            <div style="font-size: var(--fs-sm, 0.875rem); margin-bottom: 2px;">
               ${escapeHtml(matchLabel)}
             </div>
-            ${matchSub ? `<div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 4px;">${escapeHtml(matchSub)}</div>` : ''}
+            ${matchSub ? `<div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 4px;">${escapeHtml(matchSub)}</div>` : ''}
             <div class="table-actions">
               <button type="button" class="btn btn-warning ea-hold" data-table="${tableNo}" style="flex: 1;">停用</button>
               <button type="button" class="btn btn-success ea-open" data-table="${tableNo}" style="flex: 1;">恢復</button>
@@ -1477,7 +1477,7 @@ header {
       for (const d of divKeys) {
         const divInfo = effectiveData[d];
         html += `
-          <div style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: 6px; padding: 10px; margin-bottom: 6px;">
+          <div style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: var(--radius-md, 6px); padding: 10px; margin-bottom: 6px;">
             <div style="font-weight: 700; color: var(--accent-text); margin-bottom: 6px;">${escapeHtml(d)} 區：</div>
             <div style="display: flex; flex-direction: column; gap: 6px;">
         `;
@@ -1496,7 +1496,7 @@ header {
           const effText = `${whoStr}（${whoFrom}）；${howStr}（${howFrom}）`;
 
           html += `
-            <div style="padding: 6px 8px; background: var(--input-bg); border-radius: 4px; font-size: 0.88rem;">
+            <div style="padding: 6px 8px; background: var(--input-bg); border-radius: var(--radius-sm, 4px); font-size: var(--fs-sm, 0.875rem);">
               <span style="font-weight: 600; color: var(--text-secondary); margin-right: 6px;">第 ${t.table} 桌：</span>
               <span class="ea-eff" data-div="${escapeHtml(d)}" data-table="${t.table}">${escapeHtml(effText)}</span>
             </div>
@@ -1569,9 +1569,9 @@ header {
 
       function renderPoolList(players) {
         return players.map(p => `
-          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 6px; padding: 6px 10px;">
-            <span style="font-size: 0.9rem; font-weight: 600;">
-              ${escapeHtml(p.name)} <span style="font-size: 0.75rem; color: var(--text-secondary);">(${escapeHtml(p.id)})</span>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: var(--radius-md, 6px); padding: 6px 10px;">
+            <span style="font-size: var(--fs-sm, 0.875rem); font-weight: 600;">
+              ${escapeHtml(p.name)} <span style="font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary);">(${escapeHtml(p.id)})</span>
             </span>
             <select class="ea-draw-num" data-player="${escapeHtml(p.id)}" style="max-width: 120px; min-height: 44px;">
               <option value="">選擇號碼</option>
@@ -1759,9 +1759,9 @@ header {
       standings.forEach((p, idx) => {
         const initRank = p.rank || (idx + 1);
         playerRowsHtml += `
-          <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 6px; padding: 8px 10px;">
-            <span style="font-size: 0.9rem; font-weight: 600;">
-              ${escapeHtml(p.name)} <span style="font-size: 0.75rem; color: var(--text-secondary);">(${escapeHtml(p.id)})</span>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: var(--radius-md, 6px); padding: 8px 10px;">
+            <span style="font-size: var(--fs-sm, 0.875rem); font-weight: 600;">
+              ${escapeHtml(p.name)} <span style="font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary);">(${escapeHtml(p.id)})</span>
             </span>
             <select class="ea-lot-rank" data-player="${escapeHtml(p.id)}" style="max-width: 120px; min-height: 44px;">
               <option value="1" ${initRank === 1 ? 'selected' : ''}>第 1 名</option>
@@ -1775,14 +1775,14 @@ header {
 
       card.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
-          <div style="font-weight: 700; color: var(--warning-text); font-size: 0.95rem;">
+          <div style="font-weight: 700; color: var(--warning-text); font-size: var(--fs-base, 1rem);">
             ${escapeHtml(g)} 組 名次抽籤裁定
           </div>
-          <span class="badge" style="background: var(--warning-bg); border-color: var(--warning-border); color: var(--warning-text); font-size: 0.75rem;">
+          <span class="badge" style="background: var(--warning-bg); border-color: var(--warning-border); color: var(--warning-text); font-size: var(--fs-xs, 0.75rem);">
             四項全同，待裁定
           </span>
         </div>
-        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px;">
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 10px;">
           該組選手成績全同，請依現場抽籤結果分配第 1～4 名（名次不能重複），並送出裁定。
         </p>
         <div class="ea-lot-msg msg-box error" style="display: none; margin-bottom: 8px;"></div>
@@ -2116,7 +2116,7 @@ header {
           const hpProb = document.getElementById('healthProblemsList');
           if (hpProb) { hpProb.innerHTML = ''; hpProb.style.display = 'none'; }
           const stList = document.getElementById('staffList');
-          if (stList) stList.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.85rem;">載入工作人員中...</div>';
+          if (stList) stList.innerHTML = '<div style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem);">載入工作人員中...</div>';
           const stMsg = document.getElementById('staffMsg');
           if (stMsg) { stMsg.textContent = ''; stMsg.style.display = 'none'; }
           const fnMsg = document.getElementById('eaFinishMsg');
@@ -2269,7 +2269,7 @@ header {
               html += `<tr>
                 <td style="padding: 8px;"><strong>${escapeHtml(p.id)}</strong></td>
                 <td style="padding: 8px;">${escapeHtml(p.name)}</td>
-                <td style="padding: 8px;"><span style="font-family: monospace; font-size: 1.1rem; font-weight: 700; color: #34d399;">${escapeHtml(p.pin)}</span></td>
+                <td style="padding: 8px;"><span style="font-family: monospace; font-size: var(--fs-md, 1.125rem); font-weight: 700; color: var(--success-text);">${escapeHtml(p.pin)}</span></td>
               </tr>`;
             });
             if (pinsReissueList) pinsReissueList.innerHTML = html;

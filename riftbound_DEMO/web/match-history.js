@@ -14,7 +14,7 @@
       .mh-box {
         background: var(--input-bg, #011A24);
         border: 1px solid var(--card-border, #0A5570);
-        border-radius: 8px;
+        border-radius: var(--radius-md, 6px);
         padding: 10px 12px;
         box-sizing: border-box;
         width: 100%;
@@ -32,12 +32,12 @@
         border-bottom: 1px solid var(--card-border, #0A5570);
       }
       .mh-title {
-        font-size: 0.95rem;
+        font-size: var(--fs-base, 1rem);
         font-weight: 800;
         color: var(--text-primary, #F9F9F9);
       }
       .mh-summary {
-        font-size: 0.85rem;
+        font-size: var(--fs-sm, 0.875rem);
         font-weight: 700;
         color: var(--accent-text, #FF941E);
       }
@@ -45,13 +45,13 @@
         text-align: center;
         padding: 12px;
         color: var(--text-secondary, #9FB8C4);
-        font-size: 0.85rem;
+        font-size: var(--fs-sm, 0.875rem);
       }
       .mh-error {
         text-align: center;
         padding: 10px;
         color: var(--danger-text, #ED807A);
-        font-size: 0.85rem;
+        font-size: var(--fs-sm, 0.875rem);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -64,9 +64,9 @@
         background: var(--chip-bg, #0A4A63);
         color: var(--text-primary, #F9F9F9);
         border: 1px solid var(--card-border, #0A5570);
-        border-radius: 6px;
+        border-radius: var(--radius-md, 6px);
         cursor: pointer;
-        font-size: 0.85rem;
+        font-size: var(--fs-sm, 0.875rem);
         font-weight: 700;
         box-sizing: border-box;
       }
@@ -86,11 +86,11 @@
         justify-content: space-between;
         gap: 6px;
         padding: 6px 8px;
-        border-radius: 6px;
+        border-radius: var(--radius-md, 6px);
         background: var(--card-bg, #013951);
         border: 1px solid var(--card-border, #0A5570);
         box-sizing: border-box;
-        font-size: 0.85rem;
+        font-size: var(--fs-sm, 0.875rem);
         width: 100%;
         max-width: 100%;
         overflow: hidden;
@@ -108,15 +108,15 @@
         color: var(--text-secondary, #9FB8C4);
         white-space: nowrap;
         flex-shrink: 0;
-        font-size: 0.8rem;
+        font-size: var(--fs-xs, 0.75rem);
       }
       .mh-badge {
         display: inline-flex;
         align-items: center;
         justify-content: center;
         padding: 2px 5px;
-        border-radius: 4px;
-        font-size: 0.75rem;
+        border-radius: var(--radius-sm, 4px);
+        font-size: var(--fs-xs, 0.75rem);
         font-weight: 800;
         white-space: nowrap;
         flex-shrink: 0;
@@ -194,7 +194,7 @@
         white-space: nowrap;
         flex-shrink: 0;
         text-align: right;
-        font-size: 0.85rem;
+        font-size: var(--fs-sm, 0.875rem);
         margin-left: 4px;
       }
     `;

@@ -21,7 +21,7 @@ html, body {
     }
 
 input, select, textarea {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
     }
 
 .container {
@@ -53,7 +53,7 @@ header {
     }
 
 .event-title {
-      font-size: 1.15rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 700;
       color: var(--text-primary);
       white-space: nowrap;
@@ -62,7 +62,7 @@ header {
     }
 
 .badge {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 2px 8px;
       border-radius: 9999px;
       font-weight: 600;
@@ -89,10 +89,10 @@ header {
       align-items: center;
       color: var(--accent-text);
       text-decoration: none;
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       padding: 4px 10px;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       background: rgba(239, 125, 0, 0.1);
       border: 1px solid rgba(239, 125, 0, 0.25);
     }
@@ -103,8 +103,8 @@ header {
 
 .banner {
       padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 0.85rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       margin-bottom: 12px;
       text-align: center;
@@ -117,7 +117,7 @@ header {
     }
 
 .net-hint {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       margin-top: 6px;
       line-height: 1.4;
@@ -133,13 +133,13 @@ header {
 .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 14px;
       margin-bottom: 14px;
     }
 
 .card-title {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       margin-bottom: 10px;
       display: flex;
@@ -158,7 +158,7 @@ header {
       height: 44px;
       background: var(--input-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 0 12px;
       color: var(--text-primary);
       outline: none;
@@ -172,9 +172,9 @@ header {
       min-height: 44px;
       min-width: 44px;
       padding: 0 16px;
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       border: none;
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       cursor: pointer;
       display: inline-flex;
@@ -225,10 +225,10 @@ header {
 .search-result {
       margin-top: 10px;
       padding: 10px 12px;
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       min-height: 44px;
       display: flex;
       align-items: center;
@@ -240,7 +240,7 @@ header {
 
 .form-label {
       display: block;
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       margin-bottom: 4px;
     }
@@ -252,7 +252,7 @@ header {
     }
 
 .msg-text {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       margin-top: 6px;
       min-height: 1.2rem;
@@ -276,21 +276,19 @@ header {
     }
 
 .logged-name {
-      font-size: 1.05rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       color: var(--accent-text);
     }
 
 .match-box {
-      background: var(--input-bg);
-      border: 1.5px solid var(--card-border);
-      border-radius: 10px;
-      padding: 14px;
+      border-bottom: 1px solid var(--card-border);
+      padding: 0 0 14px;
       margin-bottom: 14px;
     }
 
 .match-main-text {
-      font-size: 1.15rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 800;
       color: var(--text-primary);
       margin-bottom: 6px;
@@ -304,7 +302,7 @@ header {
     }
 
 .report-sub-title {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       color: var(--text-secondary);
       margin-bottom: 6px;
@@ -334,7 +332,7 @@ header {
       height: 44px;
       background: var(--input-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       color: var(--text-primary);
       padding: 0 10px;
       outline: none;
@@ -347,9 +345,9 @@ header {
 .report-status-box {
       background: var(--input-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 12px;
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       text-align: center;
       line-height: 1.5;
@@ -386,9 +384,9 @@ header {
       border: 1px solid var(--judge-border);
       color: var(--judge-text);
       font-weight: 700;
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       cursor: pointer;
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -397,7 +395,7 @@ header {
     }
 
 .btn-call-judge:active {
-      background: #3e2e54;
+      background: var(--judge-bg, #3e2e54);
     }
 
 .call-reasons-grid {
@@ -413,8 +411,8 @@ header {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
       color: var(--text-primary);
-      border-radius: 6px;
-      font-size: 0.85rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       cursor: pointer;
       font-weight: 600;
       padding: 4px 6px;
@@ -439,7 +437,7 @@ header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       margin-bottom: 4px;
     }
@@ -450,10 +448,10 @@ header {
       height: 44px;
       background: var(--input-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       color: var(--text-primary);
       padding: 0 12px;
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       outline: none;
       box-sizing: border-box;
     }
@@ -464,8 +462,8 @@ header {
 
 .call-status-box {
       padding: 12px;
-      border-radius: 8px;
-      font-size: 0.95rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-base, 1rem);
       line-height: 1.5;
       border: 1.5px solid var(--judge-border);
       background: var(--judge-bg);
@@ -486,10 +484,10 @@ header {
       min-width: 44px;
       background: var(--chip-bg);
       color: var(--text-primary);
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       cursor: pointer;
     }
 
@@ -516,7 +514,7 @@ header {
 .modal-box {
       background: var(--card-bg);
       border: 2px solid var(--accent);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       max-width: 330px;
       width: 100%;
       max-height: calc(100vh - 32px);
@@ -529,7 +527,7 @@ header {
     }
 
 .modal-title {
-      font-size: 1.1rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 800;
       color: var(--text-primary);
       margin-bottom: 8px;
@@ -537,7 +535,7 @@ header {
     }
 
 .modal-msg {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       color: var(--accent-text);
       margin-bottom: 16px;
@@ -584,8 +582,8 @@ header {
         <div class="badge live" id="elimEventBadge">進行中</div>
       </div>
       <div class="nav-links">
-        <a href="elim-board.html" class="nav-link">📺 大螢幕看板</a>
-        <a href="elim-bracket.html" class="nav-link">🏆 賽程樹</a>
+        <a href="elim-board.html" class="nav-link"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-screen"/></svg> 大螢幕看板</a>
+        <a href="elim-bracket.html" class="nav-link"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-trophy"/></svg> 賽程樹</a>
       </div>
     </header>
 
@@ -601,8 +599,8 @@ header {
     <!-- 1. 不用 PIN 查桌次與對手 -->
     <section class="card">
       <div class="card-title">
-        <span>🔍 查詢下一場比賽</span>
-        <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: normal;">免輸入 PIN</span>
+        <span><svg class="icon" aria-hidden="true"><use href="icons.svg#i-search"/></svg> 查詢下一場比賽</span>
+        <span style="font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary); font-weight: normal;">免輸入 PIN</span>
       </div>
       <div class="search-row">
         <input type="text" id="elimSearch" class="input-text" placeholder="輸入選手編號或姓名，例如 A-01 或 阿翔" autocomplete="off" autocapitalize="off" spellcheck="false">
@@ -614,8 +612,8 @@ header {
     <!-- 2. 選手登入（回報專用） -->
     <section class="card" id="elimLoginCard">
       <div class="card-title">
-        <span>📱 選手報分登入</span>
-        <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: normal;">自報成績專用</span>
+        <span><svg class="icon" aria-hidden="true"><use href="icons.svg#i-phone"/></svg> 選手報分登入</span>
+        <span style="font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary); font-weight: normal;">自報成績專用</span>
       </div>
       <div class="login-row">
         <div class="form-group">
@@ -635,42 +633,42 @@ header {
     <section class="card" id="elimActiveCard" style="display: none;">
       <div class="logged-bar">
         <span id="elimPlayerInfo" class="logged-name">--</span>
-        <button type="button" id="elimLogout" class="btn btn-secondary" style="min-height: 44px; min-width: 44px; padding: 0 14px; font-size: 0.85rem;">登出</button>
+        <button type="button" id="elimLogout" class="btn btn-secondary" style="min-height: 44px; min-width: 44px; padding: 0 14px; font-size: var(--fs-sm, 0.875rem);">登出</button>
       </div>
 
       <!-- 開賽前名單報到卡片 (snapshot.event.status === 'before') -->
       <div id="playerCheckinCard" class="card" style="display: none; background: rgba(1, 26, 36, 0.85); border: 2px solid var(--accent); margin-bottom: 14px; text-align: center; padding: 18px 14px;">
         <!-- 未報到狀態 -->
         <div id="playerCkUncheckedBox" style="display: none;">
-          <div style="font-size: 1.15rem; font-weight: 800; color: var(--accent-text); margin-bottom: 12px;">📋 現場報到</div>
+          <div style="font-size: var(--fs-md, 1.125rem); font-weight: 800; color: var(--accent-text); margin-bottom: 12px;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-list"/></svg> 現場報到</div>
           <div class="form-group" style="text-align: left; margin-bottom: 12px;">
             <label for="playerCkName" class="form-label">顯示名稱（選填）</label>
             <input type="text" id="playerCkName" class="input-text" maxlength="20" placeholder="例如：自訂戰鬥暱稱" style="width: 100%;">
-            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">這個名字會出現在大螢幕上</div>
+            <div style="font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary); margin-top: 4px;">這個名字會出現在大螢幕上</div>
           </div>
-          <button type="button" id="playerCkArrive" class="btn btn-success" style="width: 100%; min-height: 52px; font-size: 1.2rem; font-weight: 800; letter-spacing: 2px;">
+          <button type="button" id="playerCkArrive" class="btn btn-success" style="width: 100%; min-height: 52px; font-size: var(--fs-lg, 1.25rem); font-weight: 800; letter-spacing: 2px;">
             我到了
           </button>
         </div>
 
         <!-- 已報到狀態 -->
         <div id="playerCkCheckedBox" style="display: none;">
-          <div style="font-size: 1.3rem; font-weight: 800; color: var(--success-text); margin-bottom: 6px;">
-            ✅ 報到完成
+          <div style="font-size: var(--fs-lg, 1.25rem); font-weight: 800; color: var(--success-text); margin-bottom: 6px;">
+            <svg class="icon" aria-hidden="true"><use href="icons.svg#i-ok"/></svg> 報到完成
           </div>
-          <div style="font-size: 1.05rem; color: var(--text-primary); margin-bottom: 12px;">
+          <div style="font-size: var(--fs-base, 1rem); color: var(--text-primary); margin-bottom: 12px;">
             選手名稱：<strong id="playerCkDisplayName" style="color: var(--accent-text);"></strong>
           </div>
 
           <!-- 修改名稱按鈕與表單 -->
-          <button type="button" id="playerCkEditNameBtn" class="btn btn-secondary" style="min-height: 44px; padding: 6px 14px; font-size: 0.9rem;">
+          <button type="button" id="playerCkEditNameBtn" class="btn btn-secondary" style="min-height: 44px; padding: 6px 14px; font-size: var(--fs-sm, 0.875rem);">
             修改名稱
           </button>
           <div id="playerCkEditNameForm" style="display: none; margin-top: 12px; text-align: left;">
             <div class="form-group">
               <label for="playerCkNewName" class="form-label">新顯示名稱</label>
               <input type="text" id="playerCkNewName" class="input-text" maxlength="20" placeholder="輸入新的顯示名稱" style="width: 100%;">
-              <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">這個名字會出現在大螢幕上</div>
+              <div style="font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary); margin-top: 4px;">這個名字會出現在大螢幕上</div>
             </div>
             <div style="display: flex; gap: 8px;">
               <button type="button" id="playerCkSaveNameBtn" class="btn btn-primary" style="flex: 1;">儲存名稱</button>
@@ -712,9 +710,9 @@ header {
 
       <!-- 叫裁判區塊 (DATA-CONTRACT 7.11) -->
       <div id="elimCallSection" class="call-judge-card" style="display: none;">
-        <button type="button" id="elimCallBtn" class="btn-call-judge" style="display: none;">🙋 叫裁判</button>
+        <button type="button" id="elimCallBtn" class="btn-call-judge" style="display: none;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-raise-hand"/></svg> 叫裁判</button>
         <div id="elimCallForm" style="display: none;">
-          <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">選擇呼叫原因：</div>
+          <div style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">選擇呼叫原因：</div>
           <div class="call-reasons-grid">
             <button type="button" class="btn-reason active" data-reason="rules">規則問題</button>
             <button type="button" class="btn-reason" data-reason="opponent">對手狀況</button>
@@ -766,9 +764,9 @@ header {
 
   <!-- 尚未連上賽務主機畫面 -->
   <div class="disconnected-overlay" id="elimDisconnectedScreen">
-    <div style="font-size: 3rem; margin-bottom: 12px;">⚠️</div>
-    <div style="font-size: 1.4rem; font-weight: 800; color: var(--danger-text); margin-bottom: 8px;">尚未連上賽務主機</div>
-    <div style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px;">
+    <div style="font-size: var(--fs-3xl, 3rem); margin-bottom: 12px; color: var(--warning-text);"><svg class="icon" aria-hidden="true" style="font-size: var(--fs-3xl, 3rem);"><use href="icons.svg#i-warning"/></svg></div>
+    <div style="font-size: var(--fs-xl, 1.5rem); font-weight: 800; color: var(--danger-text); margin-bottom: 8px;">尚未連上賽務主機</div>
+    <div style="font-size: var(--fs-base, 1rem); color: var(--text-secondary); margin-bottom: 20px;">
       請確認主機是否已啟動，或稍候自動重連。
       <div class="net-hint">可以先看會場的大螢幕或牆上的配對表，或直接問裁判</div>
     </div>

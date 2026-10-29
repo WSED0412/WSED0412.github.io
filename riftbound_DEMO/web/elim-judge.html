@@ -21,11 +21,11 @@ html, body {
     }
 
 input, select, textarea {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       color: var(--text-primary);
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       padding: 8px 12px;
       min-height: 44px;
       width: 100%;
@@ -65,13 +65,13 @@ header {
     }
 
 .page-title {
-      font-size: 1.15rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 800;
       color: var(--text-primary);
     }
 
 .judge-badge {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 3px 8px;
       border-radius: 9999px;
       font-weight: 700;
@@ -84,20 +84,20 @@ header {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 0.88rem;
+      font-size: var(--fs-sm, 0.875rem);
     }
 
 .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 14px;
       margin-bottom: 12px;
       overflow-x: hidden;
     }
 
 .card-title {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       color: var(--accent-text);
       margin-bottom: 8px;
@@ -107,7 +107,7 @@ header {
     }
 
 .badge {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 2px 8px;
       border-radius: 9999px;
       font-weight: 600;
@@ -129,8 +129,8 @@ header {
       min-height: 44px;
       min-width: 44px;
       padding: 8px 16px;
-      border-radius: 6px;
-      font-size: 0.95rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-base, 1rem);
       font-weight: 600;
       cursor: pointer;
       border: 1px solid transparent;
@@ -145,7 +145,7 @@ header {
 
 .btn-primary {
       background: var(--accent);
-      color: var(--on-accent, #fff);
+      color: var(--on-accent, #141212);
     }
 
 .btn-primary:not(:disabled):hover {
@@ -188,8 +188,8 @@ header {
 
 .msg-box {
       padding: 10px 12px;
-      border-radius: 6px;
-      font-size: 0.88rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       margin-bottom: 10px;
       word-break: break-word;
     }
@@ -217,7 +217,7 @@ header {
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
       padding: 10px 12px;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       margin-bottom: 8px;
       cursor: pointer;
       display: flex;
@@ -229,7 +229,7 @@ header {
     }
 
 .conflict-item:hover {
-      background: rgba(62, 51, 18, 0.6);
+      background: var(--warning-hover, rgba(62, 51, 18, 0.6));
     }
 
 .tables-grid {
@@ -242,7 +242,7 @@ header {
 .ej-table {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       padding: 8px 10px;
       color: var(--text-primary);
       text-align: left;
@@ -251,7 +251,7 @@ header {
       display: flex;
       flex-direction: column;
       justify-content: center;
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       width: 100%;
     }
 
@@ -267,7 +267,7 @@ header {
     }
 
 .point-col-title {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       color: var(--accent-text);
       margin-bottom: 4px;
@@ -280,7 +280,7 @@ header {
 .ej-point {
       width: 100%;
       padding: 8px 6px;
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       margin-bottom: 6px;
       text-align: center;
       min-height: 44px;
@@ -296,9 +296,9 @@ header {
       padding: 8px 12px;
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       color: var(--text-primary);
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       text-align: left;
       cursor: pointer;
       box-sizing: border-box;
@@ -316,7 +316,7 @@ header {
     }
 
 .deck-section-title {
-      font-size: 0.88rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       color: var(--accent-text);
       margin-top: 10px;
@@ -341,7 +341,7 @@ header {
 .modal-box {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 18px;
       max-width: 400px;
       width: 100%;
@@ -353,7 +353,7 @@ header {
     }
 
 .modal-title {
-      font-size: 1.1rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 700;
       margin-bottom: 8px;
       color: var(--accent-text);
@@ -361,7 +361,7 @@ header {
     }
 
 .modal-msg {
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       line-height: 1.5;
       margin-bottom: 16px;
       color: var(--text-primary);
@@ -386,7 +386,7 @@ header {
     }
 
 #ejPlayerId {
-      font-size: 16px;
+      font-size: var(--fs-base, 1rem);
     }
 
     /* 裁判提示：淘汰賽時間到怎麼判 (DATA-CONTRACT 10.20) */
@@ -395,7 +395,7 @@ header {
       background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 10px 14px;
       margin-bottom: 16px;
       box-sizing: border-box;
@@ -403,7 +403,7 @@ header {
     }
 
     .judge-rule-hint-title {
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 800;
       color: var(--warning-text);
       margin-bottom: 4px;
@@ -411,7 +411,7 @@ header {
     }
 
     .judge-rule-hint-text {
-      font-size: 0.88rem;
+      font-size: var(--fs-sm, 0.875rem);
       line-height: 1.5;
       color: var(--warning-text);
       word-break: break-word;
@@ -429,7 +429,7 @@ header {
 .ej-call {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 12px 14px;
       transition: background 0.15s ease, border-color 0.15s ease;
     }
@@ -440,8 +440,8 @@ header {
     }
 
 .ej-call.call-item-taken {
-      border-left: 4px solid #3b82f6;
-      background: rgba(30, 58, 138, 0.2);
+      border-left: 4px solid var(--info-border);
+      background: var(--info-bg);
     }
 
 .call-item-header {
@@ -453,7 +453,7 @@ header {
     }
 
 .call-table-title {
-      font-size: 1.05rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 800;
       color: var(--accent-text);
       cursor: pointer;
@@ -467,7 +467,7 @@ header {
     }
 
 .call-state-badge {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 2px 8px;
       border-radius: 9999px;
       font-weight: 700;
@@ -480,13 +480,13 @@ header {
     }
 
 .call-state-badge.taken {
-      background: rgba(59, 130, 246, 0.2);
-      border: 1px solid #3b82f6;
-      color: #93c5fd;
+      background: var(--info-bg);
+      border: 1px solid var(--info-border);
+      color: var(--info-text);
     }
 
 .call-item-time {
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--warning-text);
       font-weight: 600;
     }
@@ -495,7 +495,7 @@ header {
       display: flex;
       flex-direction: column;
       gap: 4px;
-      font-size: 0.88rem;
+      font-size: var(--fs-sm, 0.875rem);
       margin: 8px 0;
     }
 
@@ -515,8 +515,8 @@ header {
       color: var(--text-primary);
       background: rgba(0, 0, 0, 0.25);
       padding: 6px 10px;
-      border-radius: 4px;
-      font-size: 0.84rem;
+      border-radius: var(--radius-sm, 4px);
+      font-size: var(--fs-sm, 0.875rem);
       word-break: break-all;
       margin-top: 2px;
     }
@@ -525,7 +525,7 @@ header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       margin-top: 4px;
       flex-wrap: wrap;
@@ -543,7 +543,7 @@ header {
 
 .btn-sm {
       padding: 6px 12px;
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
     }
 
 #ejRefreshCalls, .ej-call-take, .ej-call-done {
@@ -563,7 +563,7 @@ header {
         </div>
         <div id="ejUserBar" class="user-bar" style="display: none;">
           <span>裁判：<strong id="ejStaffName"></strong></span>
-          <button type="button" id="ejLogout" class="btn btn-secondary" style="min-height: 44px; min-width: 44px; padding: 4px 10px; font-size: 0.85rem;">登出</button>
+          <button type="button" id="ejLogout" class="btn btn-secondary" style="min-height: 44px; min-width: 44px; padding: 4px 10px; font-size: var(--fs-sm, 0.875rem);">登出</button>
         </div>
       </div>
     </header>
@@ -571,11 +571,11 @@ header {
     <!-- 登入區塊 -->
     <section id="ejLoginSection" class="card">
       <h2 class="card-title">工作人員登入</h2>
-      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 12px;">
+      <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 12px;">
         請輸入裁判或主辦 PIN 碼以開始現場裁判作業。
       </p>
       <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px;">
-        <label for="ejPin" style="font-size: 0.88rem; font-weight: 600;">工作人員 PIN 碼</label>
+        <label for="ejPin" style="font-size: var(--fs-sm, 0.875rem); font-weight: 600;">工作人員 PIN 碼</label>
         <div style="display: flex; gap: 8px;">
           <input type="password" id="ejPin" placeholder="例如 judge-demo" autocomplete="off">
           <button type="button" id="ejLogin" class="btn btn-primary" style="min-width: 80px;">登入</button>
@@ -592,27 +592,27 @@ header {
       <!-- 現場報到清單區塊 (snapshot.checkin.method === 'list' 且 open) -->
       <section class="card" id="ejCheckinSection" style="display: none;">
         <div class="card-title">
-          <span>📋 報到清單</span>
-          <button type="button" id="ejRefreshCheckin" class="btn btn-secondary" style="min-height: 44px; min-width: 44px; padding: 4px 8px; font-size: 0.78rem;">重新整理</button>
+          <span><svg class="icon" aria-hidden="true"><use href="icons.svg#i-list"/></svg> 報到清單</span>
+          <button type="button" id="ejRefreshCheckin" class="btn btn-secondary" style="min-height: 44px; min-width: 44px; padding: 4px 8px; font-size: var(--fs-xs, 0.75rem);">重新整理</button>
         </div>
-        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 8px;">
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 8px;">
           名單報到模式：裁判可在此為到場選手代為報到或取消報到。
         </p>
         <div id="ejCkMsg" class="msg-box" style="display: none; margin-bottom: 8px;"></div>
         <div id="ejCkList" style="display: flex; flex-direction: column; gap: 8px;">
-          <div style="font-size: 0.88rem; color: var(--text-secondary); padding: 6px 0;">載入報到名單中...</div>
+          <div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); padding: 6px 0;">載入報到名單中...</div>
         </div>
       </section>
 
       <!-- 區塊: 驗牌區 (只在 snapshot.checkin 存在且 decklist_required 為 true 時顯示) -->
       <section class="card" id="ejDeckSection" style="display: none;">
-        <h2 class="card-title">🃏 驗牌區</h2>
-        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px;">
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-cards"/></svg> 驗牌區</h2>
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 10px;">
           輸入選手編號載入牌表。可逐張核對卡名與張數、記錄驗牌結果或解鎖牌表。
         </p>
 
         <div style="margin-bottom: 12px;">
-          <label for="ejDeckPlayerId" style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">選手編號</label>
+          <label for="ejDeckPlayerId" style="display: block; font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">選手編號</label>
           <div style="display: flex; gap: 8px;">
             <input type="text" id="ejDeckPlayerId" placeholder="例如 A-01" autocomplete="off" autocapitalize="characters" style="flex: 1;">
             <button type="button" id="ejDeckLoadBtn" class="btn btn-primary" style="white-space: nowrap;">載入牌表</button>
@@ -620,40 +620,40 @@ header {
         </div>
 
         <div id="ejDeckInfoBox" style="margin-bottom: 10px; display: none;">
-          <div style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 6px;" id="ejDeckPlayerMeta"></div>
+          <div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 6px;" id="ejDeckPlayerMeta"></div>
 
           <div id="ejDeckCopyRow" style="display: none; margin-bottom: 8px; align-items: center; gap: 8px; flex-wrap: wrap;">
             <button type="button" id="ejDeckCopy" class="btn btn-secondary" style="min-width: 130px; min-height: 44px; height: 44px;">複製牌組碼</button>
-            <span id="ejDeckCopyMsg" style="font-size: 0.82rem; color: var(--success-text); display: none;">已複製，請貼到組牌 App</span>
+            <span id="ejDeckCopyMsg" style="font-size: var(--fs-sm, 0.875rem); color: var(--success-text); display: none;">已複製，請貼到組牌 App</span>
           </div>
-          <div id="ejDeckTextNotice" style="display: none; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">
+          <div id="ejDeckTextNotice" style="display: none; font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 8px;">
             這位選手用純文字登錄，沒有牌組碼
           </div>
 
           <!-- 紅色 problems -->
-          <div id="ejDeckProblems" style="display: none; background: var(--danger-bg); border: 1px solid var(--danger-border); color: var(--danger-text); border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; font-size: 0.85rem; line-height: 1.4; white-space: pre-line;"></div>
+          <div id="ejDeckProblems" style="display: none; background: var(--danger-bg); border: 1px solid var(--danger-border); color: var(--danger-text); border-radius: var(--radius-md, 6px); padding: 8px 12px; margin-bottom: 8px; font-size: var(--fs-sm, 0.875rem); line-height: 1.4; white-space: pre-line;"></div>
 
           <!-- 琥珀色 notes -->
-          <div id="ejDeckNotes" style="display: none; background: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning-text); border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; font-size: 0.85rem; line-height: 1.4; white-space: pre-line;"></div>
+          <div id="ejDeckNotes" style="display: none; background: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning-text); border-radius: var(--radius-md, 6px); padding: 8px 12px; margin-bottom: 8px; font-size: var(--fs-sm, 0.875rem); line-height: 1.4; white-space: pre-line;"></div>
 
           <!-- 逐張打勾核對牌組區 -->
           <div id="ejDeckCheckRowsBox" style="display: none; margin-bottom: 12px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-              <span id="ejDeckCheckProgress" style="font-size: 0.9rem; font-weight: 700; color: var(--accent-text);">已核對 0 / 0 張</span>
+              <span id="ejDeckCheckProgress" style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--accent-text);">已核對 0 / 0 張</span>
               <button type="button" id="ejDeckCheckReset" class="btn btn-secondary btn-sm" style="min-height: 44px; padding: 4px 12px;">清空核對</button>
             </div>
             <div id="ejDeckCheckList" style="display: flex; flex-direction: column; gap: 6px;"></div>
           </div>
 
           <div style="margin-top: 10px; margin-bottom: 6px;">
-            <button type="button" id="ejDeckViewToggle" class="btn btn-secondary btn-sm" style="min-height: 44px; padding: 4px 10px; font-size: 0.8rem;">收起列印版</button>
+            <button type="button" id="ejDeckViewToggle" class="btn btn-secondary btn-sm" style="min-height: 44px; padding: 4px 10px; font-size: var(--fs-xs, 0.75rem);">收起列印版</button>
           </div>
-          <pre id="ejDeckView" style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; font-size: 0.85rem; line-height: 1.4; color: #f8fafc; white-space: pre-wrap; word-break: break-word; min-height: 48px; max-height: 360px; overflow-y: auto;"></pre>
-          <div id="ejDeckCardsNotice" style="display: none; font-size: 0.78rem; color: var(--text-secondary); line-height: 1.35; margin-top: 8px; white-space: pre-line;"></div>
+          <pre id="ejDeckView" style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: var(--radius-md, 6px); padding: 12px; font-size: var(--fs-sm, 0.875rem); line-height: 1.4; color: var(--text-primary); white-space: pre-wrap; word-break: break-word; min-height: 48px; max-height: 360px; overflow-y: auto;"></pre>
+          <div id="ejDeckCardsNotice" style="display: none; font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary); line-height: 1.35; margin-top: 8px; white-space: pre-line;"></div>
         </div>
 
         <div style="margin-top: 10px; margin-bottom: 8px;">
-          <label for="ejDeckCheckNote" style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px;">備註說明（選填，最多 40 字）</label>
+          <label for="ejDeckCheckNote" style="display: block; font-size: var(--fs-sm, 0.875rem); font-weight: 600; color: var(--text-secondary); margin-bottom: 4px;">備註說明（選填，最多 40 字）</label>
           <input type="text" id="ejDeckCheckNote" maxlength="40" placeholder="例如：主牌組少 1 張、記警告">
         </div>
 
@@ -674,14 +674,14 @@ header {
       <!-- 叫裁判清單區塊 (DATA-CONTRACT 7.11, PROJECT.md 第四十九輪) -->
       <section class="card" id="ejCallsSection">
         <div class="card-title">
-          <span>🙋 叫裁判清單</span>
-          <button type="button" id="ejRefreshCalls" class="btn btn-secondary" style="min-height: 44px; min-width: 44px; padding: 4px 8px; font-size: 0.78rem;">重新整理</button>
+          <span><svg class="icon" aria-hidden="true"><use href="icons.svg#i-raise-hand"/></svg> 叫裁判清單</span>
+          <button type="button" id="ejRefreshCalls" class="btn btn-secondary" style="min-height: 44px; min-width: 44px; padding: 4px 8px; font-size: var(--fs-xs, 0.75rem);">重新整理</button>
         </div>
-        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 8px;">
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 8px;">
           選手在比賽桌發出的裁判呼叫，點擊「我去處理」接手，處理完畢按「處理完了」結案。
         </p>
         <div id="ejCalls" class="call-list">
-          <div style="font-size: 0.88rem; color: var(--text-secondary); padding: 6px 0;">目前沒有裁判呼叫</div>
+          <div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); padding: 6px 0;">目前沒有裁判呼叫</div>
         </div>
         <div id="ejCallsMsg" class="msg-box" style="display: none; margin-top: 8px;"></div>
       </section>
@@ -689,22 +689,22 @@ header {
       <!-- 選手協助區塊 (PROJECT.md 第四十二輪, review.py [46]) -->
       <section class="card" id="ejPlayerAssistSection">
         <h2 class="card-title">選手協助（解鎖／重設 PIN）</h2>
-        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 10px;">
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 10px;">
           若選手輸錯多次 PIN 遭鎖定或遺失 PIN 碼，可在此進行解鎖或重設。
         </p>
         <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px;">
-          <label for="ejPlayerId" style="font-size: 0.88rem; font-weight: 600;">選手編號：</label>
+          <label for="ejPlayerId" style="font-size: var(--fs-sm, 0.875rem); font-weight: 600;">選手編號：</label>
           <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <input type="text" id="ejPlayerId" placeholder="例如 A-03" autocomplete="off" autocapitalize="characters" style="flex: 1 1 120px; min-width: 0; font-size: 16px;">
+            <input type="text" id="ejPlayerId" placeholder="例如 A-03" autocomplete="off" autocapitalize="characters" style="flex: 1 1 120px; min-width: 0; font-size: var(--fs-base, 1rem);">
             <button type="button" id="ejUnlock" class="btn btn-secondary" style="white-space: nowrap; min-height: 44px; min-width: 44px;">解鎖</button>
             <button type="button" id="ejPinReset" class="btn btn-warning" style="white-space: nowrap; min-height: 44px; min-width: 44px;">重設 PIN</button>
           </div>
         </div>
 
         <!-- 重設成功大字顯示新 PIN 碼（按已抄下後清空且不存入任何地方） -->
-        <div id="ejNewPinBox" class="msg-box" style="display: none; background: rgba(30, 41, 59, 0.8); border: 2px solid var(--accent); padding: 14px; text-align: center; margin-bottom: 10px;">
-          <div style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 4px;">重設成功！新 PIN 碼（請選手抄下）：</div>
-          <div id="ejNewPin" style="font-size: 2.2rem; font-weight: 800; letter-spacing: 4px; color: var(--accent); font-family: monospace; margin: 8px 0; word-break: break-all;"></div>
+        <div id="ejNewPinBox" class="msg-box" style="display: none; background: var(--input-bg); border: 2px solid var(--accent); padding: 14px; text-align: center; margin-bottom: 10px;">
+          <div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 4px;">重設成功！新 PIN 碼（請選手抄下）：</div>
+          <div id="ejNewPin" style="font-size: var(--fs-2xl, 2rem); font-weight: 800; letter-spacing: 4px; color: var(--accent); font-family: monospace; margin: 8px 0; word-break: break-all;"></div>
           <button type="button" id="ejNewPinDone" class="btn btn-primary" style="margin-top: 6px; padding: 6px 20px; min-height: 44px; min-width: 44px;">已抄下</button>
         </div>
 
@@ -714,14 +714,14 @@ header {
       <!-- 爭議衝突清單區塊 -->
       <section class="card">
         <div class="card-title">
-          <span>⚠️ 爭議衝突清單</span>
-          <button type="button" id="ejRefreshConflicts" class="btn btn-secondary" style="min-height: 44px; min-width: 44px; padding: 4px 8px; font-size: 0.78rem;">重新整理</button>
+          <span><svg class="icon" aria-hidden="true"><use href="icons.svg#i-warning"/></svg> 爭議衝突清單</span>
+          <button type="button" id="ejRefreshConflicts" class="btn btn-secondary" style="min-height: 44px; min-width: 44px; padding: 4px 8px; font-size: var(--fs-xs, 0.75rem);">重新整理</button>
         </div>
-        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 8px;">
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 8px;">
           雙方選手回報結果不一致的場次，點擊即可載入並裁定。
         </p>
         <div id="ejConflicts">
-          <div style="font-size: 0.88rem; color: var(--text-secondary); padding: 6px 0;">載入衝突場次中...</div>
+          <div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); padding: 6px 0;">載入衝突場次中...</div>
         </div>
       </section>
 
@@ -729,7 +729,7 @@ header {
       <section class="card">
         <h2 class="card-title">桌次與場次檢視</h2>
         <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
-          <label for="ejDiv" style="font-size: 0.88rem; font-weight: 700; white-space: nowrap;">選區：</label>
+          <label for="ejDiv" style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; white-space: nowrap;">選區：</label>
           <select id="ejDiv">
             <option value="A">A 區</option>
             <option value="B">B 區</option>
@@ -737,11 +737,11 @@ header {
         </div>
 
         <div id="ejTables" class="tables-grid">
-          <div style="font-size: 0.85rem; color: var(--text-secondary); grid-column: 1 / -1;">正在讀取桌況...</div>
+          <div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); grid-column: 1 / -1;">正在讀取桌況...</div>
         </div>
 
         <div style="margin-top: 14px; padding-top: 10px; border-top: 1px dashed var(--card-border);">
-          <label for="ejMatchId" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; display: block;">直接輸入場次編號：</label>
+          <label for="ejMatchId" style="font-size: var(--fs-sm, 0.875rem); font-weight: 600; margin-bottom: 4px; display: block;">直接輸入場次編號：</label>
           <div style="display: flex; gap: 8px;">
             <input type="text" id="ejMatchId" placeholder="例如 A-R0-M00">
             <button type="button" id="ejLoad" class="btn btn-primary" style="white-space: nowrap;">載入場次</button>
@@ -751,7 +751,7 @@ header {
 
       <!-- 場次詳情卡片（嚴格禁止出現任何 p1 或 p2 字樣） -->
       <section class="card" id="ejDetail">
-        <div style="color: var(--text-secondary); font-size: 0.9rem; text-align: center; padding: 12px 0;">
+        <div style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem); text-align: center; padding: 12px 0;">
           請從上方點選衝突場次、桌次，或輸入場次編號以檢視詳情。
         </div>
       </section>
@@ -768,7 +768,7 @@ header {
 
         <!-- 方式 1: 只按誰贏 -->
         <div id="ejWinnerGroup" style="display: none; margin-bottom: 16px;">
-          <div style="font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; color: var(--accent-text);">
+          <div style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; margin-bottom: 6px; color: var(--accent-text);">
             只按誰贏（直接裁定勝方）：
           </div>
           <div id="ejWinnerButtons" class="btn-row"></div>
@@ -776,7 +776,7 @@ header {
 
         <!-- 方式 2: 比分回報 -->
         <div id="ejScoreGroup" style="display: none; margin-bottom: 16px;">
-          <div style="font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; color: var(--accent-text);">
+          <div style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; margin-bottom: 6px; color: var(--accent-text);">
             最後比分：
           </div>
           <div id="ejScoreWidgetContainer"></div>
@@ -785,7 +785,7 @@ header {
 
         <!-- 方式 3: 逐分計分 -->
         <div id="ejPointsGroup" style="display: none; margin-bottom: 16px;">
-          <div style="font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; color: var(--accent-text);">
+          <div style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; margin-bottom: 6px; color: var(--accent-text);">
             逐分計分（戰鬥陀螺 X 記分）：
           </div>
           <div id="ejPointsWidgetContainer" style="margin-bottom: 10px;"></div>
@@ -795,9 +795,9 @@ header {
             <button type="button" id="ejPointsSubmit" class="btn btn-primary" style="flex: 1;">送出逐分結果</button>
           </div>
 
-          <div style="font-size: 0.88rem; font-weight: 700; margin-bottom: 4px;">目前得分紀錄：</div>
-          <div id="ejPointList" style="background: rgba(0, 0, 0, 0.25); border: 1px solid var(--card-border); border-radius: 6px; padding: 10px; min-height: 48px;">
-            <div style="color: var(--text-secondary); font-size: 0.85rem;">尚未記錄得分</div>
+          <div style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; margin-bottom: 4px;">目前得分紀錄：</div>
+          <div id="ejPointList" style="background: rgba(0, 0, 0, 0.25); border: 1px solid var(--card-border); border-radius: var(--radius-md, 6px); padding: 10px; min-height: 48px;">
+            <div style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem);">尚未記錄得分</div>
           </div>
         </div>
 
@@ -809,28 +809,28 @@ header {
 
       <!-- 區塊: 判罰紀錄 (DATA-CONTRACT 10.11) -->
       <section class="card" id="pnPanel">
-        <h2 class="card-title">⚖️ 判罰紀錄</h2>
-        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 10px;">
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-judge"/></svg> 判罰紀錄</h2>
+        <p style="font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary); margin-bottom: 10px;">
           這裡只是紀錄，不會自動處罰；要判局敗／場敗請用上面的成績判定。判罰紀錄不會公開，選手看不到。
         </p>
 
         <div style="margin-bottom: 10px;">
-          <label for="pnPlayer" style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">選手編號</label>
+          <label for="pnPlayer" style="display: block; font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">選手編號</label>
           <input type="text" id="pnPlayer" placeholder="例如 A-01" style="text-transform: uppercase;">
         </div>
 
         <div style="margin-bottom: 10px;">
-          <label for="pnKind" style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">種類</label>
+          <label for="pnKind" style="display: block; font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">種類</label>
           <select id="pnKind"></select>
         </div>
 
         <div style="margin-bottom: 10px;">
-          <label for="pnRule" style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">規則條號（選填，最多 20 字）</label>
+          <label for="pnRule" style="display: block; font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">規則條號（選填，最多 20 字）</label>
           <input type="text" id="pnRule" maxlength="20" placeholder="例如 703.8">
         </div>
 
         <div style="margin-bottom: 10px;">
-          <label for="pnNote" style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">備註（選填，最多 60 字）</label>
+          <label for="pnNote" style="display: block; font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">備註（選填，最多 60 字）</label>
           <input type="text" id="pnNote" maxlength="60" placeholder="最多 60 字">
         </div>
 
@@ -841,13 +841,13 @@ header {
         <div id="pnMsg" class="msg-box" style="display: none; margin-bottom: 12px;"></div>
 
         <div style="margin-bottom: 14px;">
-          <div style="font-size: 0.9rem; font-weight: 700; color: var(--accent-text); margin-bottom: 6px;">📊 累計判罰</div>
-          <div id="pnSummary" style="font-size: 0.88rem;">目前沒有判罰紀錄</div>
+          <div style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--accent-text); margin-bottom: 6px;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-stats"/></svg> 累計判罰</div>
+          <div id="pnSummary" style="font-size: var(--fs-sm, 0.875rem);">目前沒有判罰紀錄</div>
         </div>
 
         <div>
-          <div style="font-size: 0.9rem; font-weight: 700; color: var(--accent-text); margin-bottom: 6px;">📜 最近紀錄</div>
-          <div id="pnList" style="font-size: 0.85rem;"></div>
+          <div style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--accent-text); margin-bottom: 6px;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-log"/></svg> 最近紀錄</div>
+          <div id="pnList" style="font-size: var(--fs-sm, 0.875rem);"></div>
         </div>
       </section>
     </main>
@@ -957,12 +957,12 @@ header {
 
         document.getElementById('ejUserBar').style.display = 'none';
         document.getElementById('ejMainSection').style.display = 'none';
-        document.getElementById('ejDetail').innerHTML = '<div style="color: var(--text-secondary); font-size: 0.9rem; text-align: center; padding: 12px 0;">請從上方點選衝突場次、桌次，或輸入場次編號以檢視詳情。</div>';
+        document.getElementById('ejDetail').innerHTML = '<div style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem); text-align: center; padding: 12px 0;">請從上方點選衝突場次、桌次，或輸入場次編號以檢視詳情。</div>';
         document.getElementById('ejActionPanel').style.display = 'none';
 
         const ejCallsEl = document.getElementById('ejCalls');
         if (ejCallsEl) {
-          ejCallsEl.innerHTML = '<div style="font-size: 0.88rem; color: var(--text-secondary); padding: 6px 0;">目前沒有裁判呼叫</div>';
+          ejCallsEl.innerHTML = '<div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); padding: 6px 0;">目前沒有裁判呼叫</div>';
         }
         hideCallsMsg();
 
@@ -1095,7 +1095,7 @@ header {
 
       if (!sortedCalls.length) {
         lastCallFingerprint = '';
-        listEl.innerHTML = '<div style="font-size: 0.88rem; color: var(--text-secondary); padding: 6px 0;">目前沒有裁判呼叫</div>';
+        listEl.innerHTML = '<div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); padding: 6px 0;">目前沒有裁判呼叫</div>';
         return;
       }
 
@@ -1199,7 +1199,7 @@ header {
         const matches = res.matches || [];
         const container = document.getElementById('ejConflicts');
         if (!matches.length) {
-          container.innerHTML = '<div style="font-size: 0.88rem; color: var(--text-secondary); padding: 4px 0;">目前沒有爭議場次</div>';
+          container.innerHTML = '<div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); padding: 4px 0;">目前沒有爭議場次</div>';
           return;
         }
 
@@ -1212,8 +1212,8 @@ header {
             <div class="conflict-item ej-conflict" data-match="${escapeHtml(m.id)}">
               <div>
                 <span style="font-weight: 700;">${escapeHtml(m.label || m.id)}</span>
-                <span style="font-size: 0.8rem; margin-left: 6px; color: var(--warning-text);">[${tbl}]</span>
-                <div style="font-size: 0.85rem; color: var(--text-primary); margin-top: 2px;">
+                <span style="font-size: var(--fs-xs, 0.75rem); margin-left: 6px; color: var(--warning-text);">[${tbl}]</span>
+                <div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-primary); margin-top: 2px;">
                   ${escapeHtml(p1Name)} VS ${escapeHtml(p2Name)}
                 </div>
               </div>
@@ -1335,7 +1335,7 @@ header {
       } catch (err) {
         const listEl = document.getElementById('ejCkList');
         if (listEl) {
-          listEl.innerHTML = `<div style="font-size: 0.88rem; color: var(--danger-text); padding: 6px 0;">無法載入報到清單：${escapeHtml(err.message || '連線異常')}</div>`;
+          listEl.innerHTML = `<div style="font-size: var(--fs-sm, 0.875rem); color: var(--danger-text); padding: 6px 0;">無法載入報到清單：${escapeHtml(err.message || '連線異常')}</div>`;
         }
       } finally {
         isFetchingCheckinList = false;
@@ -1346,7 +1346,7 @@ header {
       const listEl = document.getElementById('ejCkList');
       if (!listEl) return;
       if (!rows.length) {
-        listEl.innerHTML = '<div style="font-size: 0.88rem; color: var(--text-secondary); padding: 6px 0;">名單內無任何選手</div>';
+        listEl.innerHTML = '<div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); padding: 6px 0;">名單內無任何選手</div>';
         lastCkFingerprint = '';
         return;
       }
@@ -1380,8 +1380,8 @@ header {
 
         const deckBadge = isDeckReq
           ? (hasDeck
-              ? '<span class="badge" style="background: rgba(14, 165, 233, 0.15); border-color: #0284c7; color: #38bdf8;">已交牌表</span>'
-              : '<span class="badge" style="background: rgba(239, 68, 68, 0.15); border-color: var(--danger-border); color: var(--danger-text);">未交牌表</span>')
+              ? '<span class="badge" style="background: var(--info-bg); border-color: var(--info-border); color: var(--info-text);">已交牌表</span>'
+              : '<span class="badge" style="background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text);">未交牌表</span>')
           : '';
 
         const actionBtn = isChecked
@@ -1393,7 +1393,7 @@ header {
         if (pseed) metaText += (metaText ? ' · ' : '') + `號碼牌：${escapeHtml(String(pseed))}`;
 
         return `
-          <div class="table-card" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--card-border); border-radius: 6px; gap: 8px;">
+          <div class="table-card" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--card-border); border-radius: var(--radius-md, 6px); gap: 8px;">
             <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
               <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
                 <span style="font-weight: 800; color: var(--accent-text); font-family: monospace;">${escapeHtml(pid)}</span>
@@ -1401,7 +1401,7 @@ header {
                 ${statusBadge}
                 ${deckBadge}
               </div>
-              ${metaText ? `<div style="font-size: 0.8rem; color: var(--text-secondary);">${metaText}</div>` : ''}
+              ${metaText ? `<div style="font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary);">${metaText}</div>` : ''}
             </div>
             <div style="flex-shrink: 0;">
               ${actionBtn}
@@ -1534,7 +1534,7 @@ header {
 
         html += `<button type="button" class="deck-check-row" aria-pressed="false" data-count="${count}">` +
           `<span>${cardLabel}</span>` +
-          `<span class="deck-check-state" style="font-size: 1.1rem; color: var(--accent-text); margin-left: 8px;">☐</span>` +
+          `<span class="deck-check-state" style="font-size: var(--fs-md, 1.125rem); color: var(--accent-text); margin-left: 8px;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-box"/></svg></span>` +
           `</button>`;
       });
 
@@ -1547,7 +1547,9 @@ header {
           btn.setAttribute('aria-pressed', next ? 'true' : 'false');
           const stateEl = btn.querySelector('.deck-check-state');
           if (stateEl) {
-            stateEl.textContent = next ? '☑' : '☐';
+            stateEl.innerHTML = next
+              ? '<svg class="icon" aria-hidden="true"><use href="icons.svg#i-box-check"/></svg>'
+              : '<svg class="icon" aria-hidden="true"><use href="icons.svg#i-box"/></svg>';
           }
           updateEjDeckCheckProgress();
         });
@@ -1584,7 +1586,7 @@ header {
       listEl.querySelectorAll('.deck-check-row').forEach(r => {
         r.setAttribute('aria-pressed', 'false');
         const stateEl = r.querySelector('.deck-check-state');
-        if (stateEl) stateEl.textContent = '☐';
+        if (stateEl) stateEl.innerHTML = '<svg class="icon" aria-hidden="true"><use href="icons.svg#i-box"/></svg>';
       });
       updateEjDeckCheckProgress();
     }
@@ -1653,7 +1655,9 @@ header {
         }
         if (metaEl) {
           const playerName = (res.player && res.player.name) ? res.player.name : '';
-          const lockStatus = res.locked ? '🔒 已鎖定' : '🔓 未鎖定';
+          const lockStatus = res.locked
+            ? '<svg class="icon" aria-hidden="true"><use href="icons.svg#i-lock"/></svg> 已鎖定'
+            : '<svg class="icon" aria-hidden="true"><use href="icons.svg#i-unlock"/></svg> 未鎖定';
           const formatBadge = (res.format === 'code') ? ' · 牌組碼' : ' · 純文字';
           let breakdownInfo = '';
           if (res.summary && res.summary.breakdown && typeof res.summary.breakdown === 'object') {
@@ -1668,13 +1672,13 @@ header {
               breakdownInfo = ` · ${bdParts.join('・')}`;
             }
           }
-          metaEl.textContent = `選手：${pid} ${playerName} · ${lockStatus}${formatBadge}${breakdownInfo}`;
+          metaEl.innerHTML = `選手：${escapeHtml(pid)} ${escapeHtml(playerName)} · ${lockStatus}${formatBadge}${escapeHtml(breakdownInfo)}`;
         }
 
         // 牌表問題 (紅色)
         if (res.problems && Array.isArray(res.problems) && res.problems.length > 0) {
           if (problemsEl) {
-            problemsEl.innerHTML = res.problems.map(p => `<div>⚠️ ${escapeHtml(p)}</div>`).join('');
+            problemsEl.innerHTML = res.problems.map(p => `<div><svg class="icon" aria-hidden="true"><use href="icons.svg#i-warning"/></svg> ${escapeHtml(p)}</div>`).join('');
             problemsEl.style.display = 'block';
           }
         } else {
@@ -1883,7 +1887,7 @@ header {
       const container = document.getElementById('ejTables');
 
       if (!divData || !divData.tables || !divData.tables.length) {
-        container.innerHTML = '<div style="font-size: 0.85rem; color: var(--text-secondary); grid-column: 1 / -1;">此區尚未配置桌次</div>';
+        container.innerHTML = '<div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); grid-column: 1 / -1;">此區尚未配置桌次</div>';
         return;
       }
 
@@ -1897,15 +1901,15 @@ header {
           html += `
             <button type="button" class="ej-table" data-match="${escapeHtml(t.match)}">
               <span style="font-weight: 700; color: var(--accent-text);">第 ${t.table} 桌</span>
-              <span style="font-size: 0.78rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(vsText || t.match)}</span>
+              <span style="font-size: var(--fs-xs, 0.75rem); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(vsText || t.match)}</span>
             </button>
           `;
         } else {
           const stateLabel = t.hold ? '暫停使用' : '空桌';
           html += `
-            <div style="background: rgba(0,0,0,0.15); border: 1px dashed var(--card-border); border-radius: 6px; padding: 8px 10px; min-height: 52px; display: flex; flex-direction: column; justify-content: center; font-size: 0.85rem;">
+            <div style="background: rgba(0,0,0,0.15); border: 1px dashed var(--card-border); border-radius: var(--radius-md, 6px); padding: 8px 10px; min-height: 52px; display: flex; flex-direction: column; justify-content: center; font-size: var(--fs-sm, 0.875rem);">
               <span style="color: var(--text-secondary);">第 ${t.table} 桌</span>
-              <span style="font-size: 0.78rem; color: ${t.hold ? 'var(--warning-text)' : 'var(--text-secondary)'};">${stateLabel}</span>
+              <span style="font-size: var(--fs-xs, 0.75rem); color: ${t.hold ? 'var(--warning-text)' : 'var(--text-secondary)'};">${stateLabel}</span>
             </div>
           `;
         }
@@ -1961,7 +1965,7 @@ header {
     function renderMatchDetail(m) {
       const detailEl = document.getElementById('ejDetail');
       if (!m) {
-        detailEl.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.9rem; text-align: center; padding: 12px 0;">請選擇場次</div>';
+        detailEl.innerHTML = '<div style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem); text-align: center; padding: 12px 0;">請選擇場次</div>';
         return;
       }
 
@@ -1998,10 +2002,10 @@ header {
         }
 
         reportsHtml = `
-          <div style="margin-top: 10px; padding: 10px; background: rgba(0, 0, 0, 0.25); border-radius: 6px; border: 1px solid var(--card-border);">
+          <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--card-border);">
             <div style="font-weight: 700; margin-bottom: 4px; color: var(--accent-text);">選手各自回報：</div>
-            <div style="font-size: 0.92rem; margin-bottom: 3px;">${escapeHtml(getReportDesc(p1Name, r1))}</div>
-            <div style="font-size: 0.92rem;">${escapeHtml(getReportDesc(p2Name, r2))}</div>
+            <div style="font-size: var(--fs-sm, 0.875rem); margin-bottom: 3px;">${escapeHtml(getReportDesc(p1Name, r1))}</div>
+            <div style="font-size: var(--fs-sm, 0.875rem);">${escapeHtml(getReportDesc(p2Name, r2))}</div>
           </div>
         `;
       }
@@ -2016,13 +2020,13 @@ header {
 
       detailEl.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
-          <span style="font-weight: 800; font-size: 1.15rem; color: var(--accent-text);">${escapeHtml(m.label || m.id)}</span>
+          <span style="font-weight: 800; font-size: var(--fs-md, 1.125rem); color: var(--accent-text);">${escapeHtml(m.label || m.id)}</span>
           ${stateBadge}
         </div>
-        <div style="font-size: 1.1rem; font-weight: 700; margin-bottom: 6px;">
-          ${escapeHtml(p1Name)} ${escapeHtml(p1Seed)} <span style="color: var(--text-secondary); font-size: 0.9rem;">VS</span> ${escapeHtml(p2Name)} ${escapeHtml(p2Seed)}
+        <div style="font-size: var(--fs-md, 1.125rem); font-weight: 700; margin-bottom: 6px;">
+          ${escapeHtml(p1Name)} ${escapeHtml(p1Seed)} <span style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem);">VS</span> ${escapeHtml(p2Name)} ${escapeHtml(p2Seed)}
         </div>
-        <div style="font-size: 0.9rem; color: var(--warning-text); margin-bottom: 4px;">
+        <div style="font-size: var(--fs-sm, 0.875rem); color: var(--warning-text); margin-bottom: 4px;">
           ${escapeHtml(policyText)}
         </div>
         ${reportsHtml}
@@ -2200,7 +2204,7 @@ header {
     function renderPointList() {
       const container = document.getElementById('ejPointList');
       if (!currentPoints.length) {
-        container.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.85rem;">尚未記錄得分</div>';
+        container.innerHTML = '<div style="color: var(--text-secondary); font-size: var(--fs-sm, 0.875rem);">尚未記錄得分</div>';
         return;
       }
 
@@ -2211,7 +2215,7 @@ header {
         spin: '迴轉 (1分)'
       };
 
-      let html = '<ol style="padding-left: 20px; font-size: 0.92rem; display: flex; flex-direction: column; gap: 4px;">';
+      let html = '<ol style="padding-left: 20px; font-size: var(--fs-sm, 0.875rem); display: flex; flex-direction: column; gap: 4px;">';
       for (let i = 0; i < currentPoints.length; i++) {
         const pt = currentPoints[i];
         const pName = (pt.side === 'p1')

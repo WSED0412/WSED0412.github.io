@@ -24,7 +24,7 @@ body {
     }
 
 input, select, textarea {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
     }
 
 .container {
@@ -59,7 +59,7 @@ header {
     }
 
 .admin-badge {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       background: rgba(239, 125, 0, 0.15);
       color: var(--accent-text);
       border: 1px solid rgba(239, 125, 0, 0.4);
@@ -75,7 +75,7 @@ header {
     }
 
 .admin-user-info {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-sub);
     }
 
@@ -90,10 +90,10 @@ header {
       gap: 4px;
       color: var(--accent-text);
       text-decoration: none;
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       padding: 6px 12px;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       background: rgba(239, 125, 0, 0.12);
       border: 1px solid rgba(239, 125, 0, 0.3);
       white-space: nowrap;
@@ -110,8 +110,8 @@ header {
 
 .banner {
       padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.85rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       margin-bottom: 12px;
       text-align: center;
@@ -132,7 +132,7 @@ header {
 .status-summary-card {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 14px 16px;
       margin-bottom: 16px;
     }
@@ -147,13 +147,13 @@ header {
     }
 
 .summary-event-name {
-      font-size: 1.1rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 700;
       color: var(--text-main);
     }
 
 .status-badge {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 2px 8px;
       border-radius: 9999px;
       font-weight: 600;
@@ -177,18 +177,18 @@ header {
 .status-item {
       background: var(--input-bg);
       border: 1px solid var(--panel-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 10px 12px;
     }
 
 .status-item-label {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-sub);
       margin-bottom: 2px;
     }
 
 .status-item-val {
-      font-size: 1.05rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       color: var(--text-main);
     }
@@ -201,7 +201,7 @@ header {
       margin-top: 10px;
       padding-top: 10px;
       border-top: 1px dashed var(--panel-border);
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       display: flex;
       gap: 6px;
@@ -210,13 +210,13 @@ header {
 .admin-card {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 16px;
       margin-bottom: 16px;
     }
 
 .card-title {
-      font-size: 1.1rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 800;
       color: var(--text-main);
       margin-bottom: 12px;
@@ -226,7 +226,7 @@ header {
     }
 
 .card-subtitle {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       color: var(--text-sub);
       margin: 12px 0 6px;
@@ -238,7 +238,7 @@ header {
 
 .form-label {
       display: block;
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: 600;
       color: var(--text-sub);
       margin-bottom: 4px;
@@ -256,8 +256,8 @@ header {
       border: 1px solid var(--card-border);
       color: var(--text-main);
       padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 1rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-base, 1rem);
       outline: none;
       min-height: 40px;
       flex: 1;
@@ -279,9 +279,9 @@ header {
       align-items: center;
       justify-content: center;
       padding: 8px 14px;
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       border: 1px solid transparent;
       cursor: pointer;
       transition: background 0.15s ease, border-color 0.15s ease;
@@ -331,43 +331,43 @@ header {
 
 .btn-warning {
       background: var(--warning-border);
-      color: #141212;
+      color: var(--on-accent);
       border-color: var(--warning-border);
     }
 
 .btn-warning:hover {
-      background: #705515;
+      background: var(--warning-hover, #705515);
     }
 
 .btn-success {
       background: var(--success-border);
-      color: #141212;
+      color: var(--on-accent);
       border-color: var(--success-border);
     }
 
 .btn-success:hover {
-      background: #175d41;
+      background: var(--success-hover, #175d41);
     }
 
 .btn-danger {
       background: var(--danger-border);
-      color: #141212;
+      color: var(--on-accent);
       border-color: var(--danger-border);
     }
 
 .btn-danger:hover {
-      background: #7f322b;
+      background: var(--danger-hover, #7f322b);
     }
 
 .btn-danger-action {
       background: var(--danger-border);
-      color: #141212;
+      color: var(--on-accent);
       border-color: var(--danger-border);
       font-weight: 800;
     }
 
 .btn-danger-action:hover {
-      background: #7f322b;
+      background: var(--danger-hover, #7f322b);
     }
 
 .btn-logout {
@@ -375,8 +375,8 @@ header {
       color: var(--text-sub);
       border: 1px solid var(--panel-border);
       padding: 4px 10px;
-      font-size: 0.8rem;
-      border-radius: 6px;
+      font-size: var(--fs-xs, 0.75rem);
+      border-radius: var(--radius-md, 6px);
     }
 
 .btn-logout:hover {
@@ -386,22 +386,21 @@ header {
     }
 
 button[data-next="true"] {
-      background: #c2410c !important;
-      color: #ffffff !important;
-      border: 2px solid #f97316 !important;
-      box-shadow: 0 0 10px rgba(234, 88, 12, 0.5);
+      background: var(--accent, #EF7D00) !important;
+      color: var(--on-accent, #141212) !important;
+      border: 2px solid var(--accent, #EF7D00) !important;
       font-weight: 800;
     }
 
 button[data-next="true"]:hover {
-      background: #9a3412 !important;
+      background: var(--accent-hover, #C86800) !important;
     }
 
 .msg-box {
       margin-top: 10px;
       padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 0.85rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       line-height: 1.4;
     }
@@ -432,14 +431,14 @@ button[data-next="true"]:hover {
       margin-top: 12px;
       margin-bottom: 12px;
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
     }
 
 .admin-table {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       min-width: 340px;
     }
 
@@ -469,9 +468,9 @@ button[data-next="true"]:hover {
       background: var(--info-bg);
       color: var(--info-text);
       border: 1px solid var(--info-border);
-      font-size: 0.7rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 2px 6px;
-      border-radius: 4px;
+      border-radius: var(--radius-sm, 4px);
       font-weight: 700;
       margin-left: 4px;
     }
@@ -479,7 +478,7 @@ button[data-next="true"]:hover {
 .ctl-row {
       background: var(--input-bg);
       border: 1px solid var(--panel-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 10px 14px;
       display: flex;
       justify-content: space-between;
@@ -515,7 +514,7 @@ button[data-next="true"]:hover {
     }
 
 .sec-subtitle {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       color: var(--warning);
       margin-top: 8px;
@@ -532,15 +531,15 @@ button[data-next="true"]:hover {
       padding: 6px 10px;
       background: var(--input-bg);
       border: 1px solid var(--panel-border);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       margin-bottom: 4px;
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       word-break: break-all;
     }
 
 .empty-state-sm {
       color: var(--text-sub);
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       padding: 8px 0;
     }
 
@@ -576,8 +575,8 @@ button[data-next="true"]:hover {
 
 .health-problem {
       padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.88rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       margin-top: 8px;
       line-height: 1.5;
@@ -598,7 +597,7 @@ button[data-next="true"]:hover {
 .staff-row {
       background: var(--input-bg);
       border: 1px solid var(--panel-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 12px 14px;
       display: flex;
       justify-content: space-between;
@@ -645,7 +644,7 @@ button[data-next="true"]:hover {
 .modal-box {
       background: var(--card-bg);
       border: 2px solid var(--danger-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       max-width: 440px;
       width: 100%;
       max-height: calc(100vh - 32px);
@@ -663,9 +662,9 @@ button[data-next="true"]:hover {
       padding: 4px 8px;
       background: rgba(239, 68, 68, 0.2);
       border: 1px solid var(--danger-border);
-      border-radius: 4px;
+      border-radius: var(--radius-sm, 4px);
       color: var(--danger-text);
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       line-height: 1.2;
     }
@@ -685,7 +684,7 @@ button[data-next="true"]:hover {
       padding: 10px 0;
       box-sizing: border-box;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       color: var(--text-sub);
       user-select: none;
@@ -696,7 +695,7 @@ button[data-next="true"]:hover {
     }
 
 .modal-title {
-      font-size: 1.15rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 800;
       color: var(--danger-text);
       margin-bottom: 10px;
@@ -704,7 +703,7 @@ button[data-next="true"]:hover {
     }
 
 .modal-msg {
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       color: var(--text-primary);
       margin-bottom: 18px;
       line-height: 1.5;
@@ -728,7 +727,7 @@ button[data-next="true"]:hover {
       left: 0;
       right: 0;
       bottom: 0;
-      background: #01222F;
+      background: var(--bg);
       display: none;
       flex-direction: column;
       align-items: center;
@@ -739,19 +738,19 @@ button[data-next="true"]:hover {
     }
 
 .disconnected-icon {
-      font-size: 3rem;
+      font-size: var(--fs-3xl, 3rem);
       margin-bottom: 12px;
     }
 
 .disconnected-title {
-      font-size: 1.4rem;
+      font-size: var(--fs-xl, 1.5rem);
       font-weight: 800;
       color: var(--danger-text);
       margin-bottom: 8px;
     }
 
 .disconnected-desc {
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       color: var(--text-sub);
       max-width: 360px;
       margin-bottom: 20px;
@@ -797,7 +796,7 @@ button[data-next="true"]:hover {
         <div class="status-item">
           <div class="status-item-label">全場計時狀態</div>
           <div id="summaryClockStatus" class="status-item-val">未開始</div>
-          <div id="adminExtraCountdown" style="display: none; font-size: 0.85rem; font-weight: 700; color: #f87171; margin-top: 4px;"></div>
+          <div id="adminExtraCountdown" style="display: none; font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--danger-text); margin-top: 4px;"></div>
         </div>
         <div class="status-item">
           <div class="status-item-label">全場桌數進度</div>
@@ -809,21 +808,21 @@ button[data-next="true"]:hover {
         </div>
       </div>
       <div id="summaryNoteRow" class="summary-note-box" style="display: none;">
-        <span>📢 公告：</span>
+        <span><svg class="icon" aria-hidden="true"><use href="icons.svg#i-broadcast"/></svg> 公告：</span>
         <span id="summaryNoteText"></span>
       </div>
 
       <!-- 作廢這一輪並重排 (DATA-CONTRACT 10.10) -->
       <div id="roundVoidBlock" style="display: none; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--panel-border); flex-direction: column; gap: 8px; width: 100%;">
         <details id="roundVoidDetails" style="width: 100%;">
-          <summary style="min-height: 44px; line-height: 24px; padding: 10px 0; box-sizing: border-box; cursor: pointer; font-size: 0.9rem; font-weight: 600; color: var(--text-sub); user-select: none;">
+          <summary style="min-height: 44px; line-height: 24px; padding: 10px 0; box-sizing: border-box; cursor: pointer; font-size: var(--fs-sm, 0.875rem); font-weight: 600; color: var(--text-sub); user-select: none;">
             進階操作：作廢這一輪並重排（有風險，先看預覽）
           </summary>
-          <div style="margin-top: 8px; padding: 10px 12px; background: var(--input-bg); border: 1px solid var(--panel-border); border-radius: 8px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-            <button type="button" id="roundVoidBtn" class="btn btn-danger btn-sm" style="min-height: 44px; color: #fff;">作廢這一輪並重排</button>
+          <div style="margin-top: 8px; padding: 10px 0; border-top: 1px dashed var(--panel-border); display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <button type="button" id="roundVoidBtn" class="btn btn-danger btn-sm" style="min-height: 44px; color: var(--text-primary);">作廢這一輪並重排</button>
           </div>
         </details>
-        <span id="roundVoidWhy" style="font-size: 0.85rem; color: var(--warning-text); font-weight: 600; display: none;"></span>
+        <span id="roundVoidWhy" style="font-size: var(--fs-sm, 0.875rem); color: var(--warning-text); font-weight: 600; display: none;"></span>
         <div id="roundVoidMsg" class="msg-box" style="display: none; width: 100%; margin-top: 6px;"></div>
       </div>
     </section>
@@ -832,7 +831,7 @@ button[data-next="true"]:hover {
     <!-- 登入區塊（未驗證或登出時顯示） -->
     <section id="loginSection" class="admin-card">
       <h2 class="card-title">工作人員登入</h2>
-      <p style="font-size: 0.9rem; color: var(--text-sub); margin-bottom: 14px;">
+      <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 14px;">
         本控制台僅供賽事主辦方（admin）操作計時、換輪、公告與賽務設定。
       </p>
       <div class="form-group">
@@ -852,24 +851,24 @@ button[data-next="true"]:hover {
       <section id="healthPanel" class="admin-card">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
           <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-            <h2 class="card-title" style="margin-bottom: 0;">🏥 系統健康</h2>
-            <span id="healthStatusBadge" style="font-size: 0.85rem; padding: 4px 10px; border-radius: 6px; font-weight: 700; background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border);">正常</span>
+            <h2 class="card-title" style="margin-bottom: 0;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-health"/></svg> 系統健康</h2>
+            <span id="healthStatusBadge" style="font-size: var(--fs-sm, 0.875rem); padding: 4px 10px; border-radius: var(--radius-md, 6px); font-weight: 700; background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border);">正常</span>
           </div>
-          <div style="font-size: 0.85rem; color: var(--text-sub);">
+          <div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub);">
             版本指紋：<code id="healthVersion" style="color: var(--accent-text); font-weight: 700;"></code>
           </div>
         </div>
-        <div id="healthExtraInfo" style="margin-top: 8px; font-size: 0.82rem; color: var(--text-secondary); display: none;"></div>
+        <div id="healthExtraInfo" style="margin-top: 8px; font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); display: none;"></div>
         <div id="healthProblemsList" style="margin-top: 10px; display: none;"></div>
       </section>
 
       <!-- 區塊: 工作人員管理 (DATA-CONTRACT 3.8, PROJECT.md 第三十四輪) -->
       <section class="admin-card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-          <h2 class="card-title" style="margin-bottom: 0;">👥 工作人員管理</h2>
+          <h2 class="card-title" style="margin-bottom: 0;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-people"/></svg> 工作人員管理</h2>
           <button type="button" id="staffRefresh" class="btn btn-secondary">重新整理清單</button>
         </div>
-        <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px;">
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 12px;">
           管理賽事工作人員身分與權限。可新增主辦或裁判、變更角色、停用／恢復帳號，或重設 PIN 碼。
         </p>
 
@@ -888,11 +887,11 @@ button[data-next="true"]:hover {
 
         <!-- 新 PIN 顯示區塊 (只顯示一次) -->
         <div id="staffPinBox" class="msg-box success" style="display: none; margin-bottom: 12px; padding: 14px 16px;">
-          <div style="font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; color: var(--text-primary);">
+          <div style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; margin-bottom: 6px; color: var(--text-primary);">
             新發行工作人員 PIN 碼（離開畫面後即無法再次查看，請立即抄下交給該人員）：
           </div>
           <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
-            <div id="staffPinShow" style="font-size: 1.6rem; font-weight: 800; color: #34d399; letter-spacing: 3px; font-family: monospace;"></div>
+            <div id="staffPinShow" style="font-size: var(--fs-xl, 1.5rem); font-weight: 800; color: var(--success-text); letter-spacing: 3px; font-family: monospace;"></div>
             <button type="button" id="staffPinDone" class="btn btn-primary">已抄下</button>
           </div>
         </div>
@@ -909,34 +908,34 @@ button[data-next="true"]:hover {
       <section class="admin-card" id="adminCheckinCard">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
           <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-            <h2 class="card-title" style="margin-bottom: 0;">📋 現場報到與選手登錄</h2>
-            <span id="checkinCount" class="badge" style="font-size: 0.85rem; padding: 4px 10px; background: #065f46; color: #6ee7b7; border-radius: 6px; font-weight: 700;">
+            <h2 class="card-title" style="margin-bottom: 0;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-list"/></svg> 現場報到與選手登錄</h2>
+            <span id="checkinCount" class="badge" style="font-size: var(--fs-sm, 0.875rem); padding: 4px 10px; background: var(--success-bg); color: var(--success-text); border-radius: var(--radius-md, 6px); font-weight: 700;">
               已報到 0 / 總數 0
             </span>
           </div>
-          <button type="button" id="checkinRefresh" class="btn btn-secondary" style="min-height: 36px; padding: 6px 14px; font-size: 0.85rem;">
+          <button type="button" id="checkinRefresh" class="btn btn-secondary" style="min-height: 36px; padding: 6px 14px; font-size: var(--fs-sm, 0.875rem);">
             重新整理報到清單
           </button>
         </div>
-        <p id="checkinDesc" style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 12px;">
+        <p id="checkinDesc" style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 12px;">
           第一輪配對公布前為報到階段。未報到的選手不會排入第 1 輪配對（自動標為退賽）。
         </p>
 
         <!-- 抽號碼牌報到面板 (整輪賽事 snapshot.checkin 存在時顯示) -->
-        <div id="adminCardCheckinContainer" style="display: none; margin-bottom: 14px; padding: 14px; background: rgba(1, 26, 36, 0.6); border: 1px solid var(--panel-border); border-radius: 8px;">
+        <div id="adminCardCheckinContainer" style="display: none; margin-bottom: 14px; padding-top: 14px; border-top: 1px dashed var(--panel-border);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
             <div>
-              <span style="font-weight: 700; color: var(--accent-text); font-size: 1rem;">抽號碼牌報到狀態：</span>
-              <span id="adminCardCheckinStatus" class="badge" style="background: #065f46; color: #6ee7b7; padding: 2px 8px; font-size: 0.82rem;">報到中</span>
+              <span style="font-weight: 700; color: var(--accent-text); font-size: var(--fs-base, 1rem);">抽號碼牌報到狀態：</span>
+              <span id="adminCardCheckinStatus" class="badge" style="background: var(--success-bg); color: var(--success-text); padding: 2px 8px; font-size: var(--fs-sm, 0.875rem);">報到中</span>
             </div>
-            <div style="font-size: 0.9rem; color: var(--text-main); font-weight: 700;">
-              通過人數：<span id="adminCardApprovedCount" style="color: var(--accent-text); font-size: 1.1rem;">0</span> 人
+            <div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-main); font-weight: 700;">
+              通過人數：<span id="adminCardApprovedCount" style="color: var(--accent-text); font-size: var(--fs-md, 1.125rem);">0</span> 人
             </div>
           </div>
           <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px; flex-wrap: wrap;">
             <a href="elim-desk.html" class="btn btn-secondary" style="text-decoration: none;">檢錄台審核（檢錄台在這裡審核選手）</a>
             <button type="button" id="adminCkStart" class="btn btn-primary">開賽</button>
-            <span id="adminCkStartDoneBadge" class="badge" style="display: none; background: #065f46; color: #6ee7b7; font-size: 0.85rem; padding: 6px 12px; font-weight: 700;">已開賽</span>
+            <span id="adminCkStartDoneBadge" class="badge" style="display: none; background: var(--success-bg); color: var(--success-text); font-size: var(--fs-sm, 0.875rem); padding: 6px 12px; font-weight: 700;">已開賽</span>
           </div>
         </div>
 
@@ -965,8 +964,8 @@ button[data-next="true"]:hover {
           <div id="checkinListHeader" style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
             <div class="card-subtitle" style="margin-top: 0; margin-bottom: 0;">報到狀態名單（未報到排在前）</div>
             <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <button type="button" id="noShowCopy" class="btn btn-secondary" style="min-height: 44px; padding: 6px 14px; font-size: 0.85rem;">複製未報到／已退賽名單</button>
-              <span id="noShowCopyMsg" style="font-size: 0.82rem; color: var(--success-text); font-weight: 700;"></span>
+              <button type="button" id="noShowCopy" class="btn btn-secondary" style="min-height: 44px; padding: 6px 14px; font-size: var(--fs-sm, 0.875rem);">複製未報到／已退賽名單</button>
+              <span id="noShowCopyMsg" style="font-size: var(--fs-sm, 0.875rem); color: var(--success-text); font-weight: 700;"></span>
             </div>
           </div>
           <div id="checkinList" class="table-wrap" style="max-height: 280px; overflow-y: auto;">
@@ -974,14 +973,14 @@ button[data-next="true"]:hover {
           </div>
 
           <!-- 已報到但還沒交牌表 (PROJECT.md 第三十三輪, DATA-CONTRACT 3.3, 6.5) -->
-          <div id="noDeckSection" style="display: none; margin-top: 14px; padding: 12px; background: rgba(239, 125, 0, 0.08); border: 1px solid var(--accent); border-radius: 8px;">
+          <div id="noDeckSection" style="display: none; margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--panel-border);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-              <div id="noDeckCount" style="font-weight: 700; color: var(--accent-text); font-size: 0.95rem;">
+              <div id="noDeckCount" style="font-weight: 700; color: var(--accent-text); font-size: var(--fs-base, 1rem);">
                 已報到但還沒交牌表：0 人
               </div>
               <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                <button type="button" id="noDeckCopy" class="btn btn-secondary" style="min-height: 44px; padding: 6px 14px; font-size: 0.85rem;">複製未交牌表名單</button>
-                <span id="noDeckCopyMsg" style="font-size: 0.82rem; color: var(--success-text); font-weight: 700;"></span>
+                <button type="button" id="noDeckCopy" class="btn btn-secondary" style="min-height: 44px; padding: 6px 14px; font-size: var(--fs-sm, 0.875rem);">複製未交牌表名單</button>
+                <span id="noDeckCopyMsg" style="font-size: var(--fs-sm, 0.875rem); color: var(--success-text); font-weight: 700;"></span>
               </div>
             </div>
             <div id="noDeckList" class="table-wrap" style="max-height: 180px; overflow-y: auto;"></div>
@@ -991,8 +990,8 @@ button[data-next="true"]:hover {
 
       <!-- 區塊: 重發全部選手 PIN (DATA-CONTRACT-SHARED 10.13) -->
       <section class="admin-card" id="pinsReissueBlock" style="display: none;">
-        <h2 class="card-title">🔑 重發全部選手 PIN</h2>
-        <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px;">
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-key"/></svg> 重發全部選手 PIN</h2>
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 12px;">
           第一輪配對公布前，主辦可重新發行所有選手的 PIN 碼。舊的 PIN 碼將立即失效。
         </p>
         <div class="form-row" style="margin-bottom: 12px;">
@@ -1001,9 +1000,9 @@ button[data-next="true"]:hover {
         <div id="pinsReissueMsg" class="msg-box" style="display: none;"></div>
 
         <!-- 結果區 (預設隱藏，按已抄下清空) -->
-        <div id="pinsReissueBox" style="display: none; margin-top: 14px; background: var(--input-bg); border: 1px solid var(--panel-border); border-radius: 8px; padding: 14px;">
+        <div id="pinsReissueBox" style="display: none; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--panel-border);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
-            <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-text);">新選手 PIN 清單（只顯示這一次，請立即抄下或下載）：</div>
+            <div style="font-size: var(--fs-base, 1rem); font-weight: 700; color: var(--accent-text);">新選手 PIN 清單（只顯示這一次，請立即抄下或下載）：</div>
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
               <button type="button" id="pinsReissueCsv" class="btn btn-primary btn-sm" style="min-height: 44px;">下載 CSV (player-pins.csv)</button>
               <button type="button" id="pinsReissueDone" class="btn btn-secondary btn-sm" style="min-height: 44px;">已抄下</button>
@@ -1026,8 +1025,8 @@ button[data-next="true"]:hover {
 
       <!-- 區塊: 牌表鎖定方式與截止時間 (DATA-CONTRACT 10.5) -->
       <section class="admin-card" id="adminDeckSection" style="display: none;">
-        <h2 class="card-title">📝 牌表鎖定方式與截止時間</h2>
-        <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px;">
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-note"/></svg> 牌表鎖定方式與截止時間</h2>
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 12px;">
           設定選手牌表的鎖定模式與修改截止時刻。變更設定後將立即套用。
         </p>
 
@@ -1037,7 +1036,7 @@ button[data-next="true"]:hover {
             <option value="submit">送出就鎖（官方賽，規則 401.3）</option>
             <option value="deadline">截止前可以修改（店家賽）</option>
           </select>
-          <div class="form-hint" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">
+          <div class="form-hint" style="font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary); margin-top: 4px;">
             送出就鎖：選手送出後即鎖定，要修改需由裁判解鎖（官方賽標準）<br>
             截止前可以修改：選手在截止時間前可隨時重貼牌表修改（適合店家賽）
           </div>
@@ -1049,7 +1048,7 @@ button[data-next="true"]:hover {
             <input type="datetime-local" id="adminDeckDeadline" class="input-text" style="flex: 1; min-width: 200px;">
             <button type="button" id="adminDeckClear" class="btn btn-secondary" style="min-height: 44px; white-space: nowrap;">清除截止時間</button>
           </div>
-          <div class="form-hint" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">
+          <div class="form-hint" style="font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary); margin-top: 4px;">
             不填＝到賽事開始為止；清除後需按「儲存」才生效。
           </div>
         </div>
@@ -1063,7 +1062,7 @@ button[data-next="true"]:hover {
 
       <!-- 區塊 1: 計時管理 -->
       <section class="admin-card">
-        <h2 class="card-title">⏱️ 計時管理</h2>
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-timer"/></svg> 計時管理</h2>
         <div class="form-group">
           <label for="clockDuration" class="form-label">本輪設定時間（分鐘）</label>
           <div class="form-row">
@@ -1081,7 +1080,7 @@ button[data-next="true"]:hover {
 
       <!-- 區塊 2: 公告與預計時間 -->
       <section class="admin-card">
-        <h2 class="card-title">📢 公告與賽程時間</h2>
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-broadcast"/></svg> 公告與賽程時間</h2>
         
         <!-- 全場公告 -->
         <div class="form-group">
@@ -1117,8 +1116,8 @@ button[data-next="true"]:hover {
 
       <!-- 區塊: 廣播與跑馬燈 (DATA-CONTRACT 10.12) -->
       <section class="admin-card" id="bcPanel">
-        <h2 class="card-title">📢 廣播與跑馬燈</h2>
-        <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px;">
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-broadcast"/></svg> 廣播與跑馬燈</h2>
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 12px;">
           發送全場緊急廣播或編輯大螢幕與觀眾端跑馬燈輪播文字。
         </p>
 
@@ -1126,7 +1125,7 @@ button[data-next="true"]:hover {
         <div class="form-group">
           <label for="bcText" class="form-label">廣播內容（最多 200 字）</label>
           <textarea id="bcText" maxlength="200" rows="3" class="input-text" placeholder="請輸入廣播訊息..." style="width: 100%; min-height: 80px; resize: vertical;"></textarea>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 0.85rem; color: var(--text-secondary); flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); flex-wrap: wrap; gap: 8px;">
             <div style="display: flex; gap: 14px; align-items: center;">
               <label style="display: inline-flex; align-items: center; gap: 4px; cursor: pointer;">
                 <input type="radio" name="bcLevel" id="bcLevelNotice" value="notice" checked>
@@ -1146,7 +1145,7 @@ button[data-next="true"]:hover {
           <button type="button" id="bcClear" class="btn btn-warning" disabled>撤掉廣播</button>
         </div>
 
-        <div style="background: var(--input-bg); border: 1px solid var(--panel-border); border-radius: 8px; padding: 10px 12px; margin-bottom: 14px; font-size: 0.88rem;">
+        <div style="padding: 10px 0; margin-bottom: 14px; font-size: var(--fs-sm, 0.875rem); border-top: 1px dashed var(--panel-border);">
           <div style="font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">目前廣播狀態：</div>
           <div id="bcCurrent" style="color: var(--text-primary); word-break: break-all;">目前沒有廣播</div>
         </div>
@@ -1154,7 +1153,7 @@ button[data-next="true"]:hover {
         <!-- 跑馬燈 -->
         <div style="padding-top: 12px; border-top: 1px dashed var(--panel-border);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-            <div style="font-size: 0.92rem; font-weight: 700; color: var(--accent-text);">跑馬燈文字（最多 8 行，每行 60 字）</div>
+            <div style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--accent-text);">跑馬燈文字（最多 8 行，每行 60 字）</div>
             <button type="button" id="bcMarqueeAdd" class="btn btn-secondary btn-sm" style="min-height: 44px;">新增一行</button>
           </div>
           <div id="bcMarqueeList" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;"></div>
@@ -1166,13 +1165,13 @@ button[data-next="true"]:hover {
 
       <!-- 區塊: 桌號分區設定 (DATA-CONTRACT 1.18, PROJECT.md 第二十七輪) -->
       <section class="admin-card">
-        <h2 class="card-title">📍 桌號分區設定</h2>
-        <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px;">
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-pin"/></svg> 桌號分區設定</h2>
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 12px;">
           設定會場桌號的分區與方位說明（如 A 區靠窗、B 區靠牆）。選手於找桌頁查桌時會直接看到所在分區與方向指引。<br>
           格式為一行一區：<code>起-迄, 名稱, 說明</code>（說明可省略；逗號全半形皆可；清空儲存即取消分區）。
         </p>
 
-        <div style="background: var(--input-bg); border: 1px solid var(--panel-border); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5;">
+        <div style="padding: 10px 0; margin-bottom: 12px; font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); line-height: 1.5; border-top: 1px dashed var(--panel-border);">
           <strong style="color: var(--text-primary);">格式範例：</strong><br>
           <code>1-64, A 區, 靠窗</code><br>
           <code>65-128, B 區, 靠牆</code><br>
@@ -1181,7 +1180,7 @@ button[data-next="true"]:hover {
 
         <div class="form-group">
           <label for="zonesText" class="form-label">分區清單（一行一區）：</label>
-          <textarea id="zonesText" class="input-text" rows="5" style="width: 100%; font-family: monospace; font-size: 1rem; line-height: 1.4; resize: vertical;" placeholder="1-64, A 區, 靠窗&#10;65-128, B 區, 靠牆"></textarea>
+          <textarea id="zonesText" class="input-text" rows="5" style="width: 100%; font-family: monospace; font-size: var(--fs-base, 1rem); line-height: 1.4; resize: vertical;" placeholder="1-64, A 區, 靠窗&#10;65-128, B 區, 靠牆"></textarea>
         </div>
 
         <div class="form-row">
@@ -1193,13 +1192,13 @@ button[data-next="true"]:hover {
 
       <!-- 區塊 3 (模式 A): 官方配對表匯入 -->
       <section class="admin-card" id="modeAImportSection" style="display: none;">
-        <h2 class="card-title">📥 官方配對表匯入（模式 A）</h2>
-        <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px;">
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-download"/></svg> 官方配對表匯入（模式 A）</h2>
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 12px;">
           模式 A 的配對來自官方平台（PlayRiftbound.com）。請將官方配對表整塊複製貼上至下方。<br>
           支援 Tab 分隔（從 Excel / Google 試算表直接複製）或逗號分隔。
         </p>
 
-        <div style="background: var(--input-bg); border: 1px solid var(--panel-border); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5;">
+        <div style="padding: 10px 0; margin-bottom: 12px; font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); line-height: 1.5; border-top: 1px dashed var(--panel-border);">
           <strong style="color: var(--text-primary);">格式說明：</strong><br>
           • <strong>3 欄：</strong><code>桌號, 選手A名字, 選手B名字</code><br>
           • <strong>5 欄：</strong><code>桌號, A編號, A名字, B編號, B名字</code>（推薦，同名也分得開）<br>
@@ -1209,7 +1208,7 @@ button[data-next="true"]:hover {
 
         <div class="form-group">
           <label for="importText" class="form-label">配對表文字內容（可直接貼上，上限 64 KB）：</label>
-          <textarea id="importText" class="input-text" rows="8" style="width: 100%; font-family: monospace; font-size: 1rem; line-height: 1.4; resize: vertical;" placeholder="桌號&#9;選手A&#9;選手B&#10;1&#9;阿翔&#9;小楓&#10;2&#9;Kuro&#9;Nana&#10;輪空&#9;可樂"></textarea>
+          <textarea id="importText" class="input-text" rows="8" style="width: 100%; font-family: monospace; font-size: var(--fs-base, 1rem); line-height: 1.4; resize: vertical;" placeholder="桌號&#9;選手A&#9;選手B&#10;1&#9;阿翔&#9;小楓&#10;2&#9;Kuro&#9;Nana&#10;輪空&#9;可樂"></textarea>
         </div>
 
         <div class="form-group">
@@ -1217,14 +1216,14 @@ button[data-next="true"]:hover {
           <div class="form-row">
             <input type="text" id="importLabel" class="input-text input-sm" maxlength="10" placeholder="例如：第 1 輪">
             <button type="button" id="importPreviewBtn" class="btn btn-primary">預覽配對表</button>
-            <button type="button" id="importConfirmBtn" class="btn btn-success" style="color: #ffffff;" disabled>確認匯入新的一輪（需確認）</button>
+            <button type="button" id="importConfirmBtn" class="btn btn-success" style="color: var(--text-primary);" disabled>確認匯入新的一輪（需確認）</button>
           </div>
         </div>
 
         <div id="importMsg" class="msg-box" style="display: none;"></div>
 
         <!-- 錯誤問題清單 (DATA-CONTRACT 3.7: 每個問題一個 <li>) -->
-        <ul id="importProblems" class="sec-list" style="display: none; border: 1px solid var(--danger-border); background: var(--danger-bg); color: var(--danger-text); padding: 10px 14px 10px 28px; list-style: disc; margin-top: 10px; border-radius: 6px;">
+        <ul id="importProblems" class="sec-list" style="display: none; border: 1px solid var(--danger-border); background: var(--danger-bg); color: var(--danger-text); padding: 10px 14px 10px 28px; list-style: disc; margin-top: 10px; border-radius: var(--radius-md, 6px);">
         </ul>
 
         <!-- 預覽結果容器 -->
@@ -1234,14 +1233,14 @@ button[data-next="true"]:hover {
 
       <!-- 區塊 3 (模式 B): 換輪與配對管理 -->
       <section class="admin-card" id="modeBPairingSection">
-        <h2 class="card-title">🔄 換輪與配對管理</h2>
-        <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px;">
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-refresh"/></svg> 換輪與配對管理</h2>
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 12px;">
           本輪所有桌次完賽後，點擊「產生下一輪配對提案」預覽。確認或微調後點擊「公布下一輪配對」。
         </p>
 
         <div class="form-row" style="margin-bottom: 12px; align-items: center; gap: 10px; flex-wrap: wrap;">
           <button type="button" id="proposeBtn" class="btn btn-accent">產生下一輪配對提案</button>
-          <span id="proposeHint" style="font-size: 0.88rem; color: var(--text-sub); font-weight: 600;"></span>
+          <span id="proposeHint" style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); font-weight: 600;"></span>
         </div>
 
         <div id="proposeMsg" class="msg-box" style="display: none;"></div>
@@ -1251,8 +1250,8 @@ button[data-next="true"]:hover {
 
         <!-- 第二階段達門檻晉級提示 (DATA-CONTRACT 10.9) -->
         <div id="phase2Box" class="msg-box warning" style="display: none; line-height: 1.6; margin-bottom: 12px; border: 2px solid var(--accent); background: rgba(239, 125, 0, 0.12);">
-          <div id="phase2BoxHeader" style="font-weight: 800; font-size: 1rem; color: var(--accent-text); margin-bottom: 6px;"></div>
-          <div id="phase2OutList" style="font-size: 0.85rem; color: var(--text-primary); line-height: 1.6;"></div>
+          <div id="phase2BoxHeader" style="font-weight: 800; font-size: var(--fs-base, 1rem); color: var(--accent-text); margin-bottom: 6px;"></div>
+          <div id="phase2OutList" style="font-size: var(--fs-sm, 0.875rem); color: var(--text-primary); line-height: 1.6;"></div>
         </div>
 
         <!-- 提案配對表格 -->
@@ -1284,31 +1283,31 @@ button[data-next="true"]:hover {
         <!-- 公布配對按鈕 -->
         <div style="padding-top: 10px; border-top: 1px dashed var(--panel-border);">
           <button type="button" id="publishBtn" class="btn btn-danger-action" style="width: 100%;" disabled>
-            📢 公布下一輪配對（需確認）
+            <svg class="icon" aria-hidden="true"><use href="icons.svg#i-broadcast"/></svg> 公布下一輪配對（需確認）
           </button>
         </div>
       </section>
 
       <!-- 區塊: 報分與桌子 (DATA-CONTRACT 10.8) -->
       <section class="admin-card" id="ctlPanel" style="display: none;">
-        <h2 class="card-title">⚙️ 報分與桌子控制</h2>
-        <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 14px;">
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-settings"/></svg> 報分與桌子控制</h2>
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 14px;">
           設定全場與個別桌次成績回報權限（裁判／選手），以及桌號停用與恢復控制。
         </p>
 
         <div id="ctlMsg" class="msg-box" style="display: none;"></div>
 
         <!-- 1. 全場設定 -->
-        <div style="background: var(--input-bg); border: 1px solid var(--panel-border); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px;">
-          <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); margin-bottom: 8px;">
+        <div style="padding-top: 12px; border-top: 1px dashed var(--panel-border); margin-bottom: 14px;">
+          <div style="font-weight: 700; font-size: var(--fs-base, 1rem); color: var(--text-primary); margin-bottom: 8px;">
             全場報分設定
           </div>
           <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-bottom: 10px;">
-            <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.9rem; min-height: 44px;">
+            <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: var(--fs-sm, 0.875rem); min-height: 44px;">
               <input type="checkbox" id="ctlAllJudge" style="width: 18px; height: 18px;">
               <span>裁判可以報</span>
             </label>
-            <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.9rem; min-height: 44px;">
+            <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: var(--fs-sm, 0.875rem); min-height: 44px;">
               <input type="checkbox" id="ctlAllPlayer" style="width: 18px; height: 18px;">
               <span>選手可以報</span>
             </label>
@@ -1320,11 +1319,11 @@ button[data-next="true"]:hover {
         </div>
 
         <!-- 2. 桌子控制 -->
-        <div style="background: var(--input-bg); border: 1px solid var(--panel-border); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px;">
-          <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); margin-bottom: 4px;">
+        <div style="padding-top: 12px; border-top: 1px dashed var(--panel-border); margin-bottom: 14px;">
+          <div style="font-weight: 700; font-size: var(--fs-base, 1rem); color: var(--text-primary); margin-bottom: 4px;">
             桌子控制（停用／恢復）
           </div>
-          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.4;">
+          <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 10px; line-height: 1.4;">
             停用的桌號下一輪起會跳過；已公布的這一輪不動。
           </p>
           <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 10px;">
@@ -1333,19 +1332,19 @@ button[data-next="true"]:hover {
             <button type="button" id="ctlOpenBtn" class="btn btn-success">恢復</button>
           </div>
           <div>
-            <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">目前停用清單：</div>
+            <div style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">目前停用清單：</div>
             <div id="ctlHeldList" style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; min-height: 36px;">
-              <span style="font-size: 0.85rem; color: var(--text-sub);">無停用桌號</span>
+              <span style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub);">無停用桌號</span>
             </div>
           </div>
         </div>
 
         <!-- 3. 每桌報分設定總覽與個別調整 -->
         <div>
-          <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); margin-bottom: 4px;">
+          <div style="font-weight: 700; font-size: var(--fs-base, 1rem); color: var(--text-primary); margin-bottom: 4px;">
             每一桌報分設定
           </div>
-          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px;">
+          <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 10px;">
             顯示每一桌（本輪有的桌與有單獨設定的桌）實際誰可以報及來源。可針對個別桌號進行單獨設定或跟回上一層。
           </p>
           <div id="ctlTables" style="display: flex; flex-direction: column; gap: 8px;">
@@ -1357,12 +1356,12 @@ button[data-next="true"]:hover {
       <!-- 區塊: 驗牌抽查名單 (PROJECT.md 第十一輪任務) -->
       <section class="admin-card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-          <h2 class="card-title" style="margin-bottom: 0;">🎲 驗牌抽查名單（純文字牌表）</h2>
-          <button type="button" id="deckSampleBtn" class="btn btn-primary" style="min-height: 36px; padding: 6px 14px; font-size: 0.85rem;">
+          <h2 class="card-title" style="margin-bottom: 0;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-dice"/></svg> 驗牌抽查名單（純文字牌表）</h2>
+          <button type="button" id="deckSampleBtn" class="btn btn-primary" style="min-height: 36px; padding: 6px 14px; font-size: var(--fs-sm, 0.875rem);">
             產生抽查名單（10%）
           </button>
         </div>
-        <p style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 12px;">
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 12px;">
           抽查比例預設 10%（比照官方賽事與國際 TCG 慣例）。同輪次重抽結果相同（固定種子可稽核）。
         </p>
         <div id="deckSampleMsg" class="msg-box" style="display: none;"></div>
@@ -1373,7 +1372,7 @@ button[data-next="true"]:hover {
 
       <!-- 區塊 4: 選手退賽與重入 -->
       <section class="admin-card">
-        <h2 class="card-title">👤 選手退賽與重新加入</h2>
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-person"/></svg> 選手退賽與重新加入</h2>
         <div class="form-group">
           <label for="dropId" class="form-label">選手編號</label>
           <div class="form-row">
@@ -1388,15 +1387,15 @@ button[data-next="true"]:hover {
       <!-- 區塊: 批次退賽 (DATA-CONTRACT-SHARED 10.15) -->
       <section class="admin-card" id="bdBlock">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-          <h2 class="card-title" style="margin-bottom: 0;">👥 批次退賽</h2>
+          <h2 class="card-title" style="margin-bottom: 0;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-people"/></svg> 批次退賽</h2>
           <button type="button" id="bdPickAbsent" class="btn btn-secondary btn-sm" style="display: none; min-height: 44px;">勾選全部未報到的人</button>
         </div>
-        <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px;">
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 12px;">
           第二天沒來的人可以一次退賽；請在產生下一輪配對之前完成（規則 414.3）
         </p>
 
         <!-- 貼上編號區塊 -->
-        <div style="margin-bottom: 14px; background: var(--input-bg); border: 1px solid var(--panel-border); border-radius: 8px; padding: 12px;">
+        <div style="margin-bottom: 14px; padding-top: 12px; border-top: 1px dashed var(--panel-border);">
           <label for="bdPaste" class="form-label" style="font-weight: 700; margin-bottom: 6px;">貼上要退賽的編號（用空白、逗號、換行分隔）：</label>
           <textarea id="bdPaste" class="input-text" rows="3" placeholder="例如 R0001 R0002, R0003" style="width: 100%; font-family: monospace; resize: vertical; margin-bottom: 8px;"></textarea>
           <button type="button" id="bdPasteApply" class="btn btn-secondary" style="min-height: 44px;">套用貼上的編號</button>
@@ -1406,13 +1405,13 @@ button[data-next="true"]:hover {
         <div class="form-group" style="margin-bottom: 10px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
             <label for="bdSearch" class="form-label" style="margin-bottom: 0;">搜尋未退賽選手：</label>
-            <span id="bdSelectedCount" style="font-size: 0.88rem; font-weight: 700; color: var(--accent-text);">已選 0 位</span>
+            <span id="bdSelectedCount" style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--accent-text);">已選 0 位</span>
           </div>
           <input type="text" id="bdSearch" class="input-text" placeholder="搜尋編號或名字（不分大小寫）">
         </div>
 
         <!-- 選手清單 (只列未退賽選手) -->
-        <div id="bdList" style="display: flex; flex-direction: column; max-height: 360px; overflow-y: auto; border: 1px solid var(--card-border); border-radius: 8px; margin-bottom: 14px;">
+        <div id="bdList" style="display: flex; flex-direction: column; max-height: 360px; overflow-y: auto; border: 1px solid var(--card-border); border-radius: var(--radius-md, 6px); margin-bottom: 14px;">
           <div class="empty-state-sm" style="text-align: center; padding: 16px;">載入選手名單中…</div>
         </div>
 
@@ -1426,8 +1425,8 @@ button[data-next="true"]:hover {
 
       <!-- 區塊 5: 系統安全與解鎖 -->
       <section class="admin-card">
-        <h2 class="card-title">🛡️ 系統安全與鎖定防護</h2>
-        <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px;">
+        <h2 class="card-title"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-shield"/></svg> 系統安全與鎖定防護</h2>
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 12px;">
           防止暴力猜測 PIN 碼的保護機制。工作人員錯誤 8 次鎖 10 分鐘，選手錯誤 5 次鎖 5 分鐘。
         </p>
         <div class="form-row" style="margin-bottom: 12px;">
@@ -1443,8 +1442,8 @@ button[data-next="true"]:hover {
 
       <!-- 區塊 6: 結束賽事 -->
       <section class="admin-card" style="border-color: rgba(239, 68, 68, 0.4);">
-        <h2 class="card-title" style="color: #f87171;">🏁 結束整場賽事</h2>
-        <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px;">
+        <h2 class="card-title" style="color: var(--danger-text);"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-flag"/></svg> 結束整場賽事</h2>
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub); margin-bottom: 12px;">
           將賽事狀態標記為「已結束」（done）。此動作代表賽事正式落幕，請謹慎操作。
         </p>
         <button type="button" id="finishBtn" class="btn btn-danger-action">
@@ -1470,7 +1469,7 @@ button[data-next="true"]:hover {
 
   <!-- 尚未連上賽務系統畫面 -->
   <div class="disconnected-overlay" id="disconnectedScreen">
-    <div class="disconnected-icon">⚠️</div>
+    <div class="disconnected-icon"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-warning"/></svg></div>
     <div class="disconnected-title">尚未連上賽務系統</div>
     <div class="disconnected-desc">
       目前無法讀取賽事即時資料。<br>請確認賽事主機是否已啟動，或網路連線是否正常。
@@ -1667,7 +1666,7 @@ button[data-next="true"]:hover {
         if (ctlRenote) ctlRenote.style.display = 'none';
         const tbody = document.getElementById('proposalTableBody');
         if (tbody) {
-          tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #f87171; padding: 16px;"><strong>這份提案已經由其他人公布，請重新產生</strong></td></tr>';
+          tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--danger-text); padding: 16px;"><strong>這份提案已經由其他人公布，請重新產生</strong></td></tr>';
         }
         showMsg('proposeMsg', '這份提案已經由其他人公布，請重新產生', true);
       }
@@ -1994,7 +1993,7 @@ button[data-next="true"]:hover {
             html += `<tr>
               <td><strong>${escapeHtml(p.id)}</strong></td>
               <td>${escapeHtml(p.name)}</td>
-              <td><span style="font-family: monospace; font-size: 1.1rem; font-weight: 700; color: #34d399;">${escapeHtml(p.pin)}</span></td>
+              <td><span style="font-family: monospace; font-size: var(--fs-md, 1.125rem); font-weight: 700; color: var(--success-text);">${escapeHtml(p.pin)}</span></td>
             </tr>`;
           });
           if (pinsReissueList) pinsReissueList.innerHTML = html;
@@ -2104,9 +2103,9 @@ button[data-next="true"]:hover {
         const isChecked = bdSelectedIds.has(p.id);
         let statusText = '';
         if (p.checked_in === true) {
-          statusText = '<span style="font-size: 0.8rem; padding: 2px 8px; border-radius: 4px; background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); white-space: nowrap;">已報到</span>';
+          statusText = '<span style="font-size: var(--fs-xs, 0.75rem); padding: 2px 8px; border-radius: var(--radius-sm, 4px); background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); white-space: nowrap;">已報到</span>';
         } else if (p.checked_in === false) {
-          statusText = '<span style="font-size: 0.8rem; padding: 2px 8px; border-radius: 4px; background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); white-space: nowrap;">未報到</span>';
+          statusText = '<span style="font-size: var(--fs-xs, 0.75rem); padding: 2px 8px; border-radius: var(--radius-sm, 4px); background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); white-space: nowrap;">未報到</span>';
         }
 
         html += `
@@ -2121,7 +2120,7 @@ button[data-next="true"]:hover {
 
       if (matched.length > 200) {
         const remaining = matched.length - 200;
-        html += `<div style="text-align: center; color: var(--text-secondary); padding: 12px; font-size: 0.85rem; font-weight: 600; background: var(--input-bg);">還有 ${remaining} 位，請用搜尋縮小</div>`;
+        html += `<div style="text-align: center; color: var(--text-secondary); padding: 12px; font-size: var(--fs-sm, 0.875rem); font-weight: 600; background: var(--input-bg);">還有 ${remaining} 位，請用搜尋縮小</div>`;
       }
 
       listEl.innerHTML = html;
@@ -2377,10 +2376,10 @@ button[data-next="true"]:hover {
 
       const block = document.createElement('div');
       block.id = 'voidBlocked';
-      block.style.cssText = 'margin-top: 8px; padding: 12px; background: rgba(239, 68, 68, 0.12); border: 1.5px solid var(--danger-border); border-radius: 8px; width: 100%; box-sizing: border-box;';
+      block.style.cssText = 'margin-top: 8px; padding: 12px; background: rgba(239, 68, 68, 0.12); border: 1.5px solid var(--danger-border); border-radius: var(--radius-md, 6px); width: 100%; box-sizing: border-box;';
 
       const title = document.createElement('div');
-      title.style.cssText = 'font-size: 0.9rem; font-weight: 700; color: var(--danger-text); margin-bottom: 8px; line-height: 1.4;';
+      title.style.cssText = 'font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--danger-text); margin-bottom: 8px; line-height: 1.4;';
       title.textContent = '這些桌已經有結果，請先到裁判頁逐桌撤銷';
       block.appendChild(title);
 
@@ -2400,7 +2399,7 @@ button[data-next="true"]:hover {
       if (tables.length > maxCount) {
         const remaining = tables.length - maxCount;
         const moreSpan = document.createElement('span');
-        moreSpan.style.cssText = 'font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;';
+        moreSpan.style.cssText = 'font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); font-weight: 600;';
         moreSpan.textContent = `…另外 ${remaining} 桌`;
         row.appendChild(moreSpan);
       }
@@ -2408,7 +2407,7 @@ button[data-next="true"]:hover {
       const judgeLink = document.createElement('a');
       judgeLink.href = 'judge.html';
       judgeLink.className = 'btn btn-secondary btn-sm';
-      judgeLink.style.cssText = 'min-height: 44px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; padding: 6px 14px; font-size: 0.85rem; color: var(--text-primary); font-weight: 700;';
+      judgeLink.style.cssText = 'min-height: 44px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; padding: 6px 14px; font-size: var(--fs-sm, 0.875rem); color: var(--text-primary); font-weight: 700;';
       judgeLink.textContent = '前往裁判頁';
       row.appendChild(judgeLink);
 
@@ -2552,7 +2551,7 @@ button[data-next="true"]:hover {
 
       if (round && round.phase === 'finished') {
         clockEl.textContent = '本輪已結束';
-        clockEl.style.color = '#34d399';
+        clockEl.style.color = 'var(--success-text)';
         if (extraEl) {
           extraEl.textContent = '';
           extraEl.style.display = 'none';
@@ -2568,11 +2567,11 @@ button[data-next="true"]:hover {
         const m = Math.floor(sec / 60).toString().padStart(2, '0');
         const s = (sec % 60).toString().padStart(2, '0');
         clockEl.textContent = `暫停中 (${m}:${s})`;
-        clockEl.style.color = '#fbbf24';
+        clockEl.style.color = 'var(--warning-text)';
       } else if (clock.state === 'time_up') {
         const turns = clock.extra_turns || 3;
         clockEl.textContent = `時間到（延長 ${turns} 個回合）`;
-        clockEl.style.color = '#f87171';
+        clockEl.style.color = 'var(--danger-text)';
       } else if (clock.state === 'running') {
         if (!clock.ends_at) {
           clockEl.textContent = '計時中';
@@ -2588,13 +2587,13 @@ button[data-next="true"]:hover {
         if (diffMs <= 0) {
           const turns = clock.extra_turns || 3;
           clockEl.textContent = `00:00 (延長 ${turns} 回合)`;
-          clockEl.style.color = '#f87171';
+          clockEl.style.color = 'var(--danger-text)';
         } else {
           const totalSec = Math.floor(diffMs / 1000);
           const m = Math.floor(totalSec / 60).toString().padStart(2, '0');
           const s = (totalSec % 60).toString().padStart(2, '0');
           clockEl.textContent = `計時中 (${m}:${s})`;
-          clockEl.style.color = totalSec < 300 ? '#fbbf24' : 'var(--accent-text)';
+          clockEl.style.color = totalSec < 300 ? 'var(--warning-text)' : 'var(--accent-text)';
         }
       }
 
@@ -2808,8 +2807,8 @@ button[data-next="true"]:hover {
         if (ck.open) {
           if (statusBadge) {
             statusBadge.textContent = '報到中（開放抽號）';
-            statusBadge.style.background = '#065f46';
-            statusBadge.style.color = '#6ee7b7';
+            statusBadge.style.background = 'var(--success-bg)';
+            statusBadge.style.color = 'var(--success-text)';
           }
           if (startBtn) startBtn.style.display = 'inline-flex';
           if (doneBadge) doneBadge.style.display = 'none';
@@ -2820,8 +2819,8 @@ button[data-next="true"]:hover {
           // 已開賽
           if (statusBadge) {
             statusBadge.textContent = '已開賽';
-            statusBadge.style.background = '#065f46';
-            statusBadge.style.color = '#6ee7b7';
+            statusBadge.style.background = 'var(--success-bg)';
+            statusBadge.style.color = 'var(--success-text)';
           }
           if (startBtn) startBtn.style.display = 'none';
           if (doneBadge) doneBadge.style.display = 'inline-block';
@@ -2951,11 +2950,11 @@ button[data-next="true"]:hover {
       for (const r of rows) {
         let statusBadge = '';
         if (r.dropped) {
-          statusBadge = '<span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">已退賽</span>';
+          statusBadge = '<span class="badge" style="background: rgba(239, 68, 68, 0.2); color: var(--danger-text); padding: 2px 6px; border-radius: var(--radius-sm, 4px); font-size: var(--fs-xs, 0.75rem);">已退賽</span>';
         } else if (r.checked_in) {
-          statusBadge = '<span class="badge" style="background: #065f46; color: #6ee7b7; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">已報到</span>';
+          statusBadge = '<span class="badge" style="background: var(--success-bg); color: var(--success-text); padding: 2px 6px; border-radius: var(--radius-sm, 4px); font-size: var(--fs-xs, 0.75rem);">已報到</span>';
         } else {
-          statusBadge = '<span class="badge" style="background: #451a03; color: #fde68a; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">未報到</span>';
+          statusBadge = '<span class="badge" style="background: var(--warning-bg, #3E3312); color: var(--warning-text); padding: 2px 6px; border-radius: var(--radius-sm, 4px); font-size: var(--fs-xs, 0.75rem);">未報到</span>';
         }
 
         html += `<tr>
@@ -3128,10 +3127,10 @@ button[data-next="true"]:hover {
         const resEl = document.getElementById('addPlayerResult');
         if (resEl) {
           resEl.innerHTML = `<strong>現場報名成功！</strong><br>` +
-            `選手編號：<strong style="color: var(--accent-text); font-size: 1.1rem;">${escapeHtml(res.player_id)}</strong>，` +
+            `選手編號：<strong style="color: var(--accent-text); font-size: var(--fs-md, 1.125rem);">${escapeHtml(res.player_id)}</strong>，` +
             `姓名：<strong>${escapeHtml(res.name)}</strong><br>` +
-            `個人 PIN 碼：<strong style="color: #34d399; font-size: 1.2rem; letter-spacing: 2px;">${escapeHtml(res.pin)}</strong><br>` +
-            `<div style="margin-top: 4px; color: #fde047; font-weight: 700;">※ 請印成報到單交給選手，離開畫面後就看不到了</div>`;
+            `個人 PIN 碼：<strong style="color: var(--success-text); font-size: var(--fs-lg, 1.25rem); letter-spacing: 2px;">${escapeHtml(res.pin)}</strong><br>` +
+            `<div style="margin-top: 4px; color: var(--warning-text); font-weight: 700;">※ 請印成報到單交給選手，離開畫面後就看不到了</div>`;
           resEl.style.display = 'block';
         }
         if (input) input.value = '';
@@ -3168,7 +3167,7 @@ button[data-next="true"]:hover {
         const noShows = res.no_show_dropped;
         if (noShows && noShows.length > 0) {
           if (noShowEl) {
-            noShowEl.innerHTML = `⚠️ <strong>未報到選手名單（共 ${noShows.length} 位，已標為退賽、未排入第 1 輪）：</strong><br>${noShows.map(id => `<span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5; margin: 2px 4px; padding: 2px 6px; border-radius: 4px; display: inline-block;">${escapeHtml(id)}</span>`).join('')}<br><span style="font-size: 0.8rem; color: #fde047;">※ 若選手隨後到場，可使用下方「重新加入賽事」補排入下一輪。</span>`;
+            noShowEl.innerHTML = `<svg class="icon" aria-hidden="true"><use href="icons.svg#i-warning"/></svg> <strong>未報到選手名單（共 ${noShows.length} 位，已標為退賽、未排入第 1 輪）：</strong><br>${noShows.map(id => `<span class="badge" style="background: rgba(239, 68, 68, 0.2); color: var(--danger-text); margin: 2px 4px; padding: 2px 6px; border-radius: var(--radius-sm, 4px); display: inline-block;">${escapeHtml(id)}</span>`).join('')}<br><span style="font-size: var(--fs-xs, 0.75rem); color: var(--warning-text);">※ 若選手隨後到場，可使用下方「重新加入賽事」補排入下一輪。</span>`;
             noShowEl.style.display = 'block';
           }
         }
@@ -3374,14 +3373,14 @@ button[data-next="true"]:hover {
       const labelStr = preview.label || ('第 ' + (preview.round || 1) + ' 輪');
 
       let html = `
-        <div style="margin-bottom: 8px; font-size: 0.9rem; color: var(--text-primary); line-height: 1.5;">
+        <div style="margin-bottom: 8px; font-size: var(--fs-sm, 0.875rem); color: var(--text-primary); line-height: 1.5;">
           預覽結果：<strong>${escapeHtml(labelStr)}</strong>（共 ${tables.length} 筆，包含 <strong>${newPlayers.length}</strong> 位新加入選手）
         </div>
       `;
 
       if (newPlayers.length > 0) {
         html += `
-          <div style="margin-bottom: 10px; font-size: 0.8rem; color: #38bdf8;">
+          <div style="margin-bottom: 10px; font-size: var(--fs-xs, 0.75rem); color: var(--info-text);">
             新加入選手名單：${newPlayers.map(p => `${escapeHtml(p.name)} (${escapeHtml(p.id)})`).join('、')}
           </div>
         `;
@@ -3578,9 +3577,9 @@ button[data-next="true"]:hover {
       function formatStatus(item) {
         if (item.locked) {
           const mins = Math.max(1, Math.ceil((item.retry_after_sec || 0) / 60));
-          return `<span style="color: #f87171; font-weight: 700;">鎖定中（還要 ${mins} 分鐘）</span>`;
+          return `<span style="color: var(--danger-text); font-weight: 700;">鎖定中（還要 ${mins} 分鐘）</span>`;
         }
-        return `<span style="color: #fbbf24;">輸錯 ${item.fails || 0} 次</span>`;
+        return `<span style="color: var(--warning-text);">輸錯 ${item.fails || 0} 次</span>`;
       }
 
       let html = '';
@@ -3629,7 +3628,7 @@ button[data-next="true"]:hover {
       }
 
       let html = `
-        <div style="padding: 8px 12px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 6px; margin-bottom: 10px; font-size: 0.88rem; font-weight: 700; color: #38bdf8;">
+        <div style="padding: 8px 12px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: var(--radius-md, 6px); margin-bottom: 10px; font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--info-text);">
           第 ${res.round} 輪驗牌抽查名單（抽查比例：${res.percent}%，共抽查 ${sampleTables.length} 桌）
         </div>
         <table class="admin-table">
@@ -3646,13 +3645,13 @@ button[data-next="true"]:hover {
       function formatSamplePlayer(p) {
         if (!p) return '<span style="color: var(--text-sub);">-</span>';
         const deckStatus = p.has_decklist
-          ? '<span style="color: #34d399; font-weight: 600;">已登錄牌表</span>'
-          : '<span style="color: #f87171; font-weight: 600;">未登錄牌表</span>';
+          ? '<span style="color: var(--success-text); font-weight: 600;">已登錄牌表</span>'
+          : '<span style="color: var(--danger-text); font-weight: 600;">未登錄牌表</span>';
         const checkStatus = p.checked
-          ? '<span style="color: #38bdf8; font-weight: 700;">已驗過</span>'
+          ? '<span style="color: var(--info-text); font-weight: 700;">已驗過</span>'
           : '<span style="color: var(--text-sub);">未驗牌</span>';
         return `<div><strong>${escapeHtml(p.id)}</strong> ${escapeHtml(p.name)}</div>
-                <div style="font-size: 0.8rem; margin-top: 3px;">${deckStatus} · ${checkStatus}</div>`;
+                <div style="font-size: var(--fs-xs, 0.75rem); margin-top: 3px;">${deckStatus} · ${checkStatus}</div>`;
       }
 
       for (const tb of sampleTables) {
@@ -3661,7 +3660,7 @@ button[data-next="true"]:hover {
 
         html += `
           <tr>
-            <td style="font-weight: 800; font-size: 1.05rem; color: #fbbf24;">第 ${tb.table} 桌</td>
+            <td style="font-weight: 800; font-size: var(--fs-base, 1rem); color: var(--warning-text);">第 ${tb.table} 桌</td>
             <td>${formatSamplePlayer(p1)}</td>
             <td>${formatSamplePlayer(p2)}</td>
           </tr>
@@ -3765,14 +3764,14 @@ button[data-next="true"]:hover {
       if (!container) return;
 
       if (!Array.isArray(heldTables) || heldTables.length === 0) {
-        container.innerHTML = '<span style="font-size: 0.85rem; color: var(--text-sub);">無停用桌號</span>';
+        container.innerHTML = '<span style="font-size: var(--fs-sm, 0.875rem); color: var(--text-sub);">無停用桌號</span>';
         return;
       }
 
       container.innerHTML = heldTables.map(tbl => `
-        <div data-table="${tbl}" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 6px;">
-          <span style="font-size: 0.85rem; font-weight: 700; color: #fca5a5;">第 ${tbl} 桌</span>
-          <button type="button" class="btn btn-secondary ctl-open" style="min-height: 44px; min-width: 44px; padding: 4px 8px; font-size: 0.8rem;">恢復</button>
+        <div data-table="${tbl}" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--radius-md, 6px);">
+          <span style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--danger-text);">第 ${tbl} 桌</span>
+          <button type="button" class="btn btn-secondary ctl-open" style="min-height: 44px; min-width: 44px; padding: 4px 8px; font-size: var(--fs-xs, 0.75rem);">恢復</button>
         </div>
       `).join('');
 
@@ -3857,7 +3856,7 @@ button[data-next="true"]:hover {
 
         const whoText = formatWhoText(eff.who);
         const heldBadge = eff.held
-          ? '<span class="badge ctl-held" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">停用中</span>'
+          ? '<span class="badge ctl-held" style="background: rgba(239, 68, 68, 0.2); color: var(--danger-text); padding: 2px 6px; border-radius: var(--radius-sm, 4px); font-size: var(--fs-xs, 0.75rem);">停用中</span>'
           : '';
 
         const hasTableLayer = Boolean(layers && layers.table && layers.table[String(tbl)]);
@@ -3866,21 +3865,21 @@ button[data-next="true"]:hover {
         return `
           <div class="ctl-row" data-table="${tbl}">
             <div class="ctl-row-info">
-              <strong style="font-size: 0.95rem; min-width: 60px;">第 ${tbl} 桌</strong>
+              <strong style="font-size: var(--fs-base, 1rem); min-width: 60px;">第 ${tbl} 桌</strong>
               ${heldBadge}
-              <span class="ctl-from" style="font-size: 0.8rem; color: var(--text-sub);">來源：${escapeHtml(fromText)}（目前：${escapeHtml(whoText)}）</span>
+              <span class="ctl-from" style="font-size: var(--fs-xs, 0.75rem); color: var(--text-sub);">來源：${escapeHtml(fromText)}（目前：${escapeHtml(whoText)}）</span>
             </div>
             <div class="ctl-row-actions">
-              <label style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.85rem; cursor: pointer; min-height: 44px;">
+              <label style="display: inline-flex; align-items: center; gap: 4px; font-size: var(--fs-sm, 0.875rem); cursor: pointer; min-height: 44px;">
                 <input type="checkbox" class="ctl-judge" ${judgeChecked ? 'checked' : ''} style="width: 16px; height: 16px;">
                 <span>裁判</span>
               </label>
-              <label style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.85rem; cursor: pointer; min-height: 44px;">
+              <label style="display: inline-flex; align-items: center; gap: 4px; font-size: var(--fs-sm, 0.875rem); cursor: pointer; min-height: 44px;">
                 <input type="checkbox" class="ctl-player" ${playerChecked ? 'checked' : ''} style="width: 16px; height: 16px;">
                 <span>選手</span>
               </label>
-              <button type="button" class="btn btn-primary ctl-save" style="min-width: 60px; padding: 4px 10px; font-size: 0.82rem;">儲存</button>
-              <button type="button" class="btn btn-secondary ctl-clear" style="min-width: 110px; padding: 4px 10px; font-size: 0.82rem; ${isTableFrom ? '' : 'display: none;'}">清除，跟回上一層</button>
+              <button type="button" class="btn btn-primary ctl-save" style="min-width: 60px; padding: 4px 10px; font-size: var(--fs-sm, 0.875rem);">儲存</button>
+              <button type="button" class="btn btn-secondary ctl-clear" style="min-width: 110px; padding: 4px 10px; font-size: var(--fs-sm, 0.875rem); ${isTableFrom ? '' : 'display: none;'}">清除，跟回上一層</button>
             </div>
           </div>
         `;

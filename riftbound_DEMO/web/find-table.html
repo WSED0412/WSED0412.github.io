@@ -25,7 +25,7 @@ body {
     }
 
 input, select, textarea {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
     }
 
 .container {
@@ -48,7 +48,7 @@ header {
     }
 
 .event-title {
-      font-size: 1.15rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 700;
       color: var(--text-primary);
       white-space: nowrap;
@@ -57,7 +57,7 @@ header {
     }
 
 .status-badge {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 2px 8px;
       border-radius: 9999px;
       font-weight: 600;
@@ -110,10 +110,10 @@ body[data-offline="true"] .watch-row {
       gap: 4px;
       color: var(--accent-text);
       text-decoration: none;
-      font-size: 0.825rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       padding: 4px 10px;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       background: rgba(239, 125, 0, 0.1);
       border: 1px solid rgba(239, 125, 0, 0.25);
     }
@@ -127,8 +127,8 @@ body[data-offline="true"] .watch-row {
       color: var(--warning-text);
       border: 1px solid var(--warning-border);
       padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 0.8rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-xs, 0.75rem);
       margin-bottom: 8px;
       text-align: center;
     }
@@ -137,8 +137,8 @@ body[data-offline="true"] .watch-row {
       background: var(--danger-bg);
       color: var(--danger-text);
       padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.95rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       margin-bottom: 12px;
       text-align: center;
@@ -146,7 +146,7 @@ body[data-offline="true"] .watch-row {
     }
 
 .net-hint {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       margin-top: 6px;
       line-height: 1.4;
@@ -158,8 +158,8 @@ body[data-offline="true"] .watch-row {
       color: var(--warning-text);
       border: 1.5px solid var(--warning-border);
       padding: 12px 14px;
-      border-radius: 8px;
-      font-size: 0.95rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       line-height: 1.5;
       margin-bottom: 12px;
@@ -171,8 +171,8 @@ body[data-offline="true"] .watch-row {
       color: var(--success-text);
       border: 1.5px solid var(--success-border);
       padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.95rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       line-height: 1.4;
       margin-bottom: 12px;
@@ -188,9 +188,9 @@ body[data-offline="true"] .watch-row {
       background: var(--warning-bg);
       color: var(--warning-text);
       border: 1px solid var(--warning-border);
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 2px 8px;
-      border-radius: 4px;
+      border-radius: var(--radius-sm, 4px);
       font-weight: 800;
       margin-left: 0;
       vertical-align: middle;
@@ -198,7 +198,7 @@ body[data-offline="true"] .watch-row {
 
 body[data-offline="true"] .result-card {
       border-color: var(--warning-border);
-      background: #012836;
+      background: var(--card-bg-alt, #012836);
       filter: grayscale(1);
       opacity: 0.95;
     }
@@ -220,31 +220,31 @@ body[data-offline="true"] #watchBlock .watch-row-status {
     }
 
 body[data-offline="true"] .offline-tag {
-      background: #f59e0b;
-      color: #141212;
-      border: 1px solid #fef08a;
+      background: var(--warning-text);
+      color: var(--on-accent, #141212);
+      border: 1px solid var(--warning-border, #fef08a);
       font-weight: 900;
     }
 
 .break-banner {
-      background: linear-gradient(135deg, #2A2109, #3E3312);
+      background: var(--warning-bg);
       border: 1px solid var(--warning-border);
       color: var(--text-primary);
       padding: 12px 14px;
-      border-radius: 10px;
+      border-radius: var(--radius-lg, 10px);
       margin-bottom: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
     }
 
 .break-banner-main {
-      font-size: 1.25rem;
+      font-size: var(--fs-lg, 1.25rem);
       font-weight: 800;
       letter-spacing: 0.5px;
       margin-bottom: 4px;
     }
 
 .break-banner-sub {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--warning-text);
       display: flex;
       justify-content: space-between;
@@ -255,7 +255,7 @@ body[data-offline="true"] .offline-tag {
 .info-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 10px;
+      border-radius: var(--radius-lg, 10px);
       padding: 12px 14px;
       margin-bottom: 12px;
     }
@@ -265,7 +265,7 @@ body[data-offline="true"] .offline-tag {
       justify-content: space-between;
       align-items: center;
       margin-bottom: 8px;
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
     }
 
 .info-row:last-child {
@@ -291,7 +291,7 @@ body[data-offline="true"] .offline-tag {
       margin-top: 8px;
       padding-top: 8px;
       border-top: 1px dashed var(--card-border);
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       display: flex;
       gap: 6px;
@@ -302,8 +302,8 @@ body[data-offline="true"] .offline-tag {
       border: 1px solid var(--info-border);
       color: var(--info-text);
       padding: 12px 14px;
-      border-radius: 8px;
-      font-size: 0.95rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       text-align: center;
       margin-bottom: 12px;
@@ -318,13 +318,13 @@ body[data-offline="true"] .offline-tag {
 .search-section {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 14px;
       margin-bottom: 14px;
     }
 
 .search-title {
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       margin-bottom: 10px;
       display: flex;
@@ -348,10 +348,10 @@ body[data-offline="true"] .offline-tag {
       height: 48px;
       background: var(--input-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 0 36px 0 12px;
       color: var(--text-primary);
-      font-size: 1.05rem;
+      font-size: var(--fs-base, 1rem);
       outline: none;
       transition: border-color 0.2s;
     }
@@ -368,7 +368,7 @@ body[data-offline="true"] .offline-tag {
       background: none;
       border: none;
       color: var(--text-secondary);
-      font-size: 1.2rem;
+      font-size: var(--fs-lg, 1.25rem);
       cursor: pointer;
       min-width: 44px;
       min-height: 44px;
@@ -382,10 +382,10 @@ body[data-offline="true"] .offline-tag {
       padding: 0 18px;
       background: var(--accent);
       color: var(--on-accent, #141212);
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       border: none;
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       cursor: pointer;
       white-space: nowrap;
       min-width: 72px;
@@ -407,7 +407,7 @@ body[data-offline="true"] .offline-tag {
     }
 
 .chips-label {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
     }
 
@@ -416,7 +416,7 @@ body[data-offline="true"] .offline-tag {
       color: var(--text-primary);
       border: 1px solid var(--card-border);
       border-radius: 9999px;
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 4px 10px;
       cursor: pointer;
       min-height: 44px;
@@ -437,13 +437,13 @@ body[data-offline="true"] .offline-tag {
 .candidates-box {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 10px;
       margin-bottom: 12px;
     }
 
 .candidates-title {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       margin-bottom: 8px;
     }
@@ -454,9 +454,9 @@ body[data-offline="true"] .offline-tag {
       padding: 10px 12px;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       color: var(--text-primary);
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       margin-bottom: 6px;
       cursor: pointer;
       display: flex;
@@ -468,7 +468,7 @@ body[data-offline="true"] .offline-tag {
 #watchBlock {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 14px;
       margin-bottom: 14px;
       box-sizing: border-box;
@@ -483,7 +483,7 @@ body[data-offline="true"] .offline-tag {
       padding: 8px 12px;
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       box-sizing: border-box;
     }
 
@@ -504,20 +504,20 @@ body[data-offline="true"] .offline-tag {
 
 .watch-row-name {
       font-weight: 800;
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       color: var(--text-primary);
       word-break: break-all;
     }
 
 .watch-row-id {
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: 700;
       color: var(--accent-text);
       font-family: monospace;
     }
 
 .watch-row-status {
-      font-size: 0.82rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       line-height: 1.35;
       word-break: break-all;
@@ -532,8 +532,8 @@ body[data-offline="true"] .offline-tag {
       background: transparent;
       color: var(--danger-text);
       border: 1px solid var(--danger-border);
-      border-radius: 6px;
-      font-size: 0.85rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       cursor: pointer;
       display: inline-flex;
@@ -559,8 +559,8 @@ body[data-offline="true"] .offline-tag {
       border: 1px solid var(--warning-border);
       color: var(--warning-text);
       padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.9rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       text-align: center;
       margin-bottom: 12px;
@@ -574,9 +574,8 @@ body[data-offline="true"] .offline-tag {
 .result-card {
       background: var(--card-bg);
       border: 2px solid var(--accent);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 16px;
-      box-shadow: 0 4px 16px rgba(239, 125, 0, 0.15);
       position: relative;
     }
 
@@ -605,14 +604,14 @@ body[data-offline="true"] .offline-tag {
     }
 
 .table-number-label {
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       white-space: nowrap;
       flex-shrink: 0;
     }
 
 .table-badge-large {
-      font-size: 2rem;
+      font-size: var(--fs-2xl, 2rem);
       font-weight: 900;
       color: var(--accent-text);
       line-height: 1.1;
@@ -620,7 +619,7 @@ body[data-offline="true"] .offline-tag {
     }
 
 .table-zone-detail {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       font-weight: 600;
       line-height: 1.3;
@@ -631,9 +630,9 @@ body[data-offline="true"] .offline-tag {
       background: var(--info-bg);
       color: var(--info-text);
       border: 1px solid var(--info-border);
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 2px 6px;
-      border-radius: 4px;
+      border-radius: var(--radius-sm, 4px);
       font-weight: 700;
       margin-left: 6px;
       vertical-align: middle;
@@ -642,7 +641,7 @@ body[data-offline="true"] .offline-tag {
     }
 
 .round-indicator {
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       font-weight: 600;
       text-align: right;
@@ -660,7 +659,7 @@ body[data-offline="true"] .offline-tag {
 .player-box {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 10px 12px;
     }
 
@@ -670,7 +669,7 @@ body[data-offline="true"] .offline-tag {
     }
 
 .player-label {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: 700;
       color: var(--text-secondary);
       margin-bottom: 2px;
@@ -683,44 +682,44 @@ body[data-offline="true"] .offline-tag {
     }
 
 .player-name {
-      font-size: 1.25rem;
+      font-size: var(--fs-lg, 1.25rem);
       font-weight: 800;
       color: var(--text-primary);
       margin-bottom: 2px;
     }
 
 .player-stats {
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
     }
 
 .bye-card {
       background: var(--success-bg);
       border: 2px solid var(--success-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 20px;
       text-align: center;
       margin-bottom: 16px;
     }
 
 .bye-title {
-      font-size: 1.75rem;
+      font-size: var(--fs-2xl, 2rem);
       font-weight: 900;
       color: var(--success-text);
       margin-bottom: 6px;
     }
 
 .bye-desc {
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       color: var(--text-primary);
       line-height: 1.6;
     }
 
 .table-details {
       background: var(--input-bg);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 10px 12px;
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
     }
 
 .table-detail-row {
@@ -739,8 +738,8 @@ body[data-offline="true"] .offline-tag {
       color: var(--warning-text);
       border: 1px solid var(--warning-border);
       padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.75rem;
+      border-radius: var(--radius-sm, 4px);
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: 700;
       text-align: right;
     }
@@ -748,9 +747,9 @@ body[data-offline="true"] .offline-tag {
 .match-result-bar {
       margin-top: 10px;
       padding: 10px;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       text-align: center;
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
     }
 
@@ -781,17 +780,17 @@ body[data-offline="true"] .offline-tag {
 .empty-state {
       background: var(--card-bg);
       border: 1px dashed var(--card-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 24px 16px;
       text-align: center;
       color: var(--text-secondary);
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
     }
 
 .unpublished-state {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 24px 16px;
       text-align: center;
       color: var(--text-secondary);
@@ -799,7 +798,7 @@ body[data-offline="true"] .offline-tag {
     }
 
 .unpublished-title {
-      font-size: 1.25rem;
+      font-size: var(--fs-lg, 1.25rem);
       font-weight: 800;
       margin-bottom: 6px;
       color: var(--text-primary);
@@ -810,9 +809,9 @@ body[data-offline="true"] .offline-tag {
       padding: 12px;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       color: var(--text-primary);
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       cursor: pointer;
       display: flex;
@@ -827,7 +826,7 @@ body[data-offline="true"] .offline-tag {
       margin-top: 8px;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       overflow: hidden;
     }
 
@@ -841,7 +840,7 @@ body[data-offline="true"] .offline-tag {
       align-items: center;
       padding: 12px 14px;
       border-bottom: 1px solid var(--card-border);
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       cursor: pointer;
       min-height: 44px;
     }
@@ -885,19 +884,19 @@ body[data-offline="true"] .offline-tag {
     }
 
 .disconnected-icon {
-      font-size: 3rem;
+      font-size: var(--fs-3xl, 3rem);
       margin-bottom: 12px;
     }
 
 .disconnected-title {
-      font-size: 1.4rem;
+      font-size: var(--fs-xl, 1.5rem);
       font-weight: 800;
       color: var(--danger-text);
       margin-bottom: 8px;
     }
 
 .disconnected-desc {
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       color: var(--text-secondary);
       max-width: 360px;
       margin-bottom: 20px;
@@ -909,10 +908,10 @@ body[data-offline="true"] .offline-tag {
       color: var(--on-accent, #141212);
       font-weight: 700;
       padding: 12px 28px;
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       border: none;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       min-height: 48px;
     }
 
@@ -928,14 +927,13 @@ body[data-offline="true"] .offline-tag {
       background: var(--accent);
       color: var(--on-accent, #141212);
       font-weight: 800;
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       border: none;
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 8px rgba(239, 125, 0, 0.2);
     }
 
 .btn-report-login:active {
@@ -946,12 +944,12 @@ body[data-offline="true"] .offline-tag {
       margin-top: 10px;
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 12px;
     }
 
 .pin-form-title {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       color: var(--text-secondary);
       margin-bottom: 8px;
@@ -968,10 +966,10 @@ body[data-offline="true"] .offline-tag {
       height: 44px;
       background: var(--card-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       padding: 0 12px;
       color: var(--text-primary);
-      font-size: 1.1rem;
+      font-size: var(--fs-md, 1.125rem);
       letter-spacing: 2px;
       outline: none;
     }
@@ -988,9 +986,9 @@ body[data-offline="true"] .offline-tag {
       background: var(--chip-bg);
       color: var(--text-primary);
       border: 1px solid var(--card-border);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       cursor: pointer;
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       white-space: nowrap;
       display: inline-flex;
@@ -1010,7 +1008,7 @@ body[data-offline="true"] .offline-tag {
       color: var(--on-accent, #141212);
       font-weight: 700;
       border: none;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       cursor: pointer;
       min-width: 68px;
       white-space: nowrap;
@@ -1023,14 +1021,14 @@ body[data-offline="true"] .offline-tag {
 .pin-error-msg {
       margin-top: 8px;
       color: var(--danger-text);
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
     }
 
 .report-box-wrap {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 12px;
     }
 
@@ -1044,7 +1042,7 @@ body[data-offline="true"] .offline-tag {
     }
 
 .report-user-name {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       color: var(--accent-text);
     }
@@ -1054,8 +1052,8 @@ body[data-offline="true"] .offline-tag {
       border: 1px solid var(--card-border);
       color: var(--text-secondary);
       padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 0.75rem;
+      border-radius: var(--radius-sm, 4px);
+      font-size: var(--fs-xs, 0.75rem);
       cursor: pointer;
       min-height: 44px;
     }
@@ -1066,8 +1064,8 @@ body[data-offline="true"] .offline-tag {
 
 .report-status-box {
       padding: 10px 12px;
-      border-radius: 6px;
-      font-size: 0.9rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       text-align: center;
       margin-bottom: 10px;
@@ -1100,14 +1098,14 @@ body[data-offline="true"] .offline-tag {
 .opp-report-card {
       background: rgba(239, 125, 0, 0.08);
       border: 1px solid rgba(239, 125, 0, 0.3);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       padding: 10px 12px;
       margin-bottom: 12px;
       text-align: center;
     }
 
 .opp-report-text {
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       color: var(--text-primary);
       margin-bottom: 8px;
@@ -1119,9 +1117,9 @@ body[data-offline="true"] .offline-tag {
       background: var(--accent);
       color: var(--on-accent, #141212);
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       border: none;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       cursor: pointer;
     }
 
@@ -1143,7 +1141,7 @@ body[data-offline="true"] .offline-tag {
     }
 
 .report-select-label {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       font-weight: 600;
       text-align: center;
@@ -1153,9 +1151,9 @@ body[data-offline="true"] .offline-tag {
       height: 44px;
       background: var(--card-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       color: var(--text-primary);
-      font-size: 1.1rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 700;
       text-align: center;
       outline: none;
@@ -1175,10 +1173,10 @@ body[data-offline="true"] .offline-tag {
       height: 46px;
       background: var(--accent);
       color: var(--on-accent, #141212);
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 800;
       border: none;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       cursor: pointer;
     }
 
@@ -1188,10 +1186,8 @@ body[data-offline="true"] .offline-tag {
 
 .call-judge-card {
       margin-top: 14px;
-      padding: 14px;
-      border-radius: 10px;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
+      padding-top: 14px;
+      border-top: 1px dashed var(--card-border);
     }
 
 .btn-call-judge {
@@ -1200,9 +1196,9 @@ body[data-offline="true"] .offline-tag {
       background: var(--judge-bg);
       color: var(--judge-text);
       border: 1.5px solid var(--judge-border);
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 800;
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1226,9 +1222,9 @@ body[data-offline="true"] .offline-tag {
       padding: 8px 6px;
       background: var(--input-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       color: var(--text-primary);
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       cursor: pointer;
       text-align: center;
@@ -1249,7 +1245,7 @@ body[data-offline="true"] .offline-tag {
 .call-note-label {
       display: flex;
       justify-content: space-between;
-      font-size: 0.78rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       margin-bottom: 4px;
     }
@@ -1259,10 +1255,10 @@ body[data-offline="true"] .offline-tag {
       height: 42px;
       background: var(--input-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       color: var(--text-primary);
       padding: 0 10px;
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       outline: none;
       box-sizing: border-box;
     }
@@ -1276,10 +1272,10 @@ body[data-offline="true"] .offline-tag {
       height: 44px;
       background: var(--accent);
       color: var(--on-accent, #141212);
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 800;
       border: none;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       cursor: pointer;
     }
 
@@ -1289,8 +1285,8 @@ body[data-offline="true"] .offline-tag {
 
 .call-status-box {
       padding: 12px 14px;
-      border-radius: 8px;
-      font-size: 0.95rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       text-align: center;
       line-height: 1.4;
@@ -1311,10 +1307,10 @@ body[data-offline="true"] .offline-tag {
       height: 40px;
       background: var(--chip-bg);
       color: var(--text-primary);
-      font-size: 0.88rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       border: 1px solid var(--card-border);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       cursor: pointer;
     }
 
@@ -1332,8 +1328,8 @@ body[data-offline="true"] .offline-tag {
       background: transparent;
       color: var(--text-secondary);
       border: 1px solid var(--card-border);
-      border-radius: 6px;
-      font-size: 0.85rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -1346,7 +1342,7 @@ body[data-offline="true"] .offline-tag {
     }
 
 .drop-status-text {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       line-height: 1.4;
       margin-bottom: 6px;
@@ -1374,7 +1370,7 @@ body[data-offline="true"] .offline-tag {
 .confirm-modal-box {
       background: var(--card-bg);
       border: 2px solid var(--accent);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 18px;
       width: 100%;
       max-width: 320px;
@@ -1387,7 +1383,7 @@ body[data-offline="true"] .offline-tag {
     }
 
 .confirm-modal-title {
-      font-size: 1.1rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 800;
       margin-bottom: 8px;
       color: var(--text-primary);
@@ -1395,7 +1391,7 @@ body[data-offline="true"] .offline-tag {
     }
 
 .confirm-outcome-text {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       margin: 12px 0;
       line-height: 1.5;
       color: var(--text-primary);
@@ -1406,7 +1402,7 @@ body[data-offline="true"] .offline-tag {
     }
 
 .confirm-note {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       margin-bottom: 16px;
       line-height: 1.4;
@@ -1426,9 +1422,9 @@ body[data-offline="true"] .offline-tag {
       color: var(--on-accent, #141212);
       font-weight: 800;
       border: none;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       cursor: pointer;
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
     }
 
 .btn-confirm:active {
@@ -1442,14 +1438,14 @@ body[data-offline="true"] .offline-tag {
       color: var(--text-primary);
       font-weight: 700;
       border: 1px solid var(--card-border);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       cursor: pointer;
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
     }
 
 footer {
       text-align: center;
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       margin-top: 24px;
     }
@@ -1478,9 +1474,9 @@ footer {
         <div class="status-badge" id="eventStatus">賽事狀態</div>
       </div>
       <div class="header-nav">
-        <a id="standingsLink" href="standings.html" class="nav-link-standings">📊 查看排名</a>
-        <a id="bracketLink" href="bracket.html" class="nav-link-standings">🏆 淘汰賽</a>
-        <a id="spectatorLink" href="spectator.html" class="nav-link-standings">📺 觀眾端</a>
+        <a id="standingsLink" href="standings.html" class="nav-link-standings"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-stats"/></svg> 查看排名</a>
+        <a id="bracketLink" href="bracket.html" class="nav-link-standings"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-trophy"/></svg> 淘汰賽</a>
+        <a id="spectatorLink" href="spectator.html" class="nav-link-standings"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-screen"/></svg> 觀眾端</a>
       </div>
     </header>
 
@@ -1503,14 +1499,14 @@ footer {
         <span class="info-label">本輪計時</span>
         <span class="info-val highlight-val" id="clockDisplay">--:--</span>
       </div>
-      <div id="extraCountdownFind" style="display: none; text-align: right; font-size: 0.85rem; font-weight: 700; color: var(--warning-text); margin-top: -4px; margin-bottom: 8px;"></div>
+      <div id="extraCountdownFind" style="display: none; text-align: right; font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--warning-text); margin-top: -4px; margin-bottom: 8px;"></div>
       <div class="info-row" id="progressRow" style="display: none;">
         <span class="info-label">全場進度</span>
         <span class="info-val" id="progressRemaining">--</span>
       </div>
       <div class="info-row" id="latestEndRow" style="display: none;">
         <span class="info-label">本輪預估</span>
-        <span class="info-val" id="latestEndVal" style="font-size: 0.8rem; color: var(--text-secondary);">--</span>
+        <span class="info-val" id="latestEndVal" style="font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary);">--</span>
       </div>
       <div class="info-row" id="nextRoundRow" style="display: none;">
         <span class="info-label">下一輪預計</span>
@@ -1526,7 +1522,7 @@ footer {
     <section class="search-section">
       <div class="search-title">
         <span>查詢我的桌次</span>
-        <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: normal;">選手編號或姓名</span>
+        <span style="font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary); font-weight: normal;">選手編號或姓名</span>
       </div>
       <div class="search-box">
         <div class="search-input-wrap">
@@ -1584,11 +1580,11 @@ footer {
 
     <!-- 我關注的選手區塊 (PROJECT.md 第六十七輪) -->
     <section class="card" id="watchBlock" style="margin-bottom: 14px;">
-      <div class="card-title" style="font-size: 1rem; font-weight: 800; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
-        <span>👀 我關注的選手</span>
-        <span id="watchCountText" style="font-size: 0.8rem; color: var(--text-secondary); font-weight: normal;"></span>
+      <div class="card-title" style="font-size: var(--fs-base, 1rem); font-weight: 800; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+        <span><svg class="icon" aria-hidden="true"><use href="icons.svg#i-eye"/></svg> 我關注的選手</span>
+        <span id="watchCountText" style="font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary); font-weight: normal;"></span>
       </div>
-      <div style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px;">
+      <div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 10px;">
         追蹤朋友或對手所在桌次與戰況（最多 10 位）
       </div>
 
@@ -1599,8 +1595,8 @@ footer {
       </div>
 
       <!-- 候選人清單（同名多位時） -->
-      <div id="watchCands" style="display: none; margin-bottom: 10px; padding: 10px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px;">
-        <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">找到多位同名選手，請點選加入：</div>
+      <div id="watchCands" style="display: none; margin-bottom: 10px; padding: 10px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: var(--radius-md, 6px);">
+        <div style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">找到多位同名選手，請點選加入：</div>
         <div id="watchCandsList" style="display: flex; flex-direction: column; gap: 6px;"></div>
       </div>
 
@@ -1644,11 +1640,11 @@ footer {
   <div id="dropConfirmModal" class="confirm-modal-overlay" style="display: none;">
     <div class="confirm-modal-box" style="border-color: var(--danger-border);">
       <div class="confirm-modal-title" style="color: var(--danger-text);">確定退出比賽？</div>
-      <div class="confirm-outcome-text" style="font-size: 0.95rem; text-align: left; padding: 0 4px;">
+      <div class="confirm-outcome-text" style="font-size: var(--fs-base, 1rem); text-align: left; padding: 0 4px;">
         退賽後不會被排進下一輪；要回來請找<strong>主辦</strong>（規則 414.7）。
       </div>
       <div class="confirm-btns-row" style="margin-top: 16px;">
-        <button type="button" id="dropConfirm" class="btn-confirm" style="background: var(--danger-border); color: #fff;">確認退賽</button>
+        <button type="button" id="dropConfirm" class="btn-confirm" style="background: var(--danger-border); color: var(--text-primary);">確認退賽</button>
         <button type="button" id="dropCancel" class="btn-cancel">取消</button>
       </div>
     </div>
@@ -1656,7 +1652,7 @@ footer {
 
   <!-- 尚未連上賽務系統錯誤畫面 (硬性規定 1) -->
   <div class="disconnected-overlay" id="disconnectedScreen">
-    <div class="disconnected-icon">⚠️</div>
+    <div class="disconnected-icon"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-warning"/></svg></div>
     <div class="disconnected-title">尚未連上賽務系統</div>
     <div class="disconnected-desc">
       目前無法讀取賽事即時資料。<br>請確認網路連線是否正常，若賽事伺服器更換中請稍候片刻。
@@ -2519,7 +2515,7 @@ footer {
             <button type="button" class="candidate-btn" data-player-id="${escapeHtml(m.player.id)}">
               <span style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; text-align: left; word-break: break-word;">
                 <span><strong>${escapeHtml(m.player.name)}</strong> (${escapeHtml(m.player.id)})</span>
-                <span style="font-size: 0.8rem; color: var(--text-secondary);">${oppText}</span>
+                <span style="font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary);">${oppText}</span>
               </span>
               <span style="color: var(--accent-text); font-weight: 700; white-space: nowrap; margin-left: 8px; flex-shrink: 0;">${tableText}</span>
             </button>
@@ -2569,7 +2565,7 @@ footer {
             <button type="button" class="candidate-btn" data-player-id="${escapeHtml(m.player.id)}">
               <span style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; text-align: left; word-break: break-word;">
                 <span><strong>${escapeHtml(m.player.name)}</strong> (${escapeHtml(m.player.id)})</span>
-                <span style="font-size: 0.8rem; color: var(--text-secondary);">${oppText}</span>
+                <span style="font-size: var(--fs-xs, 0.75rem); color: var(--text-secondary);">${oppText}</span>
               </span>
               <span style="color: var(--accent-text); font-weight: 700; white-space: nowrap; margin-left: 8px; flex-shrink: 0;">${tableText}</span>
             </button>
@@ -2620,7 +2616,7 @@ footer {
       if (isPlayerIdLike) {
         resultSection.innerHTML = `
           <div class="empty-state">
-            <div style="font-size: 1.1rem; font-weight: bold; color: var(--danger-text); margin-bottom: 6px;">本輪未排入座位</div>
+            <div style="font-size: var(--fs-md, 1.125rem); font-weight: bold; color: var(--danger-text); margin-bottom: 6px;">本輪未排入座位</div>
             <div>目前沒有找到選手編號「${escapeHtml(query)}」這一輪的桌次。如果下一輪還沒公布，請稍候；如果你已經報到卻一直找不到，請到裁判桌確認。</div>
           </div>
           ${publicNoteHtml}
@@ -2630,7 +2626,7 @@ footer {
       } else {
         resultSection.innerHTML = `
           <div class="empty-state">
-            <div style="font-size: 1.1rem; font-weight: bold; color: var(--danger-text); margin-bottom: 6px;">查無配對資料</div>
+            <div style="font-size: var(--fs-md, 1.125rem); font-weight: bold; color: var(--danger-text); margin-bottom: 6px;">查無配對資料</div>
             <div>找不到符合「<strong>${escapeHtml(query)}</strong>」的選手。<br>請確認選手編號（如 R0010）或顯示名稱是否正確。</div>
           </div>
           ${publicNoteHtml}
@@ -2730,7 +2726,7 @@ footer {
               <div class="bye-desc">
                 選手 <strong>${escapeHtml(matchedPairing.p1.name)}</strong>（${escapeHtml(matchedPairing.p1.id)}）本輪輪空，不需出賽，算一場勝利。
               </div>
-              <div style="margin-top: 10px; font-size: 0.85rem; color: var(--success-text);">
+              <div style="margin-top: 10px; font-size: var(--fs-sm, 0.875rem); color: var(--success-text);">
                 請留意下一輪的公布時間與現場廣播。
               </div>
             </div>
@@ -2918,7 +2914,7 @@ footer {
       if (isOfflineMode) {
         container.innerHTML = `
           <div class="report-card-wrap">
-            <div style="color: var(--text-secondary); text-align: center; padding: 12px 14px; font-size: 0.9rem; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px;">
+            <div style="color: var(--text-secondary); text-align: center; padding: 12px 14px; font-size: var(--fs-sm, 0.875rem); background: var(--input-bg); border: 1px solid var(--card-border); border-radius: var(--radius-md, 6px);">
               離線狀態下無法登入回報成績或呼叫裁判，請連上網路後再試。
             </div>
           </div>
@@ -3119,9 +3115,9 @@ footer {
       // 裁判呼叫區塊 (DATA-CONTRACT 3.5)
       const judgeCallSectionHtml = `
         <div class="call-judge-card" id="judgeCallCard" style="margin-top: 14px;">
-          <button type="button" id="callJudgeBtn" class="btn-call-judge" style="display: none;">🙋 呼叫裁判</button>
+          <button type="button" id="callJudgeBtn" class="btn-call-judge" style="display: none;"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-raise-hand"/></svg> 呼叫裁判</button>
           <div id="callJudgeForm" style="display: none;">
-            <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">選擇呼叫原因：</div>
+            <div style="font-size: var(--fs-sm, 0.875rem); font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">選擇呼叫原因：</div>
             <div class="call-reasons-grid">
               <button type="button" class="btn-reason active" data-reason="rules">規則問題</button>
               <button type="button" class="btn-reason" data-reason="opponent">對手狀況</button>
@@ -3182,7 +3178,7 @@ footer {
               ${statusMessage}
             </div>
 
-            ${whyNot ? `<div id="reportWhyNot" class="msg-box warning" style="margin-top: 10px; margin-bottom: 10px; padding: 10px 12px; border-radius: 6px; background: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning-text); font-weight: 700; text-align: center; font-size: 0.95rem; line-height: 1.5;">${escapeHtml(whyNot)}</div>` : ''}
+            ${whyNot ? `<div id="reportWhyNot" class="msg-box warning" style="margin-top: 10px; margin-bottom: 10px; padding: 10px 12px; border-radius: var(--radius-md, 6px); background: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning-text); font-weight: 700; text-align: center; font-size: var(--fs-base, 1rem); line-height: 1.5;">${escapeHtml(whyNot)}</div>` : ''}
 
             ${opponentBoxHtml}
 
@@ -3396,7 +3392,7 @@ footer {
       }
 
       const drawStr = draws > 0 ? `、平手 ${draws} 局` : '';
-      const outcomeHtml = `你贏 ${myWins} 局、對手贏 ${oppWins} 局${drawStr} → <strong style="color: ${outcomeColor}; font-size: 1.15rem;">${outcome}</strong>`;
+      const outcomeHtml = `你贏 ${myWins} 局、對手贏 ${oppWins} 局${drawStr} → <strong style="color: ${outcomeColor}; font-size: var(--fs-md, 1.125rem);">${outcome}</strong>`;
       document.getElementById('confirmOutcomeText').innerHTML = outcomeHtml;
       document.getElementById('reportConfirmModal').style.display = 'flex';
     }
@@ -3615,7 +3611,7 @@ footer {
             <div class="pairing-item" data-player-id="${escapeHtml(p.p1.id)}">
               <span class="pairing-table-num" style="color: var(--success-text);">輪空</span>
               <span class="pairing-names"><strong>${escapeHtml(p.p1.name)}</strong> (${escapeHtml(p.p1.id)})</span>
-              <span style="color: var(--text-secondary); font-size: 0.75rem;">無對手</span>
+              <span style="color: var(--text-secondary); font-size: var(--fs-xs, 0.75rem);">無對手</span>
             </div>
           `;
         }
@@ -3646,7 +3642,7 @@ footer {
           <div class="pairing-item" data-player-id="${escapeHtml(p.p1.id)}">
             <span class="pairing-table-num">第 ${p.table} 桌</span>
             <span class="pairing-names">${escapeHtml(p.p1.name)} vs ${escapeHtml(p.p2.name)}</span>
-            <span style="color: ${statusColor}; font-weight: 600; font-size: 0.8rem;">${statusText}</span>
+            <span style="color: ${statusColor}; font-weight: 600; font-size: var(--fs-xs, 0.75rem);">${statusText}</span>
           </div>
         `;
       }).join('');
@@ -3976,7 +3972,7 @@ footer {
       const candsList = document.getElementById('watchCandsList');
       if (candsBox && candsList) {
         candsList.innerHTML = candidates.map(c => `
-          <button type="button" class="btn btn-secondary watch-cand-btn" data-id="${escapeHtml(c.id)}" data-name="${escapeHtml(c.name)}" style="min-height: 44px; display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 12px; font-size: 0.95rem;">
+          <button type="button" class="btn btn-secondary watch-cand-btn" data-id="${escapeHtml(c.id)}" data-name="${escapeHtml(c.name)}" style="min-height: 44px; display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 12px; font-size: var(--fs-base, 1rem);">
             <span><strong>${escapeHtml(c.name)}</strong></span>
             <span style="font-family: monospace; color: var(--accent-text); font-weight: 700;">${escapeHtml(c.id)}</span>
           </button>

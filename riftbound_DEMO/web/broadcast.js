@@ -56,7 +56,7 @@
           justify-content: space-between;
           gap: 12px;
           z-index: 9990;
-          font-size: 0.95rem;
+          font-size: var(--fs-base, 1rem);
           line-height: 1.4;
         }
         #bcBannerText {
@@ -69,10 +69,10 @@
           min-width: 68px;
           padding: 6px 14px;
           background: var(--accent);
-          color: #ffffff;
+          color: var(--text-primary, #ffffff);
           border: none;
-          border-radius: 6px;
-          font-size: 0.9rem;
+          border-radius: var(--radius-md, 6px);
+          font-size: var(--fs-sm, 0.875rem);
           font-weight: 700;
           cursor: pointer;
         }
@@ -87,7 +87,7 @@
           bottom: 0;
           z-index: 99999;
           background: var(--danger-border);
-          color: #ffffff;
+          color: var(--text-primary, #ffffff);
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -97,7 +97,7 @@
           text-align: center;
         }
         #bcUrgentText {
-          font-size: 1.5rem;
+          font-size: var(--fs-xl, 1.5rem);
           font-weight: 800;
           line-height: 1.5;
           margin-bottom: 24px;
@@ -105,18 +105,18 @@
           max-height: 60vh;
           overflow-y: auto;
           word-break: break-word;
-          color: #ffffff;
+          color: var(--text-primary, #ffffff);
           text-align: center;
         }
         #bcUrgentOk {
           min-height: 56px;
           min-width: 160px;
           padding: 12px 36px;
-          font-size: 1.2rem;
+          font-size: var(--fs-lg, 1.25rem);
           font-weight: 800;
-          border-radius: 8px;
-          border: 2px solid #ffffff;
-          background: #ffffff;
+          border-radius: var(--radius-md, 6px);
+          border: 2px solid var(--text-primary, #ffffff);
+          background: var(--text-primary, #ffffff);
           color: var(--danger-border);
           cursor: pointer;
           flex-shrink: 0;
@@ -135,7 +135,7 @@
           overflow: hidden;
           white-space: nowrap;
           pointer-events: none;
-          font-size: 0.95rem;
+          font-size: var(--fs-base, 1rem);
           box-sizing: border-box;
           display: flex;
           align-items: center;

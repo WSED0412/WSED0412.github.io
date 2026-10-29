@@ -34,21 +34,21 @@ header {
     }
 
 .page-title {
-      font-size: 1.4rem;
+      font-size: var(--fs-xl, 1.5rem);
       font-weight: 800;
       color: var(--text-primary);
       margin-bottom: 4px;
     }
 
 .page-subtitle {
-      font-size: 0.88rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
     }
 
 .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 20px 16px;
       margin-bottom: 16px;
       overflow-x: hidden;
@@ -60,14 +60,14 @@ header {
 
 label {
       display: block;
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       margin-bottom: 6px;
       color: var(--text-primary);
     }
 
 .hint-text {
-      font-size: 0.82rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       margin-top: 5px;
     }
@@ -77,9 +77,9 @@ input[type="text"] {
       min-height: 44px;
       background: var(--input-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       color: var(--text-primary);
-      font-size: 16px;
+      font-size: var(--fs-base, 1rem);
       padding: 10px 14px;
       transition: border-color 0.2s;
     }
@@ -96,8 +96,8 @@ input[type="text"]:focus {
       min-height: 44px;
       min-width: 44px;
       padding: 10px 18px;
-      border-radius: 8px;
-      font-size: 1rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       cursor: pointer;
       border: 1px solid transparent;
@@ -131,8 +131,8 @@ input[type="text"]:focus {
 
 .msg-box {
       padding: 12px 14px;
-      border-radius: 8px;
-      font-size: 0.9rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       margin-bottom: 14px;
       line-height: 1.5;
       word-break: break-word;
@@ -147,14 +147,14 @@ input[type="text"]:focus {
 .status-card {
       background: var(--input-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 10px;
+      border-radius: var(--radius-lg, 10px);
       padding: 20px 16px;
       text-align: center;
       margin-bottom: 16px;
     }
 
 .status-card-no {
-      font-size: 2rem;
+      font-size: var(--fs-2xl, 2rem);
       font-weight: 900;
       color: var(--accent-text);
       letter-spacing: 1px;
@@ -162,7 +162,7 @@ input[type="text"]:focus {
     }
 
 .status-card-name {
-      font-size: 1.15rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 700;
       color: var(--text-primary);
       margin-bottom: 12px;
@@ -170,28 +170,28 @@ input[type="text"]:focus {
     }
 
 .status-card-msg {
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       color: var(--text-secondary);
       line-height: 1.6;
       background: rgba(0, 0, 0, 0.2);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       padding: 10px;
     }
 
 .pin-container {
       background: var(--success-bg);
       border: 1.5px solid var(--success-border);
-      border-radius: 10px;
+      border-radius: var(--radius-lg, 10px);
       padding: 18px 14px;
       text-align: center;
       margin-bottom: 16px;
     }
 
 .pin-display {
-      font-size: 2.2rem;
+      font-size: var(--fs-2xl, 2rem);
       font-weight: 900;
       letter-spacing: 4px;
-      color: #ffffff;
+      color: var(--text-primary);
       margin: 10px 0 14px;
       user-select: all;
     }
@@ -225,15 +225,15 @@ input[type="text"]:focus {
 
     <!-- 報到狀態區塊（送出後顯示） -->
     <section id="ckStatusSection" class="card" style="display: none;">
-      <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--accent-text); margin-bottom: 12px; text-align: center;">報到狀態</h2>
+      <h2 style="font-size: var(--fs-md, 1.125rem); font-weight: 700; color: var(--accent-text); margin-bottom: 12px; text-align: center;">報到狀態</h2>
       
       <div id="ckStatus" class="status-card"></div>
 
       <!-- PIN 碼顯示區塊（審核通過時出現） -->
       <div id="ckPinSection" class="pin-container" style="display: none;">
-        <div style="font-size: 0.9rem; color: var(--text-primary); font-weight: 700;">個人選手 PIN 碼（重要）：</div>
+        <div style="font-size: var(--fs-sm, 0.875rem); color: var(--text-primary); font-weight: 700;">個人選手 PIN 碼（重要）：</div>
         <div id="ckPin" class="pin-display"></div>
-        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 12px;">此 PIN 碼僅顯示一次，請立即抄下以便後續回報成績</p>
+        <p style="font-size: var(--fs-sm, 0.875rem); color: var(--text-secondary); margin-bottom: 12px;">此 PIN 碼僅顯示一次，請立即抄下以便後續回報成績</p>
         <button type="button" id="ckPinDone" class="btn btn-primary" style="min-width: 140px;">已抄下</button>
       </div>
 

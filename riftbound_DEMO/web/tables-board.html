@@ -25,7 +25,7 @@ body {
     }
 
 input, select, textarea {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
     }
 
 .container {
@@ -61,7 +61,7 @@ header {
     }
 
 .role-badge {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       background: var(--chip-bg);
       color: var(--text-primary);
       border: 1px solid var(--card-border);
@@ -71,7 +71,7 @@ header {
     }
 
 .round-tag {
-      font-size: 0.9rem;
+      font-size: var(--fs-sm, 0.875rem);
       font-weight: 700;
       color: var(--accent-text);
     }
@@ -81,8 +81,8 @@ header {
       color: var(--warning-text);
       border: 1px solid var(--warning-border);
       padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 0.85rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-sm, 0.875rem);
       margin-bottom: 12px;
       text-align: center;
     }
@@ -91,8 +91,8 @@ header {
       background: var(--danger-bg);
       color: var(--danger-text);
       padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.95rem;
+      border-radius: var(--radius-md, 6px);
+      font-size: var(--fs-base, 1rem);
       font-weight: 700;
       margin-bottom: 14px;
       text-align: center;
@@ -100,7 +100,7 @@ header {
     }
 
 .net-hint {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-secondary);
       margin-top: 6px;
       line-height: 1.4;
@@ -117,7 +117,7 @@ header {
 .summary-card {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      border-radius: 10px;
+      border-radius: var(--radius-lg, 10px);
       padding: 12px 16px;
       display: flex;
       flex-direction: column;
@@ -130,7 +130,7 @@ header {
     }
 
 .summary-label {
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-sub);
     }
 
@@ -145,7 +145,7 @@ header {
     }
 
 .summary-sub {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-sub);
     }
 
@@ -158,7 +158,7 @@ header {
     }
 
 .filter-label {
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-sub);
       margin-right: 2px;
     }
@@ -167,7 +167,7 @@ header {
       background: var(--chip-bg);
       border: 1px solid var(--card-border);
       color: var(--text-primary);
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       padding: 6px 14px;
       border-radius: 9999px;
       cursor: pointer;
@@ -193,7 +193,7 @@ header {
 
 .filter-badge {
       background: rgba(0, 0, 0, 0.25);
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 1px 6px;
       border-radius: 9999px;
     }
@@ -208,7 +208,7 @@ header {
 .table-card {
       background: var(--card-bg);
       border: 1.5px solid var(--card-border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg, 10px);
       padding: 14px 16px;
       position: relative;
       display: flex;
@@ -223,21 +223,23 @@ header {
 
 .table-card.conflict-card {
       border: 2px solid var(--danger-border);
-      background: linear-gradient(135deg, rgba(74, 31, 28, 0.6), rgba(168, 68, 60, 0.15));
-      box-shadow: 0 0 16px rgba(168, 68, 60, 0.25);
+      background: var(--danger-bg);
+      outline: 2px solid var(--danger-border);
+      outline-offset: 1px;
       order: -10; 
     }
 
 .table-card.call-waiting-card {
       border: 2px solid var(--judge-border);
-      background: linear-gradient(135deg, rgba(46, 33, 64, 0.8), rgba(85, 60, 119, 0.2));
-      box-shadow: 0 0 16px rgba(85, 60, 119, 0.3);
+      background: var(--judge-bg);
+      outline: 2px solid var(--judge-border);
+      outline-offset: 1px;
       order: -20; 
     }
 
 .table-card.call-taken-card {
       border: 2px solid var(--info-border);
-      background: linear-gradient(135deg, rgba(27, 47, 74, 0.8), rgba(47, 90, 128, 0.2));
+      background: var(--info-bg);
     }
 
 .judge-call-badge {
@@ -245,7 +247,7 @@ header {
       align-items: center;
       padding: 2px 8px;
       border-radius: 9999px;
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: 800;
     }
 
@@ -267,7 +269,7 @@ header {
       align-items: center;
       padding: 2px 8px;
       border-radius: 9999px;
-      font-size: 0.8rem;
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: 800;
       gap: 4px;
     }
@@ -291,7 +293,8 @@ header {
 
 .table-card.late-card-danger {
       border: 2px solid var(--danger-border);
-      box-shadow: 0 0 12px rgba(168, 68, 60, 0.4);
+      outline: 2px solid var(--danger-border);
+      outline-offset: 1px;
     }
 
 .table-card.pending-card {
@@ -312,7 +315,7 @@ header {
     }
 
 .table-title {
-      font-size: 1.4rem;
+      font-size: var(--fs-xl, 1.5rem);
       font-weight: 900;
       color: var(--accent-text);
       line-height: 1;
@@ -326,9 +329,9 @@ header {
       background: var(--info-bg);
       color: var(--info-text);
       border: 1px solid var(--info-border);
-      font-size: 0.7rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 1px 5px;
-      border-radius: 4px;
+      border-radius: var(--radius-sm, 4px);
       font-weight: 700;
     }
 
@@ -336,17 +339,17 @@ header {
       background: var(--chip-bg);
       color: var(--text-primary);
       border: 1px solid var(--card-border);
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       padding: 1px 6px;
-      border-radius: 4px;
+      border-radius: var(--radius-sm, 4px);
       font-weight: 700;
     }
 
 .status-pill {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: 800;
       padding: 3px 8px;
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       white-space: nowrap;
     }
 
@@ -371,7 +374,7 @@ header {
 .players-box {
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 10px 12px;
       display: flex;
       justify-content: space-between;
@@ -389,7 +392,7 @@ header {
     }
 
 .player-name {
-      font-size: 1.05rem;
+      font-size: var(--fs-base, 1rem);
       font-weight: 800;
       color: var(--text-main);
       overflow: hidden;
@@ -398,24 +401,24 @@ header {
     }
 
 .player-meta {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-sub);
     }
 
 .vs-tag {
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: 900;
       color: var(--text-secondary);
       background: var(--chip-bg);
       padding: 2px 6px;
-      border-radius: 4px;
+      border-radius: var(--radius-sm, 4px);
     }
 
 .time-info-box {
       background: rgba(1, 26, 36, 0.6);
-      border-radius: 6px;
+      border-radius: var(--radius-md, 6px);
       padding: 8px 10px;
-      font-size: 0.82rem;
+      font-size: var(--fs-sm, 0.875rem);
       display: flex;
       flex-direction: column;
       gap: 4px;
@@ -443,8 +446,8 @@ header {
       color: var(--warning-text);
       border: 1px solid var(--warning-border);
       padding: 1px 6px;
-      border-radius: 4px;
-      font-size: 0.75rem;
+      border-radius: var(--radius-sm, 4px);
+      font-size: var(--fs-xs, 0.75rem);
       font-weight: 700;
     }
 
@@ -456,26 +459,26 @@ header {
 .all-done-box {
       background: var(--panel-bg);
       border: 2px solid var(--success);
-      border-radius: 16px;
+      border-radius: var(--radius-lg, 10px);
       padding: 40px 20px;
       text-align: center;
       margin: 20px 0;
     }
 
 .all-done-icon {
-      font-size: 3rem;
+      font-size: var(--fs-3xl, 3rem);
       margin-bottom: 12px;
     }
 
 .all-done-title {
-      font-size: 1.6rem;
+      font-size: var(--fs-xl, 1.5rem);
       font-weight: 900;
       color: var(--success-text);
       margin-bottom: 6px;
     }
 
 .all-done-desc {
-      font-size: 1rem;
+      font-size: var(--fs-base, 1rem);
       color: var(--text-sub);
       max-width: 480px;
       margin: 0 auto;
@@ -495,7 +498,7 @@ header {
     }
 
 .section-title {
-      font-size: 1.1rem;
+      font-size: var(--fs-md, 1.125rem);
       font-weight: 700;
       color: var(--text-sub);
     }
@@ -509,7 +512,7 @@ header {
 .completed-card {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      border-radius: 8px;
+      border-radius: var(--radius-md, 6px);
       padding: 12px 14px;
       display: flex;
       flex-direction: column;
@@ -524,13 +527,13 @@ header {
 
 .completed-table-num {
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       color: var(--accent-text);
     }
 
 .completed-score {
       font-weight: 800;
-      font-size: 0.95rem;
+      font-size: var(--fs-base, 1rem);
       color: var(--success-text);
       white-space: nowrap;
     }
@@ -540,7 +543,7 @@ header {
     }
 
 .completed-players {
-      font-size: 0.85rem;
+      font-size: var(--fs-sm, 0.875rem);
       color: var(--text-main);
       display: flex;
       justify-content: space-between;
@@ -557,7 +560,7 @@ header {
 
 footer {
       text-align: center;
-      font-size: 0.75rem;
+      font-size: var(--fs-xs, 0.75rem);
       color: var(--text-secondary);
       margin-top: 24px;
     }
@@ -594,7 +597,7 @@ footer {
         <h1 class="page-title">主辦／裁判桌況儀表板</h1>
         <span class="round-tag" id="roundTag">第 -- 輪</span>
       </div>
-      <div style="font-size: 0.8rem; color: var(--text-sub);" id="lastSyncTime">
+      <div style="font-size: var(--fs-xs, 0.75rem); color: var(--text-sub);" id="lastSyncTime">
         同步中...
       </div>
     </header>
@@ -637,16 +640,16 @@ footer {
         全部進行中 <span class="filter-badge" id="filterCountAll">0</span>
       </button>
       <button type="button" class="filter-chip" data-filter="conflict">
-        ⚠️ 裁判處理中 <span class="filter-badge" id="filterCountConflict">0</span>
+        <svg class="icon" aria-hidden="true"><use href="icons.svg#i-warning"/></svg> 裁判處理中 <span class="filter-badge" id="filterCountConflict">0</span>
       </button>
       <button type="button" class="filter-chip" data-filter="extensions">
-        ⏱️ 有補時桌 <span class="filter-badge" id="filterCountExt">0</span>
+        <svg class="icon" aria-hidden="true"><use href="icons.svg#i-timer"/></svg> 有補時桌 <span class="filter-badge" id="filterCountExt">0</span>
       </button>
       <button type="button" class="filter-chip" data-filter="pending">
-        📝 成績回報中 <span class="filter-badge" id="filterCountPending">0</span>
+        <svg class="icon" aria-hidden="true"><use href="icons.svg#i-note"/></svg> 成績回報中 <span class="filter-badge" id="filterCountPending">0</span>
       </button>
       <button type="button" class="filter-chip" data-filter="completed">
-        ✅ 已完賽 <span class="filter-badge" id="filterCountCompleted">0</span>
+        <svg class="icon" aria-hidden="true"><use href="icons.svg#i-ok"/></svg> 已完賽 <span class="filter-badge" id="filterCountCompleted">0</span>
       </button>
     </section>
 
@@ -656,18 +659,18 @@ footer {
     </main>
 
     <!-- 尚未開賽空狀態 -->
-    <div class="all-done-box" id="notStartedBlock" style="display: none; border-color: #38bdf8;">
-      <div class="all-done-icon">📋</div>
-      <div class="all-done-title" style="color: #38bdf8;">賽事尚未開賽</div>
+    <div class="all-done-box" id="notStartedBlock" style="display: none; border-color: var(--info-border);">
+      <div class="all-done-icon"><svg class="icon icon-lg" aria-hidden="true"><use href="icons.svg#i-list"/></svg></div>
+      <div class="all-done-title" style="color: var(--info-text);">賽事尚未開賽</div>
       <div class="all-done-desc">
         目前為選手報到階段，第 1 輪配對公布後將在此即時顯示桌況。
       </div>
     </div>
 
     <!-- 配對產生中空狀態 (DATA-CONTRACT 1.3 published=false) -->
-    <div class="all-done-box" id="unpublishedBlock" style="display: none; border-color: #f59e0b;">
-      <div class="all-done-icon">⏳</div>
-      <div class="all-done-title" style="color: #f59e0b;">配對產生中</div>
+    <div class="all-done-box" id="unpublishedBlock" style="display: none; border-color: var(--warning-border);">
+      <div class="all-done-icon"><svg class="icon icon-lg" aria-hidden="true"><use href="icons.svg#i-waiting"/></svg></div>
+      <div class="all-done-title" style="color: var(--warning-text);">配對產生中</div>
       <div class="all-done-desc">
         裁判正在計算本輪配對，請稍候片刻...
       </div>
@@ -675,7 +678,7 @@ footer {
 
     <!-- 全場完賽空狀態 -->
     <div class="all-done-box" id="allDoneBlock" style="display: none;">
-      <div class="all-done-icon">🎉</div>
+      <div class="all-done-icon"><svg class="icon icon-lg" aria-hidden="true"><use href="icons.svg#i-party"/></svg></div>
       <div class="all-done-title">本輪所有桌次已完賽！</div>
       <div class="all-done-desc" id="allDoneDesc">
         全場對戰已全數回報並確認完成，系統可進行下一輪配對計算。
@@ -1025,7 +1028,7 @@ footer {
 
       if (filtered.length === 0) {
         container.innerHTML = `
-          <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--text-sub); background: var(--panel-bg); border-radius: 12px;">
+          <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--text-sub); background: var(--panel-bg); border-radius: var(--radius-lg, 10px);">
             此篩選條件下目前無任何桌次
           </div>
         `;
@@ -1047,10 +1050,10 @@ footer {
         if (pair.judge_call) {
           if (pair.judge_call.state === 'waiting') {
             const waitMin = Math.floor(Math.max(0, serverNow - pair.judge_call.called_at) / 60000);
-            callBadgeHtml = `<span class="judge-call-badge waiting">⚠️ 等裁判 ${waitMin} 分</span>`;
+            callBadgeHtml = `<span class="judge-call-badge waiting"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-warning"/></svg> 等裁判 ${waitMin} 分</span>`;
             cardClass += ' call-waiting-card';
           } else if (pair.judge_call.state === 'taken') {
-            callBadgeHtml = `<span class="judge-call-badge taken">🏃 裁判處理中</span>`;
+            callBadgeHtml = `<span class="judge-call-badge taken"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-run"/></svg> 裁判處理中</span>`;
             cardClass += ' call-taken-card';
           }
         }
@@ -1066,10 +1069,10 @@ footer {
             const m = Math.floor(elapsedSec / 60);
             const s = String(elapsedSec % 60).padStart(2, '0');
             const isDanger = (elapsedSec >= lateLossSec);
-            lateBadgeHtml = `<span class="late-badge ${isDanger ? 'danger' : 'warning'}" data-late-table="${pair.table}">⏰ 遲到 ${m}:${s}</span>`;
+            lateBadgeHtml = `<span class="late-badge ${isDanger ? 'danger' : 'warning'}" data-late-table="${pair.table}"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-alarm"/></svg> 遲到 ${m}:${s}</span>`;
             cardClass += isDanger ? ' late-card-danger' : ' late-card';
           } else {
-            lateBadgeHtml = `<span class="late-badge warning" data-late-table="${pair.table}">⏰ 遲到（未開賽）</span>`;
+            lateBadgeHtml = `<span class="late-badge warning" data-late-table="${pair.table}"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-alarm"/></svg> 遲到（未開賽）</span>`;
             cardClass += ' late-card';
           }
         }
@@ -1077,9 +1080,9 @@ footer {
         // 狀態標籤
         let statusBadgeHtml = '';
         if (isConflict) {
-          statusBadgeHtml = `<span class="status-pill conflict">⚠️ 裁判處理中</span>`;
+          statusBadgeHtml = `<span class="status-pill conflict"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-warning"/></svg> 裁判處理中</span>`;
         } else if (isPending) {
-          statusBadgeHtml = `<span class="status-pill pending">📝 回報中</span>`;
+          statusBadgeHtml = `<span class="status-pill pending"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-note"/></svg> 回報中</span>`;
         } else {
           statusBadgeHtml = `<span class="status-pill ongoing">進行中</span>`;
         }
@@ -1100,10 +1103,10 @@ footer {
           endsAtStr = formatTimeHHMM(pair.ends_at);
           const diffSec = Math.floor((pair.ends_at - serverNow) / 1000);
           if (diffSec <= 0) {
-            countdownStr = `<span style="color: #f87171; font-weight: 700;">(已超時，進行中)</span>`;
+            countdownStr = `<span style="color: var(--danger-text); font-weight: 700;">(已超時，進行中)</span>`;
           } else {
             const m = Math.floor(diffSec / 60);
-            countdownStr = `<span style="color: #38bdf8;">(約剩 ${m} 分)</span>`;
+            countdownStr = `<span style="color: var(--info-text);">(約剩 ${m} 分)</span>`;
           }
         }
 
@@ -1156,7 +1159,7 @@ footer {
       const grid = document.getElementById('completedGrid');
       if (!grid) return;
       if (!completedTables || completedTables.length === 0) {
-        grid.innerHTML = '<div style="color: var(--text-sub); font-size: 0.9rem; padding: 12px; grid-column: 1 / -1;">目前尚無完賽桌次</div>';
+        grid.innerHTML = '<div style="color: var(--text-sub); font-size: var(--fs-sm, 0.875rem); padding: 12px; grid-column: 1 / -1;">目前尚無完賽桌次</div>';
         return;
       }
 
@@ -1173,11 +1176,11 @@ footer {
         if (isDoubleLoss) {
           scoreText = '雙方判負';
           scoreClass += ' double-loss';
-          statusBadge = '<span class="status-pill conflict" style="background: rgba(239, 68, 68, 0.15); border: 1px solid #dc2626; color: #f87171; font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; font-weight: 700;">雙方判負</span>';
+          statusBadge = '<span class="status-pill conflict" style="background: var(--danger-bg); border: 1px solid var(--danger-border); color: var(--danger-text); font-size: var(--fs-xs, 0.75rem); padding: 2px 6px; border-radius: var(--radius-sm, 4px); font-weight: 700;">雙方判負</span>';
         } else {
           const drawStr = draws > 0 ? ` (${draws}和)` : '';
           scoreText = `${g1} - ${g2}${drawStr}`;
-          statusBadge = '<span class="status-pill" style="background: rgba(16, 185, 129, 0.15); border: 1px solid #059669; color: #34d399; font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; font-weight: 700;">已完賽</span>';
+          statusBadge = '<span class="status-pill" style="background: var(--success-bg); border: 1px solid var(--success-border); color: var(--success-text); font-size: var(--fs-xs, 0.75rem); padding: 2px 6px; border-radius: var(--radius-sm, 4px); font-weight: 700;">已完賽</span>';
         }
 
         return `
@@ -1227,10 +1230,10 @@ footer {
         if (!span) return;
         const diffSec = Math.floor((endsAt - serverNow) / 1000);
         if (diffSec <= 0) {
-          span.innerHTML = `<span style="color: #f87171; font-weight: 700;">(已超時，進行中)</span>`;
+          span.innerHTML = `<span style="color: var(--danger-text); font-weight: 700;">(已超時，進行中)</span>`;
         } else {
           const m = Math.floor(diffSec / 60);
-          span.innerHTML = `<span style="color: #38bdf8;">(約剩 ${m} 分)</span>`;
+          span.innerHTML = `<span style="color: var(--info-text);">(約剩 ${m} 分)</span>`;
         }
       });
 
@@ -1244,7 +1247,7 @@ footer {
         const s = String(elapsedSec % 60).padStart(2, '0');
         const isDanger = (elapsedSec >= lateLossSec);
         document.querySelectorAll('.late-badge').forEach(badge => {
-          badge.textContent = `⏰ 遲到 ${m}:${s}`;
+          badge.innerHTML = `<svg class="icon" aria-hidden="true"><use href="icons.svg#i-alarm"/></svg> 遲到 ${m}:${s}`;
           if (isDanger) {
             badge.classList.remove('warning');
             badge.classList.add('danger');
