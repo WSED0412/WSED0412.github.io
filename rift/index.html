@@ -6,22 +6,6 @@
   <link rel="icon" href="data:,">
   <title>符文戰場 — 賽事導向</title>
   <style>
-    :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --card-border: #334155;
-      --text-primary: #f8fafc;
-      --text-secondary: #94a3b8;
-      --accent: #38bdf8;
-      --accent-hover: #0284c7;
-      --warning-bg: #451a03;
-      --warning-border: #b45309;
-      --warning-text: #fde68a;
-      --danger-bg: #450a0a;
-      --danger-border: #dc2626;
-      --danger-text: #fecaca;
-    }
-
     * {
       box-sizing: border-box;
       margin: 0;
@@ -30,8 +14,10 @@
     }
 
     body {
-      background-color: var(--bg);
-      color: var(--text-primary);
+      /* --bg */
+      background-color: #01222F;
+      /* --text-primary */
+      color: #F9F9F9;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
       line-height: 1.5;
       min-height: 100vh;
@@ -58,20 +44,24 @@
       font-size: 1.4rem;
       font-weight: 800;
       letter-spacing: -0.5px;
-      color: var(--text-primary);
+      /* --text-primary */
+      color: #F9F9F9;
       margin-bottom: 6px;
     }
 
     .event-name {
       font-size: 0.95rem;
-      color: var(--text-secondary);
+      /* --text-secondary */
+      color: #9FB8C4;
       min-height: 1.4em;
     }
 
     .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
+      /* --card-bg */
+      background: #013951;
+      /* --card-border */
+      border: 1px solid #0A5570;
+      border-radius: 10px;
       padding: 24px 20px;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
       text-align: center;
@@ -89,11 +79,17 @@
       font-size: 1.8rem;
     }
 
+    .status-icon:empty {
+      display: none;
+    }
+
     .spinner {
       width: 44px;
       height: 44px;
-      border: 4px solid var(--card-border);
-      border-top-color: var(--accent);
+      /* --card-border */
+      border: 4px solid #0A5570;
+      /* --accent */
+      border-top-color: #EF7D00;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
       margin: 0 auto 16px;
@@ -107,19 +103,21 @@
       font-size: 1.15rem;
       font-weight: 700;
       margin-bottom: 8px;
-      color: var(--text-primary);
+      /* --text-primary */
+      color: #F9F9F9;
     }
 
     .status-desc {
       font-size: 0.95rem;
-      color: var(--text-secondary);
+      /* --text-secondary */
+      color: #9FB8C4;
       line-height: 1.6;
       margin-bottom: 20px;
       word-break: break-word;
     }
 
     .alert-box {
-      border-radius: 8px;
+      border-radius: 6px;
       padding: 16px;
       margin-bottom: 16px;
       text-align: left;
@@ -129,9 +127,10 @@
     }
 
     .alert-warning {
-      background: var(--warning-bg);
-      border: 1px solid var(--warning-border);
-      color: var(--warning-text);
+      /* --warning-bg／--warning-border／--warning-text（同值） */
+      background: #3E3312;
+      border: 1px solid #8A6D1F;
+      color: #F2C94C;
     }
 
     .btn {
@@ -141,7 +140,7 @@
       width: 100%;
       min-height: 50px;
       padding: 12px 20px;
-      border-radius: 8px;
+      border-radius: 6px;
       font-size: 1.05rem;
       font-weight: 700;
       text-decoration: none;
@@ -150,19 +149,23 @@
     }
 
     .btn-primary {
-      background: var(--accent);
-      color: #0f172a;
+      /* --accent */
+      background: #EF7D00;
+      /* --on-accent */
+      color: #141212;
       border: none;
     }
 
     .btn-primary:hover, .btn-primary:active {
-      background: var(--accent-hover);
+      /* --accent-hover */
+      background: #C86800;
     }
 
     .hint-text {
       margin-top: 16px;
       font-size: 0.85rem;
-      color: var(--text-secondary);
+      /* --text-secondary */
+      color: #9FB8C4;
     }
   </style>
 </head>
@@ -182,7 +185,7 @@
       </div>
 
       <div id="errorState" style="display: none;">
-        <div class="status-icon" id="errorIcon">⚠️</div>
+        <div class="status-icon" id="errorIcon"></div>
         <div class="status-title" id="errorTitle">尚未連線</div>
         <div class="alert-box alert-warning" id="errorMsg">
           今天的網址還沒設定，請到報到桌詢問
